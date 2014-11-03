@@ -1,0 +1,61 @@
+namespace hello
+{
+	class Lol
+	{
+		string name = "default_name";
+
+		void foo() {
+			print(getMessage());
+		}
+
+		string getMessage() {
+			return "My name is " + name;
+		}
+	}
+
+	class Lol2 : Lol
+	{
+		string getMessage() {
+			return "I'm a lol 2 named " + name + " (base: " + Lol::getMessage() + " )";
+		}
+	}
+
+	// This function is called when the module has just been compiled.
+	void __compiled__()
+	{
+		print("Hello compiled!");
+		//auto a = cast<Texture@>(sn::AssetDatabase::getAsset("texture", "default"));
+
+		Lol a;
+		Lol b = a;
+		a.name = "toto";
+		a.foo();
+		b.foo();
+
+		Lol@ c = a;
+		a.name = "gouzi";
+		c.foo();
+
+		//Vector2 test;
+
+		// auto is supported in AS 2.29.1
+		// auto d = a;
+		// a.name = "gouzi2";
+		// d.foo();
+
+		Lol e = Lol2();
+		e.foo();
+
+		Lol@ f = Lol2();
+		f.foo();
+
+		string[] dwarves = {"sleepy", "dobby", "sneezy", "grumpy"};
+		for(uint i = 0; i < dwarves.length; ++i)
+		{
+			print("Dwarf " + dwarves[i]);
+		}
+	}
+
+}
+
+

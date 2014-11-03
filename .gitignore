@@ -1,0 +1,38 @@
+# Build and run files
+_bin/
+_obj/
+AS_DEBUG/
+log.txt
+*.o
+*.dll
+*.exe
+*.so
+*.lib
+*.a
+*.obj
+
+# Visual Studio
+*.sln
+*.vcxproj
+*.sdf
+*.opensdf
+*.suo
+*.user
+*.log
+*.lastbuildstate
+*.tlog
+*.pdb
+*.idb
+*.exp
+*.ilk
+*.filters
+
+# Code::Blocks
+*.depend
+*.layout
+*.cbp
+*.workspace
+
+# Other
+_old/
+

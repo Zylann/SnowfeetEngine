@@ -1,0 +1,1 @@
+-p ../projects -x samples/helloworld/helloworld.mod.json
