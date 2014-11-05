@@ -99,7 +99,7 @@ Example with Visual Studio 2013:
 2) SnowfeetEngine.sln appeared at the root, open it
 3) Build the solution
 
-you need to re-run step 2) only if you pulled a new version of the engine,
+you need to re-run step 1) only if you pulled a new version of the engine,
 or if you are unsure of you project files. Otherwise, you can add files
 manually from your IDE without any problem, when possible.
 
