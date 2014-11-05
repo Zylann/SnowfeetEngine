@@ -4,7 +4,8 @@ namespace hello
 	{
 		string name = "default_name";
 
-		void foo() {
+		void foo()
+		{
 			print(getMessage());
 		}
 
@@ -15,7 +16,8 @@ namespace hello
 
 	class Lol2 : Lol
 	{
-		string getMessage() {
+		string getMessage()
+		{
 			return "I'm a lol 2 named " + name + " (base: " + Lol::getMessage() + " )";
 		}
 	}
@@ -55,6 +57,41 @@ namespace hello
 			print("Dwarf " + dwarves[i]);
 		}
 	}
+
+	void onCreate()
+	{
+		print("onCreate was called");
+	}
+
+	Clock timer;
+
+	void onUpdate(Time delta)
+	{
+		print(""+timer.getElapsedTime().asSeconds());
+	}
+
+	// void playHiddenNumberGame()
+	// {
+	// 	int hiddenNumber = Math.randint(1, 100);
+	// 	int n = -1;
+	// 	while(n != hiddenNumber)
+	// 	{
+	// 		n = promptInt("Guess the number? ");
+	// 		if(hiddenNumber > n)
+	// 		{
+	// 			print("It's greater!");
+	// 		}
+	// 		else if(hiddenNumber < n)
+	// 		{
+	// 			print("It's lower!");
+	// 		}
+	// 	}
+
+	// 	print("Bravo, you found the hidden number!");
+
+	// 	// Don't enter the main loop, just exit after that
+	// 	Application.quit();
+	// }
 
 }
 

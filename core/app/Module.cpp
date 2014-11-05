@@ -1,13 +1,26 @@
-﻿#include "Module.hpp"
-#include "Application.hpp"
-#include <JsonBox.h>
+﻿#include <JsonBox.h>
 #include <fstream>
-#include <core/util/stringutils.hpp>
-#include <core/util/Exception.hpp>
-#include <core/system/file/filesystem.hpp>
+
+#include "Module.hpp"
+#include "Application.hpp"
+
+#include "../util/stringutils.hpp"
+#include "../util/Exception.hpp"
+#include "../system/file/filesystem.hpp"
+#include "../system/time/Time.hpp"
 
 namespace sn
 {
+
+//------------------------------------------------------------------------------
+namespace CallbackName
+{
+    const char * CREATE = "onCreate";
+    const char * START = "onStart";
+    const char * EVENT = "onEvent";
+    const char * UPDATE = "onUpdate";
+    const char * DESTROY = "onDestroy";
+}
 
 //------------------------------------------------------------------------------
 // Static
@@ -51,6 +64,11 @@ Module::Module(Application & app, const ModuleInfo & info) :
     m_info(info),
     r_app(app)
 {
+    m_scriptCallbacks.insert(std::make_pair(CallbackName::CREATE, std::vector<asIScriptFunction*>()));
+    m_scriptCallbacks.insert(std::make_pair(CallbackName::EVENT, std::vector<asIScriptFunction*>()));
+    m_scriptCallbacks.insert(std::make_pair(CallbackName::START, std::vector<asIScriptFunction*>()));
+    m_scriptCallbacks.insert(std::make_pair(CallbackName::UPDATE, std::vector<asIScriptFunction*>()));
+    m_scriptCallbacks.insert(std::make_pair(CallbackName::DESTROY, std::vector<asIScriptFunction*>()));
 }
 
 //------------------------------------------------------------------------------
@@ -79,11 +97,70 @@ bool Module::compileScripts()
         }
     }
 
-    return r_app.getScriptEngine().compileModule(
+    bool compiled = r_app.getScriptEngine().compileModule(
         m_info.name,
         m_info.scriptNamespace,
         scriptFiles
     );
+
+    if (compiled)
+    {
+        referenceCallbacks();
+    }
+    else
+    {
+        throw Exception("Script compilation error");
+        return false;
+    }
+}
+
+//------------------------------------------------------------------------------
+void Module::clearCallbacks()
+{
+    for (auto it = m_scriptCallbacks.begin(); it != m_scriptCallbacks.end(); ++it)
+    {
+        it->second.clear();
+    }
+}
+
+//------------------------------------------------------------------------------
+void Module::referenceCallbacks()
+{
+    SN_DLOG("Referencing callbacks...");
+
+    clearCallbacks();
+
+    asIScriptEngine * as = r_app.getScriptEngine().getEngine();
+    asIScriptModule * asModule = as->GetModule(m_info.name.c_str());
+
+    // TODO Handle multiple callback signatures
+
+    // For each global function defined in the module
+    u32 fnCount = asModule->GetFunctionCount();
+    for (u32 i = 0; i < fnCount; ++i)
+    {
+        // Get function
+        asIScriptFunction * f = asModule->GetFunctionByIndex(i);
+
+        for (auto it = m_scriptCallbacks.begin(); it != m_scriptCallbacks.end(); ++it)
+        {
+            std::string callbackName = it->first;
+
+            // If the function name matches a callback, reference it
+            if (f->GetName() == callbackName)
+            {
+                it->second.push_back(f);
+                SN_DLOG("Found callback \"" << f->GetNamespace() << "::" << callbackName << "\"");
+                break;
+            }
+        }
+    }
+}
+
+//------------------------------------------------------------------------------
+bool Module::hasUpdateFunction()
+{
+    return m_scriptCallbacks[CallbackName::UPDATE].size() > 0;
 }
 
 //------------------------------------------------------------------------------
@@ -92,6 +169,59 @@ bool Module::loadAssets()
     return true;
 }
 
+//------------------------------------------------------------------------------
+void Module::callVoidCallback(std::string cbName)
+{
+    auto it = m_scriptCallbacks.find(cbName);
+    if (it != m_scriptCallbacks.end())
+    {
+        asIScriptContext * context = r_app.getScriptEngine().getContext();
+        for (u32 i = 0; i < it->second.size(); ++i)
+        {
+            asIScriptFunction * f = it->second[i];
+            context->Prepare(f);
+
+            int r = context->Execute();
+            if (r != asEXECUTION_FINISHED)
+            {
+                // The execution didn't complete as expected. Determine what happened.
+                if (r == asEXECUTION_EXCEPTION)
+                {
+                    // An exception occurred, let the script writer know what happened so it can be corrected.
+                    SN_ERROR("An exception " << context->GetExceptionString() << " occurred.");
+                }
+            }
+        }
+    }
+}
+
+//------------------------------------------------------------------------------
+void Module::onUpdate(Time delta)
+{
+    auto it = m_scriptCallbacks.find(CallbackName::UPDATE);
+    if (it != m_scriptCallbacks.end())
+    {
+        asIScriptContext * context = r_app.getScriptEngine().getContext();
+        for (u32 i = 0; i < it->second.size(); ++i)
+        {
+            asIScriptFunction * f = it->second[i];
+            context->Prepare(f);
+
+            context->SetArgObject(0, &delta);
+
+            int r = context->Execute();
+            if (r != asEXECUTION_FINISHED)
+            {
+                // The execution didn't complete as expected. Determine what happened.
+                if (r == asEXECUTION_EXCEPTION)
+                {
+                    // An exception occurred, let the script writer know what happened so it can be corrected.
+                    SN_ERROR("An exception " << context->GetExceptionString() << " occurred.");
+                }
+            }
+        }
+    }
+}
 
 } // namespace sn
 

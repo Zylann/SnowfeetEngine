@@ -6,7 +6,7 @@ namespace sn
 //------------------------------------------------------------------------------
 void TimeStepper::onBeginFrame()
 {
-    Time t = time();
+    Time t = getTime();
 
     m_timeBefore = t;
 
@@ -23,7 +23,7 @@ void TimeStepper::onBeginFrame()
 //------------------------------------------------------------------------------
 void TimeStepper::onEndFrame()
 {
-    m_rawDelta = time() - m_timeBefore;
+    m_rawDelta = getTime() - m_timeBefore;
     if (m_rawDelta > m_maxDelta)
     {
         m_rawDelta = m_maxDelta;
@@ -31,8 +31,10 @@ void TimeStepper::onEndFrame()
 }
 
 //------------------------------------------------------------------------------
-u32 TimeStepper::callSteps(void(*stepFunc)(Time))
+std::vector<sn::Time> TimeStepper::getCallDeltas()
 {
+    std::vector<Time> deltas;
+
     // Get current delta
     Time delta = m_rawDelta;
     if (m_recordedFPS != 0)
@@ -52,7 +54,7 @@ u32 TimeStepper::callSteps(void(*stepFunc)(Time))
         s32 cycles = m_storedDelta.asMilliseconds() / m_maxDelta.asMilliseconds();
         for (s32 i = 0; i < cycles; ++i)
         {
-            (*stepFunc)(m_maxDelta);
+            deltas.push_back(m_maxDelta);
             ++updatesCount;
         }
 
@@ -60,7 +62,7 @@ u32 TimeStepper::callSteps(void(*stepFunc)(Time))
         Time remainder = Time::milliseconds(m_storedDelta.asMilliseconds() % m_maxDelta.asMilliseconds());
         if (remainder > m_minDelta)
         {
-            stepFunc(remainder);
+            deltas.push_back(remainder);
             m_storedDelta = Time::milliseconds(0);
             ++updatesCount;
         }
@@ -70,7 +72,7 @@ u32 TimeStepper::callSteps(void(*stepFunc)(Time))
         }
     }
 
-    return updatesCount;
+    return deltas;
 }
 
 } // namespace sn

@@ -8,6 +8,7 @@ This file is part of the SnowfeetEngine project.
 #define __HEADER_SN_TIME_STEPPER__
 
 #include <core/system/time/Clock.hpp>
+#include <vector>
 
 namespace sn
 {
@@ -30,13 +31,13 @@ public:
     }
 
     /// \brief Gets eleapsed time from the TimeStepper's creation.
-    inline sn::Time time() const
+    inline sn::Time getTime() const
     {
         return m_time.getElapsedTime();
     }
 
     /// \brief Gets the measured delta time between onBeginFrame() and onEndFrame().
-    inline sn::Time rawDelta() const
+    inline sn::Time getRawDelta() const
     {
         return m_rawDelta;
     }
@@ -51,20 +52,20 @@ public:
     }
 
     /// \brief Gets the minimal expected time delta
-    inline sn::Time minDelta() const
+    inline sn::Time getMinDelta() const
     {
         return m_minDelta;
     }
 
     /// \brief Gets the maximal expected time delta
-    inline sn::Time maxDelta() const
+    inline sn::Time getMaxDelta() const
     {
         return m_maxDelta;
     }
 
     /// \brief Gets the number of frames measured in 1 second.
     /// This value is not instant, so it can be zero when you start using the TimeStepper.
-    inline u32 recordedFPS() const
+    inline u32 getRecordedFPS() const
     {
         return m_recordedFPS;
     }
@@ -79,8 +80,10 @@ public:
     /// in order to get a fixed-time step logic.
     /// \param stepFunc: update callback to call
     /// \return number of times the given callback has been called
-    u32 callSteps(void(*stepFunc)(sn::Time));
+    //u32 callSteps(void(*stepFunc)(sn::Time, void*), void* userdata);
     //u32 callSteps(std::function<void(sn::Time)> stepFunc);
+
+    std::vector<sn::Time> getCallDeltas();
 
 private:
 

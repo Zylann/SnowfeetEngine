@@ -32,6 +32,7 @@
 #include <core/app/CommandLine.hpp>
 #include <core/app/Module.hpp>
 #include <core/app/ScriptEngine.hpp>
+#include <core/app/TimeStepper.hpp>
 #include <map>
 
 namespace sn
@@ -54,22 +55,38 @@ public:
 
     inline ScriptEngine & getScriptEngine() { return m_scriptEngine; }
 
+    // Sets the running flag to false in order to exit the application
+    // at the end of the current update.
+    void quit();
+
     static Application & get();
 
 private:
 
     void printCommandLineUsage();
     bool parseCommandLine(CommandLine commandLine);
-    bool loadModule(const String & path);
+    Module * Application::loadModule(const String & path);
     int executeEx();
     //void compileScripts();
 
+    void update(Time delta);
+    void callVoidCallback(const std::string & cbName);
+
+    //------------------------------------
+    // Attributes
+    //------------------------------------
+
     ScriptEngine m_scriptEngine;
+
     String m_pathToMainMod;
     String m_pathToProjects;
 
+    TimeStepper m_timeStepper;
+
     // [directory] => Module
     std::map<String, Module*> m_modules;
+
+    bool m_runFlag;
 
 };
 
