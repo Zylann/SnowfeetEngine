@@ -35,9 +35,9 @@ public:
         return m_microseconds;
     }
 
-    static inline Time seconds(float s)
+    static inline Time seconds(f32 s)
     {
-        return Time(static_cast<s64>(s) * 1000000);
+        return Time(static_cast<s64>(s * 1000000.f));
     }
 
     static inline Time milliseconds(s32 ms)
