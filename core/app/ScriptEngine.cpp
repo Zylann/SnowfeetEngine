@@ -10,6 +10,8 @@
 #include "../system/time/as_time.hpp"
 #include "../util/Exception.hpp"
 
+#include "../math/as_math.hpp"
+
 namespace sn
 {
 
@@ -196,6 +198,9 @@ void ScriptEngine::registerCoreAPI()
     // Time
     register_Time(m_engine);
     register_Clock(m_engine);
+
+    // Math
+    register_math(m_engine);
 
 }
 

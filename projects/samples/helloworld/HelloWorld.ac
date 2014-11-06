@@ -22,6 +22,12 @@ namespace hello
 		}
 	}
 
+	// TODO Have toString functions available
+	string toString(Vector2i v)
+	{
+		return "(" + v.x + ", " + v.y + ")";
+	}
+
 	// This function is called when the module has just been compiled.
 	void __compiled__()
 	{
@@ -37,8 +43,6 @@ namespace hello
 		Lol@ c = a;
 		a.name = "gouzi";
 		c.foo();
-
-		//Vector2 test;
 
 		// auto is supported in AS 2.29.1
 		// auto d = a;
@@ -56,6 +60,12 @@ namespace hello
 		{
 			print("Dwarf " + dwarves[i]);
 		}
+
+		Vector2i vec;
+		Vector2i dir(2,-3);
+		print(toString(vec));
+		vec += dir;
+		print(toString(vec));
 	}
 
 	void onCreate()
@@ -65,10 +75,10 @@ namespace hello
 
 	Clock timer;
 
-	void onUpdate(Time delta)
-	{
-		print(""+timer.getElapsedTime().asSeconds());
-	}
+	// void onUpdate(Time delta)
+	// {
+	// 	print(""+timer.getElapsedTime().asSeconds());
+	// }
 
 	// void playHiddenNumberGame()
 	// {
