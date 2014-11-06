@@ -59,7 +59,7 @@ public:
     // at the end of the current update.
     void quit();
 
-    static Application & get();
+    //static Application & get();
 
 private:
 

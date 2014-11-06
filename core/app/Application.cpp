@@ -8,21 +8,21 @@ namespace sn
 {
 
 //------------------------------------------------------------------------------
-Application * g_instance = nullptr;
+//Application * g_instance = nullptr;
 
 //------------------------------------------------------------------------------
-Application & Application::get()
-{
-    return *g_instance;
-}
+//Application & Application::get()
+//{
+//    return *g_instance;
+//}
 
 //------------------------------------------------------------------------------
 Application::Application() :
     m_scriptEngine(*this),
     m_runFlag(false)
 {
-    SN_ASSERT(g_instance == nullptr, "E: Application: multiple instances are not allowed.");
-    g_instance = this;
+    //SN_ASSERT(g_instance == nullptr, "E: Application: multiple instances are not allowed.");
+    //g_instance = this;
 }
 
 //------------------------------------------------------------------------------
