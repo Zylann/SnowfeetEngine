@@ -56,6 +56,13 @@ void asPrint(std::string & msg)
     sn::Log::get().print(SN_LTM_DEBUG, msg);
 }
 
+//------------------------------------------------------------------------------
+void asPrintError(std::string & msg)
+{
+    sn::Log::get().print(SN_LTM_ERROR, msg);
+}
+
+
 //==============================================================================
 // ScriptEngine
 //==============================================================================
@@ -182,8 +189,9 @@ void ScriptEngine::registerCoreAPI()
     // Register array type
     RegisterScriptArray(m_engine, true);
 
-    // Register print
+    // Register print functions
     asCheck(m_engine->RegisterGlobalFunction("void print(const string &in)", asFUNCTION(asPrint), asCALL_CDECL));
+    asCheck(m_engine->RegisterGlobalFunction("void error(const string &in)", asFUNCTION(asPrintError), asCALL_CDECL));
 
     // Time
     register_Time(m_engine);
