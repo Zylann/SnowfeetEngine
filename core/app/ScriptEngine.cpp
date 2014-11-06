@@ -154,16 +154,7 @@ bool ScriptEngine::compileModule(std::string modName, std::string modNamespace, 
         // Create our context, prepare it, and then execute
         asIScriptContext *ctx = getContext();
         ctx->Prepare(func);
-        r = ctx->Execute();
-        if (r != asEXECUTION_FINISHED)
-        {
-            // The execution didn't complete as expected. Determine what happened.
-            if (r == asEXECUTION_EXCEPTION)
-            {
-                // An exception occurred, let the script writer know what happened so it can be corrected.
-                SN_ERROR("An exception " << ctx->GetExceptionString() << " occurred. Please correct the code and try again.");
-            }
-        }
+        executeContext(*ctx);
     }
     else
     {
@@ -192,8 +183,7 @@ void ScriptEngine::registerCoreAPI()
     RegisterScriptArray(m_engine, true);
 
     // Register print
-    int r = m_engine->RegisterGlobalFunction("void print(const string &in)", asFUNCTION(asPrint), asCALL_CDECL);
-    SN_ASSERT(r >= 0, "E: AngelScript: registering API");
+    asCheck(m_engine->RegisterGlobalFunction("void print(const string &in)", asFUNCTION(asPrint), asCALL_CDECL));
 
     // Time
     register_Time(m_engine);
@@ -219,6 +209,35 @@ asIScriptContext * ScriptEngine::getContext()
     }
     return m_context;
 }
+
+//------------------------------------------------------------------------------
+bool ScriptEngine::executeContext(asIScriptContext & context)
+{
+    s32 r = context.Execute();
+    if (r != asEXECUTION_FINISHED)
+    {
+        // The execution didn't complete as expected. Determine what happened.
+        if (r == asEXECUTION_EXCEPTION)
+        {
+            // An exception occurred, let the script writer know what happened so it can be corrected.
+            const char * sectionName = 0;
+            s32 column = 0;
+            s32 line = context.GetExceptionLineNumber(&column, &sectionName);
+            SN_ERROR(sectionName << ": (" << line << ", " << column << "): "
+                "An exception " << context.GetExceptionString() << " occurred.");
+        }
+        else
+        {
+            SN_ERROR("An error occurred while executing a script function (code: " << r << ").");
+        }
+        return false;
+    }
+    else
+    {
+        return true;
+    }
+}
+
 
 } // namespace sn
 

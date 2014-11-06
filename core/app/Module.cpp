@@ -176,21 +176,16 @@ void Module::callVoidCallback(std::string cbName)
     if (it != m_scriptCallbacks.end())
     {
         asIScriptContext * context = r_app.getScriptEngine().getContext();
+
+        // For each function registered for this callback
         for (u32 i = 0; i < it->second.size(); ++i)
         {
+            // Prepare
             asIScriptFunction * f = it->second[i];
             context->Prepare(f);
 
-            int r = context->Execute();
-            if (r != asEXECUTION_FINISHED)
-            {
-                // The execution didn't complete as expected. Determine what happened.
-                if (r == asEXECUTION_EXCEPTION)
-                {
-                    // An exception occurred, let the script writer know what happened so it can be corrected.
-                    SN_ERROR("An exception " << context->GetExceptionString() << " occurred.");
-                }
-            }
+            // Execute
+            r_app.getScriptEngine().executeContext(*context);
         }
     }
 }
@@ -202,23 +197,19 @@ void Module::onUpdate(Time delta)
     if (it != m_scriptCallbacks.end())
     {
         asIScriptContext * context = r_app.getScriptEngine().getContext();
+
+        // For each update function registered for this callback
         for (u32 i = 0; i < it->second.size(); ++i)
         {
+            // Prepare function
             asIScriptFunction * f = it->second[i];
             context->Prepare(f);
 
+            // Set arguments
             context->SetArgObject(0, &delta);
 
-            int r = context->Execute();
-            if (r != asEXECUTION_FINISHED)
-            {
-                // The execution didn't complete as expected. Determine what happened.
-                if (r == asEXECUTION_EXCEPTION)
-                {
-                    // An exception occurred, let the script writer know what happened so it can be corrected.
-                    SN_ERROR("An exception " << context->GetExceptionString() << " occurred.");
-                }
-            }
+            // Execute
+            r_app.getScriptEngine().executeContext(*context);
         }
     }
 }

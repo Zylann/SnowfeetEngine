@@ -30,6 +30,9 @@ public:
 
     bool compileModule(std::string modName, std::string modNamespace, const std::vector<String> & files);
 
+    // Executes a function previously prepared on a context, and returns false if an error occurred.
+    bool executeContext(asIScriptContext & context);
+
 private:
 
     void registerCoreAPI();
