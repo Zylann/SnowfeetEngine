@@ -2,6 +2,7 @@
 #include "../util/Log.hpp"
 #include "Module.hpp"
 #include "../system/thread/Thread.hpp"
+#include <ctime>
 
 namespace sn
 {
@@ -74,6 +75,8 @@ int Application::executeEx()
         SN_WARNING("No main mod specified.");
         return 0;
     }
+
+    std::srand(std::time(NULL));
 
     m_scriptEngine.initialize();
 
