@@ -128,14 +128,14 @@ inline void randomSeed(s32 seed)
     std::srand(seed);
 }
 
-/// \brief Generates random numbers in [min, max]
+/// \brief Generates random numbers in [min, max[
 /// \note This function uses C rand().
 /// \param min : minimum value. Assumed to be < max.
-/// \param max : maximum value. Assumed to be > min.
-/// \return pseudo-random number between min and max (included).
+/// \param max : maximum value + 1. Assumed to be > min.
+/// \return pseudo-random number between min and max (max excluded).
 inline int rand(s32 min, s32 max)
 {
-    return min + std::rand() % (max - min + 1);
+    return min + std::rand() % (max - min);
 }
 
 /// \brief Generates random numbers in [0.f, 1.f]
