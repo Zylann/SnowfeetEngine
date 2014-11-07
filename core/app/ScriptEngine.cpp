@@ -62,6 +62,12 @@ void asPrintError(std::string & msg)
     sn::Log::get().print(SN_LTM_ERROR, msg);
 }
 
+//------------------------------------------------------------------------------
+void console_pause()
+{
+    std::cout << "Press any key to continue...";
+    getchar();
+}
 
 //==============================================================================
 // ScriptEngine
@@ -176,6 +182,10 @@ void ScriptEngine::registerCoreAPI()
 {
     SN_LOG("Registering core API");
 
+    //
+    // Global API
+    //
+
     // Register string:
     // AngelScript doesn't have a built-in string type, as there is no definite standard
     // string type for C++ applications. Every developer is free to register it's own string type.
@@ -199,6 +209,14 @@ void ScriptEngine::registerCoreAPI()
 
     // Math
     register_math(m_engine);
+
+    //
+    // Namespaced API
+    //
+
+    // Register console functions
+    asCheck(m_engine->SetDefaultNamespace("console"));
+    asCheck(m_engine->RegisterGlobalFunction("void pause()", asFUNCTION(console_pause), asCALL_CDECL));
 
 }
 
