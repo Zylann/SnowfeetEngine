@@ -62,7 +62,7 @@ public:
     /// \brief Finds the entity having the given ID.
     /// \param id: numeric unique identifier of the entity within the scene
     /// \return Returns nullptr when not found.
-    Entity * findEntityFromID(u32 id) const;
+    Entity * findEntityFromID(EntityID id) const;
 
     /// \brief Finds the first encountered entity having the given name.
     /// \param name: name to search
@@ -148,7 +148,7 @@ public:
 private:
 
     /// \brief counter used to generate entity UIDs
-    u32 m_nextID;
+    EntityID m_nextID;
 
     // TODO change to a vector?
     /// \brief list of all entities in the scene.

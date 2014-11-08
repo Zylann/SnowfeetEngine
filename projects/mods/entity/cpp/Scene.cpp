@@ -64,7 +64,7 @@ Entity * Scene::createEntity(std::string name, sn::Vector3f pos)
 }
 
 //------------------------------------------------------------------------------
-Entity * Scene::findEntityFromID(u32 id) const
+Entity * Scene::findEntityFromID(EntityID id) const
 {
     for(auto it = m_entities.begin(); it != m_entities.end(); ++it)
     {

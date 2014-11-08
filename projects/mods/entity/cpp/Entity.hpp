@@ -20,6 +20,8 @@ This file is part of the SnowfeetEngine project.
 namespace sn
 {
 
+typedef u32 EntityID;
+
 class Component;
 class Scene;
 
@@ -248,7 +250,7 @@ public:
 
     /// \brief Gets the unique numerical ID of this entity
     /// \return Numerical ID of the entity
-    inline u32 id() const { return m_id; }
+    inline EntityID id() const { return m_id; }
 
     //-----------------------------------------
     // Public attributes
@@ -284,7 +286,7 @@ private:
     /// \brief Unique numerical ID.
     /// It is generated when the entity is created and added to a scene.
     /// \see Scene.cpp
-    u32 m_id;
+    EntityID m_id;
 
     /// \brief Components attached to this entity
     std::vector<Component*> m_components;
