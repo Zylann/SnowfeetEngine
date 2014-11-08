@@ -27,6 +27,7 @@ solution "SnowfeetEngine"
 	include("angelscript")
 	include("core")
 	include("main")
+	include("zlib")
 
 	-- Modules
 	include("projects/mods/render/cpp")
