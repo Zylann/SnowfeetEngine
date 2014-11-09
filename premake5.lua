@@ -32,5 +32,6 @@ solution "SnowfeetEngine"
 	-- Modules
 	include("projects/mods/render/cpp")
 	include("projects/mods/entity/cpp")
+	include("projects/mods/image/cpp")
 
 
