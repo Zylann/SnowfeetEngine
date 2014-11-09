@@ -74,12 +74,21 @@ so it's not in my plans to implement support for it at the moment.
 Maybe NaCl or web-native-java hacks, but not plain HTML5 yet.
 
 
+Binaries
+--------
+There is no pre-build binaries available.
+At the moment, the whole engine and its modules must be compiled with the SAME
+compiler, no matter which one, for compatibility reasons.
+Building your own binaries is the best way to fit your platform,
+if it is supported enough by the engine.
+
+
 How to compile
 =============
 
 You will need the following:
 - A C++11 compiler
-- Premake5 (get the nightly here, it's less than 1mo: <TODO PREMAKE LINK>)
+- Premake5 (get the nightly here, it's less than 1mo: [TODO PREMAKE LINK])
 - Optionally, an IDE
 - Optionally, Git
 That's all, the project then should work out of the box.
@@ -106,9 +115,26 @@ manually from your IDE without any problem, when possible.
 Note for VS: don't create files from it, because they'll end up at the wrong place.
 drag and drop them instead.
 
+Note for Code::Blocks: premake5 can't generate workspaces yet, but it's coming ;) 
+
 To version your game separately from the engine's git repo, you can use multiple
 git repos feature or use another versionning system.
 The engine should otherwise support multiple project roots in the future.
 
 For any question or issues, PM me.
+
+License
+========
+
+I don't have decided yet which license the engine should have, but you guessed
+that the core is free and open-source.
+
+However, modules could have different licenses:
+
+Essential ones such as graphics or sound may have the same license as the core,
+also depending on which third-party code they include / modified.
+
+And obviously, because user applications will be modules,
+they can be private-source and/or paid if you want to.
+
 
