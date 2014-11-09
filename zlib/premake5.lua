@@ -3,6 +3,7 @@ project "zlib"
 	kind "SharedLib"
 	language "C"
 	location "."
+	-- TODO remove unusued links on win32
 	files {
 		"*.h",
 		"*.c"
