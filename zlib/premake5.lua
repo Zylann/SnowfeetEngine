@@ -16,6 +16,7 @@ project "zlib"
 			"_CRT_NONSTDC_NO_DEPRECATE",
 			"_CRT_SECURE_NO_DEPRECATE",
 			"_CRT_NONSTDC_NO_WARNINGS",
+			"ZLIB_DLL",
 			"ZLIB_WINAPI",
 			-- "ASMV",
 			-- "ASMINF"
@@ -28,6 +29,7 @@ project "zlib"
 			"_CRT_NONSTDC_NO_DEPRECATE",
 			"_CRT_SECURE_NO_DEPRECATE",
 			"_CRT_NONSTDC_NO_WARNINGS",
+			"ZLIB_DLL",
 			"ZLIB_WINAPI",
 			-- "ASMV",
 			-- "ASMINF"
