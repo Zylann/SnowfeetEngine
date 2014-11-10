@@ -14,7 +14,7 @@ project "ModImage"
 	}
 	links {
 		"SnowfeetCore",
-		--"JsonBox",
+		"JsonBox", -- TODO Don't link JsonBox, it's already done in the core (maybe a premake5 bug?)
 		"libpng"
 	}
 	filter "configurations:Debug"
