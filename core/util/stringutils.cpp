@@ -75,6 +75,13 @@ void toUpper(std::string & str)
 }
 
 //------------------------------------------------------------------------------
+void toLower(std::string & str)
+{
+    for (u32 i = 0; i < str.size(); i++)
+        str[i] = tolower(str[i]);
+}
+
+//------------------------------------------------------------------------------
 s32 toInt(std::string s)
 {
     std::stringstream ss(s);

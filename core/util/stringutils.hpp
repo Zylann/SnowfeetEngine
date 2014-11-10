@@ -26,6 +26,7 @@ std::string SN_API toStringAlnum(s32 x);
 
 s32 SN_API toInt(std::string s);
 void SN_API toUpper(std::string & str);
+void SN_API toLower(std::string & str);
 
 // convert a time given in seconds to a time string formated like "hh:mm:ss:ms"
 std::string SN_API toTimeString(f32 s);
