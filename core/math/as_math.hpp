@@ -15,8 +15,9 @@ namespace sn
 // Note: for convenience, functions below are implemented in separate files.
 // The implementation files start with as_*.
 
-void register_math(asIScriptEngine * engine);
-void register_Vector2i(asIScriptEngine * engine);
+void register_math(asIScriptEngine * e);
+void register_Vector2i(asIScriptEngine * e);
+void register_Color(asIScriptEngine * e);
 
 } // namespace sn
 
