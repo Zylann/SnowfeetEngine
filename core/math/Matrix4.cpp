@@ -25,6 +25,7 @@ Matrix4::Matrix4()
 {
     // Note: the IEEE 754 representation of 0 is 0
     //memset(m_v, 0, 16 * sizeof(f32));
+
     loadIdentity();
 }
 

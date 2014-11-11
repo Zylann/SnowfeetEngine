@@ -24,8 +24,10 @@ public :
     void set(const Matrix4 & other);
     void set(const f32 values[16]);
 
-    inline f32 Matrix4::getCell(u32 row, u32 col) const { return m_v[col | row << 2]; }
-    inline void Matrix4::setCell(u32 row, u32 col, f32 v) { m_v[col | row << 2] = v; }
+    inline u32 getCellIndex(u32 row, u32 col) const { return col | (row << 2); }
+
+    inline f32 Matrix4::getCell(u32 row, u32 col) const { return m_v[getCellIndex(row, col)]; }
+    inline void Matrix4::setCell(u32 row, u32 col, f32 v) { m_v[getCellIndex(row, col)] = v; }
 
     // Sets the matrix to identity
     void loadIdentity();
@@ -72,9 +74,13 @@ public :
 
     bool getInverse(Matrix4 & out_result) const;
 
+    //-------------------------------------
+    // Operators
+    //-------------------------------------
+
     void operator=(const Matrix4 & other);
-    inline f32 & operator()(const u32 row, const u32 col) { return m_v[col | row << 2]; }
-    inline f32 operator()(const u32 row, const u32 col) const { return m_v[col | row << 2]; }
+    inline f32 & operator()(const u32 row, const u32 col) { return m_v[getCellIndex(row, col)]; }
+    inline f32 operator()(const u32 row, const u32 col) const { return m_v[getCellIndex(row, col)]; }
 
 private :
 
