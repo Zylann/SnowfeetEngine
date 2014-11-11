@@ -81,10 +81,18 @@ struct SN_API Color
     // It will be treated as a ratio.
     void multiplyU8(u8 ku);
 
-    Color operator+(const Color & other);
-    Color operator-(const Color & other);
-    void operator+=(const Color & other);
-    void operator-=(const Color & other);
+    Color operator+(const Color & other) const;
+    Color operator-(const Color & other) const;
+    Color & operator+=(const Color & other);
+    Color & operator-=(const Color & other);
+
+    bool operator==(const Color & other) const
+    {
+        return r == other.r
+            && g == other.g
+            && b == other.b
+            && a == other.a;
+    }
 
     // TODO Color: operators *, *=, / and /=
 };

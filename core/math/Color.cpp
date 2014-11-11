@@ -144,7 +144,7 @@ std::string Color::toString() const
 }
 
 //------------------------------------------------------------------------------
-Color Color::operator+(const Color & other)
+Color Color::operator+(const Color & other) const
 {
     return Color(
         math::min((u32)r + (u32)other.r, 255u),
@@ -154,7 +154,7 @@ Color Color::operator+(const Color & other)
 }
 
 //------------------------------------------------------------------------------
-Color Color::operator-(const Color & other)
+Color Color::operator-(const Color & other) const
 {
     return Color(
         r > other.r ? r - other.r : 0,
@@ -164,21 +164,23 @@ Color Color::operator-(const Color & other)
 }
 
 //------------------------------------------------------------------------------
-void Color::operator+=(const Color & other)
+Color & Color::operator+=(const Color & other)
 {
     r = math::min((u32)r + (u32)other.r, 255u);
     g = math::min((u32)g + (u32)other.g, 255u);
     b = math::min((u32)b + (u32)other.b, 255u);
     a = math::min((u32)a + (u32)other.a, 255u);
+    return *this;
 }
 
 //------------------------------------------------------------------------------
-void Color::operator-=(const Color & other)
+Color & Color::operator-=(const Color & other)
 {
     r = r > other.r ? r - other.r : 0;
     r = g > other.g ? g - other.g : 0;
     r = b > other.b ? b - other.b : 0;
     r = a > other.a ? a - other.a : 0;
+    return *this;
 }
 
 //------------------------------------------------------------------------------
