@@ -7,6 +7,8 @@
 namespace sn
 {
 
+class Window;
+
 enum SplitDirection
 {
     SN_SD_LEFT,
@@ -25,11 +27,13 @@ class SplitLayout : Layout
 {
 public:
 
-    SplitLayout(Window*container) :
+    SplitLayout(WindowContainer & container) :
         Layout(container),
         m_direction(SN_SD_LEFT),
         r_first(nullptr),
-        r_second(nullptr)
+        r_second(nullptr),
+        m_mode(SN_SM_FIXED),
+        m_ratio(0.5f)
     {}
 
     Layout & setDirection(SplitDirection dir);

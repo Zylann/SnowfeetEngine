@@ -4,12 +4,12 @@
 namespace sn
 {
 
-class Window;
+class WindowContainer;
 
 class Layout
 {
 public:
-    Layout(Window * container):
+    Layout(WindowContainer & container):
         r_container(container)
     {}
 
@@ -18,7 +18,7 @@ public:
     virtual void update() = 0;
 
 protected:
-    Window * r_container;
+    WindowContainer & r_container;
 
 };
 

@@ -2,10 +2,10 @@
 #define __HEADER_SN_WINDOW__
 
 #include <string>
-#include <set>
 
 #include <core/math/Rect.hpp>
 #include <core/system/gui/Layout.hpp>
+#include <core/util/NonCopyable.hpp>
 
 namespace sn
 {
@@ -16,13 +16,13 @@ typedef void* WindowHandle;
 //------------------------------------------------------------------------------
 enum WindowStyle
 {
-    SN_WS_BORDER = 1,
-    SN_WS_CLOSABLE = 2,
-    SN_WS_MAXIMIZABLE = 4,
-    SN_WS_MINIMIZABLE = 8,
-    SN_WS_SHOWN = 16,
+    SN_WS_BORDER = 1, // Client border
+    SN_WS_CLOSABLE = 2, // Close button
+    SN_WS_MAXIMIZABLE = 4, // Maximize button
+    SN_WS_MINIMIZABLE = 8, // Minimize button
+    SN_WS_SHOWN = 16, // Show on create
     SN_WS_FULLSCREEN = 32,
-    SN_WS_CAPTION = 64,
+    SN_WS_CAPTION = 64, // Title bar
 
     _SN_WS_DEFAULT = SN_WS_BORDER
         | SN_WS_CLOSABLE
@@ -38,7 +38,7 @@ struct WindowParams
     WindowParams(
         WindowHandle parent_,
         const std::string title_,
-        IntRect rect_,
+        IntRect rect_ = IntRect(0, 0, 800, 480),
         unsigned int style = _SN_WS_DEFAULT
     ) :
         parent(parent_),
@@ -51,18 +51,24 @@ struct WindowParams
     IntRect rect;
     std::string title;
     unsigned int style;
-    std::string winClass; // Used on windows
+    //std::string winClass; // Used on windows
 };
 
 //------------------------------------------------------------------------------
-class Window // : public IWindow
+class SystemGUI;
+class WindowImpl;
+class WindowContainer;
+
+//------------------------------------------------------------------------------
+/// \brief A rectangular area on the screen (canvas, tab bar, separator...)
+class Window : public NonCopyable
 {
 public:
 
-    Window(WindowParams params = WindowParams(NULL, "Window", IntRect(0, 0, 0, 0)));
-    ~Window();
+    Window(SystemGUI & manager, WindowParams params = WindowParams(NULL, "Window"));
+    virtual ~Window();
 
-    inline bool isCreated() const { return m_handle != 0; }
+    //inline bool isCreated() const { return m_handle != 0; }
 
     inline void show() { setVisible(true); }
     void setVisible(bool visible);
@@ -78,42 +84,27 @@ public:
     void setClientRect(IntRect rect);
     IntRect getClientRect() const;
 
-    inline unsigned int getChildCount() const { return m_children.size(); }
+    virtual bool isContainer() const { return false; }
 
-    template <class Layout_T>
-    Layout_T & setLayout()
-    {
-        if (m_layout)
-            delete m_layout;
-        m_layout = new Layout_T(this);
-        return *m_layout;
-    }
+    inline SystemGUI & getManager() const { return r_manager; }
 
-    void clearLayout();
+private:
+    
+    void onCreate(WindowParams params, bool isFirst);
+    void onDestroy();
 
-    inline Layout * getLayout() const { return m_layout; }
-
-    static Window * getByHandle(WindowHandle handle);
+    void invalidateAll();
 
 private:
 
-    //friend class Layout;
-    
-    void onAddChild(Window * child);
-    void onRemoveChild(Window * child);
-
-    void create(WindowParams params);
-    void destroy();
-
-    void invalidateAll();
+    SystemGUI & r_manager;
 
     WindowHandle m_handle;
     std::string m_title;
 
-    Window* m_parent;
-    std::set<Window*> m_children;
+    WindowContainer * m_parent;
 
-    Layout * m_layout;
+    WindowImpl * m_impl;
 };
 
 } // namespace sn

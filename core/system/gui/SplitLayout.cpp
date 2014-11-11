@@ -1,5 +1,5 @@
 ﻿#include <core/system/gui/SplitLayout.hpp>
-#include <core/system/gui/Window.hpp>
+#include <core/system/gui/WindowContainer.hpp>
 #include <core/math/math.hpp>
 
 namespace sn
@@ -38,7 +38,7 @@ Layout & SplitLayout::setMode(SplitMode mode, f32 ratio)
 //------------------------------------------------------------------------------
 void SplitLayout::update()
 {
-    IntRect containerRect = r_container->getClientRect();
+    IntRect containerRect = r_container.getClientRect();
     IntRect firstRect = r_first->getClientRect();
 
     s32 sep = 0;
@@ -132,7 +132,7 @@ void SplitLayout::update()
         firstRect = newFirstRect;
     }
 
-    if (r_container->getChildCount() >= 2)
+    if (r_container.getChildCount() >= 2)
     {
         Window * second = r_second;
         IntRect secondRect = second->getRect();
