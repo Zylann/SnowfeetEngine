@@ -39,7 +39,43 @@ void WindowImpl::onEvent(UINT message, WPARAM wParam, LPARAM lParam)
     if (r_window.getHandle() == NULL)
         return;
 
-    // TODO
+    switch (message)
+    {
+    case WM_DESTROY:
+        // Show cursor if it was hidden
+        setCursor(SN_CURSOR_DEFAULT);
+        break;
+
+    case WM_CLOSE:
+        // TODO WM_CLOSE
+        break;
+
+    case WM_SETCURSOR:
+        // The mouse has moved, if the cursor is in our window we must refresh the cursor
+        if (LOWORD(lParam) == HTCLIENT)
+            ::SetCursor(m_cursor);
+        break;
+
+    default:
+        break;
+    }
+}
+
+//------------------------------------------------------------------------------
+void WindowImpl::setCursor(CursorType type)
+{
+    switch (type)
+    {
+    case SN_CURSOR_INVISIBLE:
+        m_cursor = NULL;
+        break;
+
+    default: // SN_CURSOR_DEFAULT:
+        m_cursor = LoadCursor(NULL, IDC_ARROW);
+        break;
+    }
+
+    ::SetCursor(m_cursor);
 }
 
 //------------------------------------------------------------------------------
