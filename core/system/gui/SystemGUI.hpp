@@ -41,6 +41,7 @@ private:
     u32 makeWindowID();
 
     std::map<Window*,u32> m_windows;
+    std::map<u32, Window*> m_idToWindow;
     u32 m_nextWindowID;
 };
 

@@ -25,7 +25,6 @@ SystemGUI::~SystemGUI()
     {
         delete m_windows.begin()->first;
     }
-
     onDestroy();
 }
 
@@ -45,13 +44,18 @@ void SystemGUI::onDestroy()
 void SystemGUI::refWindow(Window & win)
 {
     SN_ASSERT(m_windows.find(&win) == m_windows.end(), "SystemGUI: window referenced twice");
-    m_windows.insert(std::make_pair(&win, makeWindowID()));
+    u32 id = makeWindowID();
+    m_windows.insert(std::make_pair(&win, id));
+    m_idToWindow.insert(std::make_pair(id, &win));
 }
 
 //------------------------------------------------------------------------------
 void SystemGUI::unrefWindow(Window & win)
 {
     SN_ASSERT(m_windows.find(&win) != m_windows.end(), "SystemGUI: window not referenced");
+    u32 id=0;
+    SN_ASSERT(getWindowID(&win, &id), "SystemGUI: getWindowID failure");
+    m_idToWindow.erase(id);
     m_windows.erase(&win);
 }
 
@@ -70,12 +74,17 @@ Window * SystemGUI::getWindowByHandle(WindowHandle h)
 //------------------------------------------------------------------------------
 Window * SystemGUI::getWindowByID(u32 id)
 {
-    for (auto it = m_windows.begin(); it != m_windows.end(); ++it)
-    {
-        if (it->second == id)
-            return it->first;
-    }
-    return nullptr;
+    auto it = m_idToWindow.find(id);
+    if (it == m_idToWindow.end())
+        return nullptr;
+    else
+        return it->second;
+    //for (auto it = m_windows.begin(); it != m_windows.end(); ++it)
+    //{
+    //    if (it->second == id)
+    //        return it->first;
+    //}
+    //return nullptr;
 }
 
 //------------------------------------------------------------------------------
