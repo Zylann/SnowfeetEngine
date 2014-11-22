@@ -13,8 +13,8 @@ template <typename T> static void Rect_initConstructor(s32 x, s32 y, u32 w, u32 
 template <typename T> static u32 Rect_getWidth(Rect<T> * self) { return static_cast<u32>(self->width); }
 template <typename T> static u32 Rect_getHeight(Rect<T> * self) { return static_cast<u32>(self->height); }
 
-template <typename T> static s32 Rect_setWidth(Rect<T> * self, u32 w) { return self->width = w; }
-template <typename T> static s32 Rect_setHeight(Rect<T> * self, u32 h) { return self->height = h; }
+template <typename T> static s32 Rect_setWidth(Rect<T> * self, T w) { return self->width = w; }
+template <typename T> static s32 Rect_setHeight(Rect<T> * self, T h) { return self->height = h; }
 
 //------------------------------------------------------------------------------
 void register_IntRect(asIScriptEngine & e)
