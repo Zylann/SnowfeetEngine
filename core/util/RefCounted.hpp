@@ -1,7 +1,7 @@
 ﻿#ifndef __HEADER_SN_REFCOUNTED__
 #define __HEADER_SN_REFCOUNTED__
 
-#include <core/types.hpp>
+#include <core/util/Log.hpp>
 
 namespace sn
 {
@@ -9,19 +9,30 @@ namespace sn
 class SN_API RefCounted
 {
 public:
+
     RefCounted() : m_refCount(1) {}
-    virtual ~RefCounted() {}
-    void addRef()
+    virtual ~RefCounted()
     {
-        ++m_refCount;
+        SN_ASSERT(m_refCount == 0, "refCount is not zero in destructor");
     }
-    void release()
+
+    u32 addRef()
     {
-        --m_refCount;
-        if (m_refCount == 0)
+        return ++m_refCount;
+    }
+
+    u32 release()
+    {
+        if (--m_refCount == 0)
+        {
             delete this;
+            return 0;
+        }
+        return m_refCount;
     }
+
 private:
+
     u32 m_refCount;
 };
 
