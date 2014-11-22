@@ -73,7 +73,7 @@ struct Rect
     //-----------------------------
     bool contains(const T & px, const T & py) const
     {
-        return px >= x && py >= py && px < x + width && py < y + height;
+        return px >= x && py >= y && px < x + width && py < y + height;
     }
 
     //-----------------------------
