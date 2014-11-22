@@ -15,10 +15,10 @@ namespace sn
 // Note: for convenience, functions below are implemented in separate files.
 // The implementation files start with as_*.
 
-void register_math(asIScriptEngine * e);
+void register_math(asIScriptEngine & e);
 
-void register_Vector2i(asIScriptEngine * e);
-void register_Color(asIScriptEngine * e);
+void register_Vector2i(asIScriptEngine & e);
+void register_Color(asIScriptEngine & e);
 void register_FloatRect(asIScriptEngine & e);
 void register_IntRect(asIScriptEngine & e);
 

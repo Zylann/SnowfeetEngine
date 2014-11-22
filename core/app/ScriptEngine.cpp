@@ -208,7 +208,7 @@ void ScriptEngine::registerCoreAPI()
     register_Clock(m_engine);
 
     // Core math
-    register_math(m_engine);
+    register_math(*m_engine);
 
     //
     // Namespaced API
