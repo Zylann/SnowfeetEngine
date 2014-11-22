@@ -21,6 +21,8 @@ void register_math(asIScriptEngine * e)
 
     register_Vector2i(e);
     register_Color(e);
+    register_IntRect(*e);
+    register_FloatRect(*e);
 }
 
 } // namespace sn
