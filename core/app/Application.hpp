@@ -39,7 +39,7 @@ namespace sn
 {
 
 /// \brief Top-level class handling the execution of the program.
-/// There must be only one Application (or derivated) instance created in the
+/// There must be only one Application instance created in the
 /// whole program execution.
 class SN_API Application
 {
