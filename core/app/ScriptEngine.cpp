@@ -10,7 +10,7 @@
 #include "../system/time/as_time.hpp"
 #include "../util/Exception.hpp"
 
-#include "../math/as_math.hpp"
+#include "../math/as_binding/as_math.hpp"
 
 namespace sn
 {
@@ -193,7 +193,7 @@ void ScriptEngine::registerCoreAPI()
     // necessary to implement the registration yourself if you don't want to.
     RegisterStdString(m_engine);
 
-    // Register math functions
+    // Register AS math functions
     RegisterScriptMath(m_engine);
 
     // Register array type
@@ -207,7 +207,7 @@ void ScriptEngine::registerCoreAPI()
     register_Time(m_engine);
     register_Clock(m_engine);
 
-    // Math
+    // Core math
     register_math(m_engine);
 
     //
