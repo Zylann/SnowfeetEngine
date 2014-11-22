@@ -15,7 +15,7 @@
 // Note: these #defines can either be active here or in your build commands.
 
 // Enables debug code (additionnal checks and messages, may decrease performance)
-//#define SN_DEBUG
+//#define SN_BUILD_DEBUG
 
 // Enables static compilation config.
 //#define SN_STATIC

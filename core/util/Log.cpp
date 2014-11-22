@@ -63,7 +63,7 @@ void Log::print(LogTypeMask logType, std::string msg)
         }
     }
 
-#if defined(SN_DEBUG) && defined(_MSC_VER)
+#if defined(SN_BUILD_DEBUG) && defined(_MSC_VER)
     msg += '\n';
     OutputDebugString(msg.c_str());
 #endif

@@ -69,7 +69,7 @@ std::vector<PathFinder::Node> * PathFinder::findPath(s32 startX, s32 startY, s32
         if(closeNodeCounter > m_searchLimit)
         {
             // Evaluated nodes exceeded limit : path not found
-#ifdef SN_DEBUG
+#ifdef SN_BUILD_DEBUG
             SN_DLOG("Pathfinder searchLimit exceed");
 #endif
             return nullptr;
@@ -197,7 +197,7 @@ std::vector<PathFinder::Node> * PathFinder::findPath(s32 startX, s32 startY, s32
     }
 
     // Path not found
-#ifdef SN_DEBUG
+#ifdef SN_BUILD_DEBUG
     SN_DLOG("Pathfinder path not found");
 #endif
 

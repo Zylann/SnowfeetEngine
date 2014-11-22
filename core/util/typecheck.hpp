@@ -20,7 +20,7 @@ namespace sn
 template <typename B, typename A>
 inline B checked_cast(A * a)
 {
-#ifdef SN_DEBUG
+#ifdef SN_BUILD_DEBUG
     // Slow and explicit check
     B castedPointer = dynamic_cast<B>(a);
     if(castedPointer == nullptr)

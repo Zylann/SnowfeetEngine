@@ -46,7 +46,7 @@ public:
         // (that's the case if it uses the SN_OBJECT macro)
         ObjectType & type = Object_T::sObjectType();
 
-#ifdef SN_DEBUG
+#ifdef SN_BUILD_DEBUG
         // Check if the object has already been registered
         if(m_factories.find(type.name) != m_factories.end())
         {
@@ -72,7 +72,7 @@ public:
         }
         m_registeredTypes[type.ID] = &type;
 
-#ifdef SN_DEBUG
+#ifdef SN_BUILD_DEBUG
         SN_DLOG("Registered " << type.toString());
 #endif
     }

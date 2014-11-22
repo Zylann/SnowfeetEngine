@@ -21,7 +21,7 @@ Entity::Entity() :
     r_scene(nullptr),
     m_tags(0)
 {
-#ifdef SN_DEBUG
+#ifdef SN_BUILD_DEBUG
     setName("_entity_");
 #endif
 
@@ -81,7 +81,7 @@ void Entity::setParent(Entity * newParent)
     // If the entity has already a parent
     if(r_parent != nullptr)
     {
-#ifdef SN_DEBUG
+#ifdef SN_BUILD_DEBUG
         SN_DLOG("Unparenting [" << m_id << "]\"" << name() << "\" from [" << r_parent->id() << "]\"" << r_parent->name() << '"');
 #endif
         // Remove the entity from its last parent
@@ -102,7 +102,7 @@ void Entity::setParent(Entity * newParent)
     // If the new parent is not null
     if(r_parent != nullptr)
     {
-#ifdef SN_DEBUG
+#ifdef SN_BUILD_DEBUG
         SN_DLOG("Parenting [" << m_id << "]\"" << name() << "\" to [" << r_parent->id() << "]\"" << r_parent->name() << '"');
 #endif
         // Add the child to its parent
@@ -132,7 +132,7 @@ void Entity::uparentChildren()
 //------------------------------------------------------------------------------
 Entity & Entity::child(u32 index)
 {
-#ifdef SN_DEBUG
+#ifdef SN_BUILD_DEBUG
     if(index >= m_children.size())
     {
         SN_ERROR("Entity::child(): child index is out of bounds "
@@ -187,7 +187,7 @@ void Entity::setLayerByName(const std::string & layerName)
 //------------------------------------------------------------------------------
 void Entity::setLayerByIndex(u32 layerIndex)
 {
-#ifdef SN_DEBUG
+#ifdef SN_BUILD_DEBUG
     if(layerIndex >= LayerMap::COUNT)
     {
         SN_ERROR("Entity::setLayerByIndex: invalid index (" << layerIndex << ')');
@@ -206,7 +206,7 @@ const Layer & Entity::layer() const
 //------------------------------------------------------------------------------
 void Entity::setActor(Component * actor)
 {
-#ifdef SN_DEBUG
+#ifdef SN_BUILD_DEBUG
     if(r_actor != nullptr)
     {
         // Usually, an actor component stays the same for the whole lifetime of the entity,
@@ -263,7 +263,7 @@ void Entity::removeComponent(Component * cmp)
         }
     }
 
-    #ifdef SN_DEBUG
+    #ifdef SN_BUILD_DEBUG
     SN_WARNING("Entity::removeComponent: not found " << cmp->objectType().toString());
     #endif
 }

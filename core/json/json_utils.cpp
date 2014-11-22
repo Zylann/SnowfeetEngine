@@ -18,7 +18,7 @@ bool loadFromFile(JsonBox::Value & document, const std::string & filePath, s32 c
         return false;
     }
 
-#ifdef SN_DEBUG
+#ifdef SN_BUILD_DEBUG
     SN_DLOG("Parsing \"" << filePath << '"');
 #endif
 

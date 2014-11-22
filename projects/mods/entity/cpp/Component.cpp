@@ -97,7 +97,7 @@ void Component::onDestroy()
 //------------------------------------------------------------------------------
 Entity & Component::entity() const
 {
-#ifdef SN_DEBUG
+#ifdef SN_BUILD_DEBUG
     if(r_owner == nullptr)
         SN_ERROR("Component::entity: r_owner is null!");
 #endif

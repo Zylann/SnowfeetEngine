@@ -90,7 +90,7 @@ public:
                 return &(m_layers[i]);
             }
         }
-#ifdef SN_DEBUG
+#ifdef SN_BUILD_DEBUG
         SN_ERROR("LayerMap::[name]: layer not found \"" << name << '"');
 #endif
         return nullptr;
@@ -109,7 +109,7 @@ public:
                 return 1 << i;
             }
         }
-#ifdef SN_DEBUG
+#ifdef SN_BUILD_DEBUG
         SN_ERROR("LayerMap::maskFromName: layer not found \"" << name << '"');
 #endif
         return 0;

@@ -20,13 +20,13 @@ public:
     // Adds a component to the list.
     void add(Cmp_T * cmp)
     {
-#ifdef SN_DEBUG
+#ifdef SN_BUILD_DEBUG
         if(cmp == nullptr)
             SN_ERROR("ComponentList::add: cannot add null");
 #endif
         assert(cmp != nullptr);
 
-#ifdef SN_DEBUG
+#ifdef SN_BUILD_DEBUG
         auto it = m_all.find(cmp);
         if(it != m_all.end())
         {

@@ -56,7 +56,7 @@ Entity * Scene::createEntity(std::string name, sn::Vector3f pos)
 
     m_entities.push_back(e);
 
-#ifdef SN_DEBUG
+#ifdef SN_BUILD_DEBUG
     SN_DLOG("Scene::addEntity: [" << e->id() << "] " << name << " at (" << pos.x << ", " << pos.y << ")");
 #endif
 
@@ -111,7 +111,7 @@ bool isLateDestroyThenDelete(Entity * e)
 {
     if(e->flag(EF_DESTROY_LATE))
     {
-#ifdef SN_DEBUG
+#ifdef SN_BUILD_DEBUG
         SN_DLOG("just before destroy entity \"" << e->name() << '"');
 #endif
 
@@ -313,7 +313,7 @@ void Scene::unserialize(JsonBox::Value & o)
 //------------------------------------------------------------------------------
 bool Scene::saveToFile(const std::string & filePath)
 {
-#ifdef SN_DEBUG
+#ifdef SN_BUILD_DEBUG
     SN_DLOG("Saving scene as \"" << filePath << '"');
     sn::Clock timer;
 #endif
@@ -332,7 +332,7 @@ bool Scene::saveToFile(const std::string & filePath)
         return false;
     }
 
-#ifdef SN_DEBUG
+#ifdef SN_BUILD_DEBUG
     f32 timeSpent = timer.getElapsedTime().asSeconds();
     SN_DLOG("Took " << timeSpent << "s to serialize the scene as a file.");
 #endif
@@ -342,7 +342,7 @@ bool Scene::saveToFile(const std::string & filePath)
 //------------------------------------------------------------------------------
 bool Scene::loadFromFile(const std::string & filePath)
 {
-#ifdef SN_DEBUG
+#ifdef SN_BUILD_DEBUG
     SN_DLOG("Loading scene from \"" << filePath << '"');
     sn::Clock timer;
 #endif
@@ -361,7 +361,7 @@ bool Scene::loadFromFile(const std::string & filePath)
         return false;
     }
 
-#ifdef SN_DEBUG
+#ifdef SN_BUILD_DEBUG
     f32 timeSpent = timer.getElapsedTime().asSeconds();
     SN_DLOG("Took " << timeSpent << "s to serialize the scene as a file.");
 #endif

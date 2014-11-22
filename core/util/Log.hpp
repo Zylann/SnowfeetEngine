@@ -25,7 +25,7 @@
     } while (false)
 
 #define SN_LOG(expr)        _SN_LOG(sn::SN_LTM_INFO, expr)
-#define SN_DLOG(expr)       _SN_LOG(sn::SN_LTM_DEBUG, expr) // Note: SN_DEBUG is already used
+#define SN_DLOG(expr)       _SN_LOG(sn::SN_LTM_DEBUG, expr)
 #define SN_WARNING(expr)    _SN_LOG(sn::SN_LTM_WARNING, expr)
 #define SN_ERROR(expr)      _SN_LOG(sn::SN_LTM_ERROR, expr)
 #define SN_MORE(expr)       _SN_LOG(sn::SN_LTM_MORE, expr)
@@ -87,7 +87,7 @@ private:
     Log() :
         m_messageType(SN_LTM_INFO),
         m_fileOutputFlags(SN_LTM_ALL),
-#ifdef SN_DEBUG
+#ifdef SN_BUILD_DEBUG
         m_consoleOutputFlags(SN_LTM_WARNING | SN_LTM_ERROR | SN_LTM_DEBUG)
 #else
         m_consoleOutputFlags(SN_LTM_WARNING | SN_LTM_ERROR)

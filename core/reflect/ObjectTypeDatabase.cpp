@@ -16,7 +16,7 @@ ObjectTypeDatabase & ObjectTypeDatabase::get()
 Object * ObjectTypeDatabase::instantiate(const std::string className)
 {
     auto it = m_factories.find(className);
-#ifdef SN_DEBUG
+#ifdef SN_BUILD_DEBUG
     if(it == m_factories.end())
     {
         SN_ERROR("cannot instantiate " << className << ", factory not found");

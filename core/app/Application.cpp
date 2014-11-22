@@ -58,7 +58,7 @@ int Application::execute(CommandLine commandLine)
 
     SN_LOG("Exit execute()");
 
-#ifdef SN_DEBUG
+#ifdef SN_BUILD_DEBUG
     // Maintains the console window open on exit
     std::cout << "I: Execution finished with code " << exitCode << ". Press a key to dismiss..." << std::endl;
     getchar();

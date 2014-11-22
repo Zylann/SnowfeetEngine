@@ -10,7 +10,7 @@ namespace sn
 TagManager & TagManager::setTag(u8 index, const std::string & name)
 {
     // TODO there is something weird with these log messages
-#ifdef SN_DEBUG
+#ifdef SN_BUILD_DEBUG
     if(index >= MAX_TAGS)
     {
         SN_ERROR("TagManager::setTag: given index (" << (u32)index << ", name: \"" << name << "\")");
@@ -19,7 +19,7 @@ TagManager & TagManager::setTag(u8 index, const std::string & name)
     SN_ASSERT(index < MAX_TAGS, "setTag: tag index is too high! (" << (u32)index << ", name: \"" << name << "\")");
 
     auto it = m_name2Tag.find(name);
-#ifdef SN_DEBUG
+#ifdef SN_BUILD_DEBUG
     if(it != m_name2Tag.end())
     {
         SN_ERROR("TagManager::setTag: two tags cannot have the same name! \"" << name << "\"");
@@ -35,7 +35,7 @@ TagManager & TagManager::setTag(u8 index, const std::string & name)
 //------------------------------------------------------------------------------
 const std::string & TagManager::nameFromIndex(u8 index) const
 {
-#ifdef SN_DEBUG
+#ifdef SN_BUILD_DEBUG
     if(index >= MAX_TAGS)
     {
         SN_ERROR("TagManager::nameFromIndex: given index (" << (u32)index << ") is out of bounds!");
@@ -60,7 +60,7 @@ s8 TagManager::indexFromName(const std::string& name) const
 //------------------------------------------------------------------------------
 const std::unordered_set<Entity*> & TagManager::taggedEntities(u8 tagIndex) const
 {
-#ifdef SN_DEBUG
+#ifdef SN_BUILD_DEBUG
     if(tagIndex >= MAX_TAGS)
     {
         SN_ERROR("TagManager::getTaggedEntities: given index (" << (u32)tagIndex << ") is out of bounds!");

@@ -22,7 +22,7 @@ project "SnowfeetMain"
 		targetdir "../_bin/debug"
 		objdir "../_obj/debug"
 		defines {
-			"SN_DEBUG"
+			"SN_BUILD_DEBUG"
 		}
 	filter "configurations:Release"
 		targetdir "../_bin/release"
