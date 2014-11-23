@@ -112,6 +112,8 @@ bool Module::compileScripts()
         throw Exception("Script compilation error");
         return false;
     }
+
+    return true;
 }
 
 //------------------------------------------------------------------------------
