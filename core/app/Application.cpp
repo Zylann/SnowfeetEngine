@@ -37,7 +37,7 @@ Application::~Application()
 //------------------------------------------------------------------------------
 int Application::execute(CommandLine commandLine)
 {
-    sn::Log::get().openFile("log.txt");
+    sn::Log::get().openFile("snowfeet_log.txt");
 
     SN_LOG("Enter execute()");
 
