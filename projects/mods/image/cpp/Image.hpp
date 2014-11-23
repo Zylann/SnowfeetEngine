@@ -8,18 +8,18 @@
 #include <core/math/Vector2.hpp>
 #include <core/math/Color.hpp>
 #include <core/asset/Asset.hpp>
+#include <core/app/ASScriptObject.hpp>
 
 namespace sn
 {
 
-class SN_API Image : public IAsset
+class SN_API Image : public IAsset, public ASScriptObject
 {
 public:
 
-    SN_ASSET("image");
+    //SN_ASSET("image");
     
     Image();
-    ~Image();
 
     void clear();
 
@@ -40,6 +40,8 @@ public:
     void setPixel(u32 x, u32 y, Color color);
 
 private:
+
+    ~Image();
 
     std::vector<u8> m_pixels;
     Vector2u m_size;
