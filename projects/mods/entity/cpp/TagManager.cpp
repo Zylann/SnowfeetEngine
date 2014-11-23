@@ -1,4 +1,4 @@
-﻿#include <core/util/Log.hpp>
+﻿#include <core/util/assert.hpp>
 
 #include "Entity.hpp"
 #include "TagManager.hpp"

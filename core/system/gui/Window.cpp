@@ -1,4 +1,4 @@
-﻿#include "../../util/Log.hpp"
+﻿#include "../../util/assert.hpp"
 #include "../../util/typecheck.hpp"
 #include "Window.hpp"
 #include "WindowContainer.hpp"

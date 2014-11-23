@@ -1,5 +1,5 @@
 #include "SystemGUI.hpp"
-#include "../../util/Log.hpp"
+#include "../../util/assert.hpp"
 
 namespace sn
 {

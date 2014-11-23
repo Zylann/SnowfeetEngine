@@ -1,4 +1,4 @@
-#include "../../util/Log.hpp"
+#include "../../util/assert.hpp"
 #include "WindowContainer.hpp"
 
 namespace sn

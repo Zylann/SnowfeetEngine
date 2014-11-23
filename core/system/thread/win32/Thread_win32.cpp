@@ -1,6 +1,6 @@
 ﻿#include "../Thread.hpp"
 #include <core/types.hpp>
-#include <core/util/Log.hpp>
+#include <core/util/assert.hpp>
 
 #include <Windows.h>
 #include <process.h>

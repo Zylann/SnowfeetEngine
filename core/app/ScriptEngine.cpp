@@ -5,7 +5,7 @@
 #include "../angelscript/addons/scriptbuilder/scriptbuilder.h"
 
 #include "ScriptEngine.hpp"
-#include "../util/Log.hpp"
+#include "../util/assert.hpp"
 #include "../util/stringutils.hpp"
 #include "../system/time/as_time.hpp"
 #include "../util/Exception.hpp"

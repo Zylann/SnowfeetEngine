@@ -1,7 +1,7 @@
 ﻿#ifndef __HEADER_SN_REFCOUNTED__
 #define __HEADER_SN_REFCOUNTED__
 
-#include <core/util/Log.hpp>
+#include <core/util/assert.hpp>
 
 namespace sn
 {

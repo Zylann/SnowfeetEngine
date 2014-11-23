@@ -50,15 +50,6 @@
     } while (false)
 
 //------------------------------------------------------------------------------
-#define SN_ASSERT(predicate, expr) \
-    do{\
-        if (!(predicate)){\
-            SN_ERROR(expr);\
-            assert(predicate);\
-        }\
-    } while (false)
-
-//------------------------------------------------------------------------------
 namespace sn
 {
 
