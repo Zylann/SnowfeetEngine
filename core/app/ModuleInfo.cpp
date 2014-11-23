@@ -11,7 +11,6 @@ bool ModuleInfo::loadFromFile(const String & pathToProjects, const String & modP
 {
     // Reset info
     modFilePath = L"";
-    mainClass = "";
     dependencies.clear();
     bindings.clear();
     directory = L"";
@@ -32,9 +31,6 @@ bool ModuleInfo::loadFromFile(const String & pathToProjects, const String & modP
     }
     v.loadFromStream(ifs);
     ifs.close();
-
-    // Get main class
-    mainClass = v["mainClass"].getString();
 
     // Get namespace
     scriptNamespace = v["namespace"].getString();

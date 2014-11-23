@@ -15,7 +15,6 @@ struct ModuleInfo
     String directory;
     String modFilePath;
     std::string scriptNamespace;
-    std::string mainClass;
     std::vector<String> bindings;
     std::vector<String> dependencies;
 };

@@ -1,7 +1,4 @@
 {
-	"namespace":"hello",
-	"mainClass":[
-		"HelloWorld"
-	],
+	"namespace":"hello"
 }
 
