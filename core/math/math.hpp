@@ -158,7 +158,7 @@ inline f32 randf(f32 min, f32 max)
 
 /// Returns the square of the given number
 template <typename T>
-inline f32 sq(T x)
+inline T sq(T x)
 {
     return x*x;
 }
