@@ -1,4 +1,5 @@
 ﻿#include "ShaderLoader.hpp"
+#include <core/util/stringutils.hpp>
 
 namespace sn
 {
