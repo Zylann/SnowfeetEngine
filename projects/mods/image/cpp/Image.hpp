@@ -33,7 +33,7 @@ public:
 
     inline u32 getPixelIndex(u32 x, u32 y) const
     {
-        return (x + y * m_size.x) * m_channels;
+        return (x + y * m_size.x()) * m_channels;
     }
 
     Color getPixel(u32 x, u32 y) const;

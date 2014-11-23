@@ -212,7 +212,7 @@ public :
     void set(s32 x, s32 y, const T & value)
     {
         if(x < 0 || y < 0 || x >= static_cast<s32>(m_sizeX) || y >= static_cast<s32>(m_sizeY))
-            throw Exception("Array2D::set " + Vector2i(x,y));
+            throw Exception("Array2D::set " + toString(Vector2i(x,y)));
         else
             return setNoEx(x, y, value);
     }
@@ -256,28 +256,28 @@ public :
     // (convenience)
     inline void set(const Vector2i & pos, const T & value)
     {
-        set(pos.x, pos.y, value);
+        set(pos.x(), pos.y(), value);
     }
 
     // set an element without position validation (it must be valid !)
     // (convenience)
     inline void setNoEx(const Vector2i & pos, const T & value)
     {
-        m_data[getLocation(pos.x, pos.y)] = value;
+        m_data[getLocation(pos.x(), pos.y())] = value;
     }
 
     // get an element
     // (convenience)
     inline T get(const Vector2i & pos) const
     {
-        get(pos.x, pos.y);
+        get(pos.x(), pos.y());
     }
 
     // get an element without position validation (it must be valid !)
     // (convenience)
     inline T getNoEx(const Vector2i & pos) const
     {
-        return m_data[getLocation(pos.x, pos.y)];
+        return m_data[getLocation(pos.x(), pos.y())];
     }
 
 #endif

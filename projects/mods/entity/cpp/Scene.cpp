@@ -14,6 +14,7 @@ namespace sn
 
 //------------------------------------------------------------------------------
 Scene::Scene() :
+    ASScriptObject(),
     automaticTransforms(true),
     m_nextID(0)
 {
@@ -57,7 +58,7 @@ Entity * Scene::createEntity(std::string name, sn::Vector3f pos)
     m_entities.push_back(e);
 
 #ifdef SN_BUILD_DEBUG
-    SN_DLOG("Scene::addEntity: [" << e->id() << "] " << name << " at (" << pos.x << ", " << pos.y << ")");
+    SN_DLOG("Scene::addEntity: [" << e->id() << "] " << name << " at " + toString(pos));
 #endif
 
     return e;
@@ -79,7 +80,7 @@ Entity * Scene::findEntityFromName(const std::string & name)
 {
     for(auto it = m_entities.begin(); it != m_entities.end(); ++it)
     {
-        if((*it)->name() == name)
+        if((*it)->getName() == name)
             return *it;
     }
     return nullptr;
@@ -88,10 +89,10 @@ Entity * Scene::findEntityFromName(const std::string & name)
 //------------------------------------------------------------------------------
 void Scene::registerBehaviour(Behaviour * behaviour)
 {
-    #ifdef ZN_DEBUG
-    assert(behaviour != nullptr);
-    assert(behaviour->objectType().is(Behaviour::sObjectType()));
-    #endif
+    SN_ASSERT(behaviour != nullptr, "Registered behaviour is null");
+    SN_ASSERT(behaviour->objectType().is(Behaviour::sObjectType()), 
+        "registerBehaviour: expected Behaviour, got {" << behaviour->objectType().name << "}"
+    );
 
     s32 updateOrder = behaviour->getUpdateOrder();
     m_behaviours[updateOrder].add(behaviour);
@@ -109,11 +110,9 @@ void Scene::unregisterBehaviour(Behaviour * behaviour)
 // then returns true if that was the case, false otherwise
 bool isLateDestroyThenDelete(Entity * e)
 {
-    if(e->flag(EF_DESTROY_LATE))
+    if(e->hasFlag(EF_DESTROY_LATE))
     {
-#ifdef SN_BUILD_DEBUG
-        SN_DLOG("just before destroy entity \"" << e->name() << '"');
-#endif
+        SN_DLOG("just before destroy entity \"" << e->getName() << '"');
 
         // Detach from its parent
         e->setParent(nullptr);
@@ -121,7 +120,7 @@ bool isLateDestroyThenDelete(Entity * e)
         e->uparentChildren();
 
         // Then delete it
-        delete e;
+        e->releaseFromScene();
 
         return true;
     }
@@ -186,7 +185,7 @@ void Scene::clear()
     {
         // Note: the destruction of an entity triggers the destruction of its
         // components too
-        delete e;
+        e->releaseFromScene();
     }
     m_entities.clear();
 
@@ -198,9 +197,9 @@ void Scene::clear()
 // Returns true if the entity has been deleted.
 bool isNotSceneCrossThenDelete(Entity * e)
 {
-    if(!e->flag(EF_CROSS_SCENE))
+    if(!e->hasFlag(EF_STICKY))
     {
-        delete e;
+        e->releaseFromScene();
         return true;
     }
     return false;
@@ -278,7 +277,7 @@ void Scene::unserialize(JsonBox::Value & o)
             SN_ERROR("Conflicting entity found on scene loading : "
                 "\"" << entityData["name"] << "\"[" << id << "] "
                 "conflicts with "
-                "\"" << it->second->name() << "\"[" << it->second->id() << "]");
+                "\"" << it->second->getName() << "\"[" << it->second->id() << "]");
             continue;
         }
         else

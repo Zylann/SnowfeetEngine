@@ -123,9 +123,9 @@ public:
         }
 
         Vector2i pos;
-        for(pos.y = bounds.min.y; pos.y <= bounds.max.y; ++pos.y)
+        for(pos.y() = bounds.minY(); pos.y() < bounds.maxY(); ++pos.y())
         {
-            for(pos.x = bounds.min.x; pos.x <= bounds.max.x; ++pos.x)
+            for(pos.x() = bounds.minX(); pos.x() < bounds.maxX(); ++pos.x())
             {
                 auto it = m_buckets.find(pos);
                 if(it != m_buckets.end())
@@ -161,15 +161,15 @@ private:
         {
             Vector2i bucketPos = it->first;
 
-            if(bounds.min.x > bucketPos.x)
-                bounds.min.x = bucketPos.x;
-            if(bounds.min.y > bucketPos.y)
-                bounds.min.y = bucketPos.y;
+            if(bounds.minX() > bucketPos.x())
+                bounds.x = bucketPos.x();
+            if(bounds.minY() > bucketPos.y())
+                bounds.y = bucketPos.y();
 
-            if(bounds.max.x < bucketPos.x)
-                bounds.max.x = bucketPos.x;
-            if(bounds.max.y < bucketPos.y)
-                bounds.max.y = bucketPos.y;
+            if(bounds.maxX() <= bucketPos.x())
+                bounds.width = bucketPos.x() - bounds.minX() + 1;
+            if(bounds.max.y <= bucketPos.y())
+                bounds.height = bucketPos.y() - bounds.minY() + 1;
         }
         return bounds;
     }
@@ -181,15 +181,15 @@ private:
     {
         std::vector<Bucket*> buckets;
 
-        s32 minX = floor(bounds.min.x / m_bucketSize);
-        s32 minY = floor(bounds.min.y / m_bucketSize);
-        s32 maxX = ceil(bounds.max.x / m_bucketSize);
-        s32 maxY = ceil(bounds.max.y / m_bucketSize);
+        s32 minX = floor(bounds.minX() / m_bucketSize);
+        s32 minY = floor(bounds.minY() / m_bucketSize);
+        s32 maxX = ceil(bounds.maxX() / m_bucketSize);
+        s32 maxY = ceil(bounds.maxY() / m_bucketSize);
 
         Vector2i pos;
-        for(pos.y = minY; pos.y < maxY; ++pos.y)
+        for(pos.y() = minY; pos.y() < maxY; ++pos.y())
         {
-            for(pos.x = minX; pos.x < maxX; ++pos.x)
+            for(pos.x() = minX; pos.x() < maxX; ++pos.x())
             {
                 auto it = m_buckets.find(pos);
                 if(it != m_buckets.end())

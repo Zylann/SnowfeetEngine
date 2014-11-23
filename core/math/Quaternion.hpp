@@ -34,7 +34,7 @@ public:
     //----------------------
     Quaternion(Vector3f eulerDegrees)
     {
-        setFromEuler(eulerDegrees.x, eulerDegrees.y, eulerDegrees.z);
+        setFromEuler(eulerDegrees.x(), eulerDegrees.y(), eulerDegrees.z());
     }
 
     //----------------------
@@ -114,8 +114,8 @@ public:
 
         Vector3f uv, uuv;
         Vector3f qvec(m_x, m_y, m_z);
-        uv = qvec.crossProduct(v);
-        uuv = qvec.crossProduct(uv);
+        uv = crossProduct(qvec, v);
+        uuv = crossProduct(qvec, uv);
         uv *= (2.0f * m_w);
         uuv *= 2.0f;
 
@@ -202,34 +202,34 @@ public:
         if (math::equals(test, 1.0, 0.000001))
         {
             // heading = rotation about z-axis
-            euler.z = (f32)(-2.0*atan2(m_x, m_w));
+            euler.z() = (f32)(-2.0*atan2(m_x, m_w));
             // bank = rotation about x-axis
-            euler.x = 0;
+            euler.x() = 0;
             // attitude = rotation about y-axis
-            euler.y = (f32)(math::PI64 / 2.0);
+            euler.y() = (f32)(math::PI64 / 2.0);
         }
         else if (math::equals(test, -1.0, 0.000001))
         {
             // heading = rotation about z-axis
-            euler.z = (f32)(2.0*atan2(m_x, m_w));
+            euler.z() = (f32)(2.0*atan2(m_x, m_w));
             // bank = rotation about x-axis
-            euler.x = 0;
+            euler.x() = 0;
             // attitude = rotation about y-axis
-            euler.y = (f32)(math::PI64 / -2.0);
+            euler.y() = (f32)(math::PI64 / -2.0);
         }
         else
         {
             // heading = rotation about z-axis
-            euler.z = (f32)atan2(2.0 * (m_x*m_y + m_z*m_w), (sqx - sqy - sqz + sqw));
+            euler.z() = (f32)atan2(2.0 * (m_x*m_y + m_z*m_w), (sqx - sqy - sqz + sqw));
             // bank = rotation about x-axis
-            euler.x = (f32)atan2(2.0 * (m_y*m_z + m_x*m_w), (-sqx - sqy + sqz + sqw));
+            euler.x() = (f32)atan2(2.0 * (m_y*m_z + m_x*m_w), (-sqx - sqy + sqz + sqw));
             // attitude = rotation about y-axis
-            euler.y = (f32)asin(math::clamp(test, -1.0, 1.0));
+            euler.y() = (f32)asin(math::clamp(test, -1.0, 1.0));
         }
 
-        euler.x *= math::RAD2DEG;
-        euler.y *= math::RAD2DEG;
-        euler.z *= math::RAD2DEG;
+        euler.x() *= math::RAD2DEG;
+        euler.y() *= math::RAD2DEG;
+        euler.z() *= math::RAD2DEG;
 
         return euler;
     }

@@ -13,8 +13,7 @@ This file is part of the SnowfeetEngine project.
 #include <unordered_set>
 
 #include <core/math/Range.hpp>
-#include <core/math/Vector2.hpp>
-#include <core/math/Vector3.hpp>
+#include <core/math/Vector.hpp>
 #include <core/math/Quaternion.hpp>
 #include <core/math/Rect.hpp>
 #include <core/math/Color.hpp>
@@ -122,50 +121,27 @@ void unserialize(const JsonBox::Value & o, std::unordered_set<T> & v)
 }
 
 //------------------------------------------------------------------------------
-template <typename T>
-inline void serialize(JsonBox::Value & o, const Vector2<T> & vec)
+template <typename T, unsigned int N>
+inline void serialize(JsonBox::Value & o, const Vector<T,N> & vec)
 {
-    o[(size_t)0] = vec.x;
-    o[1] = vec.y;
+    for (size_t i = 1; i < N; ++i)
+        o[i] = vec[i];
 }
 
 //------------------------------------------------------------------------------
-template <typename T>
-inline void serialize(JsonBox::Value & o, const Vector3<T> & vec)
+template <unsigned int N>
+inline void unserialize(JsonBox::Value & o, Vector<f32,N> & vec)
 {
-    o[(size_t)0] = vec.x;
-    o[1] = vec.y;
-    o[2] = vec.z;
+    for (size_t i = 1; i < N; ++i)
+        vec[0] = static_cast<f32>(o[i].getDouble());
 }
 
 //------------------------------------------------------------------------------
-inline void unserialize(JsonBox::Value & o, Vector2f & vec)
+template <unsigned int N>
+inline void unserialize(JsonBox::Value & o, Vector<s32,N> & vec)
 {
-    vec.x = static_cast<f32>(o[(size_t)0].getDouble());
-    vec.y = static_cast<f32>(o[1].getDouble());
-}
-
-//------------------------------------------------------------------------------
-inline void unserialize(JsonBox::Value & o, Vector3f & vec)
-{
-    vec.x = static_cast<f32>(o[(size_t)0].getDouble());
-    vec.y = static_cast<f32>(o[1].getDouble());
-    vec.z = static_cast<f32>(o[2].getDouble());
-}
-
-//------------------------------------------------------------------------------
-inline void unserialize(JsonBox::Value & o, Vector3i & vec)
-{
-    vec.x = o[(size_t)0].getInt();
-    vec.y = o[1].getInt();
-    vec.z = o[2].getInt();
-}
-
-//------------------------------------------------------------------------------
-inline void unserialize(JsonBox::Value & o, Vector2i & vec)
-{
-    vec.x = o[(size_t)0].getInt();
-    vec.y = o[1].getInt();
+    for (size_t i = 1; i < N; ++i)
+        vec[0] = o[i].getInt();
 }
 
 //------------------------------------------------------------------------------

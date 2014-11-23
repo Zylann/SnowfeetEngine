@@ -76,39 +76,39 @@ namespace Direction
     }
 
     template <typename T>
-    sn::Vector2<T> toVector(u8 dir)
+    sn::Vector<T, 2> toVector(u8 dir)
     {
         switch(dir)
         {
-        case RIGHT: return sn::Vector2<T>(1, 0);
-        case LEFT: return sn::Vector2<T>(-1, 0);
+        case RIGHT: return sn::Vector<T,2>(1, 0);
+        case LEFT: return sn::Vector<T,2>(-1, 0);
 #ifdef SN_Y_UP
-        case UP: return sn::Vector2<T>(0, 1);
-        case DOWN: return sn::Vector2<T>(0, -1);
+        case UP: return sn::Vector<T,2>(0, 1);
+        case DOWN: return sn::Vector<T,2>(0, -1);
 #else
-        case UP: return sn::Vector2<T>(0, -1);
-        case DOWN: return sn::Vector2<T>(0, 1);
+        case UP: return sn::Vector<T,2>(0, -1);
+        case DOWN: return sn::Vector<T,2>(0, 1);
 #endif
-        default: return sn::Vector2<T>(0,0);
+        default: return sn::Vector<T,2>(0,0);
         }
     }
 
     template <typename T>
-    u8 toDirectionOrtho(const sn::Vector2<T> & v)
+    u8 toDirectionOrtho(const sn::Vector<T,2> & v)
     {
-        if(v.x > 0)
+        if(v.x() > 0)
             return RIGHT;
-        if(v.x < 0)
+        if(v.x() < 0)
             return LEFT;
 #ifdef SN_Y_UP
-        if(v.y > 0)
+        if(v.y() > 0)
             return UP;
-        if(v.y < 0)
+        if(v.y() < 0)
             return DOWN;
 #else
-        if(v.y > 0)
+        if(v.y() > 0)
             return DOWN;
-        if(v.y < 0)
+        if(v.y() < 0)
             return UP;
 #endif
         return NONE;
@@ -144,13 +144,13 @@ namespace Direction
     }
 
     template <typename T>
-    u8 toDirectionApprox(const sn::Vector2<T> & v)
+    u8 toDirectionApprox(const sn::Vector<T,2> & v)
     {
-        if(v.x > 0)
+        if(v.x() > 0)
         {
-            if(v.y > 0)
+            if(v.y() > 0)
             {
-                if(v.x > v.y)
+                if(v.x() > v.y())
                     return RIGHT;
                 else
 #ifdef SN_Y_UP
@@ -159,9 +159,9 @@ namespace Direction
                     return DOWN;
 #endif
             }
-            else if(v.y < 0)
+            else if(v.y() < 0)
             {
-                if(v.x > -v.y)
+                if(v.x() > -v.y())
                     return RIGHT;
                 else
 #ifdef SN_Y_UP
@@ -171,11 +171,11 @@ namespace Direction
 #endif
             }
         }
-        else if(v.x < 0)
+        else if(v.x() < 0)
         {
-            if(v.y > 0)
+            if(v.y()() > 0)
             {
-                if(-v.x > v.y)
+                if(-v.x() > v.y())
                     return LEFT;
                 else
 #ifdef SN_Y_UP
@@ -184,9 +184,9 @@ namespace Direction
                     return DOWN;
 #endif
             }
-            else if(v.y < 0)
+            else if(v.y() < 0)
             {
-                if(-v.x > -v.y)
+                if(-v.x() > -v.y())
                     return LEFT;
                 else
 #ifdef SN_Y_UP

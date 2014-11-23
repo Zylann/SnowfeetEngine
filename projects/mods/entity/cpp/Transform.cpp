@@ -83,11 +83,7 @@ Vector3f Transform::scale() const
         if(t)
         {
             Vector3f parentScale = t->scale();
-            return Vector3f(
-                parentScale.x * m_scale.x,
-                parentScale.y * m_scale.y,
-                parentScale.z * m_scale.z
-            );
+            return parentScale * m_scale;
         }
     }
     return m_scale;
@@ -162,8 +158,9 @@ void Transform::setScale(Vector3f newScale)
     if(t)
     {
         sn::Vector3f parentScale = t->scale();
-        newScale.x *= parentScale.x;
-        newScale.y *= parentScale.y;
+        newScale *= parentScale;
+        //newScale.x *= parentScale.x;
+        //newScale.y *= parentScale.y;
     }
 
     setLocalScale(newScale);
@@ -208,11 +205,7 @@ void Transform::translate(Vector3f motion)
 //------------------------------------------------------------------------------
 void Transform::scale(sn::Vector3f scaleFactor)
 {
-    setLocalScale(Vector3f(
-        m_scale.x * scaleFactor.x,
-        m_scale.y * scaleFactor.y,
-        m_scale.z * scaleFactor.z
-    ));
+    setLocalScale(m_scale * scaleFactor);
 }
 
 //------------------------------------------------------------------------------

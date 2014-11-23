@@ -12,6 +12,7 @@ This file is part of the SnowfeetEngine project.
 
 #include <core/system/time/Clock.hpp>
 #include <core/math/Vector3.hpp>
+#include <core/app/ASScriptObject.hpp>
 
 #include "Entity.hpp"
 #include "LayerMap.hpp"
@@ -23,12 +24,11 @@ namespace sn
 {
 
 /// \brief A scene contains all stuff that the player can see and interact with.
-class SN_API Scene
+class SN_API Scene : public ASScriptObject
 {
 public:
 
     Scene();
-    ~Scene();
 
     //----------------------------
     // Lifecycle
@@ -140,7 +140,9 @@ public:
     /// to each entity created in this scene.
     bool automaticTransforms;
 
-//protected:
+protected:
+
+    ~Scene();
 
     /// \brief draws the entire scene on the given target.
     //void draw(sf::RenderTarget & target, sf::RenderStates states) const override;

@@ -3,6 +3,7 @@
 #include "../math.hpp"
 #include "../Vector2.hpp"
 #include "../Color.hpp"
+#include "as_Vector.hpp"
 
 namespace sn
 {
@@ -19,7 +20,15 @@ void register_math(asIScriptEngine & e)
     asCheck(e.RegisterGlobalFunction("float rand(float, float)", asFUNCTIONPR(asRandMinMax, (f32, f32), f32), asCALL_CDECL));
     asCheck(e.RegisterGlobalFunction("int randint(int, int)", asFUNCTIONPR(asRandIntMinMax, (s32, s32), s32), asCALL_CDECL));
 
-    register_Vector2i(e);
+    register_Vector<s32, 2>(e, "Vector2i", "int", { "x", "y" });
+    register_Vector<f32, 2>(e, "Vector2f", "float", { "x", "y"});
+
+    register_Vector<s32, 3>(e, "Vector3i", "int", { "x", "y", "z" });
+    register_Vector<f32, 3>(e, "Vector3f", "float", { "x", "y", "z" });
+
+    register_Vector<s32, 4>(e, "Vector4i", "int", { "x", "y", "z", "w" });
+    register_Vector<f32, 4>(e, "Vector4f", "float", { "x", "y", "z", "w" });
+
     register_Color(e);
     register_IntRect(e);
     register_FloatRect(e);

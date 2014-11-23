@@ -21,11 +21,7 @@ void AbstractTransform::translate(sn::Vector3f motion)
 void AbstractTransform::scale(sn::Vector3f scaleFactor)
 {
     sn::Vector3f oldScale = scale();
-    setScale(sn::Vector3f(
-        oldScale.x * scaleFactor.x,
-        oldScale.y * scaleFactor.y,
-        oldScale.z * scaleFactor.z
-    ));
+    setScale(oldScale * scaleFactor);
 }
 
 } // namespace zn

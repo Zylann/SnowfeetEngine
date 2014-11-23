@@ -106,24 +106,24 @@ void Matrix4::loadLookAt(
     Vector3f zaxis = target - eye;
     zaxis.normalize();
 
-    Vector3f xaxis = up.crossProduct(zaxis);
+    Vector3f xaxis = crossProduct(up, zaxis);
     xaxis.normalize();
 
-    Vector3f yaxis = zaxis.crossProduct(xaxis);
+    Vector3f yaxis = crossProduct(zaxis, xaxis);
 
-    m_v[0] = xaxis.x;
-    m_v[1] = yaxis.x;
-    m_v[2] = zaxis.x;
+    m_v[0] = xaxis.x();
+    m_v[1] = yaxis.x();
+    m_v[2] = zaxis.x();
     m_v[3] = 0;
 
-    m_v[4] = xaxis.y;
-    m_v[5] = yaxis.y;
-    m_v[6] = zaxis.y;
+    m_v[4] = xaxis.y();
+    m_v[5] = yaxis.y();
+    m_v[6] = zaxis.y();
     m_v[7] = 0;
 
-    m_v[8] = xaxis.z;
-    m_v[9] = yaxis.z;
-    m_v[10] = zaxis.z;
+    m_v[8] = xaxis.z();
+    m_v[9] = yaxis.z();
+    m_v[10] = zaxis.z();
     m_v[11] = 0;
 
     m_v[12] = -xaxis.dotProduct(eye);

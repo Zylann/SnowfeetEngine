@@ -54,7 +54,7 @@ public:
 
     inline void fillRect(const T & value, Vector2i o, Vector2i size)
     {
-        fillRect(value, o.x, o.y, size.x, size.y);
+        fillRect(value, o.x(), o.y(), size.x(), size.y());
     }
 
     /// \brief Sets the inner-outline of a rectangle with the given value.
@@ -79,7 +79,7 @@ public:
 
     inline void strokeRect(const T & value, Vector2i o, Vector2i size)
     {
-        strokeRect(value, o.x, o.y, size.x, size.y);
+        strokeRect(value, o.x(), o.y(), size.x(), size.y());
     }
 
     /// \brief Reference to the edited array

@@ -45,9 +45,9 @@ void MazeGenerator::generate(u32 seedX, u32 seedY)
         // Generate the corridor by iteration
         for(u32 i = 0; i < corridorLength; ++i)
         {
-            u32 l = grid.getLocation(pos.x, pos.y);
+            u32 l = grid.getLocation(pos.x(), pos.y());
 
-            std::vector<u32> availableDirs = unvisitedDirections(pos.x, pos.y);
+            std::vector<u32> availableDirs = unvisitedDirections(pos.x(), pos.y());
 
             // If there is at least one available direction
             if(!availableDirs.empty())
@@ -73,7 +73,7 @@ void MazeGenerator::generate(u32 seedX, u32 seedY)
                 pos += Direction::toVector<s32>(dir);
 
                 // Add the available direction to cell's mask (to)
-                l = grid.getLocation(pos.x, pos.y);
+                l = grid.getLocation(pos.x(), pos.y());
                 if((grid[l] & UNVISITED_BIT) != 0)
                     grid[l] = 0;
                 grid[l] |= (1 << Direction::opposite(dir));
@@ -114,8 +114,8 @@ std::vector<u32> MazeGenerator::unvisitedDirections(s32 x, s32 y)
     for(u32 d = 0; d < 4; ++d)
     {
         Vector2i vec = Direction::toVector<s32>(d);
-        s32 nx = x + vec.x;
-        s32 ny = y + vec.y;
+        s32 nx = x + vec.x();
+        s32 ny = y + vec.y();
 
         if(grid.contains(nx,ny))
         {
@@ -177,8 +177,8 @@ void MazeGenerator::connectRandomNodes(f32 chance)
                     {
                         u32 dir = unavailableDirs[math::rand(0, unavailableDirs.size()-1)];
 
-                        s32 nx = x + Direction::toVector<s32>(dir).x;
-                        s32 ny = y + Direction::toVector<s32>(dir).y;
+                        s32 nx = x + Direction::toVector<s32>(dir).x();
+                        s32 ny = y + Direction::toVector<s32>(dir).y();
 
                         if(grid.contains(nx,ny))
                         {
@@ -242,7 +242,7 @@ void MazeGenerator::bakeTexture(sf::Image & tex)
                     if(c & (1 << d))
                     {
                         Vector2i pos = Vector2i(px+1, py+1) + Direction::toVector<s32>(d);
-                        tex.setPixel(pos.x, pos.y, sf::Color::White);
+                        tex.setPixel(pos.x(), pos.y(), sf::Color::White);
                     }
                 }
             }

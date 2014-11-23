@@ -211,28 +211,28 @@ public :
     // (convenience)
     inline void set(const Vector3i & pos, const T & value) throw(Exception)
     {
-        set(pos.x, pos.y, pos.z, value);
+        set(pos.x(), pos.y(), pos.z(), value);
     }
 
     // set an element without position validation (it must be valid !)
     // (convenience)
     inline void setNoEx(const Vector3i & pos, const T & value)
     {
-        m_data[getLocation(pos.x, pos.y, pos.z)] = value;
+        m_data[getLocation(pos.x(), pos.y(), pos.z())] = value;
     }
 
     // get an element
     // (convenience)
     inline T get(const Vector3i & pos) const throw(Exception)
     {
-        get(pos.x, pos.y, pos.y);
+        get(pos.x(), pos.y(), pos.y());
     }
 
     // get an element without position validation (it must be valid !)
     // (convenience)
     inline T getNoEx(const Vector3i & pos) const
     {
-        return m_data[getLocation(pos.x, pos.y, pos.z)];
+        return m_data[getLocation(pos.x(), pos.y(), pos.z())];
     }
 
 private :

@@ -26,7 +26,7 @@ Image::~Image()
 void Image::clear()
 {
     m_pixels.clear();
-    m_size.set(0, 0);
+    m_size = Vector2u();
     m_channels = 0;
 }
 
@@ -45,10 +45,10 @@ bool Image::loadFromFile(const std::string & filePath)
     if (pixels && width && height)
     {
         // Assign loaded data
-        m_size.x = static_cast<u32>(width);
-        m_size.y = static_cast<u32>(height);
+        m_size.x() = static_cast<u32>(width);
+        m_size.y() = static_cast<u32>(height);
         m_channels = static_cast<u32>(channels);
-        m_pixels.resize(m_size.x * m_size.y * m_channels);
+        m_pixels.resize(m_size.x() * m_size.y() * m_channels);
         memcpy(&m_pixels[0], pixels, m_pixels.size());
 
         // Free STB data
@@ -84,10 +84,10 @@ bool Image::loadFromMemory(const void * data, u32 dataSize)
         if (pixels && width && height)
         {
             // Assign loaded data
-            m_size.x = static_cast<u32>(width);
-            m_size.y = static_cast<u32>(height);
+            m_size.x() = static_cast<u32>(width);
+            m_size.y() = static_cast<u32>(height);
             m_channels = static_cast<u32>(channels);
-            m_pixels.resize(m_size.x * m_size.y * m_channels);
+            m_pixels.resize(m_size.x() * m_size.y() * m_channels);
             memcpy(&m_pixels[0], pixels, m_pixels.size());
 
             // Free STB data
@@ -115,11 +115,12 @@ bool Image::loadFromPixels(const u8 * pixels, u32 width, u32 height, u32 channel
 
     if (pixels && width && height)
     {
-        m_size.x = width;
-        m_size.y = height;
+        m_size.x() = width;
+        m_size.y() = height;
         m_channels = channels;
-        m_pixels.resize(m_size.x * m_size.y * m_channels);
+        m_pixels.resize(m_size.x() * m_size.y() * m_channels);
         memcpy(&m_pixels[0], pixels, m_pixels.size());
+        return true;
     }
     else
     {
@@ -132,7 +133,7 @@ bool Image::loadFromPixels(const u8 * pixels, u32 width, u32 height, u32 channel
 bool Image::saveToFile(const std::string & filePath, std::string formatExtension)
 {
     // Make sure the image is not empty
-    if (!m_pixels.empty() && m_size.x > 0 && m_size.y > 0)
+    if (!m_pixels.empty() && m_size.x() > 0 && m_size.y() > 0)
     {
         if (formatExtension.empty())
         {
@@ -146,19 +147,19 @@ bool Image::saveToFile(const std::string & filePath, std::string formatExtension
         if (formatExtension == "bmp")
         {
             // BMP format
-            if (stbi_write_bmp(filePath.c_str(), m_size.x, m_size.y, 4, &m_pixels[0]))
+            if (stbi_write_bmp(filePath.c_str(), m_size.x(), m_size.y(), 4, &m_pixels[0]))
                 return true;
         }
         else if (formatExtension == "tga")
         {
             // TGA format
-            if (stbi_write_tga(filePath.c_str(), m_size.x, m_size.y, 4, &m_pixels[0]))
+            if (stbi_write_tga(filePath.c_str(), m_size.x(), m_size.y(), 4, &m_pixels[0]))
                 return true;
         }
         else if (formatExtension == "png")
         {
             // PNG format
-            if (stbi_write_png(filePath.c_str(), m_size.x, m_size.y, 4, &m_pixels[0], 0))
+            if (stbi_write_png(filePath.c_str(), m_size.x(), m_size.y(), 4, &m_pixels[0], 0))
                 return true;
         }
         else// if (formatExtension == "jpg")

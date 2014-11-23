@@ -13,6 +13,8 @@ This file is part of the SnowfeetEngine project.
 #include <core/types.hpp>
 #include <core/util/typecheck.hpp>
 #include <core/reflect/ObjectTypeDatabase.hpp>
+#include <core/app/ASScriptObject.hpp>
+
 #include <JsonBox.h>
 
 #include "LayerMap.hpp"
@@ -30,12 +32,12 @@ enum EntityFlags
 {
     EF_ACTIVE       = 0,
     EF_DESTROY_LATE = 1, // Destroy at the end of the frame
-    EF_CROSS_SCENE  = 2 // Don't destroy the entity on scene change
+    EF_STICKY       = 2 // Don't destroy the entity on scene clear
 };
 
 /// \brief An entity can be anything in the scene.
 /// It is composed of components that define its appearance, interactions and behavior.
-class SN_API Entity
+class SN_API Entity : public ASScriptObject
 {
 public:
 
@@ -44,8 +46,11 @@ public:
     /// \see Scene.hpp
     Entity();
 
-    /// \brief Destroys the entity and all of its components
+private:
+    /// \note Use release() instead of delete, see RefCounted
     ~Entity();
+
+public:
 
     //--------------------------------------
     // Lifecycle
@@ -69,12 +74,17 @@ public:
     /// child will not be deleted.
     void destroyLater();
 
-    /// \brief Sets if the entity should be destroyed when we change the scene
-    void setCrossScene(bool crossScene);
+    /// \brief Sets if the entity should be destroyed when we clear the scene
+    void setSticky(bool isSticky);
 
     /// \brief Gets the value of a flag on the entity by providing its mask.
     /// \return wether the flag is set or not
-    inline bool flag(u8 flagIndex) const { return m_flags.test(flagIndex); }
+    inline bool hasFlag(u8 flagIndex) const { return m_flags.test(flagIndex); }
+
+    /// \brief Called when the scene release the entity for destruction.
+    /// Destroys entity's components and unreference it from the scene.
+    /// Do not call directly.
+    void releaseFromScene();
 
     //--------------------------------------
     // Structure & behavior
@@ -82,7 +92,7 @@ public:
 
     /// \brief gets the name of the entity.
     /// \return name of the entity.
-    inline const std::string & name() const { return m_name; }
+    inline const std::string & getName() const { return m_name; }
 
     /// \brief Sets the name of the entity. There is no particular restrictions on it,
     /// except that it may be short enough to identifiate the entity well for humans.

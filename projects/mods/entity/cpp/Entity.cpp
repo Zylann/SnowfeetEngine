@@ -14,6 +14,7 @@ namespace sn
 
 //------------------------------------------------------------------------------
 Entity::Entity() :
+    ASScriptObject(),
     m_id(0),
     r_parent(nullptr),
     r_actor(nullptr),
@@ -29,10 +30,16 @@ Entity::Entity() :
 }
 
 //------------------------------------------------------------------------------
+// Private
 Entity::~Entity()
 {
+}
+
+//------------------------------------------------------------------------------
+void Entity::releaseFromScene()
+{
     // Clear components
-    for(auto it = m_components.begin(); it != m_components.end(); ++it)
+    for (auto it = m_components.begin(); it != m_components.end(); ++it)
     {
         Component * component = (*it);
         component->onDestroy();
@@ -40,13 +47,24 @@ Entity::~Entity()
     }
 
     // Clear tags
-    for(u8 tagIndex = 0; tagIndex < TagManager::MAX_TAGS; ++tagIndex)
+    for (u8 tagIndex = 0; tagIndex < TagManager::MAX_TAGS; ++tagIndex)
     {
-        if(hasTag(tagIndex))
+        if (hasTag(tagIndex))
         {
             r_scene->tagManager.onEntityUntagged(this, tagIndex);
         }
     }
+
+#ifdef SN_BUILD_DEBUG
+    if (release() != 0)
+    {
+        SN_WARNING("Entity released from scene, but still referenced (name: \"" << m_name << "\")");
+    }
+#else
+    release();
+#endif
+
+    r_scene = nullptr;
 }
 
 //------------------------------------------------------------------------------
@@ -82,7 +100,7 @@ void Entity::setParent(Entity * newParent)
     if(r_parent != nullptr)
     {
 #ifdef SN_BUILD_DEBUG
-        SN_DLOG("Unparenting [" << m_id << "]\"" << name() << "\" from [" << r_parent->id() << "]\"" << r_parent->name() << '"');
+        SN_DLOG("Unparenting [" << m_id << "]\"" << getName() << "\" from [" << r_parent->id() << "]\"" << r_parent->getName() << '"');
 #endif
         // Remove the entity from its last parent
         for(auto it = r_parent->m_children.begin(); it != r_parent->m_children.end(); ++it)
@@ -103,7 +121,7 @@ void Entity::setParent(Entity * newParent)
     if(r_parent != nullptr)
     {
 #ifdef SN_BUILD_DEBUG
-        SN_DLOG("Parenting [" << m_id << "]\"" << name() << "\" to [" << r_parent->id() << "]\"" << r_parent->name() << '"');
+        SN_DLOG("Parenting [" << m_id << "]\"" << getName() << "\" to [" << r_parent->id() << "]\"" << r_parent->getName() << '"');
 #endif
         // Add the child to its parent
         r_parent->m_children.push_back(this);
@@ -138,7 +156,7 @@ Entity & Entity::child(u32 index)
         SN_ERROR("Entity::child(): child index is out of bounds "
             "(index=" << index << ", "
             "size=" << m_children.size() << ", "
-            "entity=[" << m_id << "]\"" << name() << "\")");
+            "entity=[" << m_id << "]\"" << getName() << "\")");
     }
 #endif
     assert(index < m_children.size());
@@ -172,9 +190,9 @@ void Entity::setActive(bool active)
 }
 
 //------------------------------------------------------------------------------
-void Entity::setCrossScene(bool crossScene)
+void Entity::setSticky(bool isSticky)
 {
-    m_flags.set(EF_CROSS_SCENE, crossScene);
+    m_flags.set(EF_STICKY, isSticky);
 }
 
 //------------------------------------------------------------------------------
@@ -285,7 +303,7 @@ void Entity::serialize(JsonBox::Value & o)
     o["id"]       = (s32)m_id;
     o["flags"]    = (u8)(m_flags.to_ulong());
     o["layer"]    = (s32)m_layerIndex; // TODO fix JsonBox so it accepts unsigned integers
-    o["name"]     = name();
+    o["name"]     = getName();
     o["tags"]     = (s32)m_tags;
 
     // Components
