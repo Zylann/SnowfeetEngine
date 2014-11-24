@@ -19,7 +19,8 @@ project "SnowfeetCore"
 	-- }
 	links {
 		"AngelScript",
-		"JsonBox"
+		"JsonBox",
+		"ws2_32"
 	}
 	filter "configurations:Debug"
 		targetdir "../_bin/debug"
