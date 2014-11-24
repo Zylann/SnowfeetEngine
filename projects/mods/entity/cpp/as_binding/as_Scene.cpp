@@ -9,6 +9,11 @@ static Scene * Scene_defaultConstructor()
     return new Scene();
 }
 
+static Entity * Scene_createEntity(const std::string & name, Scene * self)
+{
+    return self->createEntity(name);
+}
+
 void declare_Scene(asIScriptEngine & e)
 {
     const char * t = "Scene";
@@ -31,7 +36,7 @@ void register_Scene(asIScriptEngine & e)
 
     // Methods
     asCheck(e.RegisterObjectMethod(t, "void update(Time delta)", asMETHOD(Scene, update), asCALL_THISCALL));
-    asCheck(e.RegisterObjectMethod(t, "Entity@ createEntity()", asMETHOD(Scene, createEntity), asCALL_THISCALL));
+    asCheck(e.RegisterObjectMethod(t, "Entity@ createEntity(const string &in name)", asFUNCTION(Scene_createEntity), asCALL_CDECL_OBJLAST));
 
 }
 
