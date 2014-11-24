@@ -141,6 +141,8 @@ int Application::executeEx()
     // Call destroy callbacks
     callVoidCallback(CallbackName::DESTROY);
 
+    // TODO uninitialize all scripts before modules get destroyed
+
     return 0;
 }
 
@@ -249,10 +251,16 @@ Module * Application::loadModule(const String & path)
             // Reset default namespace to avoid registering in a wrong namespace
             m_scriptEngine.getEngine()->SetDefaultNamespace("");
 
+            // Create Module object
             mod = new Module(*this, info);
+            
+            // Load native bindings
             mod->loadNativeBindings(m_scriptEngine);
+
+            // Load static assets and scripts
             mod->loadAssets();
             mod->compileScripts();
+
             m_modules.insert(std::make_pair(info.directory, mod));
             lastModule = mod;
         }

@@ -15,8 +15,10 @@ struct ModuleInfo
     String directory;
     String modFilePath;
     std::string scriptNamespace;
-    std::vector<String> bindings;
     std::vector<String> dependencies;
+
+    //! The order is important in this container !//
+    std::vector<String> bindings;
 };
 
 } // namespace sn

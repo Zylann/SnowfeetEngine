@@ -37,6 +37,9 @@ struct SN_API ObjectType
     /// \brief Name of the base class.
     std::string baseName;
 
+    /// \brief Optional name of the module this object type is registered in.
+    std::string moduleName;
+
     /// \brief you can store additional type information here when you register a type with ObjectTypeDatabase.
     /// It will be destroyed automatically when the singleton lifetime ends,
     /// unless you destroy it yourself and set it to null before.

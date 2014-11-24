@@ -3,9 +3,15 @@
 #include "ASBehaviour.hpp"
 #include "as_binding/as_entity_system.hpp"
 
-int SN_MOD_EXPORT registerSnowfeetModule(asIScriptEngine * engine)
+int SN_MOD_EXPORT loadSnowfeetModule(asIScriptEngine * engine)
 {
     sn::register_entitySystem(*engine);
+    sn::entity::registerNativeTypes(sn::ObjectTypeDatabase::get());
+    return 0;
+}
+
+int SN_MOD_EXPORT unloadSnowfeetModule(asIScriptEngine * engine)
+{
     return 0;
 }
 

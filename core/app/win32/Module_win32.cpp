@@ -4,23 +4,40 @@
 #include "../Application.hpp"
 #include <Windows.h>
 
-#define SN_MOD_ENTRY_FUNC_NAME "registerSnowfeetModule"
+#define SN_MOD_LOAD_FUNC_NAME "loadSnowfeetModule"
+#define SN_MOD_UNLOAD_FUNC_NAME "unloadSnowfeetModule"
 
 namespace sn
 {
 
 //------------------------------------------------------------------------------
-typedef int(*NativeModFunc)(asIScriptEngine*);
+typedef int(*NativeModLoadFunc)(asIScriptEngine*);
+typedef int(*NativeModUnloadFunc)(asIScriptEngine*);
+
+//------------------------------------------------------------------------------
+// TODO Cross-platform SharedLib class?
+class SharedLib
+{
+public:
+    SharedLib(const String & name_, HINSTANCE instance_) :
+        name(name_),
+        instance(instance_)
+    {}
+
+    String name;
+    HINSTANCE instance;
+};
 
 //------------------------------------------------------------------------------
 class ModuleImpl
 {
 public:
-    std::map<String, HINSTANCE> sharedLibs;
+    //! IMPORTANT: In .mod binding list order !//
+    std::vector<SharedLib> sharedLibs;
 };
 
 //------------------------------------------------------------------------------
-bool Module::loadNativeBindings(ScriptEngine & scriptEngine)
+bool Module::loadNativeBindingsImpl(ScriptEngine & scriptEngine)
 {
     SN_ASSERT(m_impl == nullptr, "native bindings loaded twice");
 
@@ -34,9 +51,9 @@ bool Module::loadNativeBindings(ScriptEngine & scriptEngine)
         String basePath = r_app.getPathToProjects() + L"/" + m_info.directory;
 
         // For each registered binding library
-        for (auto it = m_info.bindings.begin(); it != m_info.bindings.end(); ++it)
+        for (u32 i = 0; i < m_info.bindings.size(); ++i)
         {
-            String name = *it;
+            String name = m_info.bindings[i];
             String path = basePath + L"/" + name + L".dll";
 
             SN_WLOG(L"Loading shared lib \"" << path << L"\"...");
@@ -47,7 +64,7 @@ bool Module::loadNativeBindings(ScriptEngine & scriptEngine)
             if (hLib)
             {
                 // Get entry point
-                NativeModFunc f = (NativeModFunc)GetProcAddress(hLib, SN_MOD_ENTRY_FUNC_NAME);
+                NativeModLoadFunc f = (NativeModLoadFunc)GetProcAddress(hLib, SN_MOD_LOAD_FUNC_NAME);
                 if (f != nullptr)
                 {
                     // Execute entry point
@@ -55,16 +72,16 @@ bool Module::loadNativeBindings(ScriptEngine & scriptEngine)
 
                     if (retval < 0)
                     {
-                        SN_ERROR("Native binding registering returned " << retval << ", aborting");
+                        SN_ERROR("Native binding loading returned " << retval << ", aborting");
                         FreeLibrary(hLib);
                         return false;
                     }
 
-                    m_impl->sharedLibs.insert(std::make_pair(name, hLib));
+                    m_impl->sharedLibs.push_back(SharedLib(name, hLib));
                 }
                 else
                 {
-                    SN_WERROR("Couldn't find " << SN_MOD_ENTRY_FUNC_NAME << " function, aborting");
+                    SN_WERROR("Couldn't find " << SN_MOD_LOAD_FUNC_NAME << " function, aborting");
                     FreeLibrary(hLib);
                     return false;
                 }
@@ -81,21 +98,45 @@ bool Module::loadNativeBindings(ScriptEngine & scriptEngine)
 }
 
 //------------------------------------------------------------------------------
-void Module::unloadNativeBindings()
+void Module::unloadNativeBindingsImpl()
 {
     if (m_impl)
     {
-        for (auto it = m_impl->sharedLibs.begin(); it != m_impl->sharedLibs.end(); ++it)
+        // Note: iterations must be in reverse order because loading order may be important
+
+        // First, call unload functions
+        for (auto it = m_impl->sharedLibs.rbegin(); it != m_impl->sharedLibs.rend(); ++it)
         {
-            SN_WLOG("Unloading shared lib \"" << it->first << "\"...");
-            HINSTANCE hLib = it->second;
-            BOOL retval = FreeLibrary(hLib);
-            if (retval == 0)
+            SharedLib & lib = *it;
+            NativeModUnloadFunc f = (NativeModUnloadFunc)GetProcAddress(lib.instance, SN_MOD_UNLOAD_FUNC_NAME);
+            if (f != nullptr)
+            {
+                // Execute exit point
+                int unloadResult = f(r_app.getScriptEngine().getEngine());
+
+                if (unloadResult < 0)
+                {
+                    SN_ERROR("Native binding unloading function returned " << unloadResult);
+                }
+            }
+        }
+
+        // Unload reflection if any
+        ObjectTypeDatabase::get().unregisterModule(m_info.name);
+
+        // Free libraries
+        for (auto it = m_impl->sharedLibs.rbegin(); it != m_impl->sharedLibs.rend(); ++it)
+        {
+            SharedLib & lib = *it;
+            SN_WLOG(L"Freeing shared lib \"" << lib.name << L"\"...");
+            BOOL freeResult = FreeLibrary(lib.instance);
+            if (freeResult == 0)
             {
                 SN_ERROR("An error occurred while freeing library");
             }
         }
 
+        // Delete implementation
         delete m_impl;
         m_impl = nullptr;
     }

@@ -5,15 +5,16 @@
 #include "as_binding/as_image.hpp"
 
 
-void registerSnowfeetModule(asIScriptEngine * engine)
+int registerSnowfeetModule(asIScriptEngine * engine)
 {
     sn::register_image(*engine);
     //adb.addLoader<sn::Shader>(new sn::ShaderLoader());
+    return 0;
 }
 
-namespace sn
+int unloadSnowfeetModule(asIScriptEngine * engine)
 {
-
-} // namespace sn
+    return 0;
+}
 
 

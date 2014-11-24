@@ -6,15 +6,9 @@
 
 extern "C"
 {
-    SN_MOD_EXPORT void registerSnowfeetModule(asIScriptEngine * engine);
+    SN_MOD_EXPORT int loadSnowfeetModule(asIScriptEngine * engine);
+    SN_MOD_EXPORT int unloadSnowfeetModule(asIScriptEngine * engine);
 }
-
-namespace sn
-{
-
-
-
-} // namespace sn
 
 #endif // __HEADER_SN_SNOWFEET_RENDER__
 

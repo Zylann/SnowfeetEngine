@@ -51,14 +51,17 @@ public:
 
 private:
 
+    bool loadNativeBindingsImpl(ScriptEngine & scriptEngine);
+
     void unloadNativeBindings();
+    void unloadNativeBindingsImpl();
 
     void referenceCallbacks();
     void clearCallbacks();
 
     std::map<std::string, std::vector<asIScriptFunction*>> m_scriptCallbacks;
 
-    ModuleInfo m_info;
+    const ModuleInfo m_info;
     Application & r_app;
     ModuleImpl * m_impl;
 

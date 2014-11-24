@@ -79,6 +79,23 @@ Module::~Module()
 }
 
 //------------------------------------------------------------------------------
+bool Module::loadNativeBindings(ScriptEngine & scriptEngine)
+{
+    ObjectTypeDatabase & otb = ObjectTypeDatabase::get();
+    otb.beginModule(m_info.name);
+    bool result = loadNativeBindingsImpl(scriptEngine);
+    otb.endModule();
+    return result;
+}
+
+//------------------------------------------------------------------------------
+void Module::unloadNativeBindings()
+{
+    // Note: ObjectTypeDatabase is called here
+    unloadNativeBindingsImpl();
+}
+
+//------------------------------------------------------------------------------
 bool Module::compileScripts()
 {
     String fullDirectoryPath = r_app.getPathToProjects() + L"/" + m_info.directory;

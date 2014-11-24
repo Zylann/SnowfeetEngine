@@ -6,7 +6,8 @@
 
 extern "C"
 {
-    SN_MOD_EXPORT int registerSnowfeetModule(asIScriptEngine * engine);
+    SN_MOD_EXPORT int loadSnowfeetModule(asIScriptEngine * engine);
+    SN_MOD_EXPORT int unloadSnowfeetModule(asIScriptEngine * engine);
 }
 
 namespace sn {

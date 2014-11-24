@@ -4,7 +4,7 @@
 #include <vector>
 #include <unordered_map>
 #include <functional>
-#include <core/util/Log.hpp>
+#include <core/util/assert.hpp>
 #include <core/reflect/Object.hpp>
 
 namespace sn
@@ -46,19 +46,13 @@ public:
         // (that's the case if it uses the SN_OBJECT macro)
         ObjectType & type = Object_T::sObjectType();
 
-#ifdef SN_BUILD_DEBUG
         // Check if the object has already been registered
-        if(m_factories.find(type.name) != m_factories.end())
-        {
-            SN_ERROR("ObjectTypeDatabase::registerType: "
-                "registered the same type twice ! "
-                "(" << type.name << ")");
-        }
-#endif
+        SN_ASSERT(!isRegistered(type), "ObjectTypeDatabase::registerType: registered the same type twice ! (" << type.toString() << ")");
 
         type.userData = userData;
+        type.moduleName = m_currentModule;
 
-        // Generate component type ID
+        // Generate type ID
         type.ID = m_nextID++;
         m_nameToID[type.name] = type.ID;
 
@@ -77,6 +71,16 @@ public:
 #endif
     }
 
+    template <class Object_T>
+    void unregisterType()
+    {
+        ObjectType & type = Object_T::sObjectType();
+        unregisterType(type);
+    }
+
+    void unregisterType(ObjectType & t);
+    bool isRegistered(ObjectType & t);
+
     /// \brief Creates a new instance of an object from its name.
     /// It does the same thing as "new MyObject()", where className = "MyObject".
     /// \return pointer to dynamically allocated object instance, or null if the object
@@ -87,10 +91,18 @@ public:
     /// \return the object type, or null if not found.
     ObjectType * getType(const std::string & typeName);
 
+    void beginModule(const std::string & name);
+    void endModule();
+    void unregisterModule(const std::string & name);
+
 private:
 
+    // References to registered types
     std::vector<ObjectType*> m_registeredTypes;
-    std::unordered_map<std::string,ObjectTypeID> m_nameToID;
+
+    std::string m_currentModule;
+
+    std::unordered_map<std::string, ObjectTypeID> m_nameToID;
     std::unordered_map<std::string, std::function<Object*()>> m_factories;
     u32 m_nextID;
 
