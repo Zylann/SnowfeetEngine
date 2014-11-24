@@ -33,27 +33,37 @@ Entity::Entity() :
 // Private
 Entity::~Entity()
 {
+    clear();
+}
+
+//------------------------------------------------------------------------------
+void Entity::clear()
+{
+    if (r_scene)
+    {
+        // Clear components
+        for (auto it = m_components.begin(); it != m_components.end(); ++it)
+        {
+            Component * component = (*it);
+            component->onDestroy();
+            delete component;
+        }
+
+        // Clear tags
+        for (u8 tagIndex = 0; tagIndex < TagManager::MAX_TAGS; ++tagIndex)
+        {
+            if (hasTag(tagIndex))
+            {
+                r_scene->tagManager.onEntityUntagged(this, tagIndex);
+            }
+        }
+    }
 }
 
 //------------------------------------------------------------------------------
 void Entity::releaseFromScene()
 {
-    // Clear components
-    for (auto it = m_components.begin(); it != m_components.end(); ++it)
-    {
-        Component * component = (*it);
-        component->onDestroy();
-        delete component;
-    }
-
-    // Clear tags
-    for (u8 tagIndex = 0; tagIndex < TagManager::MAX_TAGS; ++tagIndex)
-    {
-        if (hasTag(tagIndex))
-        {
-            r_scene->tagManager.onEntityUntagged(this, tagIndex);
-        }
-    }
+    clear();
 
     r_scene = nullptr;
 

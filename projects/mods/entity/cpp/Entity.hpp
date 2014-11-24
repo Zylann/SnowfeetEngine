@@ -50,6 +50,8 @@ private:
     /// \note Use release() instead of delete, see RefCounted
     ~Entity();
 
+    void clear();
+
 public:
 
     //--------------------------------------
