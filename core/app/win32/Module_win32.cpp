@@ -10,7 +10,7 @@ namespace sn
 {
 
 //------------------------------------------------------------------------------
-typedef int(__stdcall *NativeModFunc)(asIScriptEngine*);
+typedef int(*NativeModFunc)(asIScriptEngine*);
 
 //------------------------------------------------------------------------------
 class ModuleImpl
