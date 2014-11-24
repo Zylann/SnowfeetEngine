@@ -1,5 +1,6 @@
 ﻿#include "Log.hpp"
 #include "stringutils.hpp"
+#include "../system/console/console.hpp"
 
 #ifdef _MSC_VER
 #include <Windows.h> // For OutputDebugString on Windows
@@ -44,15 +45,32 @@ void Log::print(LogTypeMask logType, std::string msg)
 
     // TODO Log: add timestamp
 
+    // Set console color
+    ConsoleColor oldColor = getConsoleForeground();
+    ConsoleColor currentColor = oldColor;
+    switch (logType)
+    {
+    case SN_LTM_INFO:     currentColor = SN_CC_DEFAULT; break;
+    case SN_LTM_WARNING:  currentColor = SN_CC_YELLOW; break;
+    case SN_LTM_ERROR:    currentColor = SN_CC_RED; break;
+    default:              currentColor = SN_CC_DARKGRAY; break; // SN_LTM_DEBUG
+    }
+    if (currentColor != oldColor)
+    {
+        setConsoleForeground(currentColor);
+    }
+
     msg = prefix + msg;
 
     if (m_file && (m_messageType & m_fileOutputFlags))
     {
+        // Write message in log file
         m_file << msg << std::endl;
     }
 
     if (m_consoleOutputFlags & m_consoleOutputFlags)
     {
+        // Write message in console
         if (m_messageType == SN_LTM_ERROR)
         {
             std::cerr << msg << std::endl;
@@ -61,6 +79,12 @@ void Log::print(LogTypeMask logType, std::string msg)
         {
             std::cout << msg << std::endl;
         }
+    }
+
+    // Restore old console color
+    if (currentColor != oldColor)
+    {
+        setConsoleForeground(oldColor);
     }
 
 #if defined(SN_BUILD_DEBUG) && defined(_MSC_VER)
