@@ -5,16 +5,19 @@
 namespace sn
 {
 
-static void Image_defaultConstructor(Image *self)
+//------------------------------------------------------------------------------
+static Image * Image_defaultConstructor()
 {
-    new(self)Image();
+    return new Image();
 }
 
+//------------------------------------------------------------------------------
 static bool Image_saveToFile(const std::string & path, Image *self)
 {
     return self->saveToFile(path);
 }
 
+//------------------------------------------------------------------------------
 inline bool checkCoordinates(u32 x, u32 y, Image * img, const char * context)
 {
     if (x < img->getSize().x() && y < img->getSize().y())
@@ -28,6 +31,7 @@ inline bool checkCoordinates(u32 x, u32 y, Image * img, const char * context)
     }
 }
 
+//------------------------------------------------------------------------------
 static Color Image_getPixel(u32 x, u32 y, Image *self)
 {
     if (checkCoordinates(x,y,self, "getPixel"))
@@ -40,6 +44,7 @@ static Color Image_getPixel(u32 x, u32 y, Image *self)
     }
 }
 
+//------------------------------------------------------------------------------
 static void Image_setPixel(u32 x, u32 y, Color c, Image *self)
 {
     if (checkCoordinates(x,y, self, "setPixel"))
@@ -48,19 +53,21 @@ static void Image_setPixel(u32 x, u32 y, Color c, Image *self)
     }
 }
 
+//------------------------------------------------------------------------------
 static s32 Image_addRef(Image * self) { return self->addRef(); }
 static s32 Image_release(Image * self) { return self->release(); }
 static asILockableSharedBool *Image_getWeakRefFlag(Image * self) { return self->getWeakRefFlag(); }
 
+//------------------------------------------------------------------------------
 void register_image(asIScriptEngine & e)
 {
     std::string t = "Image";
 
     // Type declaration (scripts can create the Scene)
-    asCheck(e.RegisterObjectType(t.c_str(), 0, asOBJ_REF | asOBJ_GC));
+    asCheck(e.RegisterObjectType(t.c_str(), 0, asOBJ_REF));// | asOBJ_GC));
 
     // Constructor
-    asCheck(e.RegisterObjectBehaviour(t.c_str(), asBEHAVE_CONSTRUCT, (t + "@ f()").c_str(), asFUNCTION(Image_defaultConstructor), asCALL_CDECL_OBJLAST));
+    asCheck(e.RegisterObjectBehaviour(t.c_str(), asBEHAVE_FACTORY, (t + "@ f()").c_str(), asFUNCTION(Image_defaultConstructor), asCALL_CDECL));
 
     // Refcount
     asCheck(e.RegisterObjectBehaviour(t.c_str(), asBEHAVE_ADDREF, "void f()", asFUNCTION(Image_addRef), asCALL_CDECL_OBJLAST));
