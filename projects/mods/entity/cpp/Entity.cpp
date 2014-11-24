@@ -55,16 +55,17 @@ void Entity::releaseFromScene()
         }
     }
 
+    r_scene = nullptr;
+
 #ifdef SN_BUILD_DEBUG
     if (release() != 0)
     {
-        SN_WARNING("Entity released from scene, but still referenced (name: \"" << m_name << "\")");
+        SN_ERROR("Entity released from scene, but still referenced (name: \"" << m_name << "\")");
     }
 #else
     release();
 #endif
-
-    r_scene = nullptr;
+    // NO CODE AFTER
 }
 
 //------------------------------------------------------------------------------
