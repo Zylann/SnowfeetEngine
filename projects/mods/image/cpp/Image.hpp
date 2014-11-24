@@ -21,6 +21,7 @@ public:
     
     Image();
 
+    void create(u32 width, u32 height, Color fillColor = Color());
     void clear();
 
     bool loadFromFile(const std::string & filePath);
@@ -39,6 +40,7 @@ public:
     Color getPixel(u32 x, u32 y) const;
     void setPixel(u32 x, u32 y, Color color);
 
+    void fill(Color color);
 private:
 
     ~Image();

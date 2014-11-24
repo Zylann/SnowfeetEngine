@@ -24,6 +24,16 @@ Image::~Image()
 }
 
 //------------------------------------------------------------------------------
+void Image::create(u32 width, u32 height, Color fillColor)
+{
+    clear();
+    m_size = Vector2u(width, height);
+    m_channels = 4;
+    m_pixels.resize(m_channels * width * height);
+    fill(fillColor);
+}
+
+//------------------------------------------------------------------------------
 void Image::clear()
 {
     m_pixels.clear();
@@ -191,6 +201,16 @@ void Image::setPixel(u32 x, u32 y, Color color)
     ptr[1] = color.g;
     ptr[2] = color.b;
     ptr[3] = color.a;
+}
+
+//------------------------------------------------------------------------------
+void Image::fill(Color color)
+{
+    unsigned char colorV[4] = { color.r, color.g, color.b, color.a };
+    for (unsigned int i = 0; i < m_pixels.size(); i += m_channels)
+    {
+        memcpy(&m_pixels[i], colorV, m_channels);
+    }
 }
 
 } // namespace sn

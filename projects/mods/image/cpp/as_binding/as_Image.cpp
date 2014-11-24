@@ -12,6 +12,14 @@ static Image * Image_defaultConstructor()
 }
 
 //------------------------------------------------------------------------------
+static Image * Image_createConstructor(u32 width, u32 height, Color fillColor)
+{
+    Image * img = new Image();
+    img->create(width, height, fillColor);
+    return img;
+}
+
+//------------------------------------------------------------------------------
 static bool Image_saveToFile(const std::string & path, Image *self)
 {
     return self->saveToFile(path);
@@ -68,6 +76,7 @@ void register_image(asIScriptEngine & e)
 
     // Constructor
     asCheck(e.RegisterObjectBehaviour(t.c_str(), asBEHAVE_FACTORY, (t + "@ f()").c_str(), asFUNCTION(Image_defaultConstructor), asCALL_CDECL));
+    asCheck(e.RegisterObjectBehaviour(t.c_str(), asBEHAVE_FACTORY, (t + "@ f(uint w, uint h, Color c)").c_str(), asFUNCTION(Image_createConstructor), asCALL_CDECL));
 
     // Refcount
     asCheck(e.RegisterObjectBehaviour(t.c_str(), asBEHAVE_ADDREF, "void f()", asFUNCTION(Image_addRef), asCALL_CDECL_OBJLAST));
@@ -75,6 +84,7 @@ void register_image(asIScriptEngine & e)
     asCheck(e.RegisterObjectBehaviour(t.c_str(), asBEHAVE_GET_WEAKREF_FLAG, "int &f()", asFUNCTION(Image_getWeakRefFlag), asCALL_CDECL_OBJLAST));
 
     // Methods
+    asCheck(e.RegisterObjectMethod(t.c_str(), "void create(uint w, uint h, Color c)", asMETHOD(Image, create), asCALL_THISCALL));
     asCheck(e.RegisterObjectMethod(t.c_str(), "bool loadFromFile(const string &in path)", asMETHOD(Image, loadFromFile), asCALL_THISCALL));
     asCheck(e.RegisterObjectMethod(t.c_str(), "bool saveToFile(const string &in path)", asFUNCTION(Image_saveToFile), asCALL_CDECL_OBJLAST));
     asCheck(e.RegisterObjectMethod(t.c_str(), "Color getPixel(uint x, uint y)", asFUNCTION(Image_getPixel), asCALL_CDECL_OBJLAST));
