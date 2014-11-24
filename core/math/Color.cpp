@@ -34,7 +34,7 @@ Color::Color(const Color & other)
 }
 
 //------------------------------------------------------------------------------
-#if defined ZN_SFML
+#if defined SN_SFML
 Color::Color(const sf::Color & color)
 {
     set(color.r, color.g, color.b, color.a);
@@ -42,7 +42,7 @@ Color::Color(const sf::Color & color)
 #endif
 
 //------------------------------------------------------------------------------
-#if defined ZN_SFML
+#if defined SN_SFML
 sf::Color Color::toSfColor() const
 {
     return sf::Color(r, g, b, a);

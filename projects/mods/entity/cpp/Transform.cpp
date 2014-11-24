@@ -285,7 +285,7 @@ void Transform::setParent(Transform * parent)
     // If the transform has a parent now
     if(r_parent != nullptr)
     {
-#ifdef ZN_DEBUG
+#ifdef SN_DEBUG
         std::cout << "D: Unparenting \"" << entity().name()
             << "\" from \"" << r_parent->entity().name() << '"' << std::endl;
 #endif
@@ -300,7 +300,7 @@ void Transform::setParent(Transform * parent)
     // If the new parent is not null
     if(r_parent != nullptr)
     {
-#ifdef ZN_DEBUG
+#ifdef SN_DEBUG
         std::cout << "D: Parenting \"" << entity().name()
             << "\" to \"" << r_parent->entity().name() << '"' << std::endl;
 #endif
@@ -331,7 +331,7 @@ void Transform::unparentChildren()
 /*
 Transform * Transform::child(u32 index) const
 {
-#ifdef ZN_DEBUG
+#ifdef SN_DEBUG
     if(index >= m_children.size())
     {
         std::cout << "E: Transform::child: child index is out of bounds "
@@ -417,6 +417,6 @@ void Transform::unserializeData(JsonBox::Value& o)
 //	}
 //}
 
-} // namespace zn
+} // namespace sn
 
 

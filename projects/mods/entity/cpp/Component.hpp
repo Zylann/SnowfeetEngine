@@ -35,7 +35,7 @@ class SN_API Component : public Object
 {
 public:
 
-    SN_ABSTRACT_OBJECT(zn::Component, zn::Object)
+    SN_ABSTRACT_OBJECT(sn::Component, sn::Object)
 
     virtual ~Component();
 

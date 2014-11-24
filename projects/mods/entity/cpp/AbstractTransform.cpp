@@ -24,7 +24,7 @@ void AbstractTransform::scale(sn::Vector3f scaleFactor)
     setScale(oldScale * scaleFactor);
 }
 
-} // namespace zn
+} // namespace sn
 
 
 

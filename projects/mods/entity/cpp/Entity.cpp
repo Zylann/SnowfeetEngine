@@ -465,7 +465,7 @@ bool Entity::hasTag(const std::string & tagName) const
     }
 }
 
-} // namespace zn
+} // namespace sn
 
 
 

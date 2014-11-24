@@ -150,6 +150,6 @@ Component * Component::unserialize(JsonBox::Value & o)
     return component;
 }
 
-} // namespace zn
+} // namespace sn
 
 
