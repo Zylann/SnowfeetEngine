@@ -74,7 +74,7 @@ public:
 
     void onParentChanged() override;
 
-    // Get parent transform. Returns null of the parent entity has no transform.
+    // Get parent transform. Returns null if the parent entity has no transform.
     AbstractTransform * parent() const;
 
     // Sets the parent transform. Also adds the transform to the specified parent's children list.
