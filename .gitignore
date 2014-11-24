@@ -2,7 +2,7 @@
 _bin/
 _obj/
 AS_DEBUG/
-log.txt
+*log.txt
 *.o
 *.dll
 *.exe
