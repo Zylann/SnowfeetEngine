@@ -6,10 +6,11 @@ namespace sn
 {
 
 //------------------------------------------------------------------------------
-static void Color_defaultConstructor(Color *self)                      { new(self)Color(); }
-static void Color_copyConstructor(const Color &other, Color *self)     { new(self)Color(other); }
-static void Color_initConstructor(u8 r, u8 g, u8 b, u8 a, Color *self) { new(self)Color(r, g, b, a); }
-static void Color_listConstructor(u8 *list, Color *self)               { new(self)Color(list[0], list[1], list[2], list[3]); }
+static void Color_defaultConstructor(Color *self)                       { new(self)Color(); }
+static void Color_copyConstructor(const Color &other, Color *self)      { new(self)Color(other); }
+static void Color_initConstructor3(u8 r, u8 g, u8 b, Color *self)       { new(self)Color(r, g, b); }
+static void Color_initConstructor4(u8 r, u8 g, u8 b, u8 a, Color *self) { new(self)Color(r, g, b, a); }
+static void Color_listConstructor(u8 *list, Color *self)                { new(self)Color(list[0], list[1], list[2], list[3]); }
 
 //------------------------------------------------------------------------------
 void register_Color(asIScriptEngine & e)
@@ -28,7 +29,8 @@ void register_Color(asIScriptEngine & e)
     // Constructors
     asCheck(e.RegisterObjectBehaviour(t, asBEHAVE_CONSTRUCT, "void f()", asFUNCTION(Color_defaultConstructor), asCALL_CDECL_OBJLAST));
     asCheck(e.RegisterObjectBehaviour(t, asBEHAVE_CONSTRUCT, "void f(const Color &in)", asFUNCTION(Color_copyConstructor), asCALL_CDECL_OBJLAST));
-    asCheck(e.RegisterObjectBehaviour(t, asBEHAVE_CONSTRUCT, "void f(uint8, uint8, uint8, uint8)", asFUNCTION(Color_initConstructor), asCALL_CDECL_OBJLAST));
+    asCheck(e.RegisterObjectBehaviour(t, asBEHAVE_CONSTRUCT, "void f(uint8, uint8, uint8)", asFUNCTION(Color_initConstructor3), asCALL_CDECL_OBJLAST));
+    asCheck(e.RegisterObjectBehaviour(t, asBEHAVE_CONSTRUCT, "void f(uint8, uint8, uint8, uint8)", asFUNCTION(Color_initConstructor4), asCALL_CDECL_OBJLAST));
     asCheck(e.RegisterObjectBehaviour(t, asBEHAVE_LIST_CONSTRUCT, "void f(const int &in) {uint8, uint8, uint8, uint8}", asFUNCTION(Color_listConstructor), asCALL_CDECL_OBJLAST));
 
     // Operator overloads
