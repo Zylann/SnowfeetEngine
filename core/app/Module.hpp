@@ -23,6 +23,8 @@ namespace CallbackName
 }
 
 class Application;
+class ModuleImpl;
+class ScriptEngine;
 
 class SN_API Module
 {
@@ -31,6 +33,7 @@ public:
     Module(Application & app, const ModuleInfo & info);
     ~Module();
 
+    bool loadNativeBindings(ScriptEngine & scriptEngine);
     bool compileScripts();
     bool loadAssets();
 
@@ -48,6 +51,8 @@ public:
 
 private:
 
+    void unloadNativeBindings();
+
     void referenceCallbacks();
     void clearCallbacks();
 
@@ -55,6 +60,7 @@ private:
 
     ModuleInfo m_info;
     Application & r_app;
+    ModuleImpl * m_impl;
 
 };
 

@@ -239,13 +239,18 @@ Module * Application::loadModule(const String & path)
             continue;
         }
 
+        SN_LOG("-------------");
         SN_WLOG("Loading module " << info.directory);
 
         Module * mod = nullptr;
 
         try
         {
+            // Reset default namespace to avoid registering in a wrong namespace
+            m_scriptEngine.getEngine()->SetDefaultNamespace("");
+
             mod = new Module(*this, info);
+            mod->loadNativeBindings(m_scriptEngine);
             mod->loadAssets();
             mod->compileScripts();
             m_modules.insert(std::make_pair(info.directory, mod));
@@ -258,6 +263,8 @@ Module * Application::loadModule(const String & path)
             throw ex;
             return false;
         }
+
+        SN_LOG("");
     }
 
     // Note: the last loaded module will be the one we requested when calling this function
