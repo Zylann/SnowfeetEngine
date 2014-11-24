@@ -1,5 +1,5 @@
 ﻿#include <angelscript.h>
-#include "mod_SnowfeetRender.hpp"
+#include "mod_SnowfeetRender.h"
 #include "Shader.hpp"
 
 #include <core/asset/AssetDatabase.hpp>

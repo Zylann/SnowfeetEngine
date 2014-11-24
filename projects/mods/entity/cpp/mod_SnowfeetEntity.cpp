@@ -1,10 +1,12 @@
-﻿#include "mod_SnowfeetEntity.hpp"
+﻿#include "mod_SnowfeetEntity.h"
 #include "Transform.hpp"
 #include "ASBehaviour.hpp"
+//#include "as_binding/as_entity_system.hpp"
 
-void registerSnowfeetModule(asIScriptEngine * engine)
+int SN_MOD_EXPORT registerSnowfeetModule(asIScriptEngine * engine)
 {
-    // TODO registering
+    //sn::register_entitySystem(*engine);
+    return 0;
 }
 
 namespace sn {

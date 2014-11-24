@@ -1,7 +1,7 @@
 ﻿#include <angelscript.h>
 #include <core/asset/AssetDatabase.hpp>
 
-#include "mod_SnowfeetImage.hpp"
+#include "mod_SnowfeetImage.h"
 #include "as_binding/as_image.hpp"
 
 

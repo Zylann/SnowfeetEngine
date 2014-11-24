@@ -2,8 +2,12 @@
 #define __HEADER_SN_SNOWFEET_RENDER__
 
 #include <angelscript.h>
+#include <core/config.hpp>
 
-void registerSnowfeetModule(asIScriptEngine * engine);
+extern "C"
+{
+    SN_MOD_EXPORT void registerSnowfeetModule(asIScriptEngine * engine);
+}
 
 namespace sn
 {

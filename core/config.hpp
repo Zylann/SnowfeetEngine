@@ -36,6 +36,8 @@
 
         // Windows compilers need specific (and different) keywords for export and import
         #define SN_API __declspec(dllexport)
+        
+        #define SN_MOD_EXPORT __declspec(dllexport)
 
         #ifdef _MSC_VER
             // Visual C++: disable warning about STL classes needing export

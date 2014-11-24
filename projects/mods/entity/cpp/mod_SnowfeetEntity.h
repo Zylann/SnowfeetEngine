@@ -4,7 +4,10 @@
 #include <angelscript.h>
 #include <core/reflect/ObjectTypeDatabase.hpp>
 
-void registerSnowfeetModule(asIScriptEngine * engine);
+extern "C"
+{
+    SN_MOD_EXPORT int registerSnowfeetModule(asIScriptEngine * engine);
+}
 
 namespace sn {
 namespace entity {
