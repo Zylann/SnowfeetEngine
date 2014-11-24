@@ -14,10 +14,14 @@ do{\
 } while (false)
 
 //------------------------------------------------------------------------------
-template<bool> struct static_assert_util;
-template<> struct static_assert_util<true> {};
+namespace sn
+{
+    template<bool> struct static_assert_util;
+    template<> struct static_assert_util<true> {};
+}
+
 // Generates a compile error if predicate is not true
-#define SN_STATIC_ASSERT(predicate) static_assert_util<(predicate)>()
+#define SN_STATIC_ASSERT(predicate) sn::static_assert_util<(predicate)>()
 
 #endif // __HEADER_SN_ASSERT__
 
