@@ -18,12 +18,7 @@ namespace sn
 //------------------------------------------------------------------------------
 void asCheck(int returnCode)
 {
-    if (returnCode < 0)
-    {
-        std::stringstream ss;
-        ss << "An internal AngelScript error occurred. Code: " << returnCode;
-        throw Exception(ss.str());
-    }
+    SN_ASSERT(returnCode >= 0, "An internal AngelScript error occurred. Code: " << returnCode);
 }
 
 //------------------------------------------------------------------------------
