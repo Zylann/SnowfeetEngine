@@ -1,24 +1,24 @@
 /*
    AngelCode Scripting Library
-   Copyright (c) 2003-2012 Andreas Jonsson
+   Copyright (c) 2003-2014 Andreas Jonsson
 
-   This software is provided 'as-is', without any express or implied
-   warranty. In no event will the authors be held liable for any
+   This software is provided 'as-is', without any express or implied 
+   warranty. In no event will the authors be held liable for any 
    damages arising from the use of this software.
 
-   Permission is granted to anyone to use this software for any
-   purpose, including commercial applications, and to alter it and
+   Permission is granted to anyone to use this software for any 
+   purpose, including commercial applications, and to alter it and 
    redistribute it freely, subject to the following restrictions:
 
-   1. The origin of this software must not be misrepresented; you
+   1. The origin of this software must not be misrepresented; you 
       must not claim that you wrote the original software. If you use
-      this software in a product, an acknowledgment in the product
+      this software in a product, an acknowledgment in the product 
       documentation would be appreciated but is not required.
 
-   2. Altered source versions must be plainly marked as such, and
+   2. Altered source versions must be plainly marked as such, and 
       must not be misrepresented as being the original software.
 
-   3. This notice may not be removed or altered from any source
+   3. This notice may not be removed or altered from any source 
       distribution.
 
    The original version of this library can be located at:
@@ -31,8 +31,8 @@
 #include "as_config.h"
 
 #include <stdarg.h>		// va_list, va_start(), etc
-#include <stdlib.h>     // strtod(), strtol()
-#include <string.h> // some compilers declare memcpy() here
+#include <stdlib.h>		// strtod(), strtol()
+#include <string.h>		// some compilers declare memcpy() here
 
 #if !defined(AS_NO_MEMORY_H)
 #include <memory.h>
@@ -55,6 +55,26 @@ asCString::asCString(const asCString &str)
 
 	Assign(str.AddressOf(), str.length);
 }
+
+#ifdef AS_CAN_USE_CPP11
+asCString::asCString(asCString &&str)
+{
+	if( str.length <= 11 )
+	{
+		length = str.length;
+		memcpy(local, str.local, length);
+		local[length] = 0;
+	}
+	else
+	{
+		dynamic = str.dynamic;
+		length = str.length;
+	}
+
+	str.dynamic = 0;
+	str.length = 0;
+}
+#endif // c++11
 
 asCString::asCString(const char *str, size_t len)
 {
@@ -114,7 +134,7 @@ void asCString::Allocate(size_t len, bool keepData)
 {
 	// If we stored the capacity of the dynamically allocated buffer it would be possible
 	// to save some memory allocations if a string decreases in size then increases again,
-	// but this would require extra bytes in the string object itself, or a decrease of
+	// but this would require extra bytes in the string object itself, or a decrease of 
 	// the static buffer, which in turn would mean extra memory is needed. I've tested each
 	// of these options, and it turned out that the current choice is what best balanced
 	// the number of allocations against the size of the allocations.
@@ -182,6 +202,37 @@ asCString &asCString::operator =(const asCString &str)
 
 	return *this;
 }
+
+#ifdef AS_CAN_USE_CPP11
+asCString &asCString::operator =(asCString &&str)
+{
+	if( this != &str )
+	{
+		if( length > 11 && dynamic )
+		{
+			asDELETEARRAY(dynamic);
+		}
+
+		if ( str.length <= 11 )
+		{
+			length = str.length;
+
+			memcpy(local, str.local, length);
+			local[length] = 0;
+		}
+		else
+		{
+			dynamic = str.dynamic;
+			length = str.length;
+		}
+
+		str.dynamic = 0;
+		str.length = 0;
+	}
+
+	return *this;
+}
+#endif // c++11
 
 asCString &asCString::operator =(char ch)
 {
@@ -259,7 +310,7 @@ size_t asCString::Format(const char *format, ...)
 	return length;
 }
 
-char &asCString::operator [](size_t index)
+char &asCString::operator [](size_t index) 
 {
 	asASSERT(index < length);
 
@@ -310,7 +361,7 @@ size_t asCString::RecalculateLength()
 
 int asCString::FindLast(const char *str, int *count) const
 {
-	// There is no strstr that starts from the end, so
+	// There is no strstr that starts from the end, so 
 	// we'll iterate until we find the last occurrance.
 	// This shouldn't cause a performance problem because
 	// it is not expected that this will be done very often,
@@ -332,7 +383,7 @@ int asCString::FindLast(const char *str, int *count) const
 	return -1;
 }
 
-//------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 // Helper functions
 
 bool operator ==(const asCString &a, const char *b)

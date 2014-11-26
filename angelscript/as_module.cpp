@@ -75,13 +75,22 @@ asCModule::~asCModule()
 	if( engine )
 	{
 		// Clean the user data
-		if( userData && engine->cleanModuleFunc )
-			engine->cleanModuleFunc(this);
+		for( asUINT n = 0; n < userData.GetLength(); n += 2 )
+		{
+			if( userData[n+1] )
+			{
+				for( asUINT c = 0; c < engine->cleanModuleFuncs.GetLength(); c++ )
+					if( engine->cleanModuleFuncs[c].type == userData[n] )
+						engine->cleanModuleFuncs[c].cleanFunc(this);
+			}
+		}
 
 		// Remove the module from the engine
+		ACQUIREEXCLUSIVE(engine->engineRWLock);
 		if( engine->lastModule == this )
 			engine->lastModule = 0;
 		engine->scriptModules.RemoveValue(this);
+		RELEASEEXCLUSIVE(engine->engineRWLock);
 	}
 }
 
@@ -92,17 +101,56 @@ void asCModule::Discard()
 }
 
 // interface
-void *asCModule::SetUserData(void *data)
+void *asCModule::SetUserData(void *data, asPWORD type)
 {
-	void *oldData = userData;
-	userData = data;
-	return oldData;
+	// As a thread might add a new new user data at the same time as another
+	// it is necessary to protect both read and write access to the userData member
+	ACQUIREEXCLUSIVE(engine->engineRWLock);
+
+	// It is not intended to store a lot of different types of userdata,
+	// so a more complex structure like a associative map would just have
+	// more overhead than a simple array.
+	for( asUINT n = 0; n < userData.GetLength(); n += 2 )
+	{
+		if( userData[n] == type )
+		{
+			void *oldData = reinterpret_cast<void*>(userData[n+1]);
+			userData[n+1] = reinterpret_cast<asPWORD>(data);
+
+			RELEASEEXCLUSIVE(engine->engineRWLock);
+
+			return oldData;
+		}
+	}
+
+	userData.PushLast(type);
+	userData.PushLast(reinterpret_cast<asPWORD>(data));
+
+	RELEASEEXCLUSIVE(engine->engineRWLock);
+
+	return 0;
 }
 
 // interface
-void *asCModule::GetUserData() const
+void *asCModule::GetUserData(asPWORD type) const
 {
-	return userData;
+	// There may be multiple threads reading, but when
+	// setting the user data nobody must be reading.
+	ACQUIRESHARED(engine->engineRWLock);
+
+	for( asUINT n = 0; n < userData.GetLength(); n += 2 )
+	{
+		if( userData[n] == type )
+		{
+			void *ud = reinterpret_cast<void*>(userData[n+1]);
+			RELEASESHARED(engine->engineRWLock);
+			return ud;
+		}
+	}
+
+	RELEASESHARED(engine->engineRWLock);
+
+	return 0;
 }
 
 // interface
@@ -306,8 +354,8 @@ int asCModule::CallInit(asIScriptContext *myCtx)
 		{
 			if( ctx == 0 )
 			{
-				r = engine->CreateContext(&ctx, true);
-				if( r < 0 )
+				ctx = engine->RequestContext();
+				if( ctx == 0 )
 					break;
 			}
 
@@ -346,7 +394,7 @@ int asCModule::CallInit(asIScriptContext *myCtx)
 
 	if( ctx && !myCtx )
 	{
-		ctx->Release();
+		engine->ReturnContext(ctx);
 		ctx = 0;
 	}
 
@@ -406,7 +454,7 @@ void asCModule::InternalReset()
 {
 	CallExit();
 
-	size_t n;
+	asUINT n;
 
 	// Release all global functions
 	asCSymbolTable<asCScriptFunction>::iterator funcIt = globalFunctions.List();
@@ -440,7 +488,8 @@ void asCModule::InternalReset()
 			engine->importedFunctions[id] = 0;
 			engine->freeImportedFunctionIdxs.PushLast(id);
 
-			asDELETE(bindInformations[n]->importedFunctionSignature, asCScriptFunction);
+			bindInformations[n]->importedFunctionSignature->Orphan(this);
+
 			asDELETE(bindInformations[n], sBindInfo);
 		}
 	}
@@ -452,7 +501,7 @@ void asCModule::InternalReset()
 		classTypes[n]->Orphan(this);
 	classTypes.SetLength(0);
 	for( n = 0; n < enumTypes.GetLength(); n++ )
-		enumTypes[n]->Release();
+		enumTypes[n]->Orphan(this);
 	enumTypes.SetLength(0);
 	for( n = 0; n < typeDefs.GetLength(); n++ )
 		typeDefs[n]->Release();
@@ -573,7 +622,7 @@ asIScriptFunction *asCModule::GetFunctionByDecl(const char *decl) const
 			)
 		{
 			bool match = true;
-			for( size_t p = 0; p < func.parameterTypes.GetLength(); ++p )
+			for( asUINT p = 0; p < func.parameterTypes.GetLength(); ++p )
 			{
 				if( func.parameterTypes[p] != funcPtr->parameterTypes[p] )
 				{
@@ -672,7 +721,7 @@ const char *asCModule::GetGlobalVarDeclaration(asUINT index, bool includeNamespa
 	asCString *tempString = &asCThreadManager::GetLocalData()->string;
 	*tempString = prop->type.Format();
 	*tempString += " ";
-	if( includeNamespace )
+	if( includeNamespace && prop->nameSpace->name != "" )
 		*tempString += prop->nameSpace->name + "::";
 	*tempString += prop->name;
 
@@ -742,6 +791,24 @@ int asCModule::GetTypeIdByDecl(const char *decl) const
 		return asINVALID_TYPE;
 
 	return engine->GetTypeIdFromDataType(dt);
+}
+
+// interface
+asIObjectType *asCModule::GetObjectTypeByDecl(const char *decl) const
+{
+	asCDataType dt;
+
+	// This const cast is safe since we know the engine won't be modified
+	asCBuilder bld(engine, const_cast<asCModule*>(this));
+
+	// Don't write parser errors to the message callback
+	bld.silent = true;
+
+	int r = bld.ParseDataType(decl, &dt, defaultNamespace);
+	if( r < 0 )
+		return 0;
+
+	return dt.GetObjectType();
 }
 
 // interface
@@ -827,7 +894,7 @@ int asCModule::GetNextImportedFunctionId()
 
 #ifndef AS_NO_COMPILER
 // internal
-int asCModule::AddScriptFunction(int sectionIdx, int declaredAt, int id, const asCString &name, const asCDataType &returnType, const asCArray<asCDataType> &params, const asCArray<asETypeModifiers> &inOutFlags, const asCArray<asCString *> &defaultArgs, bool isInterface, asCObjectType *objType, bool isConstMethod, bool isGlobalFunction, bool isPrivate, bool isFinal, bool isOverride, bool isShared, asSNameSpace *ns)
+int asCModule::AddScriptFunction(int sectionIdx, int declaredAt, int id, const asCString &name, const asCDataType &returnType, const asCArray<asCDataType> &params, const asCArray<asCString> &paramNames, const asCArray<asETypeModifiers> &inOutFlags, const asCArray<asCString *> &defaultArgs, bool isInterface, asCObjectType *objType, bool isConstMethod, bool isGlobalFunction, bool isPrivate, bool isFinal, bool isOverride, bool isShared, asSNameSpace *ns)
 {
 	asASSERT(id >= 0);
 
@@ -860,6 +927,7 @@ int asCModule::AddScriptFunction(int sectionIdx, int declaredAt, int id, const a
 		func->scriptData->declaredAt = declaredAt;
 	}
 	func->parameterTypes   = params;
+	func->parameterNames   = paramNames;
 	func->inOutFlags       = inOutFlags;
 	func->defaultArgs      = defaultArgs;
 	func->objectType       = objType;
@@ -982,7 +1050,7 @@ int asCModule::BindImportedFunction(asUINT index, asIScriptFunction *func)
 	if( dst->parameterTypes.GetLength() != src->parameterTypes.GetLength() )
 		return asINVALID_INTERFACE;
 
-	for( size_t n = 0; n < dst->parameterTypes.GetLength(); ++n )
+	for( asUINT n = 0; n < dst->parameterTypes.GetLength(); ++n )
 	{
 		if( dst->parameterTypes[n] != src->parameterTypes[n] )
 			return asINVALID_INTERFACE;
@@ -1086,7 +1154,7 @@ int asCModule::UnbindAllImportedFunctions()
 // internal
 asCObjectType *asCModule::GetObjectType(const char *type, asSNameSpace *ns)
 {
-	size_t n;
+	asUINT n;
 
 	// TODO: optimize: Improve linear search
 	for( n = 0; n < classTypes.GetLength(); n++ )
