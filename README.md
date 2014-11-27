@@ -88,7 +88,7 @@ How to compile
 
 You will need the following:
 - A C++11 compiler
-- Premake5 (get the nightly here, it's less than 1mo: [TODO PREMAKE LINK])
+- Premake5 (See bottom of this README)
 - Optionally, an IDE
 - Optionally, Git
 That's all, the project then should work out of the box.
@@ -137,4 +137,13 @@ also depending on which third-party code they include / modified.
 And obviously, because user applications will be modules,
 they can be private-source and/or paid if you want to.
 
+
+Premake5
+========
+
+You can get the source from the premake-dev repo and build it yourself:
+https://bitbucket.org/premake/premake-dev/wiki/Building_Premake
+
+Or use a windows executable I built:
+http://zylannprods.fr/dl/premake5.exe
 
