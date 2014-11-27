@@ -6,9 +6,12 @@ namespace sn
 
 enum ConsoleColor
 {
-    SN_CC_DEFAULT,
+	SN_CC_BLACK = 0,
+	SN_CC_DARKGRAY,
+	SN_CC_GRAY,
+	SN_CC_WHITE,
 
-    SN_CC_DARK_RED,
+	SN_CC_DARK_RED,
     SN_CC_DARK_YELLOW,
     SN_CC_DARK_GREEN,
     SN_CC_DARK_BLUE,
@@ -22,10 +25,7 @@ enum ConsoleColor
     SN_CC_CYAN,
     SN_CC_MAGENTA,
 
-    SN_CC_WHITE,
-    SN_CC_GRAY,
-    SN_CC_DARKGRAY,
-    SN_CC_BLACK
+	SN_CC_DEFAULT,
 };
 
 ConsoleColor getConsoleForeground();
