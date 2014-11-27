@@ -34,6 +34,8 @@ ConsoleColor getConsoleBackground();
 void setConsoleBackground(ConsoleColor color);
 void setConsoleForeground(ConsoleColor color);
 
+void pauseConsole();
+
 } // namespace sn
 
 #endif // __HEADER_SN_CONSOLE__

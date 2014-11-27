@@ -71,9 +71,13 @@ namespace hello
 	void onCreate()
 	{
 		print("onCreate was called");
+
+		uint test = console::RED;
+		print("red: " + test1);
 	}
 
 	Clock timer;
+
 
 	// void onUpdate(Time delta)
 	// {
