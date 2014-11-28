@@ -22,17 +22,16 @@ namespace hello
 		}
 	}
 
-	// TODO Have toString functions available
-	string toString(Vector2i v)
-	{
-		return "(" + v.x + ", " + v.y + ")";
-	}
-
 	// This function is called when the module has just been compiled.
 	void __compiled__()
 	{
 		print("Hello compiled!");
 		//auto a = cast<Texture@>(sn::AssetDatabase::getAsset("texture", "default"));
+	}
+
+	void onCreate()
+	{
+		print("onCreate was called");
 
 		Lol a;
 		Lol b = a;
@@ -61,19 +60,9 @@ namespace hello
 			print("Dwarf " + dwarves[i]);
 		}
 
-		Vector2i vec;
-		Vector2i dir(2,-3);
-		print(toString(vec));
-		vec += dir;
-		print(toString(vec));
 	}
 
-	void onCreate()
-	{
-		print("onCreate was called");
-	}
-
-	Clock timer;
+	//Clock timer;
 
 	// void onUpdate(Time delta)
 	// {
