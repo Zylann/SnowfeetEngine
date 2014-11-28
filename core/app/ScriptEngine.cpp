@@ -1,6 +1,7 @@
 #include "../angelscript/addons/scriptstdstring/scriptstdstring.h"
 #include "../angelscript/addons/scriptarray/scriptarray.h"
 #include "../angelscript/addons/scriptmath/scriptmath.h"
+#include "../angelscript/addons/aatc/aatc.hpp"
 
 #include "../angelscript/addons/scriptbuilder/scriptbuilder.h"
 
@@ -108,6 +109,7 @@ void ScriptEngine::initialize()
 }
 
 //------------------------------------------------------------------------------
+// TODO modNamespace seems actually useless, remove it
 bool ScriptEngine::compileModule(std::string modName, std::string modNamespace, const std::vector<String> & files)
 {
     // The CScriptBuilder helper is an add-on that loads the file,
@@ -197,6 +199,9 @@ void ScriptEngine::registerCoreAPI()
     // Register print functions
     asCheck(m_engine->RegisterGlobalFunction("void print(const string &in)", asFUNCTION(asPrint), asCALL_CDECL));
     asCheck(m_engine->RegisterGlobalFunction("void error(const string &in)", asFUNCTION(asPrintError), asCALL_CDECL));
+
+    // Register AATC containers
+    aatc_RegisterAllContainers(m_engine);
 
     // Time
     register_Time(m_engine);
