@@ -2,6 +2,7 @@
 #include "../util/Log.hpp"
 #include "Module.hpp"
 #include "../system/thread/Thread.hpp"
+#include "../system/console/console.hpp"
 #include <ctime>
 
 namespace sn
@@ -61,7 +62,7 @@ int Application::execute(CommandLine commandLine)
 #ifdef SN_BUILD_DEBUG
     // Maintains the console window open on exit
     std::cout << "I: Execution finished with code " << exitCode << ". Press a key to dismiss..." << std::endl;
-    getchar();
+	pauseConsole();
 #endif
 
     return exitCode;

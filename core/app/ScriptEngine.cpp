@@ -13,6 +13,8 @@
 
 #include "../math/as_binding/as_math.hpp"
 
+#include "../system/console/as_binding/as_console.hpp"
+
 namespace sn
 {
 
@@ -56,13 +58,6 @@ void asPrint(std::string & msg)
 void asPrintError(std::string & msg)
 {
     sn::Log::get().print(SN_LTM_ERROR, msg);
-}
-
-//------------------------------------------------------------------------------
-void console_pause()
-{
-    std::cout << "Press any key to continue...";
-    getchar();
 }
 
 //==============================================================================
@@ -214,10 +209,7 @@ void ScriptEngine::registerCoreAPI()
     // Namespaced API
     //
 
-    // Register console functions
-    asCheck(m_engine->SetDefaultNamespace("console"));
-    asCheck(m_engine->RegisterGlobalFunction("void pause()", asFUNCTION(console_pause), asCALL_CDECL));
-
+	register_console(*m_engine);
 }
 
 //------------------------------------------------------------------------------

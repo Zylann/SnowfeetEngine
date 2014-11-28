@@ -60,9 +60,12 @@ namespace hello
 			print("Dwarf " + dwarves[i]);
 		}
 
+		uint test = console::RED;
+		print("red: " + test1);
 	}
 
 	//Clock timer;
+
 
 	// void onUpdate(Time delta)
 	// {
