@@ -2,6 +2,7 @@
 #define __HEADER_SN_ASSET__
 
 #include <core/config.hpp>
+#include <core/app/ASScriptObject.hpp>
 
 // Put this macro into your asset classes to define its database type name.
 // Examples: "image", "texture", "sound", "soundbuffer", "shader", "font"...
@@ -14,13 +15,20 @@
 namespace sn
 {
 
-/// \brief Base class of all assets.
-/// Modules are free to register their own types as long as they provide loaders.
+/// \brief Interface inherited by all asset classes.
+/// Modules are free to register their own types if they derive from IAssetType.
 /// If the object you want to turn into an asset is a class already, you have to wrap it.
-class SN_API IAsset
+class SN_API Asset : public ASScriptObject
 {
 public:
-    virtual ~IAsset() {}
+	Asset() : ASScriptObject() {}
+
+	virtual bool loadFromFile(const std::string & filePath) = 0;
+
+protected:
+	// Because refcount
+	// TODO Notify AssetDatabase?
+	virtual ~Asset() {}
 };
 
 } // namespace sn

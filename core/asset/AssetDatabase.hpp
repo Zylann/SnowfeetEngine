@@ -2,7 +2,7 @@
 #define __HEADER_SN_ASSETDATABASE__
 
 #include <core/util/typecheck.hpp>
-#include <core/asset/AssetLoader.hpp>
+#include <core/asset/AssetType.hpp>
 #include <map>
 
 
@@ -24,16 +24,15 @@ public:
     AssetDatabase(String root);
     ~AssetDatabase();
 
-    bool addLoader(std::string type, IAssetLoader * loader);
-    IAssetLoader * getLoader(std::string type);
+    IAssetType * getType(std::string type);
 
     bool loadAssetFromFile(String path, bool reload=false);
-    bool releaseAsset(IAsset * asset);
+    //bool releaseAsset(IAsset * asset);
 
     // Gets an asset. If it returns null, the asset may not have been loaded or is in progress.
-    IAsset * getAsset(const std::string & callingModule, const std::string & type, const String & name);
+    Asset * getAsset(const std::string & callingModule, const std::string & type, const String & name);
 
-    AssetMetadata * getAssetMetadata(IAsset * asset);
+    AssetMetadata * getAssetMetadata(Asset * asset);
 
     // Template version of getAsset, compiled in your native code.
     // It works only if you used the SN_ASSET macro of your asset class.
@@ -49,25 +48,29 @@ public:
     }
 
     template <class Asset_T>
-    bool addLoader(IAssetLoader * loader)
+    bool addType(IAssetType * type)
     {
         // Note: use SN_ASSET in your asset class
-        return addLoader(Asset_T::sGetDatabaseTypeName(), loader);
+        return addLoader(Asset_T::sGetDatabaseTypeName(), type);
     }
+
+private:
+
+	bool addType(std::string name, IAssetType * type);
 
 private:
 
     // Top directory where assets are located (usually the "projects" directory)
     String m_root;
 
-    // [type] => AssetLoader
-    std::map<std::string, IAssetLoader*> m_loaders;
+    // [typeName] => AssetType
+    std::map<std::string, IAssetType*> m_types;
 
-    // [type][name][moduleName] => Asset
-    std::map< std::string, std::map<String, std::map<std::string,IAsset*> > > m_assets;
+    // [typeName][name][moduleName] => Asset
+    std::map< std::string, std::map<String, std::map<std::string,Asset*> > > m_assets;
 
     // [Asset] => AssetMetadata
-    std::map<IAsset*, AssetMetadata> m_metadatas;
+    std::map<Asset*, AssetMetadata> m_metadatas;
 
 };
 

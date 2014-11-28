@@ -13,7 +13,7 @@ namespace sn
 
 //------------------------------------------------------------------------------
 Image::Image():
-    ASScriptObject(),
+    Asset(),
     m_channels(0)
 {
 }
