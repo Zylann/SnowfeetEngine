@@ -43,7 +43,7 @@ private:
     std::vector<Vector2f> m_uv;
     std::vector<Vector3f> m_normals;
     std::vector<Color> m_colors;
-    std::vector<int> m_indices;
+    std::vector<s32> m_indices;
 
 };
 
