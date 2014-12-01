@@ -4,15 +4,8 @@
 #include "../Application.hpp"
 #include <Windows.h>
 
-#define SN_MOD_LOAD_FUNC_NAME "loadSnowfeetModule"
-#define SN_MOD_UNLOAD_FUNC_NAME "unloadSnowfeetModule"
-
 namespace sn
 {
-
-//------------------------------------------------------------------------------
-typedef int(*NativeModLoadFunc)(asIScriptEngine*);
-typedef int(*NativeModUnloadFunc)(asIScriptEngine*);
 
 //------------------------------------------------------------------------------
 // TODO Cross-platform SharedLib class?
@@ -68,7 +61,7 @@ bool Module::loadNativeBindingsImpl(ScriptEngine & scriptEngine)
                 if (f != nullptr)
                 {
                     // Execute entry point
-                    int retval = f(scriptEngine.getEngine());
+                    int retval = f({ scriptEngine.getEngine(), scriptEngine.getSerializer() });
 
                     if (retval < 0)
                     {
@@ -111,8 +104,10 @@ void Module::unloadNativeBindingsImpl()
             NativeModUnloadFunc f = (NativeModUnloadFunc)GetProcAddress(lib.instance, SN_MOD_UNLOAD_FUNC_NAME);
             if (f != nullptr)
             {
+                ScriptEngine & scriptEngine = r_app.getScriptEngine();
+
                 // Execute exit point
-                int unloadResult = f(r_app.getScriptEngine().getEngine());
+                int unloadResult = f({ scriptEngine.getEngine(), scriptEngine.getSerializer() });
 
                 if (unloadResult < 0)
                 {

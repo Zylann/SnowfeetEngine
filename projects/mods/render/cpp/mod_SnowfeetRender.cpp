@@ -1,16 +1,17 @@
-﻿#include <angelscript.h>
+﻿#include <core/app/ModuleArgs.hpp>
+
 #include "mod_SnowfeetRender.h"
 #include "Shader.hpp"
 
 #include <core/asset/AssetDatabase.hpp>
 
-int registerSnowfeetModule(asIScriptEngine * engine)
+int loadSnowfeetModule(ModuleLoadArgs args)
 {
-    //adb.addLoader<sn::Shader>(new sn::ShaderLoader());
+    // Stuff to do...
     return 0;
 }
 
-int unloadSnowfeetModule(asIScriptEngine * engine)
+int unloadSnowfeetModule(ModuleUnloadArgs args)
 {
     return 0;
 }

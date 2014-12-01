@@ -1,6 +1,7 @@
 ﻿#ifndef __HEADER_SN_MODULE__
 #define __HEADER_SN_MODULE__
 
+#include <core/app/ModuleArgs.hpp>
 #include <core/app/ModuleInfo.hpp>
 #include <core/system/time/Time.hpp>
 

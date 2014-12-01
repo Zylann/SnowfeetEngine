@@ -12,7 +12,7 @@ This file is part of the SnowfeetEngine project.
 namespace sn
 {
 
-class SN_API Shader : public IAsset
+class SN_API Shader : public Asset
 {
 public:
 
