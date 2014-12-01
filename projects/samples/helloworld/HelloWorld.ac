@@ -61,7 +61,21 @@ namespace hello
 		}
 
 		uint test = console::RED;
-		print("red: " + test1);
+		print("red: " + test);
+
+		unordered_map<Vector2i,string> spacehash;
+		spacehash.insert(Vector2i(0,0), "origin");
+		spacehash.insert(Vector2i(5,0), "right");
+		spacehash.insert(Vector2i(-42,7), "far away");
+
+		for(auto it = spacehash.begin(); ++it;)
+		{
+			Vector2i k = it.key;
+			print("(" + k.x + "," + k.y + ") => " + it.value);
+		}
+
+		print("(5,0) => " + spacehash.find(Vector2i(-42,7)));
+
 	}
 
 	//Clock timer;

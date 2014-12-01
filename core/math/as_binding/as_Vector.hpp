@@ -1,9 +1,26 @@
 #ifndef __HEADER_SN_AS_VECTOR__
 #define __HEADER_SN_AS_VECTOR__
 
+#include "../../angelscript/addons/aatc/aatc_common.hpp"
+
 #include "as_math.hpp"
 #include "../Vector2.hpp"
 #include "../../app/ScriptEngine.hpp"
+
+
+//------------------------------------------------------------------------------
+// Specialization for Vector2
+// TODO Have hash functions for any vector, and not just in the binding
+template<typename T> class aatc_functor_hash<sn::Vector<T, 2> >
+{
+public:
+    std::size_t operator()(const sn::Vector<T,2>& v) const
+    {
+        return reinterpret_cast<sn::u32>(v.x()) | (reinterpret_cast<sn::u32>(v.y()) << (sizeof(sn::u32) * 4));
+    }
+};
+
+// TODO AATC functor for < operator
 
 namespace sn
 {
@@ -59,6 +76,13 @@ void register_Vector2Specific(asIScriptEngine & e, std::string c, std::string t)
         ("void f(" + t + "," + t + ")").c_str(),
         asFUNCTION(Vector2_initConstructor<T>), asCALL_CDECL_OBJLAST
     ));
+
+    aatc_Register_aatc_func_hash_value<Vector<T,2>>(&e, c.c_str());
+
+    //aatc_register_container_tempspec_vector<Vector<T,2>, 1, 0, 1>(&e, c.c_str());
+    //aatc_register_container_tempspec_list<Vector<T, 2>, 1, 0, 1>(engine, c);
+    //aatc_register_container_tempspec_set<Vector<T, 2>, 1, 0, 1>(engine, c);
+    //aatc_register_container_tempspec_unordered_set<Vector<T, 2>, 1, 0, 1>(&e, c.c_str());
 }
 
 //------------------------------------------------------------------------------
