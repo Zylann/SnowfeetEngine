@@ -1,4 +1,5 @@
 #include "../Module.hpp"
+#include "../../util/stringutils.hpp"
 #include "../ScriptEngine.hpp"
 #include "../../util/assert.hpp"
 #include "../Application.hpp"
@@ -46,10 +47,11 @@ bool Module::loadNativeBindingsImpl(ScriptEngine & scriptEngine)
         // For each registered binding library
         for (u32 i = 0; i < m_info.bindings.size(); ++i)
         {
-            String name = m_info.bindings[i];
-            String path = basePath + L"/" + name + L".dll";
+            String libName = m_info.bindings[i];
+			String path = basePath + L"/" + libName + L".dll";
 
             SN_WLOG(L"Loading shared lib \"" << path << L"\"...");
+			std::string loadFuncName = getLoadFuncName(libName);
 
             // Load the shared library
             HINSTANCE hLib = LoadLibraryW(path.c_str());
@@ -57,7 +59,7 @@ bool Module::loadNativeBindingsImpl(ScriptEngine & scriptEngine)
             if (hLib)
             {
                 // Get entry point
-                NativeModLoadFunc f = (NativeModLoadFunc)GetProcAddress(hLib, SN_MOD_LOAD_FUNC_NAME);
+                NativeModLoadFunc f = (NativeModLoadFunc)GetProcAddress(hLib, loadFuncName.c_str());
                 if (f != nullptr)
                 {
                     // Execute entry point
@@ -70,7 +72,7 @@ bool Module::loadNativeBindingsImpl(ScriptEngine & scriptEngine)
                         return false;
                     }
 
-                    m_impl->sharedLibs.push_back(SharedLib(name, hLib));
+                    m_impl->sharedLibs.push_back(SharedLib(libName, hLib));
                 }
                 else
                 {
@@ -101,7 +103,9 @@ void Module::unloadNativeBindingsImpl()
         for (auto it = m_impl->sharedLibs.rbegin(); it != m_impl->sharedLibs.rend(); ++it)
         {
             SharedLib & lib = *it;
+			std::string unloadFuncName = getLoadFuncName(lib.name);
             NativeModUnloadFunc f = (NativeModUnloadFunc)GetProcAddress(lib.instance, SN_MOD_UNLOAD_FUNC_NAME);
+
             if (f != nullptr)
             {
                 ScriptEngine & scriptEngine = r_app.getScriptEngine();
