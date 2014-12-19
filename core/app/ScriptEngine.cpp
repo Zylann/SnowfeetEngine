@@ -68,12 +68,18 @@ void asPrintError(std::string & msg)
 ScriptEngine::ScriptEngine(Application & app) :
     r_app(app),
     m_engine(nullptr),
-    m_context(nullptr)
+    m_context(nullptr),
+    m_serializer(nullptr)
 {}
 
 //------------------------------------------------------------------------------
 ScriptEngine::~ScriptEngine()
 {
+    if (m_serializer)
+    {
+        delete m_serializer;
+        m_serializer = nullptr;
+    }
     if (m_context)
     {
         m_context->Release();
@@ -95,12 +101,16 @@ void ScriptEngine::initialize()
     // Create the script engine
     m_engine = asCreateScriptEngine(ANGELSCRIPT_VERSION);
 
+    m_serializer = new CSerializer();
+
     // Set the message callback to receive information on errors in human readable form.
     int r = m_engine->SetMessageCallback(asFUNCTION(asMessageCallback), 0, asCALL_CDECL);
     SN_ASSERT(r >= 0, "AngelScript: message callback setting error");
 
     registerCoreAPI();
 
+    // TODO initialized boolean to prevent calling twice... or move initialize code in constructor?
+    //initialized = true;
 }
 
 //------------------------------------------------------------------------------
@@ -174,10 +184,6 @@ void ScriptEngine::registerCoreAPI()
 {
     SN_LOG("Registering core API");
 
-    //
-    // Global API
-    //
-
     // Register string:
     // AngelScript doesn't have a built-in string type, as there is no definite standard
     // string type for C++ applications. Every developer is free to register it's own string type.
@@ -195,7 +201,7 @@ void ScriptEngine::registerCoreAPI()
     asCheck(m_engine->RegisterGlobalFunction("void print(const string &in)", asFUNCTION(asPrint), asCALL_CDECL));
     asCheck(m_engine->RegisterGlobalFunction("void error(const string &in)", asFUNCTION(asPrintError), asCALL_CDECL));
 
-    // Register AATC containers
+    // Register AATC containers (list, map, set...)
     aatc_RegisterAllContainers(m_engine);
 
     // Time
@@ -205,10 +211,7 @@ void ScriptEngine::registerCoreAPI()
     // Core math
     register_math(*m_engine);
 
-    //
-    // Namespaced API
-    //
-
+    // Console stuff
 	register_console(*m_engine);
 }
 
@@ -226,6 +229,12 @@ asIScriptContext * ScriptEngine::getContext()
         m_context = m_engine->CreateContext();
     }
     return m_context;
+}
+
+//------------------------------------------------------------------------------
+CSerializer * ScriptEngine::getSerializer()
+{
+    return m_serializer;
 }
 
 //------------------------------------------------------------------------------

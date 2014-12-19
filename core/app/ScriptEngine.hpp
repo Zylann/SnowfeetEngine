@@ -8,6 +8,7 @@ This file is part of the SnowfeetEngine project.
 #define __HEADER_SCRIPTENGINE__
 
 #include <angelscript.h>
+#include <core/angelscript/addons/serializer/serializer.h>
 #include <string>
 #include <core/util/String.hpp>
 
@@ -27,6 +28,7 @@ public:
 
     asIScriptEngine * getEngine();
     asIScriptContext * getContext();
+    CSerializer * getSerializer();
 
     bool compileModule(std::string modName, std::string modNamespace, const std::vector<String> & files);
 
@@ -38,8 +40,12 @@ private:
     void registerCoreAPI();
 
     Application & r_app;
+
     asIScriptEngine * m_engine;
     asIScriptContext * m_context;
+
+    // Serializer used for hot-reload
+    CSerializer * m_serializer;
 
 };
 
