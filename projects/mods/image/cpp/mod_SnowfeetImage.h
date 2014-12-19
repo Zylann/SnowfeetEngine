@@ -6,8 +6,8 @@
 
 extern "C"
 {
-    SN_MOD_EXPORT int loadSnowfeetModule(asIScriptEngine * engine);
-    SN_MOD_EXPORT int unloadSnowfeetModule(asIScriptEngine * engine);
+    SN_MOD_EXPORT int loadSnowfeetModule_ModImage(asIScriptEngine * engine);
+    SN_MOD_EXPORT int unloadSnowfeetModule_ModImage(asIScriptEngine * engine);
 }
 
 #endif // __HEADER_SN_SNOWFEET_IMAGE__
