@@ -39,7 +39,7 @@ inline std::string getLoadFuncName(const String & libName)
 /// \brief Gets the name of the unloading function from the name of a Snowfeet module native lib
 inline std::string getUnloadFuncName(const String & libName)
 {
-	return "loadSnowfeetModule_" + toString(libName);
+	return "unloadSnowfeetModule_" + toString(libName);
 }
 
 } // namespace sn

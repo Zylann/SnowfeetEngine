@@ -102,7 +102,7 @@ void Module::unloadNativeBindingsImpl()
         for (auto it = m_impl->sharedLibs.rbegin(); it != m_impl->sharedLibs.rend(); ++it)
         {
             SharedLib & lib = *it;
-			std::string unloadFuncName = getLoadFuncName(lib.name);
+			std::string unloadFuncName = getUnloadFuncName(lib.name);
             NativeModUnloadFunc f = (NativeModUnloadFunc)GetProcAddress(lib.instance, unloadFuncName.c_str());
 
             if (f != nullptr)
