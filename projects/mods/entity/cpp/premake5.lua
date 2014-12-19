@@ -8,6 +8,7 @@ project "ModEntity"
 	location "."
 	targetdir ".."
 	files {
+		"*.h",
 		"**.hpp",
 		"**.cpp"
 	}

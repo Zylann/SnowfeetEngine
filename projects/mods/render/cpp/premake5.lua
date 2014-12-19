@@ -8,6 +8,7 @@ project "ModRender"
 	location "."
 	targetdir ".."
 	files {
+		"*.h",
 		"**.hpp",
 		"**.cpp"
 	}

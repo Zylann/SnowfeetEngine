@@ -9,6 +9,7 @@ project "ModImage"
 	location "."
 	targetdir ".."
 	files {
+		"*.h",
 		"**.hpp",
 		"**.cpp",
 		"stbi/*.h"
