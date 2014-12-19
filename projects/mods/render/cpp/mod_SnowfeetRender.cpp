@@ -5,13 +5,13 @@
 
 #include <core/asset/AssetDatabase.hpp>
 
-int loadSnowfeetModule(ModuleLoadArgs args)
+int loadSnowfeetModule_ModRender(ModuleLoadArgs args)
 {
     // Stuff to do...
     return 0;
 }
 
-int unloadSnowfeetModule(ModuleUnloadArgs args)
+int unloadSnowfeetModule_ModRender(ModuleUnloadArgs args)
 {
     return 0;
 }
