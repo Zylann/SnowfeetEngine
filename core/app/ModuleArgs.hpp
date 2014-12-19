@@ -2,6 +2,8 @@
 #define __HEADER_SN_MODULE_ARGS__
 
 #include <core/config.hpp>
+#include <core/util/stringutils.hpp>
+#include <core/util/String.hpp>
 #include <angelscript.h>
 #include <core/angelscript/addons/serializer/serializer.h>
 

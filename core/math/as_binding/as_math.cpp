@@ -27,6 +27,7 @@ void register_math(asIScriptEngine & e)
 
     register_Vector<s32, 2>(e, "Vector2i", "int", { "x", "y" });
     register_Vector<f32, 2>(e, "Vector2f", "float", { "x", "y"});
+    register_Vector2iSpecific(e, "Vector2i");
 
     register_Vector<s32, 3>(e, "Vector3i", "int", { "x", "y", "z" });
     register_Vector<f32, 3>(e, "Vector3f", "float", { "x", "y", "z" });

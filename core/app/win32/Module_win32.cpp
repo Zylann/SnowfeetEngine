@@ -1,5 +1,4 @@
 #include "../Module.hpp"
-#include "../../util/stringutils.hpp"
 #include "../ScriptEngine.hpp"
 #include "../../util/assert.hpp"
 #include "../Application.hpp"
@@ -76,7 +75,7 @@ bool Module::loadNativeBindingsImpl(ScriptEngine & scriptEngine)
                 }
                 else
                 {
-                    SN_WERROR("Couldn't find " << SN_MOD_LOAD_FUNC_NAME << " function, aborting");
+                    SN_ERROR("Couldn't find " << loadFuncName << " function, aborting");
                     FreeLibrary(hLib);
                     return false;
                 }
@@ -104,7 +103,7 @@ void Module::unloadNativeBindingsImpl()
         {
             SharedLib & lib = *it;
 			std::string unloadFuncName = getLoadFuncName(lib.name);
-            NativeModUnloadFunc f = (NativeModUnloadFunc)GetProcAddress(lib.instance, SN_MOD_UNLOAD_FUNC_NAME);
+            NativeModUnloadFunc f = (NativeModUnloadFunc)GetProcAddress(lib.instance, unloadFuncName.c_str());
 
             if (f != nullptr)
             {
