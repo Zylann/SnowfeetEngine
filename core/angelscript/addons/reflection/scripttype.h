@@ -17,8 +17,6 @@ public:
     CScriptType(asIObjectType *type):
         m_ot(type)
     {
-        test = "pwet";
-        lollipop = 1;
         if (m_ot)
             m_ot->AddRef();
     }
@@ -26,8 +24,6 @@ public:
     CScriptType(asIObjectType *type, const CScriptType &other):
         m_ot(type)
     {
-        test = "pwet";
-        lollipop = 1;
         if (m_ot)
         {
             m_ot->AddRef();
@@ -37,8 +33,6 @@ public:
 
     CScriptType(const CScriptType &other)
     {
-        test = "pwet";
-        lollipop = 1;
         m_ot = other.m_ot;
         m_ot->AddRef();
     }
@@ -96,8 +90,6 @@ public:
 
 protected:
     asIObjectType *m_ot;
-    std::string test;
-    int lollipop;
 };
 
 void RegisterScriptType(asIScriptEngine *engine);
