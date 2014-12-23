@@ -6,8 +6,8 @@
 
 extern "C"
 {
-    SN_MOD_EXPORT int loadSnowfeetModule_ModEntity(ModuleLoadArgs args);
-    SN_MOD_EXPORT int unloadSnowfeetModule_ModEntity(ModuleUnloadArgs args);
+    SN_MOD_EXPORT int loadSnowfeetModule_ModEntity(ModuleLoadArgs * args);
+    SN_MOD_EXPORT int unloadSnowfeetModule_ModEntity(ModuleUnloadArgs * args);
 }
 
 namespace sn {
