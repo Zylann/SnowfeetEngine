@@ -699,7 +699,7 @@ public:
 		template<> class _functor_iterator_setindex<aatc_N>{
 		public:
 			void operator()(iteratortype& ii, std::size_t index){
-				for(int i = 0; i < index; i++){
+				for(std::size_t i = 0; i < index; i++){
 					ii++;
 				}
 			}
@@ -709,7 +709,7 @@ public:
 	//doxygen skip
 
 	template<class T_is_native> void Insert_generic_index_before(int index, void* value){
-		if((index > -1) && (index <= T_container::size())){
+		if((index > -1) && (static_cast<size_t>(index) <= T_container::size())){
 			T_container::iterator ii = T_container::begin();
 			{_functor_iterator_setindex<T_is_native> ff; ff(ii, index); }
 
@@ -729,7 +729,7 @@ public:
 
 
 	template<class T_is_native> void Erase_generic_index(int position){
-		if((position > -1) && (position < T_container::size())){
+		if ((position > -1) && (static_cast<size_t>(position) < T_container::size())){
 			T_container::iterator ii = T_container::begin();
 
 			{_functor_iterator_setindex<T_is_native> ff; ff(ii, position); }
@@ -745,8 +745,8 @@ public:
 	}
 
 	template<class T_is_native> void Erase_generic_index_range(int range_index_begin, int range_index_end){
-		if((range_index_begin > -1) && (range_index_begin < T_container::size())){
-			if((range_index_end > -1) && (range_index_end < T_container::size())){
+		if((range_index_begin > -1) && (static_cast<size_t>(range_index_begin) < T_container::size())){
+			if((range_index_end > -1) && (static_cast<size_t>(range_index_end) < T_container::size())){
 				T_container::iterator ii_range_begin = T_container::begin();
 				T_container::iterator ii_range_end = T_container::begin();
 
