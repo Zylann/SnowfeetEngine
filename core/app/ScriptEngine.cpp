@@ -1,6 +1,7 @@
 #include "../angelscript/addons/scriptstdstring/scriptstdstring.h"
 #include "../angelscript/addons/scriptarray/scriptarray.h"
 #include "../angelscript/addons/scriptmath/scriptmath.h"
+#include "../angelscript/addons/reflection/scripttype.h"
 #include "../angelscript/addons/aatc/aatc.hpp"
 
 #include "../angelscript/addons/scriptbuilder/scriptbuilder.h"
@@ -196,6 +197,9 @@ void ScriptEngine::registerCoreAPI()
 
     // Register array type
     RegisterScriptArray(m_engine, true);
+
+    // Register reflection
+    RegisterScriptType(m_engine);
 
     // Register print functions
     asCheck(m_engine->RegisterGlobalFunction("void print(const string &in)", asFUNCTION(asPrint), asCALL_CDECL));

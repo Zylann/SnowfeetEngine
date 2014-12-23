@@ -22,6 +22,9 @@ project "SnowfeetCore"
 		"JsonBox",
 		"ws2_32"
 	}
+	defines {
+		"AS_ADDON_SCRIPTTYPE_USE_STLSTRING=1"
+	}
 	filter "configurations:Debug"
 		targetdir "../_bin/debug"
 		objdir "../_obj/debug"

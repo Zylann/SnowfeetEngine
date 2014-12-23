@@ -12,6 +12,11 @@ namespace hello
 		string getMessage() {
 			return "My name is " + name;
 		}
+
+		void getComponent(Type t)
+		{
+			print("Getting component " + t);
+		}
 	}
 
 	class Lol2 : Lol
@@ -20,6 +25,7 @@ namespace hello
 		{
 			return "I'm a lol 2 named " + name + " (base: " + Lol::getMessage() + " )";
 		}
+
 	}
 
 	// This function is called when the module has just been compiled.
@@ -42,6 +48,18 @@ namespace hello
 		Lol@ c = a;
 		a.name = "gouzi";
 		c.foo();
+
+		Type t(c);
+		//type<Lol> t;
+		c.getComponent(type<Lol2>());
+
+		// print("Class name T: " + type<Lol>());
+
+		//print("Class name: " + classname(c));
+		//print("Class type: " + type<Lol>());
+		// type<Lol> lolType;
+		// type<Lol2> lol2Type;
+		// print("Inherits: " + (lolType.derivesFrom(lol2Type)));
 
 		// auto is supported in AS 2.29.1
 		// auto d = a;
