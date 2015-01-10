@@ -10,7 +10,7 @@ namespace sn
 {
 
 /// \brief Generic implementation of any geometric vector type
-template <typename T, unsigned int N>
+template <typename T, u32 N>
 class Vector
 {
 public:
@@ -62,12 +62,12 @@ public:
     // Operators
     //------------------------------------
 
-    inline T & operator[](const unsigned int i)
+    inline T & operator[](const u32 i)
     {
         return m_v[i];
     }
 
-    inline const T & operator[](const unsigned int i) const
+    inline const T & operator[](const u32 i) const
     {
         return m_v[i];
     }
@@ -80,7 +80,7 @@ public:
 
     inline bool operator==(const Vector<T, N> & other) const
     {
-        for (unsigned int i = 0; i < N; ++i)
+        for (u32 i = 0; i < N; ++i)
         {
             if (m_v[i] != m_v[i])
                 return false;
@@ -96,7 +96,7 @@ public:
     inline Vector<T,N> operator-() const
     {
         Vector<T, N> res;
-        for (unsigned int i = 0; i < N; ++i)
+        for (u32 i = 0; i < N; ++i)
             res.m_v[i] = -m_v[i];
         return res;
     }
@@ -104,14 +104,14 @@ public:
     inline Vector<T,N> operator+(const Vector<T,N>& other) const
     {
         Vector<T, N> res(m_v);
-        for (unsigned int i = 0; i < N; ++i)
+        for (u32 i = 0; i < N; ++i)
             res.m_v[i] += other.m_v[i];
         return res;
     }
 
     inline Vector<T,N> & operator+=(const Vector<T,N>& other)
     {
-        for (unsigned int i = 0; i < N; ++i)
+        for (u32 i = 0; i < N; ++i)
             m_v[i] += other.m_v[i];
         return *this;
     }
@@ -119,14 +119,14 @@ public:
     inline Vector<T,N> operator-(const Vector<T,N>& other) const
     {
         Vector<T, N> res(m_v);
-        for (unsigned int i = 0; i < N; ++i)
+        for (u32 i = 0; i < N; ++i)
             res.m_v[i] -= other.m_v[i];
         return res;
     }
 
     inline Vector<T,N> & operator-=(const Vector<T,N>& other)
     {
-        for (unsigned int i = 0; i < N; ++i)
+        for (u32 i = 0; i < N; ++i)
             m_v[i] -= other.m_v[i];
         return *this;
     }
@@ -134,14 +134,14 @@ public:
     inline Vector<T,N> operator*(const Vector<T,N>& other) const
     {
         Vector<T, N> res(m_v);
-        for (unsigned int i = 0; i < N; ++i)
+        for (u32 i = 0; i < N; ++i)
             res.m_v[i] *= other.m_v[i];
         return res;
     }
 
     inline Vector<T,N> & operator*=(const Vector<T,N>& other)
     {
-        for (unsigned int i = 0; i < N; ++i)
+        for (u32 i = 0; i < N; ++i)
             m_v[i] *= other.m_v[i];
         return *this;
     }
@@ -149,14 +149,14 @@ public:
     inline Vector<T,N> operator*(const T v) const
     {
         Vector<T, N> res(m_v);
-        for (unsigned int i = 0; i < N; ++i)
+        for (u32 i = 0; i < N; ++i)
             res.m_v[i] *= v;
         return res;
     }
 
     inline Vector<T,N> & operator*=(const T v)
     {
-        for (unsigned int i = 0; i < N; ++i)
+        for (u32 i = 0; i < N; ++i)
             m_v[i] *= v;
         return *this;
     }
@@ -164,14 +164,14 @@ public:
     inline Vector<T,N> operator/(const Vector<T,N>& other) const
     {
         Vector<T, N> res(m_v);
-        for (unsigned int i = 0; i < N; ++i)
+        for (u32 i = 0; i < N; ++i)
             res.m_v[i] /= other.m_v[i];
         return res;
     }
 
     inline Vector<T,N> & operator/=(const Vector<T,N>& other)
     {
-        for (unsigned int i = 0; i < N; ++i)
+        for (u32 i = 0; i < N; ++i)
             m_v[i] /= other.m_v[i];
         return *this;
     }
@@ -179,7 +179,7 @@ public:
     inline Vector<T,N> operator/(const T v) const
     {
         Vector<T, N> res(m_v);
-        for (unsigned int i = 0; i < N; ++i)
+        for (u32 i = 0; i < N; ++i)
             res.m_v[i] /= v;
         return res;
     }
@@ -187,7 +187,7 @@ public:
     inline Vector<T,N> & operator/=(const T v)
     {
         T i = (T)1.0 / v;
-        for (unsigned int i = 0; i < N; ++i)
+        for (u32 i = 0; i < N; ++i)
             m_v[i] *= v;
         return *this;
     }
@@ -195,7 +195,7 @@ public:
     /// sort in order x, y. Difference must be above rounding tolerance.
     inline bool operator<(const Vector<T,N>&other) const
     {
-        for (unsigned int i = 0; i < N; ++i)
+        for (u32 i = 0; i < N; ++i)
         {
             if (m_v[i] < other.m_v[i])
                 return true;
@@ -212,7 +212,7 @@ public:
     inline T getLengthSQ() const
     {
         T s = 0;
-        for (unsigned int i = 0; i < N; ++i)
+        for (u32 i = 0; i < N; ++i)
             s += math::sq(m_v[i]);
         return s;
     }
@@ -236,7 +236,7 @@ public:
 
         const f32 len = 1.f / sqrtf(lenSQ);
 
-        for (unsigned int i = 0; i < N; ++i)
+        for (u32 i = 0; i < N; ++i)
             m_v[i] = (T)(m_v[i] * len);
 
         return *this;
@@ -245,7 +245,7 @@ public:
     inline T dotProduct(const Vector<T, N> & other)
     {
         T p = 0;
-        for (unsigned int i = 0; i < N; ++i)
+        for (u32 i = 0; i < N; ++i)
             p += m_v[i] * other.m_v[i];
         return p;
     }
@@ -272,7 +272,7 @@ std::string toString(const Vector<T, N> & v)
 {
     std::stringstream ss;
     ss << "{" << v[0];
-    for (unsigned int i = 1; i < N; ++i)
+    for (u32 i = 1; i < N; ++i)
     {
         ss << ", " << v[i];
     }
