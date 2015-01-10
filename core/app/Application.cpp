@@ -3,6 +3,7 @@
 #include "Module.hpp"
 #include "../system/thread/Thread.hpp"
 #include "../system/console/console.hpp"
+#include "../object_types.hpp"
 #include <ctime>
 
 namespace sn
@@ -79,6 +80,7 @@ int Application::executeEx()
 
     std::srand(std::time(NULL));
 
+    registerObjectTypes(ObjectTypeDatabase::get());
     m_scriptEngine.initialize();
 
     m_runFlag = true;
