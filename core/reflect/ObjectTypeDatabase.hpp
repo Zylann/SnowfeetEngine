@@ -3,33 +3,20 @@
 
 #include <vector>
 #include <unordered_map>
-#include <functional>
 #include <core/util/assert.hpp>
-#include <core/reflect/Object.hpp>
+#include <core/reflect/ObjectType.hpp>
 
 namespace sn
 {
 
 /// \brief Singleton class that allows the creation of objects from their name or ID.
 /// It can be used for native serialization and basic reflection.
+/// \warning Not thread-safe yet.
 class SN_API ObjectTypeDatabase
 {
-private:
-
-    // Private to prevent construction from the outside
-    ObjectTypeDatabase() :
-        m_nextID(1) // IDs start at 1
-    {}
-
-    // Prevent copy-construction
-    ObjectTypeDatabase(const ObjectTypeDatabase&);
-
-    // Prevent assignment
-    ObjectTypeDatabase & operator=(const ObjectTypeDatabase&);
-
 public:
 
-    ///// \brief Returns singleton
+    /// \brief Returns singleton
     static ObjectTypeDatabase & get();
 
     /// \brief Registers an object type that uses SN_OBJECT macro in its definition.
@@ -40,34 +27,30 @@ public:
     /// However, IDs may differ if the version of the engine differ too, as there
     /// might be new objects.
     template <class Object_T>
-    void registerType(IObjectTypeUserData * userData=nullptr)
+    void registerType()
     {
-        // Get type structure from a static function defined in the object class
-        // (that's the case if it uses the SN_OBJECT macro)
-        ObjectType & type = Object_T::sObjectType();
+        std::string typeName = Object_T::__sGetClassName();
+        std::string baseName = Object_T::__sGetBaseClassName();
 
         // Check if the object has already been registered
-        SN_ASSERT(!isRegistered(type), "ObjectTypeDatabase::registerType: registered the same type twice ! (" << type.toString() << ")");
+        SN_ASSERT(!isRegistered(typeName), "ObjectTypeDatabase::registerType: registered the same type twice ! (" << typeName << ")");
 
-        type.userData = userData;
-        type.moduleName = m_currentModule;
+        ObjectType * type = new ObjectType(typeName, baseName);
+
+        //type->userData = userData;
+        type->moduleName = m_currentModule;
 
         // Generate type ID
-        type.ID = m_nextID++;
-        m_nameToID[type.name] = type.ID;
+        type->ID = m_nextID++;
 
         // Register factory function
-        m_factories[type.name] = Object_T::instantiate;
+        type->factory = Object_T::instantiate;
 
         // Register type
-        if(type.ID >= m_registeredTypes.size())
-        {
-            m_registeredTypes.resize(type.ID+1, nullptr);
-        }
-        m_registeredTypes[type.ID] = &type;
+        m_registeredTypes[type->name] = type;
 
 #ifdef SN_BUILD_DEBUG
-        SN_DLOG("Registered " << type.toString());
+        SN_DLOG("Registered " << type->toString());
 #endif
     }
 
@@ -79,13 +62,7 @@ public:
     }
 
     void unregisterType(ObjectType & t);
-    bool isRegistered(ObjectType & t);
-
-    /// \brief Creates a new instance of an object from its name.
-    /// It does the same thing as "new MyObject()", where className = "MyObject".
-    /// \return pointer to dynamically allocated object instance, or null if the object
-    /// couldn't be allocated (as for abstract types).
-    Object * instantiate(const std::string className);
+    bool isRegistered(const std::string & typeName);
 
     /// \brief Gets an object metaclass from its name
     /// \return the object type, or null if not found.
@@ -95,15 +72,33 @@ public:
     void endModule();
     void unregisterModule(const std::string & name);
 
+    void clear();
+
+private:
+
+    // Private to prevent construction from the outside
+    ObjectTypeDatabase() :
+        m_nextID(1) // IDs start at 1
+    {}
+
+    ~ObjectTypeDatabase()
+    {
+        clear();
+    }
+
+    // Prevent copy-construction
+    ObjectTypeDatabase(const ObjectTypeDatabase&);
+
+    // Prevent assignment
+    ObjectTypeDatabase & operator=(const ObjectTypeDatabase&);
+
 private:
 
     // References to registered types
-    std::vector<ObjectType*> m_registeredTypes;
+    std::unordered_map<std::string,ObjectType*> m_registeredTypes;
 
     std::string m_currentModule;
 
-    std::unordered_map<std::string, ObjectTypeID> m_nameToID;
-    std::unordered_map<std::string, std::function<Object*()>> m_factories;
     u32 m_nextID;
 
 };

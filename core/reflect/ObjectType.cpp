@@ -4,6 +4,17 @@
 namespace sn
 {
 
+//------------------------------------------------------------------------------
+bool ObjectType::is(const std::string & typeName, bool includeInheritance) const
+{
+    ObjectType * t = ObjectTypeDatabase::get().getType(typeName);
+    if (t)
+        return is(*t, includeInheritance);
+    else
+        return false;
+}
+
+//------------------------------------------------------------------------------
 bool ObjectType::is(const ObjectType & other, bool includeInheritance) const
 {
     // If the object has a Null type
@@ -37,6 +48,19 @@ bool ObjectType::is(const ObjectType & other, bool includeInheritance) const
 
     // Types differ
     return false;
+}
+
+//------------------------------------------------------------------------------
+Object * ObjectType::instantiate()
+{
+    Object * obj = factory();
+#ifdef SN_BUILD_DEBUG
+    if (obj == nullptr)
+    {
+        SN_ERROR("ObjectType::instantiate: couldn't create instance of " << toString());
+    }
+#endif
+    return obj;
 }
 
 } // namespace sn

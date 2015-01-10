@@ -13,32 +13,18 @@ ObjectTypeDatabase & ObjectTypeDatabase::get()
 }
 
 //------------------------------------------------------------------------------
-bool ObjectTypeDatabase::isRegistered(ObjectType & t)
+bool ObjectTypeDatabase::isRegistered(const std::string & typeName)
 {
-    return m_nameToID.find(t.name) != m_nameToID.end();
-}
-
-//------------------------------------------------------------------------------
-Object * ObjectTypeDatabase::instantiate(const std::string className)
-{
-    auto it = m_factories.find(className);
-#ifdef SN_BUILD_DEBUG
-    if(it == m_factories.end())
-    {
-        SN_ERROR("cannot instantiate " << className << ", factory not found");
-    }
-#endif
-    assert(it != m_factories.end());
-    return it->second();
+    return m_registeredTypes.find(typeName) != m_registeredTypes.end();
 }
 
 //------------------------------------------------------------------------------
 ObjectType * ObjectTypeDatabase::getType(const std::string & typeName)
 {
-    auto it = m_nameToID.find(typeName);
-    if(it != m_nameToID.end())
+    auto it = m_registeredTypes.find(typeName);
+    if (it != m_registeredTypes.end())
     {
-        return m_registeredTypes[it->second];
+        return it->second;
     }
     else
     {
@@ -61,16 +47,11 @@ void ObjectTypeDatabase::endModule()
 //------------------------------------------------------------------------------
 void ObjectTypeDatabase::unregisterType(ObjectType & t)
 {
-    if (isRegistered(t))
+    auto it = m_registeredTypes.find(t.name);
+    if (it != m_registeredTypes.end())
     {
-        ObjectTypeID id = m_nameToID.find(t.name)->second;
-
-        m_nameToID.erase(t.name);
-        m_factories.erase(t.name);
-        m_registeredTypes[id] = nullptr;
-
-        while ((!m_registeredTypes.empty()) && m_registeredTypes.back() == nullptr)
-            m_registeredTypes.pop_back();
+        delete it->second;
+        m_registeredTypes.erase(it);
     }
     else
     {
@@ -92,8 +73,8 @@ void ObjectTypeDatabase::unregisterModule(const std::string & name)
     auto types = m_registeredTypes;
     for (auto it = types.begin(); it != types.end(); ++it)
     {
-        ObjectType * t = *it;
-        if (t && t->moduleName == name)
+        ObjectType * t = it->second;
+        if (t->moduleName == name)
         {
             unregisterType(*t);
             ++count;
@@ -104,6 +85,17 @@ void ObjectTypeDatabase::unregisterModule(const std::string & name)
     {
         SN_WARNING("ObjectTypeDatabase::unregisterModule: no type found in module \"" << name << "\"");
     }
+}
+
+//------------------------------------------------------------------------------
+void ObjectTypeDatabase::clear()
+{
+    for (auto it = m_registeredTypes.begin(); it != m_registeredTypes.end(); ++it)
+    {
+        delete it->second;
+    }
+    m_registeredTypes.clear();
+    m_nextID = 1;
 }
 
 } // namespace sn
