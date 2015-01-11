@@ -8,6 +8,7 @@ namespace sn
 
 /// \brief This class must be inherited by objects needing reference counted memory management.
 /// If so, such objects must NEVER be destroyed with delete, but by using the release() method.
+/// Also, don't use on the stack, but only with dynamic allocation.
 /// \warning Not thread safe yet.
 class SN_API RefCounted
 {
