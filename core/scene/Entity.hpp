@@ -24,7 +24,7 @@ enum EntityFlags
 
 class Scene;
 
-class Entity : public RefCounted, public Object
+class SN_API Entity : public RefCounted, public Object
 {
 public:
 

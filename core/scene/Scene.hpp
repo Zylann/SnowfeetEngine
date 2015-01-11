@@ -8,10 +8,16 @@
 namespace sn
 {
 
+// SUGG: getScene() return the first parent scene, getRoot() returns the top-most,
+// that can be either the game scene or editor's scene?
+
 /// \brief The scene is the top-level object of the game world.
 /// It cannot have a parent and cannot be destroyed.
-/// It exists as long as the application runs.
-class Scene : public Entity
+/// Its semantic is like an Application, it exists as long as the program runs.
+/// (Each entity is a scene, in some way. But the actual Scene is the only one root).
+/// \note: you can still nest scenes by creating some in your entities, to make an editor for instance.
+/// However, sub-scenes cannot interact with their parent unless custom access is given.
+class SN_API Scene : public Entity
 {
 public:
 
