@@ -47,10 +47,10 @@ bool Module::loadNativeBindingsImpl(ScriptEngine & scriptEngine)
         for (u32 i = 0; i < m_info.bindings.size(); ++i)
         {
             String libName = m_info.bindings[i];
-			String path = basePath + L"/" + libName + L".dll";
+            String path = basePath + L"/" + libName + L".dll";
 
             SN_WLOG(L"Loading shared lib \"" << path << L"\"...");
-			std::string loadFuncName = getLoadFuncName(libName);
+            std::string loadFuncName = getLoadFuncName(libName);
 
             // Load the shared library
             HINSTANCE hLib = LoadLibraryW(path.c_str());
@@ -62,7 +62,11 @@ bool Module::loadNativeBindingsImpl(ScriptEngine & scriptEngine)
                 if (f != nullptr)
                 {
                     // Execute entry point
-                    int retval = f({ scriptEngine.getEngine(), scriptEngine.getSerializer() });
+                    int retval = f({
+                        scriptEngine.getEngine(),
+                        scriptEngine.getSerializer(),
+                        &(ObjectTypeDatabase::get())
+                    });
 
                     if (retval < 0)
                     {
@@ -102,7 +106,7 @@ void Module::unloadNativeBindingsImpl()
         for (auto it = m_impl->sharedLibs.rbegin(); it != m_impl->sharedLibs.rend(); ++it)
         {
             SharedLib & lib = *it;
-			std::string unloadFuncName = getUnloadFuncName(lib.name);
+            std::string unloadFuncName = getUnloadFuncName(lib.name);
             NativeModUnloadFunc f = (NativeModUnloadFunc)GetProcAddress(lib.instance, unloadFuncName.c_str());
 
             if (f != nullptr)
@@ -110,7 +114,11 @@ void Module::unloadNativeBindingsImpl()
                 ScriptEngine & scriptEngine = r_app.getScriptEngine();
 
                 // Execute exit point
-                int unloadResult = f({ scriptEngine.getEngine(), scriptEngine.getSerializer() });
+                int unloadResult = f({
+                    scriptEngine.getEngine(),
+                    scriptEngine.getSerializer(),
+                    &(ObjectTypeDatabase::get())
+                });
 
                 if (unloadResult < 0)
                 {
