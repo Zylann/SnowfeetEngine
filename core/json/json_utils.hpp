@@ -26,10 +26,10 @@ This file is part of the SnowfeetEngine project.
 #include <SFML/System/Vector3.hpp>
 #endif
 
-#define SN_JSON_TYPE_TAG "@Type"
-#define SN_JSON_REF_TAG "@Ref"
-#define SN_JSON_XREF_TAG "@XRef"
-#define SN_JSON_PREFAB_TAG "@Prefab"
+#define SN_JSON_TYPE_TAG "@type"
+#define SN_JSON_REF_TAG "@ref"
+#define SN_JSON_XREF_TAG "@xref"
+#define SN_JSON_PREFAB_TAG "@prefab"
 
 // Json serialization helpers for various composed types
 
