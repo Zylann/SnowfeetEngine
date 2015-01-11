@@ -35,6 +35,9 @@ bool ModuleInfo::loadFromFile(const String & pathToProjects, const String & modP
     // Get namespace
     scriptNamespace = v["namespace"].getString();
 
+    // Get startup scene if any
+    startupScene = toWideString(v["startupScene"].getString());
+
     // Get bindings
     {
         const JsonBox::Array & a = v["bindings"].getArray();

@@ -16,6 +16,7 @@ struct ModuleInfo
     String modFilePath;
     std::string scriptNamespace;
     std::vector<String> dependencies;
+    String startupScene;
 
     //! The order is important in this container !//
     std::vector<String> bindings;

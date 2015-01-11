@@ -21,6 +21,7 @@ namespace sn
 //------------------------------------------------------------------------------
 Application::Application() :
     m_scriptEngine(*this),
+    m_scene(nullptr),
     m_runFlag(false)
 {
     //SN_ASSERT(g_instance == nullptr, "E: Application: multiple instances are not allowed.");
@@ -78,11 +79,14 @@ int Application::executeEx()
         return 0;
     }
 
+    // Initialize global random seed
     std::srand(std::time(NULL));
 
     registerObjectTypes(ObjectTypeDatabase::get());
+
     m_scriptEngine.initialize();
 
+    // Consider the app to be running from now
     m_runFlag = true;
 
     // Corelib is the only module to always be loaded
@@ -91,13 +95,23 @@ int Application::executeEx()
     // Load the main module
     Module * mainModule = loadModule(m_pathToMainMod);
 
+    // If a startup scene has been specified
+    const ModuleInfo & mainModuleInfo = mainModule->getInfo();
+    if (!mainModuleInfo.startupScene.empty())
+    {
+        // Load the scene
+        String filePath = m_pathToProjects + L"/" + mainModuleInfo.directory + L"/" + mainModuleInfo.startupScene;
+        m_scene = new Scene();
+        m_scene->loadFromFile(toString(filePath));
+    }
+
     // Call onCreate
     callVoidCallback(CallbackName::CREATE);
 
     // Test presence of update function
     if (!mainModule->hasUpdateFunction())
     {
-        SN_LOG("The main module has no " << CallbackName::UPDATE << " function, "
+        SN_LOG("The main module has no script with " << CallbackName::UPDATE << " function, "
             "the application will not enter the main loop.");
         m_runFlag = false;
     }
@@ -122,11 +136,14 @@ int Application::executeEx()
         std::vector<Time> deltas = m_timeStepper.getCallDeltas();
         for (u32 i = 0; i < deltas.size() && m_runFlag; ++i)
         {
-            // Call update callbacks
+            // Call static update callbacks
             // Note: if quit() is called in one of these callbacks,
             // the next callbacks will not be executed.
             update(deltas[i]);
         }
+
+        if (m_runFlag && m_scene)
+            m_scene->onUpdate();
 
         // TODO Render call
         // Note: no render call will be effective if there is nothing to draw
@@ -143,6 +160,12 @@ int Application::executeEx()
 
     // Call destroy callbacks
     callVoidCallback(CallbackName::DESTROY);
+
+    if (m_scene)
+    {
+        m_scene->release();
+        m_scene = nullptr;
+    }
 
     // TODO uninitialize all scripts before modules get destroyed
 

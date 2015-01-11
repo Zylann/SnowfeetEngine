@@ -33,6 +33,7 @@
 #include <core/app/Module.hpp>
 #include <core/app/ScriptEngine.hpp>
 #include <core/app/TimeStepper.hpp>
+#include <core/scene/Scene.hpp>
 #include <map>
 
 namespace sn
@@ -77,6 +78,9 @@ private:
     //------------------------------------
 
     ScriptEngine m_scriptEngine;
+
+    // Top-level scene
+    Scene * m_scene;
 
     String m_pathToMainMod;
     String m_pathToProjects;
