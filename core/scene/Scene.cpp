@@ -79,9 +79,10 @@ void Scene::destroyLater()
 //------------------------------------------------------------------------------
 void Scene::onUpdate()
 {
-    for (auto it = m_updatableEntities.begin(); it != m_updatableEntities.end(); ++it)
+    auto sortedEntities = m_updatableEntities; // Iterate over a copy
+    for (auto it = sortedEntities.begin(); it != sortedEntities.end(); ++it)
     {
-        auto entities = it->second;
+        auto & entities = it->second;
         for (auto it2 = entities.begin(); it2 != entities.end(); ++it2)
         {
             Entity & e = **it2;
