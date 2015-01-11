@@ -95,6 +95,36 @@ void Scene::onUpdate()
     }
 }
 
+//------------------------------------------------------------------------------
+void Scene::loadFromFile(const std::string & filePath)
+{
+    JsonBox::Value doc;
+    if (!sn::loadFromFile(doc, filePath, -1, true))
+    {
+        return;
+    }
+
+    JsonBox::Value & docEntities = doc["entities"];
+    u32 len = docEntities.getArray().size();
+    for (u32 i = 0; i < len; ++i)
+    {
+        Entity::unserialize(docEntities[i], *this);
+    }
+}
+
+//------------------------------------------------------------------------------
+void Scene::saveToFile(const std::string & filePath)
+{
+    JsonBox::Value doc;
+    JsonBox::Value & docEntities = doc["entities"];
+    for (u32 i = 0; i < getChildCount(); ++i)
+    {
+        Entity::serialize(docEntities[i], *getChildByIndex(i));
+    }
+
+    sn::saveToFile(doc, filePath);
+}
+
 
 } // namespace sn
 

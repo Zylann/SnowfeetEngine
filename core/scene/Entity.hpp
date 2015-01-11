@@ -4,6 +4,7 @@
 #include <core/types.hpp>
 #include <core/reflect/Object.hpp>
 #include <core/util/RefCounted.hpp>
+#include <core/json/json_utils.hpp>
 
 #include <vector>
 #include <string>
@@ -94,6 +95,16 @@ public:
 
     virtual void destroy();
     virtual void destroyLater();
+
+    //---------------------------------------------
+    // Serialization
+    //---------------------------------------------
+
+    static void serialize(JsonBox::Value & o, Entity & e);
+    static Entity * unserialize(JsonBox::Value & o, Entity & parent);
+
+    virtual void serializeState(JsonBox::Value & o);
+    virtual void unserializeState(JsonBox::Value & o);
 
     //---------------------------------------------
     // Integrated callbacks

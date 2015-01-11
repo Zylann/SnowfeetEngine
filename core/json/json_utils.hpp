@@ -26,6 +26,11 @@ This file is part of the SnowfeetEngine project.
 #include <SFML/System/Vector3.hpp>
 #endif
 
+#define SN_JSON_TYPE_TAG "@Type"
+#define SN_JSON_REF_TAG "@Ref"
+#define SN_JSON_XREF_TAG "@XRef"
+#define SN_JSON_PREFAB_TAG "@Prefab"
+
 // Json serialization helpers for various composed types
 
 namespace sn
@@ -40,6 +45,8 @@ namespace sn
 /// \param openError: should the function generate an error message if the file can't be open?
 /// \return false if the file could'nt be loaded or if the version didn't matched, true if success.
 bool loadFromFile(JsonBox::Value & document, const std::string & filePath, s32 checkVersion=-1, bool openError=true);
+
+bool saveToFile(JsonBox::Value & document, const std::string & filePath);
 
 //------------------------------------------------------------------------------
 inline void serialize(JsonBox::Value & o, f32 v) { o = v; }

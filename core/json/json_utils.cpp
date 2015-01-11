@@ -29,7 +29,7 @@ bool loadFromFile(JsonBox::Value & document, const std::string & filePath, s32 c
 
     // Check document
 
-    assert(document.isObject());
+    SN_ASSERT(document.isObject(), "JSON document must be an object");
 
     if(checkVersion >= 0)
     {
@@ -45,6 +45,25 @@ bool loadFromFile(JsonBox::Value & document, const std::string & filePath, s32 c
     }
 
     return true;
+}
+
+//------------------------------------------------------------------------------
+bool saveToFile(JsonBox::Value & document, const std::string & filePath)
+{
+    std::ofstream ofs(filePath.c_str(), std::ios::out | std::ios::binary);
+    if (!ofs.good())
+    {
+        SN_ERROR("saveToFile: coudl'nt open JSON file \"" + filePath + '"');
+    }
+    return false;
+
+#ifdef SN_BUILD_DEBUG
+    SN_DLOG("Saving \"" << filePath << '"');
+#endif
+
+    SN_ASSERT(document.isObject(), "JSON document must be an object");
+    document.writeToStream(ofs);
+    ofs.close();
 }
 
 } // namespace sn

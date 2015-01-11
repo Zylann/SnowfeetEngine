@@ -33,6 +33,9 @@ public:
 
     void onUpdate() override;
 
+    void loadFromFile(const std::string & filePath);
+    void saveToFile(const std::string & filePath);
+
 private:
     std::unordered_map<std::string, std::unordered_set<Entity*>> m_taggedEntities;
     std::map<s32, std::unordered_set<Entity*>> m_updatableEntities;
