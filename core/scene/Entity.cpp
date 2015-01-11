@@ -113,8 +113,22 @@ void Entity::setParent(Entity * newParent)
         r_parent->removeChild(this);
     r_parent = newParent;
     if (newParent)
+    {
         newParent->addChild(this);
-    r_scene = nullptr;
+        if (newParent->isInstanceOf<Scene>() && r_scene == nullptr)
+        {
+            r_scene = (Scene*)newParent;
+            propagateOnReady();
+        }
+    }
+}
+
+//------------------------------------------------------------------------------
+void Entity::propagateOnReady()
+{
+    onReady();
+    for (auto it = m_children.begin(); it != m_children.end(); ++it)
+        (*it)->onReady();
 }
 
 //------------------------------------------------------------------------------
@@ -254,7 +268,7 @@ void Entity::destroyChildren()
     auto children = m_children;
     for (auto it = children.begin(); it != children.end(); ++it)
     {
-        delete *it;
+        (*it)->release();
     }
     m_children.clear();
 }
@@ -302,7 +316,6 @@ Entity * Entity::unserialize(JsonBox::Value & o, Entity & parent)
         if (obj)
         {
             Entity * e = (Entity*)obj;
-            e->setParent(&parent);
             e->unserializeState(o);
             if (o[SN_JSON_ENTITY_CHILDREN_TAG].isArray())
             {
@@ -313,6 +326,7 @@ Entity * Entity::unserialize(JsonBox::Value & o, Entity & parent)
                     Entity::unserialize(a[i], *e);
                 }
             }
+            e->setParent(&parent);
             return e;
         }
         // Error message already handled by the instantiate helper

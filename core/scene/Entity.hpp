@@ -33,7 +33,8 @@ public:
     Entity() :
         RefCounted(),
         Object(),
-        r_parent(nullptr)
+        r_parent(nullptr),
+        r_scene(nullptr)
     {}
 
     inline const std::string & getName() const { return m_name; }
@@ -125,6 +126,9 @@ protected:
         for (auto it = m_tags.begin(); it != m_tags.end(); ++it)
             removeTag(*it);
     }
+
+private:
+    void propagateOnReady();
 
 private:
     std::bitset<8> m_flags;
