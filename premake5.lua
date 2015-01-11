@@ -33,4 +33,6 @@ solution "SnowfeetEngine"
 	include("projects/mods/render/cpp")
 	include("projects/mods/image/cpp")
 
+	-- Samples
+	include("projects/samples/nativehelloworld/cpp")
 

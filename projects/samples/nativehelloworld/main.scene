@@ -1,0 +1,9 @@
+{
+	"entities":[
+		{
+			"@type":"hello::NativeHello",
+			"name":"my_native_entity"
+		}
+	]
+}
+
