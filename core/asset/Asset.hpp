@@ -7,7 +7,7 @@
 // Put this macro into your asset classes to define its database type name.
 // Examples: "image", "texture", "sound", "soundbuffer", "shader", "font"...
 #define SN_ASSET(dbTypeName)\
-    static const char * sGetDatabaseTypeName() {\
+    static const char * __sGetDatabaseTypeName() {\
         static const char * name = dbTypeName; \
         return name; \
     }

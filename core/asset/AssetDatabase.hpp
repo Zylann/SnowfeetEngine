@@ -40,7 +40,7 @@ public:
     Asset_T * getAsset(const std::string & callingModule, const String & name)
     {
         // Note: use SN_ASSET in your asset class
-        IAsset * a = getAsset(Asset_T::sGetDatabaseTypeName(), callingModule, name);
+        IAsset * a = getAsset(Asset_T::__sGetDatabaseTypeName(), callingModule, name);
         if (a)
             return checked_cast<Asset_T*>(a);
         else
