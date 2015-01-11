@@ -76,6 +76,25 @@ void Scene::destroyLater()
     SN_ERROR("Scene::destroyLater: a scene cannot be destroyed. Use destroyChildren() instead.");
 }
 
+//------------------------------------------------------------------------------
+void Scene::onUpdate()
+{
+    for (auto it = m_updatableEntities.begin(); it != m_updatableEntities.end(); ++it)
+    {
+        auto entities = it->second;
+        for (auto it2 = entities.begin(); it2 != entities.end(); ++it2)
+        {
+            Entity & e = **it2;
+            if (!e.getFlag(SN_EF_FIRST_UPDATE))
+            {
+                e.onFirstUpdate();
+                e.setFlag(SN_EF_FIRST_UPDATE, true);
+            }
+            e.onUpdate();
+        }
+    }
+}
+
 
 } // namespace sn
 
