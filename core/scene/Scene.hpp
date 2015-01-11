@@ -24,7 +24,9 @@ public:
     SN_ABSTRACT_OBJECT(sn::Scene, sn::Object)
 
     Scene() : Entity()
-    {}
+    {
+        setName("Scene");
+    }
 
     void registerUpdatableEntity(Entity * e, s16 order, s16 layer);
     void unregisterUpdatableEntity(Entity * e);
