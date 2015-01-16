@@ -50,6 +50,8 @@ public:
     void callVoidCallback(std::string cbName);
     void onUpdate(Time delta);
 
+    inline const ModuleInfo & getInfo() const { return m_info; }
+
 private:
 
     bool loadNativeBindingsImpl(ScriptEngine & scriptEngine);
