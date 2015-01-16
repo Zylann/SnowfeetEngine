@@ -96,13 +96,12 @@ void Module::unloadNativeBindings()
 }
 
 //------------------------------------------------------------------------------
-bool Module::compileScripts()
+void Module::getScriptFiles(std::vector<String> & out_filePaths)
 {
     String fullDirectoryPath = r_app.getPathToProjects() + L"/" + m_info.directory;
     std::vector<FileNode> files;
     getFiles(fullDirectoryPath, files);
 
-    std::vector<String> scriptFiles;
     for (u32 i = 0; i < files.size(); ++i)
     {
         if (!files[i].isDirectory)
@@ -111,17 +110,27 @@ bool Module::compileScripts()
             String ext = getFileExtension(path);
             if (ext == L".ac" || ext == L".as" || ext == L".meow")
             {
-                scriptFiles.push_back(r_app.getPathToProjects() + L"/" + m_info.directory + L"/" + path);
+                out_filePaths.push_back(r_app.getPathToProjects() + L"/" + m_info.directory + L"/" + path);
             }
         }
     }
+}
 
+//------------------------------------------------------------------------------
+bool Module::compileScripts()
+{
+    // Get script files
+    std::vector<String> scriptFiles;
+    getScriptFiles(scriptFiles);
+
+    // Compile
     bool compiled = r_app.getScriptEngine().compileModule(
         m_info.name,
         m_info.scriptNamespace,
         scriptFiles
     );
 
+    // Reference callbacks
     if (compiled)
     {
         referenceCallbacks();
