@@ -4,6 +4,7 @@
 #include <core/app/ModuleArgs.hpp>
 #include <core/app/ModuleInfo.hpp>
 #include <core/system/time/Time.hpp>
+#include <core/system/lib/SharedLib.hpp>
 
 #include <angelscript.h>
 
@@ -69,6 +70,7 @@ private:
     const ModuleInfo m_info;
     Application & r_app;
     ModuleImpl * m_impl;
+    std::vector<SharedLib*> m_sharedLibs;
 
 };
 

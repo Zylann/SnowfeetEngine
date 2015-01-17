@@ -83,16 +83,118 @@ bool Module::loadNativeBindings(ScriptEngine & scriptEngine)
 {
     ObjectTypeDatabase & otb = ObjectTypeDatabase::get();
     otb.beginModule(m_info.name);
-    bool result = loadNativeBindingsImpl(scriptEngine);
+
+    bool success = true;
+
+    if (!m_info.bindings.empty())
+    {
+        String basePath = r_app.getPathToProjects() + L"/" + m_info.directory;
+
+        // For each registered binding library
+        for (u32 i = 0; i < m_info.bindings.size(); ++i)
+        {
+            String libName = m_info.bindings[i];
+            String path = basePath + L"/" + libName + L".dll";
+
+            SN_WLOG(L"Loading shared lib \"" << path << L"\"...");
+            std::string loadFuncName = getLoadFuncName(libName);
+
+            // Load the shared library
+            SharedLib * lib = new SharedLib();
+
+            if (lib->loadFromFile(path))
+            {
+                // Get entry point
+                NativeModLoadFunc f = (NativeModLoadFunc)(lib->getAddressOf(loadFuncName));
+                if (f != nullptr)
+                {
+                    // Execute entry point
+                    int retval = f({
+                        scriptEngine.getEngine(),
+                        scriptEngine.getSerializer(),
+                        &(ObjectTypeDatabase::get())
+                    });
+
+                    if (retval < 0)
+                    {
+                        SN_ERROR("Native binding loading returned " << retval << ", aborting");
+                        delete lib;
+                        success = false;
+                    }
+                    else
+                    {
+                        m_sharedLibs.push_back(lib);
+                    }
+                }
+                else
+                {
+                    SN_ERROR("Couldn't find " << loadFuncName << " function, aborting");
+                    delete lib;
+                    success = false;
+                }
+            }
+            else
+            {
+                SN_WERROR("An error occurred while attempting to load shared library");
+                success = false;
+            }
+        }
+    }
+
     otb.endModule();
-    return result;
+    return success;
 }
 
 //------------------------------------------------------------------------------
 void Module::unloadNativeBindings()
 {
-    // Note: ObjectTypeDatabase is called here
-    unloadNativeBindingsImpl();
+    // Note: iterations must be in reverse order because loading order may be important
+
+    // First, call unload functions
+    auto libNameIt = m_info.bindings.rbegin();
+    for (auto it = m_sharedLibs.rbegin(); it != m_sharedLibs.rend(); ++it, ++libNameIt)
+    {
+        SharedLib & lib = **it;
+        const String & libName = *libNameIt;
+        std::string unloadFuncName = getUnloadFuncName(libName);
+        NativeModUnloadFunc f = (NativeModUnloadFunc)(lib.getAddressOf(unloadFuncName));
+
+        if (f != nullptr)
+        {
+            ScriptEngine & scriptEngine = r_app.getScriptEngine();
+
+            // Execute exit point
+            int unloadResult = f({
+                scriptEngine.getEngine(),
+                scriptEngine.getSerializer(),
+                &(ObjectTypeDatabase::get())
+            });
+
+            if (unloadResult < 0)
+            {
+                SN_ERROR("Native binding unloading function returned " << unloadResult);
+            }
+        }
+    }
+
+    // Unload reflection if any
+    ObjectTypeDatabase::get().unregisterModule(m_info.name);
+
+    // Free libraries
+    libNameIt = m_info.bindings.rbegin();
+    for (auto it = m_sharedLibs.rbegin(); it != m_sharedLibs.rend(); ++it, ++libNameIt)
+    {
+        SharedLib & lib = **it;
+        const String & libName = *libNameIt;
+        SN_WLOG(L"Freeing shared lib \"" << libName << L"\"...");
+        if (!lib.unload())
+        {
+            SN_ERROR("An error occurred while freeing library");
+        }
+        delete *it;
+    }
+
+    m_sharedLibs.clear();
 }
 
 //------------------------------------------------------------------------------
