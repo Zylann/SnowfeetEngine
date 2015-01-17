@@ -20,19 +20,35 @@ solution "SnowfeetEngine"
 		}
 
 	--------------------------------------------
-	-- TODO automatic file detector
 
-	-- Core
-	include("json")
-	include("angelscript")
-	include("core")
-	include("main")
-	include("zlib")
+	-- Walks througth folders to include compliant premake5 projects
+	local fileList = os.matchfiles("./**premake5.lua")
+	for k,fpath in pairs(fileList) do
+		if fpath ~= "premake5.lua" and -- Ignore the current file
+		   fpath:find("_old") == nil and  -- Ignore _old stuff
+		   fpath:find("_draft") == nil -- Ignore tests
+		then
+			--print(fpath)
+			dofile(fpath)
+		end
+	end
 
-	-- Modules
-	include("projects/mods/render/cpp")
-	include("projects/mods/image/cpp")
 
-	-- Samples
-	include("projects/samples/nativehelloworld/cpp")
+	-- OLD CODE
+
+	-- include("json")
+	-- include("angelscript")
+	-- include("core")
+	-- include("main")
+	-- include("zlib")
+
+	-- -- Modules
+	-- include("projects/mods/render/cpp")
+	-- include("projects/mods/image/cpp")
+
+	-- -- Tools
+	-- include("projects/tools/editor/cpp")	
+
+	-- -- Samples
+	-- include("projects/samples/nativehelloworld/cpp")
 
