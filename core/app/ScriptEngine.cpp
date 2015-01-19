@@ -70,7 +70,8 @@ ScriptEngine::ScriptEngine(Application & app) :
     r_app(app),
     m_engine(nullptr),
     m_context(nullptr),
-    m_serializer(nullptr)
+    m_serializer(nullptr),
+    m_squirrelVM(nullptr)
 {}
 
 //------------------------------------------------------------------------------
@@ -91,11 +92,17 @@ ScriptEngine::~ScriptEngine()
         m_engine->Release();
         m_engine = nullptr;
     }
+    if (m_squirrelVM)
+    {
+        sq_close(m_squirrelVM);
+    }
 }
 
 //------------------------------------------------------------------------------
 void ScriptEngine::initialize()
 {
+    SN_ASSERT(m_engine == nullptr && m_squirrelVM == nullptr, "initialize called twice");
+
     SN_LOG("Initializing script engine");
     SN_LOG("AngelScript version: " << ANGELSCRIPT_VERSION_STRING);
 
@@ -108,6 +115,8 @@ void ScriptEngine::initialize()
     int r = m_engine->SetMessageCallback(asFUNCTION(asMessageCallback), 0, asCALL_CDECL);
     SN_ASSERT(r >= 0, "AngelScript: message callback setting error");
 
+    m_squirrelVM = sq_open(1024);
+
     registerCoreAPI();
 
     // TODO initialized boolean to prevent calling twice... or move initialize code in constructor?
@@ -116,7 +125,7 @@ void ScriptEngine::initialize()
 
 //------------------------------------------------------------------------------
 // TODO modNamespace seems actually useless, remove it
-bool ScriptEngine::compileModule(std::string modName, std::string modNamespace, const std::vector<String> & files)
+bool ScriptEngine::compileAngelscriptModule(const std::string & modName, const std::string & modNamespace, const std::vector<String> & files)
 {
     // The CScriptBuilder helper is an add-on that loads the file,
     // performs a pre-processing pass if necessary, and then tells
@@ -178,6 +187,12 @@ bool ScriptEngine::compileModule(std::string modName, std::string modNamespace, 
     }
 
     return true;
+}
+
+//------------------------------------------------------------------------------
+bool ScriptEngine::compileSquirrelModule(const std::string & modName, std::string & modNamespace, const std::vector<String> & files)
+{
+
 }
 
 //------------------------------------------------------------------------------

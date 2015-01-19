@@ -198,7 +198,7 @@ void Module::unloadNativeBindings()
 }
 
 //------------------------------------------------------------------------------
-void Module::getScriptFiles(std::vector<String> & out_filePaths)
+void Module::getScriptFiles(std::vector<String> & out_filePaths, const std::set<String> & extensions)
 {
     String fullDirectoryPath = r_app.getPathToProjects() + L"/" + m_info.directory;
     std::vector<FileNode> files;
@@ -210,7 +210,7 @@ void Module::getScriptFiles(std::vector<String> & out_filePaths)
         {
             String path = files[i].path;
             String ext = getFileExtension(path);
-            if (ext == L".ac" || ext == L".as" || ext == L".meow")
+            if (extensions.find(ext) != extensions.end())
             {
                 out_filePaths.push_back(r_app.getPathToProjects() + L"/" + m_info.directory + L"/" + path);
             }
@@ -223,10 +223,13 @@ bool Module::compileScripts()
 {
     // Get script files
     std::vector<String> scriptFiles;
-    getScriptFiles(scriptFiles);
+    std::set<String> exts;
+    exts.insert(L".ac");
+    exts.insert(L".as");
+    getScriptFiles(scriptFiles, exts);
 
     // Compile
-    bool compiled = r_app.getScriptEngine().compileModule(
+    bool compiled = r_app.getScriptEngine().compileAngelscriptModule(
         m_info.name,
         m_info.scriptNamespace,
         scriptFiles

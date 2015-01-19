@@ -55,7 +55,7 @@ public:
 
 private:
 
-    void getScriptFiles(std::vector<String> & out_filePaths);
+    void getScriptFiles(std::vector<String> & out_filePaths, const std::set<String> & extensions);
 
     bool loadNativeBindingsImpl(ScriptEngine & scriptEngine);
 
