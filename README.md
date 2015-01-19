@@ -2,7 +2,7 @@ Snowfeet Engine
 ====================
 
 This is an experimental, cross-platform, modular, general purpose game engine.
-Its core programming language is C++, and AngelScript for scripting.
+Its core programming language is C++, and AngelScript for scripting (but it's not definitive).
 I develop it as a hobby, for fun.
 
 It is a spin-off of an earlier version called "Snowfeet Framework",
@@ -44,19 +44,6 @@ The requirements for scripts are the following:
 - Be user-friendly
 - Be lightweight
 
-Module ideas:
-- mods/framework (utility scripts for game creation)
-- mods/freetype (font loading)
-- mods/soundfile (sound loading)
-- mods/render (graphics engine)
-- mods/audio (audio engine)
-- mods/enet (binding for ENet, a fast and reliable UDP networking library)
-- tools/texteditor (Scintilla)
-- tools/editor (tools aggregator for game development)
-- tools/exporter (to export a final application)
-- samples/... (some test apps and examples)
-- games/... (my game... or yours? Not versionned here, heheh.)
-
 Notes
 =====
 
@@ -69,9 +56,7 @@ I take this into account for the choice of a scripting language.
 
 Web export
 ----------
-For me as a single dev, exporting native code with llvm-emscripten can be a pain and performance killer,
-so it's not in my plans to implement support for it at the moment.
-Maybe NaCl or web-native-java hacks, but not plain HTML5 yet.
+I might try Emscripten, one day.
 
 
 Binaries
@@ -110,7 +95,7 @@ Example with Visual Studio 2013:
 
 you need to re-run step 1) only if you pulled a new version of the engine,
 or if you are unsure of you project files. Otherwise, you can add files
-manually from your IDE without any problem, when possible.
+manually to your IDE without any problem, when possible.
 
 Note for VS: don't create files from it, because they'll end up at the wrong place.
 drag and drop them instead.
@@ -147,3 +132,4 @@ https://bitbucket.org/premake/premake-dev/wiki/Building_Premake
 Or use a windows executable I built:
 http://zylannprods.fr/dl/premake5.exe
 
+There are also nightlies on SourceForge but I didn't checked them out yet.
