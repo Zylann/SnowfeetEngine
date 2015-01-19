@@ -6,6 +6,7 @@ solution "SnowfeetEngine"
 	configurations { "Debug", "Release" }
 	includedirs {
 		"angelscript",
+		"squirrel",
 		"json",
 		"." -- core
 	}
