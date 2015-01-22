@@ -1,4 +1,5 @@
 #include "../Entity.hpp"
+#include "../../util/RefCountedWrapper.hpp"
 #include "sq_scene.hpp"
 #include "../../squirrel/sqrat.h"
 #include <memory>
@@ -6,7 +7,7 @@
 namespace sn
 {
 
-typedef std::shared_ptr<Entity> EntityRef;
+typedef RefCountedWrapper<Entity> EntityRef;
 
 static const std::string &  Entity_getName(EntityRef e) { return e->getName(); }
 static void                 Entity_setName(EntityRef e, const char * s) { return e->setName(s); }

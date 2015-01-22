@@ -94,6 +94,8 @@ void Scene::onUpdate()
             e.onUpdate();
         }
     }
+
+	// TODO Destroy entities with flag DESTROYED set
 }
 
 //------------------------------------------------------------------------------

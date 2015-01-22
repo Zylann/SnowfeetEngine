@@ -10,6 +10,7 @@
 #include <string>
 #include <bitset>
 #include <unordered_set>
+#include <memory>
 
 namespace sn
 {
@@ -118,14 +119,14 @@ public:
     virtual void onUpdate() {}
 
 protected:
-    virtual ~Entity()
-    {
-        if (r_parent)
-            r_parent->removeChild(this);
-        destroyChildren();
-        for (auto it = m_tags.begin(); it != m_tags.end(); ++it)
-            removeTag(*it);
-    }
+	virtual ~Entity()
+	{
+		if (r_parent)
+			r_parent->removeChild(this);
+		destroyChildren();
+		for (auto it = m_tags.begin(); it != m_tags.end(); ++it)
+			removeTag(*it);
+	}
 
 private:
     void propagateOnReady();

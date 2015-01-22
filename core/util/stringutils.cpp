@@ -205,6 +205,7 @@ std::string toString(const std::wstring & wstr)
 //------------------------------------------------------------------------------
 std::wstring toWideString(const std::string & str)
 {
+	// TODO Assume it's UTF8 and convert properly...
     return std::wstring(str.begin(), str.end());
 }
 
