@@ -4,6 +4,7 @@ project "SnowfeetCore"
 	language "C++"
 	dependson {
 		"AngelScript",
+		"Squirrel",
 		"JsonBox"
 	}
 	location "."
@@ -19,6 +20,7 @@ project "SnowfeetCore"
 	-- }
 	links {
 		"AngelScript",
+		"Squirrel",
 		"JsonBox",
 		"ws2_32"
 	}
