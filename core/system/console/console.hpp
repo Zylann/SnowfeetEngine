@@ -1,6 +1,8 @@
 #ifndef __HEADER_SN_CONSOLE__
 #define __HEADER_SN_CONSOLE__
 
+#include <core/config.hpp>
+
 namespace sn
 {
 
@@ -31,10 +33,10 @@ enum ConsoleColor
 ConsoleColor getConsoleForeground();
 ConsoleColor getConsoleBackground();
 
-void setConsoleBackground(ConsoleColor color);
-void setConsoleForeground(ConsoleColor color);
+void SN_API setConsoleBackground(ConsoleColor color);
+void SN_API setConsoleForeground(ConsoleColor color);
 
-void pauseConsole();
+void SN_API pauseConsole();
 
 } // namespace sn
 
