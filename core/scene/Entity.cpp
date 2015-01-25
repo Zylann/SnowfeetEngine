@@ -120,19 +120,19 @@ void Entity::setParent(Entity::Ref newParent)
         {
             r_parent = newParent;
             r_parent->addChild(shared_from_this());
-        }
-        else
-        {
-            // Just swap ownership, no need to call addRef() or release()
-            r_parent->removeChild(this);
-            r_parent = newParent;
-            r_parent->addChild(shared_from_this());
 
             if (newParent->isInstanceOf<Scene>() && r_scene.use_count() == 0)
             {
                 r_scene = std::static_pointer_cast<Scene>(newParent);
                 propagateOnReady();
             }
+        }
+        else
+        {
+            // Just swap ownership
+            r_parent->removeChild(this);
+            r_parent = newParent;
+            r_parent->addChild(shared_from_this());
         }
     }
 }
