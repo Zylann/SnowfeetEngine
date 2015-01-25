@@ -7,11 +7,11 @@ This file is part of the SnowfeetEngine project.
 #ifndef __HEADER_SCRIPTENGINE__
 #define __HEADER_SCRIPTENGINE__
 
-#include <angelscript.h>
-#include <core/angelscript/addons/serializer/serializer.h>
+//#include <angelscript.h>
+//#include <core/angelscript/addons/serializer/serializer.h>
 #include <string>
 #include <core/util/String.hpp>
-#include <squirrel.h>
+#include <core/squirrel/bind_tools.hpp>
 
 namespace sn
 {
@@ -27,15 +27,17 @@ public:
 
     void initialize();
 
-    asIScriptEngine * getEngine();
-    asIScriptContext * getContext();
-    CSerializer * getSerializer();
+    inline HSQUIRRELVM getVM() const { return m_squirrelVM; }
 
-    bool compileAngelscriptModule(const std::string & modName, const std::string & modNamespace, const std::vector<String> & files);
-    bool compileSquirrelModule(const std::string & modName, std::string & modNamespace, const std::vector<String> & files);
+    //asIScriptEngine * getEngine();
+    //asIScriptContext * getContext();
+    //CSerializer * getSerializer();
+
+    //bool compileAngelscriptModule(const std::string & modName, const std::string & modNamespace, const std::vector<String> & files);
+    bool compileSquirrelModule(const std::string & modName, const std::string & modNamespace, const std::vector<String> & files);
 
     // Executes a function previously prepared on a context, and returns false if an error occurred.
-    bool executeContext(asIScriptContext & context);
+    //bool executeContext(asIScriptContext & context);
 
 private:
 
@@ -45,10 +47,10 @@ private:
 
     // AngelScript
 
-    asIScriptEngine * m_engine;
-    asIScriptContext * m_context;
+    //asIScriptEngine * m_engine;
+    //asIScriptContext * m_context;
     // Serializer used for hot-reload
-    CSerializer * m_serializer;
+    //CSerializer * m_serializer;
 
     // Squirrel
 
@@ -58,7 +60,7 @@ private:
 
 /// \brief Checks the return code of an AngelScript method,
 /// and throws an exception if an error occurred
-void SN_API asCheck(int returnCode);
+//void SN_API asCheck(int returnCode);
 
 } // namespace sn
 

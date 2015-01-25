@@ -5,7 +5,6 @@ solution "SnowfeetEngine"
 	-- Global default configurations
 	configurations { "Debug", "Release" }
 	includedirs {
-		"angelscript",
 		"squirrel",
 		"json",
 		"." -- core

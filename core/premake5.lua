@@ -3,7 +3,6 @@ project "SnowfeetCore"
 	kind "SharedLib"
 	language "C++"
 	dependson {
-		"AngelScript",
 		"Squirrel",
 		"JsonBox"
 	}
@@ -19,13 +18,12 @@ project "SnowfeetCore"
 	-- 	".." -- For the core to work as a library
 	-- }
 	links {
-		"AngelScript",
 		"Squirrel",
 		"JsonBox",
 		"ws2_32"
 	}
 	defines {
-		"AS_ADDON_SCRIPTTYPE_USE_STLSTRING=1"
+		-- "AS_ADDON_SCRIPTTYPE_USE_STLSTRING=1"
 	}
 	filter "configurations:Debug"
 		targetdir "../_bin/debug"

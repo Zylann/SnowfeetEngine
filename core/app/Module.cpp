@@ -65,11 +65,11 @@ Module::Module(Application & app, const ModuleInfo & info) :
     r_app(app),
     m_impl(nullptr)
 {
-    m_scriptCallbacks.insert(std::make_pair(CallbackName::CREATE, std::vector<asIScriptFunction*>()));
-    m_scriptCallbacks.insert(std::make_pair(CallbackName::EVENT, std::vector<asIScriptFunction*>()));
-    m_scriptCallbacks.insert(std::make_pair(CallbackName::START, std::vector<asIScriptFunction*>()));
-    m_scriptCallbacks.insert(std::make_pair(CallbackName::UPDATE, std::vector<asIScriptFunction*>()));
-    m_scriptCallbacks.insert(std::make_pair(CallbackName::DESTROY, std::vector<asIScriptFunction*>()));
+    //m_scriptCallbacks.insert(std::make_pair(CallbackName::CREATE, std::vector<asIScriptFunction*>()));
+    //m_scriptCallbacks.insert(std::make_pair(CallbackName::EVENT, std::vector<asIScriptFunction*>()));
+    //m_scriptCallbacks.insert(std::make_pair(CallbackName::START, std::vector<asIScriptFunction*>()));
+    //m_scriptCallbacks.insert(std::make_pair(CallbackName::UPDATE, std::vector<asIScriptFunction*>()));
+    //m_scriptCallbacks.insert(std::make_pair(CallbackName::DESTROY, std::vector<asIScriptFunction*>()));
 }
 
 //------------------------------------------------------------------------------
@@ -110,8 +110,7 @@ bool Module::loadNativeBindings(ScriptEngine & scriptEngine)
                 {
                     // Execute entry point
                     int retval = f({
-                        scriptEngine.getEngine(),
-                        scriptEngine.getSerializer(),
+                        scriptEngine.getVM(),
                         &(ObjectTypeDatabase::get())
                     });
 
@@ -165,8 +164,7 @@ void Module::unloadNativeBindings()
 
             // Execute exit point
             int unloadResult = f({
-                scriptEngine.getEngine(),
-                scriptEngine.getSerializer(),
+                scriptEngine.getVM(),
                 &(ObjectTypeDatabase::get())
             });
 
@@ -224,12 +222,11 @@ bool Module::compileScripts()
     // Get script files
     std::vector<String> scriptFiles;
     std::set<String> exts;
-    exts.insert(L".ac");
-    exts.insert(L".as");
+    exts.insert(L".nut");
     getScriptFiles(scriptFiles, exts);
 
     // Compile
-    bool compiled = r_app.getScriptEngine().compileAngelscriptModule(
+    bool compiled = r_app.getScriptEngine().compileSquirrelModule(
         m_info.name,
         m_info.scriptNamespace,
         scriptFiles
@@ -238,7 +235,7 @@ bool Module::compileScripts()
     // Reference callbacks
     if (compiled)
     {
-        referenceCallbacks();
+        ;// referenceCallbacks();
     }
     else
     {
@@ -250,53 +247,53 @@ bool Module::compileScripts()
 }
 
 //------------------------------------------------------------------------------
-void Module::clearCallbacks()
-{
-    for (auto it = m_scriptCallbacks.begin(); it != m_scriptCallbacks.end(); ++it)
-    {
-        it->second.clear();
-    }
-}
+//void Module::clearCallbacks()
+//{
+//    for (auto it = m_scriptCallbacks.begin(); it != m_scriptCallbacks.end(); ++it)
+//    {
+//        it->second.clear();
+//    }
+//}
 
 //------------------------------------------------------------------------------
-void Module::referenceCallbacks()
-{
-    SN_DLOG("Referencing callbacks...");
-
-    clearCallbacks();
-
-    asIScriptEngine * as = r_app.getScriptEngine().getEngine();
-    asIScriptModule * asModule = as->GetModule(m_info.name.c_str());
-
-    // TODO Handle multiple callback signatures
-
-    // For each global function defined in the module
-    u32 fnCount = asModule->GetFunctionCount();
-    for (u32 i = 0; i < fnCount; ++i)
-    {
-        // Get function
-        asIScriptFunction * f = asModule->GetFunctionByIndex(i);
-
-        for (auto it = m_scriptCallbacks.begin(); it != m_scriptCallbacks.end(); ++it)
-        {
-            std::string callbackName = it->first;
-
-            // If the function name matches a callback, reference it
-            if (f->GetName() == callbackName)
-            {
-                it->second.push_back(f);
-                SN_DLOG("Found callback \"" << f->GetNamespace() << "::" << callbackName << "\"");
-                break;
-            }
-        }
-    }
-}
+//void Module::referenceCallbacks()
+//{
+//    SN_DLOG("Referencing callbacks...");
+//
+//    clearCallbacks();
+//
+//    asIScriptEngine * as = r_app.getScriptEngine().getEngine();
+//    asIScriptModule * asModule = as->GetModule(m_info.name.c_str());
+//
+//    // TODO Handle multiple callback signatures
+//
+//    // For each global function defined in the module
+//    u32 fnCount = asModule->GetFunctionCount();
+//    for (u32 i = 0; i < fnCount; ++i)
+//    {
+//        // Get function
+//        asIScriptFunction * f = asModule->GetFunctionByIndex(i);
+//
+//        for (auto it = m_scriptCallbacks.begin(); it != m_scriptCallbacks.end(); ++it)
+//        {
+//            std::string callbackName = it->first;
+//
+//            // If the function name matches a callback, reference it
+//            if (f->GetName() == callbackName)
+//            {
+//                it->second.push_back(f);
+//                SN_DLOG("Found callback \"" << f->GetNamespace() << "::" << callbackName << "\"");
+//                break;
+//            }
+//        }
+//    }
+//}
 
 //------------------------------------------------------------------------------
-bool Module::hasUpdateFunction()
-{
-    return m_scriptCallbacks[CallbackName::UPDATE].size() > 0;
-}
+//bool Module::hasUpdateFunction()
+//{
+//    return m_scriptCallbacks[CallbackName::UPDATE].size() > 0;
+//}
 
 //------------------------------------------------------------------------------
 bool Module::loadAssets()
@@ -305,49 +302,49 @@ bool Module::loadAssets()
 }
 
 //------------------------------------------------------------------------------
-void Module::callVoidCallback(std::string cbName)
-{
-    auto it = m_scriptCallbacks.find(cbName);
-    if (it != m_scriptCallbacks.end())
-    {
-        asIScriptContext * context = r_app.getScriptEngine().getContext();
-
-        // For each function registered for this callback
-        for (u32 i = 0; i < it->second.size(); ++i)
-        {
-            // Prepare
-            asIScriptFunction * f = it->second[i];
-            context->Prepare(f);
-
-            // Execute
-            r_app.getScriptEngine().executeContext(*context);
-        }
-    }
-}
+//void Module::callVoidCallback(std::string cbName)
+//{
+//    auto it = m_scriptCallbacks.find(cbName);
+//    if (it != m_scriptCallbacks.end())
+//    {
+//        asIScriptContext * context = r_app.getScriptEngine().getContext();
+//
+//        // For each function registered for this callback
+//        for (u32 i = 0; i < it->second.size(); ++i)
+//        {
+//            // Prepare
+//            asIScriptFunction * f = it->second[i];
+//            context->Prepare(f);
+//
+//            // Execute
+//            r_app.getScriptEngine().executeContext(*context);
+//        }
+//    }
+//}
 
 //------------------------------------------------------------------------------
-void Module::onUpdate(Time delta)
-{
-    auto it = m_scriptCallbacks.find(CallbackName::UPDATE);
-    if (it != m_scriptCallbacks.end())
-    {
-        asIScriptContext * context = r_app.getScriptEngine().getContext();
-
-        // For each update function registered for this callback
-        for (u32 i = 0; i < it->second.size(); ++i)
-        {
-            // Prepare function
-            asIScriptFunction * f = it->second[i];
-            context->Prepare(f);
-
-            // Set arguments
-            context->SetArgObject(0, &delta);
-
-            // Execute
-            r_app.getScriptEngine().executeContext(*context);
-        }
-    }
-}
+//void Module::onUpdate(Time delta)
+//{
+//    auto it = m_scriptCallbacks.find(CallbackName::UPDATE);
+//    if (it != m_scriptCallbacks.end())
+//    {
+//        asIScriptContext * context = r_app.getScriptEngine().getContext();
+//
+//        // For each update function registered for this callback
+//        for (u32 i = 0; i < it->second.size(); ++i)
+//        {
+//            // Prepare function
+//            asIScriptFunction * f = it->second[i];
+//            context->Prepare(f);
+//
+//            // Set arguments
+//            context->SetArgObject(0, &delta);
+//
+//            // Execute
+//            r_app.getScriptEngine().executeContext(*context);
+//        }
+//    }
+//}
 
 } // namespace sn
 

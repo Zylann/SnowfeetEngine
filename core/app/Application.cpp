@@ -64,7 +64,6 @@ int Application::execute(CommandLine commandLine)
 #ifdef SN_BUILD_DEBUG
     // Maintains the console window open on exit
     std::cout << "I: Execution finished with code " << exitCode << ". Press a key to dismiss..." << std::endl;
-	pauseConsole();
 #endif
 
     return exitCode;
@@ -106,24 +105,29 @@ int Application::executeEx()
     }
 
     // Call onCreate
-    callVoidCallback(CallbackName::CREATE);
+    //callVoidCallback(CallbackName::CREATE);
 
     // Test presence of update function
-    if (!mainModule->hasUpdateFunction())
-    {
-        SN_LOG("The main module has no script with " << CallbackName::UPDATE << " function, "
-            "the application will not enter the main loop.");
-        m_runFlag = false;
-    }
+    //if (!mainModule->hasUpdateFunction())
+    //{
+    //    SN_LOG("The main module has no script with " << CallbackName::UPDATE << " function, "
+    //        "the application will not enter the main loop.");
+    //    m_runFlag = false;
+    //}
 
     // Configure time stepper (at last, to minimize the "startup lag")
     m_timeStepper.setDeltaRange(Time::seconds(1.f / 70.f), Time::seconds(1.f / 30.f));
 
-    if (m_runFlag)
-    {
-        // Call start callbacks
-        callVoidCallback(CallbackName::START);
-    }
+    //if (m_runFlag)
+    //{
+    //    // Call start callbacks
+    //    callVoidCallback(CallbackName::START);
+    //}
+
+    if (m_scene->getQuitFlag())
+        m_runFlag = false;
+
+    SN_LOG("Entering main loop");
 
     // Enter the main loop
     while (m_runFlag)
@@ -142,9 +146,6 @@ int Application::executeEx()
             update(deltas[i]);
         }
 
-        if (m_runFlag && m_scene)
-            m_scene->onUpdate();
-
         // TODO Render call
         // Note: no render call will be effective if there is nothing to draw
 
@@ -158,13 +159,16 @@ int Application::executeEx()
         m_timeStepper.onEndFrame();
     }
 
-    // Call destroy callbacks
-    callVoidCallback(CallbackName::DESTROY);
+    SN_LOG("Exiting main loop");
 
-    if (m_scene.use_count() > 1)
-        SN_ERROR("Scene is leaking %i times" << (m_scene.use_count() - 1));
+    // Call destroy callbacks
+    //callVoidCallback(CallbackName::DESTROY);
+
     if (m_scene)
     {
+        m_scene->destroyChildren();
+        if (m_scene.use_count() > 1)
+            SN_ERROR("Scene is leaking " << (m_scene.use_count() - 1) << " times");
         m_scene = nullptr;
     }
 
@@ -174,23 +178,25 @@ int Application::executeEx()
 }
 
 //------------------------------------------------------------------------------
-void Application::callVoidCallback(const std::string & cbName)
-{
-    for (auto it = m_modules.begin(); it != m_modules.end(); ++it)
-    {
-        Module & m = *(it->second);
-        m.callVoidCallback(cbName);
-    }
-}
+//void Application::callVoidCallback(const std::string & cbName)
+//{
+//    for (auto it = m_modules.begin(); it != m_modules.end(); ++it)
+//    {
+//        Module & m = *(it->second);
+//        m.callVoidCallback(cbName);
+//    }
+//}
 
 //------------------------------------------------------------------------------
 void Application::update(Time delta)
 {
-    for (auto it = m_modules.begin(); it != m_modules.end(); ++it)
-    {
-        Module & m = *(it->second);
-        m.onUpdate(delta);
-    }
+    if (m_scene)
+        m_scene->onUpdate();
+    //for (auto it = m_modules.begin(); it != m_modules.end(); ++it)
+    //{
+    //    Module & m = *(it->second);
+    //    m.onUpdate(delta);
+    //}
 }
 
 //------------------------------------------------------------------------------
@@ -276,7 +282,7 @@ Module * Application::loadModule(const String & path)
         try
         {
             // Reset default namespace to avoid registering in a wrong namespace
-            m_scriptEngine.getEngine()->SetDefaultNamespace("");
+            //m_scriptEngine.getEngine()->SetDefaultNamespace("");
 
             // Create Module object
             mod = new Module(*this, info);

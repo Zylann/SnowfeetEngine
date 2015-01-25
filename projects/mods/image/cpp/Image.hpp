@@ -8,7 +8,6 @@
 #include <core/math/Vector2.hpp>
 #include <core/math/Color.hpp>
 #include <core/asset/Asset.hpp>
-#include <core/app/ASScriptObject.hpp>
 
 namespace sn
 {
@@ -33,6 +32,7 @@ public:
 
     inline Vector2u getSize() const { return m_size; }
 
+    /// \brief Returns the index of the first component in the pixel at (x,y).
     inline u32 getPixelIndex(u32 x, u32 y) const
     {
         return (x + y * m_size.x()) * m_channels;

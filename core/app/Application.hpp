@@ -71,7 +71,7 @@ private:
     //void compileScripts();
 
     void update(Time delta);
-    void callVoidCallback(const std::string & cbName);
+    //void callVoidCallback(const std::string & cbName);
 
     //------------------------------------
     // Attributes
