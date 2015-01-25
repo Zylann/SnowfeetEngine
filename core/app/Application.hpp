@@ -80,11 +80,12 @@ private:
     ScriptEngine m_scriptEngine;
 
     // Top-level scene
-    Scene * m_scene;
+    Scene::Ref m_scene;
 
     String m_pathToMainMod;
     String m_pathToProjects;
 
+    // TODO Maybe we don't need this in the core, only graphics or physics simulation really need stable frequency.
     TimeStepper m_timeStepper;
 
     // [directory] => Module

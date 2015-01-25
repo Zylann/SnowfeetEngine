@@ -4,7 +4,7 @@ namespace sn
 {
 
 //------------------------------------------------------------------------------
-void Scene::registerUpdatableEntity(Entity * e, s16 order, s16 layer)
+void Scene::registerUpdatableEntity(Entity::Ref e, s16 order, s16 layer)
 {
     s32 packedOrder = static_cast<s32>(order) | (static_cast<s32>(layer) << 16);
 #ifdef SN_BUILD_DEBUG
@@ -22,7 +22,7 @@ void Scene::registerUpdatableEntity(Entity * e, s16 order, s16 layer)
 }
 
 //------------------------------------------------------------------------------
-void Scene::unregisterUpdatableEntity(Entity * e)
+void Scene::unregisterUpdatableEntity(Entity::Ref e)
 {
     for (auto it = m_updatableEntities.begin(); it != m_updatableEntities.end(); ++it)
     {
@@ -30,12 +30,12 @@ void Scene::unregisterUpdatableEntity(Entity * e)
             return;
     }
 #ifdef SN_BUILD_DEBUG
-    SN_WARNING("Scene::underisterUpdatableEntity: entity " << e->toString() << " was not registered");
+    SN_WARNING("Scene::unregisterUpdatableEntity: entity " << e->toString() << " was not registered");
 #endif
 }
 
 //------------------------------------------------------------------------------
-void Scene::registerTaggedEntity(Entity * e, const std::string & tag)
+void Scene::registerTaggedEntity(Entity::Ref e, const std::string & tag)
 {
 #ifdef SN_BUILD_DEBUG
     auto it = m_taggedEntities.find(tag);
@@ -52,14 +52,14 @@ void Scene::registerTaggedEntity(Entity * e, const std::string & tag)
 }
 
 //------------------------------------------------------------------------------
-void Scene::unregisterTaggedEntity(Entity * e, const std::string & tag)
+void Scene::unregisterTaggedEntity(Entity::Ref e, const std::string & tag)
 {
     if (m_taggedEntities[tag].erase(e) == 0)
         SN_WARNING("Scene::unregisterTaggedEntity: entity " << e->toString() << " was not registered with tag " << tag);
 }
 
 //------------------------------------------------------------------------------
-void Scene::setParent(Entity * newParent)
+void Scene::setParent(Entity::Ref newParent)
 {
     SN_ERROR("Scene::setParent: a scene cannot have a parent.");
 }
@@ -109,7 +109,7 @@ void Scene::loadFromFile(const std::string & filePath)
     u32 len = docEntities.getArray().size();
     for (u32 i = 0; i < len; ++i)
     {
-        Entity::unserialize(docEntities[i], *this);
+        Entity::unserialize(docEntities[i], shared_from_this());
     }
 }
 
@@ -120,7 +120,7 @@ void Scene::saveToFile(const std::string & filePath)
     JsonBox::Value & docEntities = doc["entities"];
     for (u32 i = 0; i < getChildCount(); ++i)
     {
-        Entity::serialize(docEntities[i], *getChildByIndex(i));
+        Entity::serialize(docEntities[i], getChildByIndex(i));
     }
 
     sn::saveToFile(doc, filePath);

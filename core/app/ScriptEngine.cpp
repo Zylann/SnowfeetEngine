@@ -192,7 +192,8 @@ bool ScriptEngine::compileAngelscriptModule(const std::string & modName, const s
 //------------------------------------------------------------------------------
 bool ScriptEngine::compileSquirrelModule(const std::string & modName, std::string & modNamespace, const std::vector<String> & files)
 {
-
+    // TODO
+    return false;
 }
 
 //------------------------------------------------------------------------------

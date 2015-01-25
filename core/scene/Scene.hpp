@@ -21,20 +21,20 @@ class SN_API Scene : public Entity
 {
 public:
 
-    SN_ABSTRACT_OBJECT(sn::Scene, sn::Object)
+    SN_OBJECT(sn::Scene, sn::Object)
 
     Scene() : Entity()
     {
         setName("Scene");
     }
 
-    void registerUpdatableEntity(Entity * e, s16 order, s16 layer);
-    void unregisterUpdatableEntity(Entity * e);
+    void registerUpdatableEntity(Entity::Ref e, s16 order, s16 layer);
+    void unregisterUpdatableEntity(Entity::Ref e);
 
-    void registerTaggedEntity(Entity * e, const std::string & tag);
-    void unregisterTaggedEntity(Entity * e, const std::string & tag);
+    void registerTaggedEntity(Entity::Ref e, const std::string & tag);
+    void unregisterTaggedEntity(Entity::Ref e, const std::string & tag);
 
-    void setParent(Entity * newParent);
+    void setParent(Entity::Ref newParent) override;
 
     void destroy() override;
     void destroyLater() override;
@@ -45,8 +45,8 @@ public:
     void saveToFile(const std::string & filePath);
 
 private:
-    std::unordered_map<std::string, std::unordered_set<Entity*>> m_taggedEntities;
-    std::map<s32, std::unordered_set<Entity*>> m_updatableEntities;
+    std::unordered_map<std::string, std::unordered_set<Entity::Ref>> m_taggedEntities;
+    std::map<s32, std::unordered_set<Entity::Ref>> m_updatableEntities;
 };
 
 } // namespace sn

@@ -33,7 +33,7 @@ public:
         std::string baseName = Object_T::__sGetBaseClassName();
 
         // Check if the object has already been registered
-        SN_ASSERT(!isRegistered(typeName), "ObjectTypeDatabase::registerType: registered the same type twice ! (" << typeName << ")");
+        SN_ASSERT(!isRegistered(typeName), "ObjectTypeDatabase::registerType: registered the same type twice! (" << typeName << ")");
 
         ObjectType * type = new ObjectType(typeName, baseName);
 

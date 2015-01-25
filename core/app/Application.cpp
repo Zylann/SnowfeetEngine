@@ -101,7 +101,7 @@ int Application::executeEx()
     {
         // Load the scene
         String filePath = m_pathToProjects + L"/" + mainModuleInfo.directory + L"/" + mainModuleInfo.startupScene;
-        m_scene = new Scene();
+        m_scene.reset(new Scene());
         m_scene->loadFromFile(toString(filePath));
     }
 
@@ -161,9 +161,10 @@ int Application::executeEx()
     // Call destroy callbacks
     callVoidCallback(CallbackName::DESTROY);
 
+    if (m_scene.use_count() > 1)
+        SN_ERROR("Scene is leaking %i times" << (m_scene.use_count() - 1));
     if (m_scene)
     {
-        m_scene->release();
         m_scene = nullptr;
     }
 

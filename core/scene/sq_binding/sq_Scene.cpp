@@ -9,7 +9,11 @@ void registerScene(HSQUIRRELVM vm)
 {
     using namespace Sqrat;
 
-    RootTable(vm).Bind("Scene", Class<Scene>(vm));
+    const char * className = "Scene";
+
+    Class<Scene::Ref> c(vm, className);
+
+    RootTable(vm).Bind(className, c);
 }
 
 } // namespace sn

@@ -2,6 +2,7 @@
 #define __HEADER_SN_OBJECT__
 
 #include <core/reflect/ObjectTypeDatabase.hpp>
+#include <memory>
 
 // Constraints of the reflection system:
 // - Classes must define a parameter-less constructor
@@ -44,6 +45,8 @@
 // _name: class name with full namespace (must be unique !)
 // _baseName: inherited class name with full namespace
 #define SN_OBJECT(_name, _baseName)                                            \
+    typedef std::shared_ptr<_name> Ref;                                         \
+    typedef std::shared_ptr<_name> WeakRef;                                     \
     _SN_OBJECT(_name, _baseName)                                               \
     static sn::Object * instantiate() {                                        \
         return sn::instantiateOrNull<_name>();                                 \
@@ -100,6 +103,8 @@ public:
         // Object is abstract from reflection point of view
         return nullptr;
     }
+
+    //static void registerReflectedMembers(ObjectType & ot);
 
 };
 

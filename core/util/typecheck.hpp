@@ -10,6 +10,7 @@ This file is part of the SnowfeetEngine project.
 #include <typeinfo>
 #include <core/config.hpp>
 #include <core/util/Log.hpp>
+#include <memory>
 
 namespace sn
 {
@@ -33,13 +34,30 @@ inline B checked_cast(A * a)
             "from {" << (a==nullptr ? "nullptr" : typeid(a).name()) << "} "
             "to {" << typeid(B).name() << "}");
     }
-    // Note: no crash here, because debugging would always lead to this file
-    // and wouldn't be helpful.
     //assert(castedPointer);
     return castedPointer;
 #else
     // Fast
     return static_cast<B>(a);
+#endif
+}
+
+// Same for shared_ptr
+template <typename B, typename A>
+inline std::shared_ptr<B> checked_cast(const std::shared_ptr<A> & a)
+{
+#ifdef SN_BUILD_DEBUG
+    std::shared_ptr<B> castedPointer = std::dynamic_pointer_cast<B>(a);
+    if (castedPointer.get() == nullptr)
+    {
+        SN_ERROR("Failed to cast shared pointer ("
+            "from {" << (a.get() == nullptr ? "nullptr" : typeid(a.get()).name()) << "} "
+            "to {" << typeid(B).name() << "}");
+    }
+    //assert(castedPointer);
+    return castedPointer;
+#else
+    return std::static_pointerd_cast<B>(a);
 #endif
 }
 
