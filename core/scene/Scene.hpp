@@ -23,7 +23,9 @@ public:
 
     SN_OBJECT(sn::Scene, sn::Object)
 
-    Scene() : Entity()
+    Scene() : 
+        Entity(), 
+        m_quitFlag(false)
     {
         setName("Scene");
     }
@@ -41,12 +43,17 @@ public:
 
     void onUpdate() override;
 
+    inline void quit() { m_quitFlag = true; }
+    inline bool getQuitFlag() const { return m_quitFlag; }
+
     void loadFromFile(const std::string & filePath);
     void saveToFile(const std::string & filePath);
 
 private:
     std::unordered_map<std::string, std::unordered_set<Entity::Ref>> m_taggedEntities;
     std::map<s32, std::unordered_set<Entity::Ref>> m_updatableEntities;
+    bool m_quitFlag;
+
 };
 
 } // namespace sn
