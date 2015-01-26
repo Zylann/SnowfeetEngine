@@ -3,13 +3,22 @@
 
 #include <core/types.hpp>
 #include <core/reflect/Object.hpp>
-#include <core/util/RefCounted.hpp>
 #include <core/json/json_utils.hpp>
+#include <core/squirrel/bind_tools.hpp>
 
 #include <vector>
 #include <string>
 #include <bitset>
 #include <unordered_set>
+
+#define _SN_DECLARE_PUSHSQUIRRELOBJ()                                      \
+    virtual void pushSquirrelObject(HSQUIRRELVM vm) {                      \
+        Sqrat::PushVar(vm, shared_from_this());                            \
+    }
+
+#define SN_ENTITY(_className, _baseName)                                   \
+    _SN_DECLARE_PUSHSQUIRRELOBJ()                                          \
+    SN_OBJECT(_className, _baseName)
 
 namespace sn
 {
@@ -33,7 +42,7 @@ class SN_API Entity :
 {
 public:
 
-    SN_OBJECT(sn::Entity, sn::Object);
+    SN_ENTITY(sn::Entity, sn::Object);
 
     Entity() :
         Object()

@@ -21,7 +21,7 @@ class SN_API Scene : public Entity
 {
 public:
 
-    SN_OBJECT(sn::Scene, sn::Object)
+    SN_ENTITY(sn::Scene, sn::Object)
 
     Scene() : 
         Entity(), 

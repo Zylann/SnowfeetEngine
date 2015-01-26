@@ -10,7 +10,7 @@ class NativeHello : public sn::Entity
 {
 public:
     
-    SN_OBJECT(hello::NativeHello, sn::Entity)
+    SN_ENTITY(hello::NativeHello, sn::Entity)
 
     void onReady() override;
 
