@@ -45,8 +45,8 @@
 // _name: class name with full namespace (must be unique !)
 // _baseName: inherited class name with full namespace
 #define SN_OBJECT(_name, _baseName)                                            \
-    typedef std::shared_ptr<_name> Ref;                                         \
-    typedef std::shared_ptr<_name> WeakRef;                                     \
+    typedef std::shared_ptr<_name> Ref;                                        \
+    typedef std::shared_ptr<_name> WeakRef;                                    \
     _SN_OBJECT(_name, _baseName)                                               \
     static sn::Object * instantiate() {                                        \
         return sn::instantiateOrNull<_name>();                                 \
