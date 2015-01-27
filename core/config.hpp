@@ -7,8 +7,8 @@
 #ifndef __HEADER_SN_CONFIG__
 #define __HEADER_SN_CONFIG__
 
-#define SN_VERSION 141101
-#define SN_VERSION_STRING "14.11.1"
+#define SN_VERSION 150127
+#define SN_VERSION_STRING "15.01.27"
 
 //------------------------------------------------------------------------------
 // Switches
