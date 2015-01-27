@@ -7,6 +7,14 @@
 //#include "../math/as_binding/as_math.hpp"
 //#include "../system/console/as_binding/as_console.hpp"
 
+#include <stdarg.h>
+
+#ifdef SQUNICODE
+	#define scvprintf vfwprintf
+#else
+	#define scvprintf vfprintf
+#endif
+
 namespace sn
 {
 
@@ -52,6 +60,22 @@ namespace sn
 //    sn::Log::get().print(SN_LTM_ERROR, msg);
 //}
 
+void sqPrintfunc(HSQUIRRELVM v, const SQChar *s, ...)
+{
+	va_list vl;
+	va_start(vl, s);
+	scvprintf(stdout, s, vl);
+	va_end(vl);
+}
+
+void sqErrorfunc(HSQUIRRELVM v, const SQChar *s, ...)
+{
+	va_list vl;
+	va_start(vl, s);
+	scvprintf(stderr, s, vl);
+	va_end(vl);
+}
+
 //==============================================================================
 // ScriptEngine
 //==============================================================================
@@ -82,6 +106,13 @@ void ScriptEngine::initialize()
     m_squirrelVM = sq_open(1024);
     Sqrat::DefaultVM::Set(m_squirrelVM);
 
+	// Registers default error handlers
+	sqstd_seterrorhandlers(m_squirrelVM);
+
+	// Register print and error functions
+	sq_setprintfunc(m_squirrelVM, sqPrintfunc, sqErrorfunc);
+
+	// Register API
     registerCoreAPI();
 }
 
