@@ -7,15 +7,18 @@ namespace sn
 
 void registerScene(HSQUIRRELVM vm)
 {
-    using namespace Sqrat;
+    // TODO FIXME The following doesn't compiles yet...
 
-    const char * className = "Scene";
+    //using namespace Sqrat;
 
-    Class<Scene::Ref> c(vm, className);
+    //const char * className = "Scene";
 
-    RootTable(vm).Bind(className, c);
+    //DerivedClass<Scene::Ref, Entity::Ref> c(vm, className);
+
+    //c.Func("quit", &Scene::quit);
+
+    //RootTable(vm).Bind(className, c);
 }
 
 } // namespace sn
-
 
