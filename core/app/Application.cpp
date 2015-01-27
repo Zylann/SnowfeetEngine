@@ -119,8 +119,21 @@ int Application::executeEx()
     //    callVoidCallback(CallbackName::START);
     //}
 
-    if (m_scene && m_scene->getQuitFlag())
+    if (m_scene)
+    {
+        if (m_scene->getQuitFlag())
+            m_runFlag = false;
+        if (m_scene->getChildCount() == 0)
+        {
+            SN_DLOG("The scene is empty, the application will quit");
+            m_runFlag = false;
+        }
+    }
+    else
+    {
+        SN_DLOG("No startup scene, the application will quit");
         m_runFlag = false;
+    }
 
     SN_LOG("Entering main loop");
 
