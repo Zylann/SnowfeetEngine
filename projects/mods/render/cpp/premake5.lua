@@ -27,7 +27,6 @@ project "ModRender"
 	filter "configurations:Debug"
 		objdir "_obj/debug"
 		defines {
-			"SN_BUILD_DEBUG",
 			-- glew (static)
 			"WIN32",
 			"_LIB",
