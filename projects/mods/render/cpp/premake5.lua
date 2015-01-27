@@ -20,7 +20,6 @@ project "ModRender"
 	}
 	links {
 		"SnowfeetCore",
-		"JsonBox",
 		"glew",
 		"opengl32"
 	}
