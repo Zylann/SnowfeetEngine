@@ -10,11 +10,6 @@ project "SnowfeetMain"
 		"**.hpp",
 		"**.cpp"
 	}
-	-- includedirs {
-	-- 	"../angelscript", -- For AngelScript
-	-- 	"../json", -- For JsonBox
-	-- 	".." -- For the core to work as a library
-	-- }
 	links {
 		"SnowfeetCore",
 	}
