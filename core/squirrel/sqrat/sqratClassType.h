@@ -29,7 +29,6 @@
 #define _SCRAT_CLASSTYPE_H_
 
 #include <squirrel.h>
-#include <map>
 #include <typeinfo>
 
 #include "sqratUtil.h"
@@ -66,11 +65,11 @@ struct StaticClassData : public AbstractStaticClassData {
 // Every Squirrel class object created by Sqrat in every VM has its own unique ClassData object stored in the registry table of the VM
 template<class C>
 struct ClassData {
-    HSQOBJECT                           classObj;
-    HSQOBJECT                           getTable;
-    HSQOBJECT                           setTable;
-    SharedPtr<std::map<C*, HSQOBJECT> > instances;
-    SharedPtr<AbstractStaticClassData>  staticData;
+    HSQOBJECT classObj;
+    HSQOBJECT getTable;
+    HSQOBJECT setTable;
+    SharedPtr<typename unordered_map<C*, HSQOBJECT>::type> instances;
+    SharedPtr<AbstractStaticClassData> staticData;
 };
 
 // Lookup static class data by type_info rather than a template because C++ cannot export generic templates
@@ -156,7 +155,7 @@ public:
 
     static SQInteger DeleteInstance(SQUserPointer ptr, SQInteger size) {
         SQUNUSED(size);
-        std::pair<C*, SharedPtr<std::map<C*, HSQOBJECT> > >* instance = reinterpret_cast<std::pair<C*, SharedPtr<std::map<C*, HSQOBJECT> > >*>(ptr);
+        std::pair<C*, SharedPtr<typename unordered_map<C*, HSQOBJECT>::type> >* instance = reinterpret_cast<std::pair<C*, SharedPtr<typename unordered_map<C*, HSQOBJECT>::type> >*>(ptr);
         instance->second->erase(instance->first);
         delete instance;
         return 0;
@@ -170,7 +169,7 @@ public:
 
         ClassData<C>* cd = getClassData(vm);
 
-        typename std::map<C*, HSQOBJECT>::iterator it = cd->instances->find(ptr);
+        typename unordered_map<C*, HSQOBJECT>::type::iterator it = cd->instances->find(ptr);
         if (it != cd->instances->end()) {
             sq_pushobject(vm, it->second);
             return;
@@ -179,7 +178,7 @@ public:
         sq_pushobject(vm, cd->classObj);
         sq_createinstance(vm, -1);
         sq_remove(vm, -2);
-        sq_setinstanceup(vm, -1, new std::pair<C*, SharedPtr<std::map<C*, HSQOBJECT> > >(ptr, cd->instances));
+        sq_setinstanceup(vm, -1, new std::pair<C*, SharedPtr<typename unordered_map<C*, HSQOBJECT>::type> >(ptr, cd->instances));
         sq_setreleasehook(vm, -1, &DeleteInstance);
         sq_getstackobj(vm, -1, &((*cd->instances)[ptr]));
     }
@@ -197,8 +196,8 @@ public:
     }
 
     static C* GetInstance(HSQUIRRELVM vm, SQInteger idx, bool nullAllowed = false) {
-        AbstractStaticClassData*                             classType = NULL;
-        std::pair<C*, SharedPtr<std::map<C*, HSQOBJECT> > >* instance  = NULL;
+        AbstractStaticClassData* classType = NULL;
+        std::pair<C*, SharedPtr<typename unordered_map<C*, HSQOBJECT>::type> >* instance = NULL;
         if (hasClassData(vm)) /* type checking only done if the value has type data else it may be enum */
         {
             if (nullAllowed && sq_gettype(vm, idx) == OT_NULL) {

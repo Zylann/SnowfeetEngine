@@ -61,7 +61,7 @@ public:
 
         C* ptr;
         SQTRY()
-        ptr = ClassType<C>::GetInstance(vm, 1);
+        ptr = Var<C*>(vm, 1).value;
         SQCATCH_NOEXCEPT(vm) {
             SQCLEAR(vm); // clear the previous error
             assert(0); // may fail because C is not a type bound in the VM
@@ -99,7 +99,7 @@ public:
 
         C* ptr;
         SQTRY()
-        ptr = ClassType<C>::GetInstance(vm, 1);
+        ptr = Var<C*>(vm, 1).value;
         SQCATCH_NOEXCEPT(vm) {
             SQCLEAR(vm); // clear the previous error
             assert(0); // may fail because C is not a type bound in the VM
@@ -138,7 +138,7 @@ public:
 
         C* ptr;
         SQTRY()
-        ptr = ClassType<C>::GetInstance(vm, 1);
+        ptr = Var<C*>(vm, 1).value;
         SQCATCH_NOEXCEPT(vm) {
             SQCLEAR(vm); // clear the previous error
             assert(0); // may fail because C is not a type bound in the VM
@@ -182,7 +182,7 @@ public:
 
         C* ptr;
         SQTRY()
-        ptr = ClassType<C>::GetInstance(vm, 1);
+        ptr = Var<C*>(vm, 1).value;
         SQCATCH_NOEXCEPT(vm) {
             SQCLEAR(vm); // clear the previous error
             assert(0); // may fail because C is not a type bound in the VM
@@ -227,7 +227,7 @@ public:
 
         C* ptr;
         SQTRY()
-        ptr = ClassType<C>::GetInstance(vm, 1);
+        ptr = Var<C*>(vm, 1).value;
         SQCATCH_NOEXCEPT(vm) {
             SQCLEAR(vm); // clear the previous error
             assert(0); // may fail because C is not a type bound in the VM
@@ -273,7 +273,7 @@ public:
 
         C* ptr;
         SQTRY()
-        ptr = ClassType<C>::GetInstance(vm, 1);
+        ptr = Var<C*>(vm, 1).value;
         SQCATCH_NOEXCEPT(vm) {
             SQCLEAR(vm); // clear the previous error
             assert(0); // may fail because C is not a type bound in the VM
@@ -320,7 +320,7 @@ public:
 
         C* ptr;
         SQTRY()
-        ptr = ClassType<C>::GetInstance(vm, 1);
+        ptr = Var<C*>(vm, 1).value;
         SQCATCH_NOEXCEPT(vm) {
             SQCLEAR(vm); // clear the previous error
             assert(0); // may fail because C is not a type bound in the VM
@@ -368,7 +368,7 @@ public:
 
         C* ptr;
         SQTRY()
-        ptr = ClassType<C>::GetInstance(vm, 1);
+        ptr = Var<C*>(vm, 1).value;
         SQCATCH_NOEXCEPT(vm) {
             SQCLEAR(vm); // clear the previous error
             assert(0); // may fail because C is not a type bound in the VM
@@ -417,7 +417,7 @@ public:
 
         C* ptr;
         SQTRY()
-        ptr = ClassType<C>::GetInstance(vm, 1);
+        ptr = Var<C*>(vm, 1).value;
         SQCATCH_NOEXCEPT(vm) {
             SQCLEAR(vm); // clear the previous error
             assert(0); // may fail because C is not a type bound in the VM
@@ -467,7 +467,7 @@ public:
 
         C* ptr;
         SQTRY()
-        ptr = ClassType<C>::GetInstance(vm, 1);
+        ptr = Var<C*>(vm, 1).value;
         SQCATCH_NOEXCEPT(vm) {
             SQCLEAR(vm); // clear the previous error
             assert(0); // may fail because C is not a type bound in the VM
@@ -518,7 +518,7 @@ public:
 
         C* ptr;
         SQTRY()
-        ptr = ClassType<C>::GetInstance(vm, 1);
+        ptr = Var<C*>(vm, 1).value;
         SQCATCH_NOEXCEPT(vm) {
             SQCLEAR(vm); // clear the previous error
             assert(0); // may fail because C is not a type bound in the VM
@@ -570,7 +570,7 @@ public:
 
         C* ptr;
         SQTRY()
-        ptr = ClassType<C>::GetInstance(vm, 1);
+        ptr = Var<C*>(vm, 1).value;
         SQCATCH_NOEXCEPT(vm) {
             SQCLEAR(vm); // clear the previous error
             assert(0); // may fail because C is not a type bound in the VM
@@ -623,7 +623,7 @@ public:
 
         C* ptr;
         SQTRY()
-        ptr = ClassType<C>::GetInstance(vm, 1);
+        ptr = Var<C*>(vm, 1).value;
         SQCATCH_NOEXCEPT(vm) {
             SQCLEAR(vm); // clear the previous error
             assert(0); // may fail because C is not a type bound in the VM
@@ -677,7 +677,7 @@ public:
 
         C* ptr;
         SQTRY()
-        ptr = ClassType<C>::GetInstance(vm, 1);
+        ptr = Var<C*>(vm, 1).value;
         SQCATCH_NOEXCEPT(vm) {
             SQCLEAR(vm); // clear the previous error
             assert(0); // may fail because C is not a type bound in the VM
@@ -732,7 +732,7 @@ public:
 
         C* ptr;
         SQTRY()
-        ptr = ClassType<C>::GetInstance(vm, 1);
+        ptr = Var<C*>(vm, 1).value;
         SQCATCH_NOEXCEPT(vm) {
             SQCLEAR(vm); // clear the previous error
             assert(0); // may fail because C is not a type bound in the VM
@@ -788,7 +788,7 @@ public:
 
         C* ptr;
         SQTRY()
-        ptr = ClassType<C>::GetInstance(vm, 1);
+        ptr = Var<C*>(vm, 1).value;
         SQCATCH_NOEXCEPT(vm) {
             SQCLEAR(vm); // clear the previous error
             assert(0); // may fail because C is not a type bound in the VM
@@ -845,7 +845,7 @@ public:
 
         C* ptr;
         SQTRY()
-        ptr = ClassType<C>::GetInstance(vm, 1);
+        ptr = Var<C*>(vm, 1).value;
         SQCATCH_NOEXCEPT(vm) {
             SQCLEAR(vm); // clear the previous error
             assert(0); // may fail because C is not a type bound in the VM
@@ -903,7 +903,7 @@ public:
 
         C* ptr;
         SQTRY()
-        ptr = ClassType<C>::GetInstance(vm, 1);
+        ptr = Var<C*>(vm, 1).value;
         SQCATCH_NOEXCEPT(vm) {
             SQCLEAR(vm); // clear the previous error
             assert(0); // may fail because C is not a type bound in the VM
@@ -962,7 +962,7 @@ public:
 
         C* ptr;
         SQTRY()
-        ptr = ClassType<C>::GetInstance(vm, 1);
+        ptr = Var<C*>(vm, 1).value;
         SQCATCH_NOEXCEPT(vm) {
             SQCLEAR(vm); // clear the previous error
             assert(0); // may fail because C is not a type bound in the VM
@@ -1022,7 +1022,7 @@ public:
 
         C* ptr;
         SQTRY()
-        ptr = ClassType<C>::GetInstance(vm, 1);
+        ptr = Var<C*>(vm, 1).value;
         SQCATCH_NOEXCEPT(vm) {
             SQCLEAR(vm); // clear the previous error
             assert(0); // may fail because C is not a type bound in the VM
@@ -1084,7 +1084,7 @@ public:
 
         C* ptr;
         SQTRY()
-        ptr = ClassType<C>::GetInstance(vm, 1);
+        ptr = Var<C*>(vm, 1).value;
         SQCATCH_NOEXCEPT(vm) {
             SQCLEAR(vm); // clear the previous error
             assert(0); // may fail because C is not a type bound in the VM
@@ -1146,7 +1146,7 @@ public:
 
         C* ptr;
         SQTRY()
-        ptr = ClassType<C>::GetInstance(vm, 1);
+        ptr = Var<C*>(vm, 1).value;
         SQCATCH_NOEXCEPT(vm) {
             SQCLEAR(vm); // clear the previous error
             assert(0); // may fail because C is not a type bound in the VM
@@ -1210,7 +1210,7 @@ public:
 
         C* ptr;
         SQTRY()
-        ptr = ClassType<C>::GetInstance(vm, 1);
+        ptr = Var<C*>(vm, 1).value;
         SQCATCH_NOEXCEPT(vm) {
             SQCLEAR(vm); // clear the previous error
             assert(0); // may fail because C is not a type bound in the VM
@@ -1274,7 +1274,7 @@ public:
 
         C* ptr;
         SQTRY()
-        ptr = ClassType<C>::GetInstance(vm, 1);
+        ptr = Var<C*>(vm, 1).value;
         SQCATCH_NOEXCEPT(vm) {
             SQCLEAR(vm); // clear the previous error
             assert(0); // may fail because C is not a type bound in the VM
@@ -1340,7 +1340,7 @@ public:
 
         C* ptr;
         SQTRY()
-        ptr = ClassType<C>::GetInstance(vm, 1);
+        ptr = Var<C*>(vm, 1).value;
         SQCATCH_NOEXCEPT(vm) {
             SQCLEAR(vm); // clear the previous error
             assert(0); // may fail because C is not a type bound in the VM
@@ -1406,7 +1406,7 @@ public:
 
         C* ptr;
         SQTRY()
-        ptr = ClassType<C>::GetInstance(vm, 1);
+        ptr = Var<C*>(vm, 1).value;
         SQCATCH_NOEXCEPT(vm) {
             SQCLEAR(vm); // clear the previous error
             assert(0); // may fail because C is not a type bound in the VM
@@ -1473,7 +1473,7 @@ public:
 
         C* ptr;
         SQTRY()
-        ptr = ClassType<C>::GetInstance(vm, 1);
+        ptr = Var<C*>(vm, 1).value;
         SQCATCH_NOEXCEPT(vm) {
             SQCLEAR(vm); // clear the previous error
             assert(0); // may fail because C is not a type bound in the VM
@@ -1541,7 +1541,7 @@ public:
 
         C* ptr;
         SQTRY()
-        ptr = ClassType<C>::GetInstance(vm, 1);
+        ptr = Var<C*>(vm, 1).value;
         SQCATCH_NOEXCEPT(vm) {
             SQCLEAR(vm); // clear the previous error
             assert(0); // may fail because C is not a type bound in the VM
@@ -1610,7 +1610,7 @@ public:
 
         C* ptr;
         SQTRY()
-        ptr = ClassType<C>::GetInstance(vm, 1);
+        ptr = Var<C*>(vm, 1).value;
         SQCATCH_NOEXCEPT(vm) {
             SQCLEAR(vm); // clear the previous error
             assert(0); // may fail because C is not a type bound in the VM
@@ -1680,7 +1680,7 @@ public:
 
         C* ptr;
         SQTRY()
-        ptr = ClassType<C>::GetInstance(vm, 1);
+        ptr = Var<C*>(vm, 1).value;
         SQCATCH_NOEXCEPT(vm) {
             SQCLEAR(vm); // clear the previous error
             assert(0); // may fail because C is not a type bound in the VM
@@ -1761,7 +1761,7 @@ public:
 
         C* ptr;
         SQTRY()
-        ptr = ClassType<C>::GetInstance(vm, 1);
+        ptr = Var<C*>(vm, 1).value;
         SQCATCH_NOEXCEPT(vm) {
             SQCLEAR(vm); // clear the previous error
             assert(0); // may fail because C is not a type bound in the VM
@@ -1799,7 +1799,7 @@ public:
 
         C* ptr;
         SQTRY()
-        ptr = ClassType<C>::GetInstance(vm, 1);
+        ptr = Var<C*>(vm, 1).value;
         SQCATCH_NOEXCEPT(vm) {
             SQCLEAR(vm); // clear the previous error
             assert(0); // may fail because C is not a type bound in the VM
@@ -1838,7 +1838,7 @@ public:
 
         C* ptr;
         SQTRY()
-        ptr = ClassType<C>::GetInstance(vm, 1);
+        ptr = Var<C*>(vm, 1).value;
         SQCATCH_NOEXCEPT(vm) {
             SQCLEAR(vm); // clear the previous error
             assert(0); // may fail because C is not a type bound in the VM
@@ -1882,7 +1882,7 @@ public:
 
         C* ptr;
         SQTRY()
-        ptr = ClassType<C>::GetInstance(vm, 1);
+        ptr = Var<C*>(vm, 1).value;
         SQCATCH_NOEXCEPT(vm) {
             SQCLEAR(vm); // clear the previous error
             assert(0); // may fail because C is not a type bound in the VM
@@ -1927,7 +1927,7 @@ public:
 
         C* ptr;
         SQTRY()
-        ptr = ClassType<C>::GetInstance(vm, 1);
+        ptr = Var<C*>(vm, 1).value;
         SQCATCH_NOEXCEPT(vm) {
             SQCLEAR(vm); // clear the previous error
             assert(0); // may fail because C is not a type bound in the VM
@@ -1973,7 +1973,7 @@ public:
 
         C* ptr;
         SQTRY()
-        ptr = ClassType<C>::GetInstance(vm, 1);
+        ptr = Var<C*>(vm, 1).value;
         SQCATCH_NOEXCEPT(vm) {
             SQCLEAR(vm); // clear the previous error
             assert(0); // may fail because C is not a type bound in the VM
@@ -2020,7 +2020,7 @@ public:
 
         C* ptr;
         SQTRY()
-        ptr = ClassType<C>::GetInstance(vm, 1);
+        ptr = Var<C*>(vm, 1).value;
         SQCATCH_NOEXCEPT(vm) {
             SQCLEAR(vm); // clear the previous error
             assert(0); // may fail because C is not a type bound in the VM
@@ -2068,7 +2068,7 @@ public:
 
         C* ptr;
         SQTRY()
-        ptr = ClassType<C>::GetInstance(vm, 1);
+        ptr = Var<C*>(vm, 1).value;
         SQCATCH_NOEXCEPT(vm) {
             SQCLEAR(vm); // clear the previous error
             assert(0); // may fail because C is not a type bound in the VM
@@ -2117,7 +2117,7 @@ public:
 
         C* ptr;
         SQTRY()
-        ptr = ClassType<C>::GetInstance(vm, 1);
+        ptr = Var<C*>(vm, 1).value;
         SQCATCH_NOEXCEPT(vm) {
             SQCLEAR(vm); // clear the previous error
             assert(0); // may fail because C is not a type bound in the VM
@@ -2167,7 +2167,7 @@ public:
 
         C* ptr;
         SQTRY()
-        ptr = ClassType<C>::GetInstance(vm, 1);
+        ptr = Var<C*>(vm, 1).value;
         SQCATCH_NOEXCEPT(vm) {
             SQCLEAR(vm); // clear the previous error
             assert(0); // may fail because C is not a type bound in the VM
@@ -2218,7 +2218,7 @@ public:
 
         C* ptr;
         SQTRY()
-        ptr = ClassType<C>::GetInstance(vm, 1);
+        ptr = Var<C*>(vm, 1).value;
         SQCATCH_NOEXCEPT(vm) {
             SQCLEAR(vm); // clear the previous error
             assert(0); // may fail because C is not a type bound in the VM
@@ -2270,7 +2270,7 @@ public:
 
         C* ptr;
         SQTRY()
-        ptr = ClassType<C>::GetInstance(vm, 1);
+        ptr = Var<C*>(vm, 1).value;
         SQCATCH_NOEXCEPT(vm) {
             SQCLEAR(vm); // clear the previous error
             assert(0); // may fail because C is not a type bound in the VM
@@ -2323,7 +2323,7 @@ public:
 
         C* ptr;
         SQTRY()
-        ptr = ClassType<C>::GetInstance(vm, 1);
+        ptr = Var<C*>(vm, 1).value;
         SQCATCH_NOEXCEPT(vm) {
             SQCLEAR(vm); // clear the previous error
             assert(0); // may fail because C is not a type bound in the VM
@@ -2377,7 +2377,7 @@ public:
 
         C* ptr;
         SQTRY()
-        ptr = ClassType<C>::GetInstance(vm, 1);
+        ptr = Var<C*>(vm, 1).value;
         SQCATCH_NOEXCEPT(vm) {
             SQCLEAR(vm); // clear the previous error
             assert(0); // may fail because C is not a type bound in the VM
@@ -2432,7 +2432,7 @@ public:
 
         C* ptr;
         SQTRY()
-        ptr = ClassType<C>::GetInstance(vm, 1);
+        ptr = Var<C*>(vm, 1).value;
         SQCATCH_NOEXCEPT(vm) {
             SQCLEAR(vm); // clear the previous error
             assert(0); // may fail because C is not a type bound in the VM
@@ -2488,7 +2488,7 @@ public:
 
         C* ptr;
         SQTRY()
-        ptr = ClassType<C>::GetInstance(vm, 1);
+        ptr = Var<C*>(vm, 1).value;
         SQCATCH_NOEXCEPT(vm) {
             SQCLEAR(vm); // clear the previous error
             assert(0); // may fail because C is not a type bound in the VM
@@ -2545,7 +2545,7 @@ public:
 
         C* ptr;
         SQTRY()
-        ptr = ClassType<C>::GetInstance(vm, 1);
+        ptr = Var<C*>(vm, 1).value;
         SQCATCH_NOEXCEPT(vm) {
             SQCLEAR(vm); // clear the previous error
             assert(0); // may fail because C is not a type bound in the VM
@@ -2603,7 +2603,7 @@ public:
 
         C* ptr;
         SQTRY()
-        ptr = ClassType<C>::GetInstance(vm, 1);
+        ptr = Var<C*>(vm, 1).value;
         SQCATCH_NOEXCEPT(vm) {
             SQCLEAR(vm); // clear the previous error
             assert(0); // may fail because C is not a type bound in the VM
@@ -2662,7 +2662,7 @@ public:
 
         C* ptr;
         SQTRY()
-        ptr = ClassType<C>::GetInstance(vm, 1);
+        ptr = Var<C*>(vm, 1).value;
         SQCATCH_NOEXCEPT(vm) {
             SQCLEAR(vm); // clear the previous error
             assert(0); // may fail because C is not a type bound in the VM
@@ -2722,7 +2722,7 @@ public:
 
         C* ptr;
         SQTRY()
-        ptr = ClassType<C>::GetInstance(vm, 1);
+        ptr = Var<C*>(vm, 1).value;
         SQCATCH_NOEXCEPT(vm) {
             SQCLEAR(vm); // clear the previous error
             assert(0); // may fail because C is not a type bound in the VM
@@ -2784,7 +2784,7 @@ public:
 
         C* ptr;
         SQTRY()
-        ptr = ClassType<C>::GetInstance(vm, 1);
+        ptr = Var<C*>(vm, 1).value;
         SQCATCH_NOEXCEPT(vm) {
             SQCLEAR(vm); // clear the previous error
             assert(0); // may fail because C is not a type bound in the VM
@@ -2846,7 +2846,7 @@ public:
 
         C* ptr;
         SQTRY()
-        ptr = ClassType<C>::GetInstance(vm, 1);
+        ptr = Var<C*>(vm, 1).value;
         SQCATCH_NOEXCEPT(vm) {
             SQCLEAR(vm); // clear the previous error
             assert(0); // may fail because C is not a type bound in the VM
@@ -2910,7 +2910,7 @@ public:
 
         C* ptr;
         SQTRY()
-        ptr = ClassType<C>::GetInstance(vm, 1);
+        ptr = Var<C*>(vm, 1).value;
         SQCATCH_NOEXCEPT(vm) {
             SQCLEAR(vm); // clear the previous error
             assert(0); // may fail because C is not a type bound in the VM
@@ -2974,7 +2974,7 @@ public:
 
         C* ptr;
         SQTRY()
-        ptr = ClassType<C>::GetInstance(vm, 1);
+        ptr = Var<C*>(vm, 1).value;
         SQCATCH_NOEXCEPT(vm) {
             SQCLEAR(vm); // clear the previous error
             assert(0); // may fail because C is not a type bound in the VM
@@ -3040,7 +3040,7 @@ public:
 
         C* ptr;
         SQTRY()
-        ptr = ClassType<C>::GetInstance(vm, 1);
+        ptr = Var<C*>(vm, 1).value;
         SQCATCH_NOEXCEPT(vm) {
             SQCLEAR(vm); // clear the previous error
             assert(0); // may fail because C is not a type bound in the VM
@@ -3106,7 +3106,7 @@ public:
 
         C* ptr;
         SQTRY()
-        ptr = ClassType<C>::GetInstance(vm, 1);
+        ptr = Var<C*>(vm, 1).value;
         SQCATCH_NOEXCEPT(vm) {
             SQCLEAR(vm); // clear the previous error
             assert(0); // may fail because C is not a type bound in the VM
@@ -3173,7 +3173,7 @@ public:
 
         C* ptr;
         SQTRY()
-        ptr = ClassType<C>::GetInstance(vm, 1);
+        ptr = Var<C*>(vm, 1).value;
         SQCATCH_NOEXCEPT(vm) {
             SQCLEAR(vm); // clear the previous error
             assert(0); // may fail because C is not a type bound in the VM
@@ -3241,7 +3241,7 @@ public:
 
         C* ptr;
         SQTRY()
-        ptr = ClassType<C>::GetInstance(vm, 1);
+        ptr = Var<C*>(vm, 1).value;
         SQCATCH_NOEXCEPT(vm) {
             SQCLEAR(vm); // clear the previous error
             assert(0); // may fail because C is not a type bound in the VM
@@ -3310,7 +3310,7 @@ public:
 
         C* ptr;
         SQTRY()
-        ptr = ClassType<C>::GetInstance(vm, 1);
+        ptr = Var<C*>(vm, 1).value;
         SQCATCH_NOEXCEPT(vm) {
             SQCLEAR(vm); // clear the previous error
             assert(0); // may fail because C is not a type bound in the VM
@@ -3380,7 +3380,7 @@ public:
 
         C* ptr;
         SQTRY()
-        ptr = ClassType<C>::GetInstance(vm, 1);
+        ptr = Var<C*>(vm, 1).value;
         SQCATCH_NOEXCEPT(vm) {
             SQCLEAR(vm); // clear the previous error
             assert(0); // may fail because C is not a type bound in the VM
@@ -3462,7 +3462,7 @@ public:
 
         C* ptr;
         SQTRY()
-        ptr = ClassType<C>::GetInstance(vm, 1);
+        ptr = Var<C*>(vm, 1).value;
         SQCATCH_NOEXCEPT(vm) {
             SQCLEAR(vm); // clear the previous error
             assert(0); // may fail because C is not a type bound in the VM
@@ -3499,7 +3499,7 @@ public:
 
         C* ptr;
         SQTRY()
-        ptr = ClassType<C>::GetInstance(vm, 1);
+        ptr = Var<C*>(vm, 1).value;
         SQCATCH_NOEXCEPT(vm) {
             SQCLEAR(vm); // clear the previous error
             assert(0); // may fail because C is not a type bound in the VM
@@ -3537,7 +3537,7 @@ public:
 
         C* ptr;
         SQTRY()
-        ptr = ClassType<C>::GetInstance(vm, 1);
+        ptr = Var<C*>(vm, 1).value;
         SQCATCH_NOEXCEPT(vm) {
             SQCLEAR(vm); // clear the previous error
             assert(0); // may fail because C is not a type bound in the VM
@@ -3580,7 +3580,7 @@ public:
 
         C* ptr;
         SQTRY()
-        ptr = ClassType<C>::GetInstance(vm, 1);
+        ptr = Var<C*>(vm, 1).value;
         SQCATCH_NOEXCEPT(vm) {
             SQCLEAR(vm); // clear the previous error
             assert(0); // may fail because C is not a type bound in the VM
@@ -3624,7 +3624,7 @@ public:
 
         C* ptr;
         SQTRY()
-        ptr = ClassType<C>::GetInstance(vm, 1);
+        ptr = Var<C*>(vm, 1).value;
         SQCATCH_NOEXCEPT(vm) {
             SQCLEAR(vm); // clear the previous error
             assert(0); // may fail because C is not a type bound in the VM
@@ -3669,7 +3669,7 @@ public:
 
         C* ptr;
         SQTRY()
-        ptr = ClassType<C>::GetInstance(vm, 1);
+        ptr = Var<C*>(vm, 1).value;
         SQCATCH_NOEXCEPT(vm) {
             SQCLEAR(vm); // clear the previous error
             assert(0); // may fail because C is not a type bound in the VM
@@ -3715,7 +3715,7 @@ public:
 
         C* ptr;
         SQTRY()
-        ptr = ClassType<C>::GetInstance(vm, 1);
+        ptr = Var<C*>(vm, 1).value;
         SQCATCH_NOEXCEPT(vm) {
             SQCLEAR(vm); // clear the previous error
             assert(0); // may fail because C is not a type bound in the VM
@@ -3762,7 +3762,7 @@ public:
 
         C* ptr;
         SQTRY()
-        ptr = ClassType<C>::GetInstance(vm, 1);
+        ptr = Var<C*>(vm, 1).value;
         SQCATCH_NOEXCEPT(vm) {
             SQCLEAR(vm); // clear the previous error
             assert(0); // may fail because C is not a type bound in the VM
@@ -3810,7 +3810,7 @@ public:
 
         C* ptr;
         SQTRY()
-        ptr = ClassType<C>::GetInstance(vm, 1);
+        ptr = Var<C*>(vm, 1).value;
         SQCATCH_NOEXCEPT(vm) {
             SQCLEAR(vm); // clear the previous error
             assert(0); // may fail because C is not a type bound in the VM
@@ -3859,7 +3859,7 @@ public:
 
         C* ptr;
         SQTRY()
-        ptr = ClassType<C>::GetInstance(vm, 1);
+        ptr = Var<C*>(vm, 1).value;
         SQCATCH_NOEXCEPT(vm) {
             SQCLEAR(vm); // clear the previous error
             assert(0); // may fail because C is not a type bound in the VM
@@ -3909,7 +3909,7 @@ public:
 
         C* ptr;
         SQTRY()
-        ptr = ClassType<C>::GetInstance(vm, 1);
+        ptr = Var<C*>(vm, 1).value;
         SQCATCH_NOEXCEPT(vm) {
             SQCLEAR(vm); // clear the previous error
             assert(0); // may fail because C is not a type bound in the VM
@@ -3960,7 +3960,7 @@ public:
 
         C* ptr;
         SQTRY()
-        ptr = ClassType<C>::GetInstance(vm, 1);
+        ptr = Var<C*>(vm, 1).value;
         SQCATCH_NOEXCEPT(vm) {
             SQCLEAR(vm); // clear the previous error
             assert(0); // may fail because C is not a type bound in the VM
@@ -4012,7 +4012,7 @@ public:
 
         C* ptr;
         SQTRY()
-        ptr = ClassType<C>::GetInstance(vm, 1);
+        ptr = Var<C*>(vm, 1).value;
         SQCATCH_NOEXCEPT(vm) {
             SQCLEAR(vm); // clear the previous error
             assert(0); // may fail because C is not a type bound in the VM
@@ -4065,7 +4065,7 @@ public:
 
         C* ptr;
         SQTRY()
-        ptr = ClassType<C>::GetInstance(vm, 1);
+        ptr = Var<C*>(vm, 1).value;
         SQCATCH_NOEXCEPT(vm) {
             SQCLEAR(vm); // clear the previous error
             assert(0); // may fail because C is not a type bound in the VM
@@ -4119,7 +4119,7 @@ public:
 
         C* ptr;
         SQTRY()
-        ptr = ClassType<C>::GetInstance(vm, 1);
+        ptr = Var<C*>(vm, 1).value;
         SQCATCH_NOEXCEPT(vm) {
             SQCLEAR(vm); // clear the previous error
             assert(0); // may fail because C is not a type bound in the VM
@@ -4174,7 +4174,7 @@ public:
 
         C* ptr;
         SQTRY()
-        ptr = ClassType<C>::GetInstance(vm, 1);
+        ptr = Var<C*>(vm, 1).value;
         SQCATCH_NOEXCEPT(vm) {
             SQCLEAR(vm); // clear the previous error
             assert(0); // may fail because C is not a type bound in the VM
@@ -4230,7 +4230,7 @@ public:
 
         C* ptr;
         SQTRY()
-        ptr = ClassType<C>::GetInstance(vm, 1);
+        ptr = Var<C*>(vm, 1).value;
         SQCATCH_NOEXCEPT(vm) {
             SQCLEAR(vm); // clear the previous error
             assert(0); // may fail because C is not a type bound in the VM
@@ -4287,7 +4287,7 @@ public:
 
         C* ptr;
         SQTRY()
-        ptr = ClassType<C>::GetInstance(vm, 1);
+        ptr = Var<C*>(vm, 1).value;
         SQCATCH_NOEXCEPT(vm) {
             SQCLEAR(vm); // clear the previous error
             assert(0); // may fail because C is not a type bound in the VM
@@ -4345,7 +4345,7 @@ public:
 
         C* ptr;
         SQTRY()
-        ptr = ClassType<C>::GetInstance(vm, 1);
+        ptr = Var<C*>(vm, 1).value;
         SQCATCH_NOEXCEPT(vm) {
             SQCLEAR(vm); // clear the previous error
             assert(0); // may fail because C is not a type bound in the VM
@@ -4404,7 +4404,7 @@ public:
 
         C* ptr;
         SQTRY()
-        ptr = ClassType<C>::GetInstance(vm, 1);
+        ptr = Var<C*>(vm, 1).value;
         SQCATCH_NOEXCEPT(vm) {
             SQCLEAR(vm); // clear the previous error
             assert(0); // may fail because C is not a type bound in the VM
@@ -4464,7 +4464,7 @@ public:
 
         C* ptr;
         SQTRY()
-        ptr = ClassType<C>::GetInstance(vm, 1);
+        ptr = Var<C*>(vm, 1).value;
         SQCATCH_NOEXCEPT(vm) {
             SQCLEAR(vm); // clear the previous error
             assert(0); // may fail because C is not a type bound in the VM
@@ -4525,7 +4525,7 @@ public:
 
         C* ptr;
         SQTRY()
-        ptr = ClassType<C>::GetInstance(vm, 1);
+        ptr = Var<C*>(vm, 1).value;
         SQCATCH_NOEXCEPT(vm) {
             SQCLEAR(vm); // clear the previous error
             assert(0); // may fail because C is not a type bound in the VM
@@ -4587,7 +4587,7 @@ public:
 
         C* ptr;
         SQTRY()
-        ptr = ClassType<C>::GetInstance(vm, 1);
+        ptr = Var<C*>(vm, 1).value;
         SQCATCH_NOEXCEPT(vm) {
             SQCLEAR(vm); // clear the previous error
             assert(0); // may fail because C is not a type bound in the VM
@@ -4650,7 +4650,7 @@ public:
 
         C* ptr;
         SQTRY()
-        ptr = ClassType<C>::GetInstance(vm, 1);
+        ptr = Var<C*>(vm, 1).value;
         SQCATCH_NOEXCEPT(vm) {
             SQCLEAR(vm); // clear the previous error
             assert(0); // may fail because C is not a type bound in the VM
@@ -4714,7 +4714,7 @@ public:
 
         C* ptr;
         SQTRY()
-        ptr = ClassType<C>::GetInstance(vm, 1);
+        ptr = Var<C*>(vm, 1).value;
         SQCATCH_NOEXCEPT(vm) {
             SQCLEAR(vm); // clear the previous error
             assert(0); // may fail because C is not a type bound in the VM
@@ -4779,7 +4779,7 @@ public:
 
         C* ptr;
         SQTRY()
-        ptr = ClassType<C>::GetInstance(vm, 1);
+        ptr = Var<C*>(vm, 1).value;
         SQCATCH_NOEXCEPT(vm) {
             SQCLEAR(vm); // clear the previous error
             assert(0); // may fail because C is not a type bound in the VM
@@ -4845,7 +4845,7 @@ public:
 
         C* ptr;
         SQTRY()
-        ptr = ClassType<C>::GetInstance(vm, 1);
+        ptr = Var<C*>(vm, 1).value;
         SQCATCH_NOEXCEPT(vm) {
             SQCLEAR(vm); // clear the previous error
             assert(0); // may fail because C is not a type bound in the VM
@@ -4912,7 +4912,7 @@ public:
 
         C* ptr;
         SQTRY()
-        ptr = ClassType<C>::GetInstance(vm, 1);
+        ptr = Var<C*>(vm, 1).value;
         SQCATCH_NOEXCEPT(vm) {
             SQCLEAR(vm); // clear the previous error
             assert(0); // may fail because C is not a type bound in the VM
@@ -4980,7 +4980,7 @@ public:
 
         C* ptr;
         SQTRY()
-        ptr = ClassType<C>::GetInstance(vm, 1);
+        ptr = Var<C*>(vm, 1).value;
         SQCATCH_NOEXCEPT(vm) {
             SQCLEAR(vm); // clear the previous error
             assert(0); // may fail because C is not a type bound in the VM
@@ -5049,7 +5049,7 @@ public:
 
         C* ptr;
         SQTRY()
-        ptr = ClassType<C>::GetInstance(vm, 1);
+        ptr = Var<C*>(vm, 1).value;
         SQCATCH_NOEXCEPT(vm) {
             SQCLEAR(vm); // clear the previous error
             assert(0); // may fail because C is not a type bound in the VM
@@ -5432,7 +5432,7 @@ template <class C, class V>
 inline SQInteger sqDefaultGet(HSQUIRRELVM vm) {
     C* ptr;
     SQTRY()
-    ptr = ClassType<C>::GetInstance(vm, 1);
+    ptr = Var<C*>(vm, 1).value;
     SQCATCH_NOEXCEPT(vm) {
         SQCLEAR(vm); // clear the previous error
         return sq_throwerror(vm, SQWHAT_NOEXCEPT(vm));
@@ -5504,7 +5504,7 @@ template <class C, class V>
 inline SQInteger sqDefaultSet(HSQUIRRELVM vm) {
     C* ptr;
     SQTRY()
-    ptr = ClassType<C>::GetInstance(vm, 1);
+    ptr = Var<C*>(vm, 1).value;
     SQCATCH_NOEXCEPT(vm) {
         SQCLEAR(vm); // clear the previous error
         return sq_throwerror(vm, SQWHAT_NOEXCEPT(vm));
