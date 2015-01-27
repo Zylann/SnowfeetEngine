@@ -83,7 +83,7 @@ void ObjectTypeDatabase::unregisterModule(const std::string & name)
 
     if (count == 0)
     {
-        SN_WARNING("ObjectTypeDatabase::unregisterModule: no type found in module \"" << name << "\"");
+        SN_LOG("ObjectTypeDatabase::unregisterModule: no type found in module \"" << name << "\"");
     }
 }
 
