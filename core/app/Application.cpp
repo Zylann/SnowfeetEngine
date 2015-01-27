@@ -119,7 +119,7 @@ int Application::executeEx()
     //    callVoidCallback(CallbackName::START);
     //}
 
-    if (m_scene->getQuitFlag())
+    if (m_scene && m_scene->getQuitFlag())
         m_runFlag = false;
 
     SN_LOG("Entering main loop");
