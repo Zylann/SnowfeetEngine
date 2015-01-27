@@ -1,5 +1,0 @@
-void __compiled__()
-{
-	print("Compiled corelib");
-}
-
