@@ -13,6 +13,9 @@ solution "SnowfeetEngine"
 		flags {
 			"Symbols" -- Produce debug symbols
 		}
+		defines {
+			"SN_BUILD_DEBUG"
+		}
 	filter "configurations:Release"
 		optimize "On"
 		flags {

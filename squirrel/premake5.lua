@@ -10,10 +10,10 @@ project "Squirrel"
 	filter "configurations:Debug"
 		targetdir "../_bin/debug"
 		objdir "../_obj/debug"
-		-- defines {
-		-- }
+		defines {
+		}
 	filter "configurations:Release"
 		targetdir "../_bin/release"
 		objdir "../_obj/release"
-		-- defines {
-		-- }
+		defines {
+		}

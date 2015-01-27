@@ -18,8 +18,5 @@ project "SampleNativeHello"
 	}
 	filter "configurations:Debug"
 		objdir "_obj/debug"
-		defines {
-			"SN_BUILD_DEBUG"
-		}
 	filter "configurations:Release"
 		objdir "_obj/release"
