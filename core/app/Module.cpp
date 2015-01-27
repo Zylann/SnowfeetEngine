@@ -202,6 +202,8 @@ void Module::getScriptFiles(std::vector<String> & out_filePaths, const std::set<
     std::vector<FileNode> files;
     getFiles(fullDirectoryPath, files);
 
+    String pathBase = r_app.getPathToProjects() + L"/" + m_info.directory + L"/";
+
     for (u32 i = 0; i < files.size(); ++i)
     {
         if (!files[i].isDirectory)
@@ -210,7 +212,7 @@ void Module::getScriptFiles(std::vector<String> & out_filePaths, const std::set<
             String ext = getFileExtension(path);
             if (extensions.find(ext) != extensions.end())
             {
-                out_filePaths.push_back(r_app.getPathToProjects() + L"/" + m_info.directory + L"/" + path);
+                out_filePaths.push_back(pathBase + path);
             }
         }
     }
@@ -225,22 +227,20 @@ bool Module::compileScripts()
     exts.insert(L".nut");
     getScriptFiles(scriptFiles, exts);
 
-    // Compile
-    bool compiled = r_app.getScriptEngine().compileSquirrelModule(
-        m_info.name,
-        m_info.scriptNamespace,
-        scriptFiles
-    );
+    if (!scriptFiles.empty())
+    {
+        // Compile
+        bool compiled = r_app.getScriptEngine().compileSquirrelModule(
+            m_info.name,
+            m_info.scriptNamespace,
+            scriptFiles
+        );
 
-    // Reference callbacks
-    if (compiled)
-    {
-        ;// referenceCallbacks();
-    }
-    else
-    {
-        throw Exception("Script compilation error");
-        return false;
+        if (!compiled)
+        {
+            throw Exception("Script compilation error");
+            return false;
+        }
     }
 
     return true;
@@ -298,6 +298,7 @@ bool Module::compileScripts()
 //------------------------------------------------------------------------------
 bool Module::loadAssets()
 {
+    // TODO
     return true;
 }
 

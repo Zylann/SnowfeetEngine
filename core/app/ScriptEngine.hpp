@@ -18,6 +18,7 @@ namespace sn
 
 class Application;
 
+/// \brief Handles functionnality related to scripts
 class SN_API ScriptEngine
 {
 public:
@@ -29,38 +30,16 @@ public:
 
     inline HSQUIRRELVM getVM() const { return m_squirrelVM; }
 
-    //asIScriptEngine * getEngine();
-    //asIScriptContext * getContext();
-    //CSerializer * getSerializer();
-
-    //bool compileAngelscriptModule(const std::string & modName, const std::string & modNamespace, const std::vector<String> & files);
     bool compileSquirrelModule(const std::string & modName, const std::string & modNamespace, const std::vector<String> & files);
-
-    // Executes a function previously prepared on a context, and returns false if an error occurred.
-    //bool executeContext(asIScriptContext & context);
 
 private:
 
     void registerCoreAPI();
 
     Application & r_app;
-
-    // AngelScript
-
-    //asIScriptEngine * m_engine;
-    //asIScriptContext * m_context;
-    // Serializer used for hot-reload
-    //CSerializer * m_serializer;
-
-    // Squirrel
-
     HSQUIRRELVM m_squirrelVM;
 
 };
-
-/// \brief Checks the return code of an AngelScript method,
-/// and throws an exception if an error occurred
-//void SN_API asCheck(int returnCode);
 
 } // namespace sn
 
