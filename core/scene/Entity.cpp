@@ -11,6 +11,17 @@ namespace sn
 {
 
 //------------------------------------------------------------------------------
+Entity::~Entity()
+{
+    if (r_parent)
+        r_parent->removeChild(this);
+    destroyChildren();
+    for (auto it = m_tags.begin(); it != m_tags.end(); ++it)
+        removeTag(*it);
+    SN_LOG("Entity " << getName() << " destroyed");
+}
+
+//------------------------------------------------------------------------------
 void Entity::setName(const std::string & name)
 {
     m_name = name;
@@ -42,13 +53,13 @@ void Entity::setUpdatable(bool updatable, s16 order, s16 layer)
 {
     if (getFlag(SN_EF_UPDATABLE) ^ updatable)
     {
-        SceneRef scene = getScene();
+        Scene * scene = getScene();
         if (scene)
         {
             if (updatable)
-                scene->registerUpdatableEntity(shared_from_this(), order, layer);
+                scene->registerUpdatableEntity(*this, order, layer);
             else
-                scene->unregisterUpdatableEntity(shared_from_this());
+                scene->unregisterUpdatableEntity(*this);
         }
         else
         {
@@ -66,9 +77,9 @@ void Entity::addTag(const std::string & tag)
 {
     if (m_tags.insert(tag).second)
     {
-        SceneRef scene = getScene();
+        Scene * scene = getScene();
         if (scene)
-            scene->registerTaggedEntity(shared_from_this(), tag);
+            scene->registerTaggedEntity(*this, tag);
         else
             SN_ERROR("Entity::addTag: scene not found from entity " << toString());
     }
@@ -83,9 +94,9 @@ void Entity::removeTag(const std::string & tag)
 {
     if (m_tags.erase(tag))
     {
-        SceneRef scene = getScene();
+        Scene * scene = getScene();
         if (scene)
-            scene->unregisterTaggedEntity(shared_from_this(), tag);
+            scene->unregisterTaggedEntity(*this, tag);
         else
             SN_ERROR("Entity::removeTag: scene not found from entity " << toString());
     }
@@ -107,7 +118,7 @@ std::string Entity::toString() const
 }
 
 //------------------------------------------------------------------------------
-void Entity::setParent(Entity::Ref newParent)
+void Entity::setParent(Entity * newParent)
 {
     if (r_parent != nullptr && newParent == nullptr)
     {
@@ -119,11 +130,11 @@ void Entity::setParent(Entity::Ref newParent)
         if (r_parent == nullptr)
         {
             r_parent = newParent;
-            r_parent->addChild(shared_from_this());
+            r_parent->addChild(this);
 
-            if (newParent->isInstanceOf<Scene>() && r_scene.use_count() == 0)
+            if (newParent->isInstanceOf<Scene>() && r_scene == nullptr)
             {
-                r_scene = std::static_pointer_cast<Scene>(newParent);
+                r_scene = static_cast<Scene*>(newParent);
                 propagateOnReady();
             }
         }
@@ -132,7 +143,7 @@ void Entity::setParent(Entity::Ref newParent)
             // Just swap ownership
             r_parent->removeChild(this);
             r_parent = newParent;
-            r_parent->addChild(shared_from_this());
+            r_parent->addChild(this);
         }
     }
 }
@@ -146,11 +157,11 @@ void Entity::propagateOnReady()
 }
 
 //------------------------------------------------------------------------------
-Entity::Ref Entity::getRoot() const
+Entity * Entity::getRoot() const
 {
     if (r_parent)
     {
-        Entity::Ref parent = r_parent;
+        Entity * parent = r_parent;
         while (parent->getParent())
             parent = parent->getParent();
         return parent;
@@ -162,15 +173,15 @@ Entity::Ref Entity::getRoot() const
 }
 
 //------------------------------------------------------------------------------
-SceneRef Entity::getScene() const
+Scene * Entity::getScene() const
 {
-    SceneRef scene = r_scene.lock();
+    Scene * scene = r_scene;
     if (!scene)
     {
-        Entity::Ref root = getRoot();
+        Entity * root = getRoot();
         if (root && root->isInstanceOf<Scene>())
         {
-            scene = std::static_pointer_cast<Scene>(root);
+            scene = static_cast<Scene*>(root);
             r_scene = scene;
         }
     }
@@ -178,7 +189,7 @@ SceneRef Entity::getScene() const
 }
 
 //------------------------------------------------------------------------------
-Entity::Ref Entity::getChildByName(const std::string & name) const
+Entity * Entity::getChildByName(const std::string & name) const
 {
     for (auto it = m_children.begin(); it != m_children.end(); ++it)
     {
@@ -189,7 +200,7 @@ Entity::Ref Entity::getChildByName(const std::string & name) const
 }
 
 //------------------------------------------------------------------------------
-Entity::Ref Entity::getChildByType(const std::string & name) const
+Entity * Entity::getChildByType(const std::string & name) const
 {
     for (auto it = m_children.begin(); it != m_children.end(); ++it)
     {
@@ -211,10 +222,10 @@ Entity::Ref Entity::getChildByType(const std::string & name) const
 //}
 
 //------------------------------------------------------------------------------
-Entity::Ref Entity::addChild(Entity::Ref child)
+Entity * Entity::addChild(Entity * child)
 {
 #ifdef SN_BUILD_DEBUG
-    if (child->getParent().get() != this)
+    if (child->getParent() != this)
     {
         SN_WARNING("Entity::addChild: parent is not matching with " << toString());
     }
@@ -229,7 +240,7 @@ Entity::Ref Entity::addChild(Entity::Ref child)
 }
 
 //------------------------------------------------------------------------------
-u32 Entity::indexOfChild(const Entity::Ref child) const
+u32 Entity::indexOfChild(const Entity * child) const
 {
     u32 i = 0;
     for (auto it = m_children.begin(); it != m_children.end(); ++it)
@@ -242,66 +253,49 @@ u32 Entity::indexOfChild(const Entity::Ref child) const
 }
 
 //------------------------------------------------------------------------------
-Entity::Ref Entity::createChild(const std::string & typeName)
+Entity * Entity::createChild(const std::string & typeName)
 {
-    Entity::Ref child = nullptr;
+    Entity * child = nullptr;
 
     if (typeName.empty())
     {
-        child.reset(new Entity());
+        child = new Entity();
     }
     else
     {
         Object * obj = instantiateDerivedObject(typeName, Entity::__sGetBaseClassName());
         if (obj)
-            child.reset((Entity*)obj);
+            child = (Entity*)obj;
     }
 
     if (child)
     {
-        // Note: at this point, the entity MUST be owned by at least one shared_ptr,
-        // because setParent internally sets a weak_ptr, and after this call,
-        // the shared_from_this() will be released.
-        child->setParent(shared_from_this());
+        child->setParent(this);
     }
 
     return child;
 }
 
 //------------------------------------------------------------------------------
-Entity::Ref Entity::requireChild(const std::string & typeName)
+Entity * Entity::requireChild(const std::string & typeName)
 {
-    Entity::Ref e = getChildByType(typeName);
+    Entity * e = getChildByType(typeName);
     if (e == nullptr)
         e = createChild(typeName);
     return e;
 }
 
 //------------------------------------------------------------------------------
-u32 Entity::removeChild(Entity::Ref child)
-{
-    u32 i = indexOfChild(child);
-    removeChild(i);
-    return i;
-}
-
-//------------------------------------------------------------------------------
 u32 Entity::removeChild(Entity * child)
 {
-    u32 i = 0;
-    for (; i < m_children.size(); ++i)
-    {
-        if (m_children[i].get() == child)
-        {
-            removeChild(i);
-            break;
-        }
-    }
+    u32 i = indexOfChild(child);
+    if (i != m_children.size())
+        removeChildAtIndex(i);
     return i;
 }
 
 //------------------------------------------------------------------------------
-void Entity::removeChild(u32 index)
+void Entity::removeChildAtIndex(u32 index)
 {
     if (index < m_children.size())
     {
@@ -325,39 +319,47 @@ void Entity::destroyChildren()
 //------------------------------------------------------------------------------
 void Entity::destroy()
 {
-    onDestroy();
-    setFlag(SN_EF_DESTROYED, true);
-    // TODO Instant destruction
+    if (!getFlag(SN_EF_DESTROYED))
+    {
+        onDestroy();
+        setFlag(SN_EF_DESTROYED, true);
+        // TODO Instant destruction
+        release();
+    }
+    else
+    {
+        SN_ERROR("Attempt to call destroy() on an already destroyed entity!");
+    }
 }
 
 //------------------------------------------------------------------------------
 void Entity::destroyLater()
 {
-    setFlag(SN_EF_DESTROYED, true);
+    SN_WARNING("Entity::destroyLater(): not implemented yet");
+    // TODO Different flag?
+    //setFlag(SN_EF_DESTROYED, true);
 }
 
 //------------------------------------------------------------------------------
 // Static
-void Entity::serialize(JsonBox::Value & o, Entity::Ref e)
+void Entity::serialize(JsonBox::Value & o, Entity & e)
 {
-    SN_ASSERT(e.get() != nullptr, "Cannot serialize null entity");
-
     o[SN_JSON_TYPE_TAG] = Entity::__sGetClassName();
-    e->serializeState(o);
-    if (e->getChildCount() != 0)
+    e.serializeState(o);
+    if (e.getChildCount() != 0)
     {
         JsonBox::Value & a = o[SN_JSON_ENTITY_CHILDREN_TAG];
-        for (u32 i = 0; i < e->getChildCount(); ++i)
+        for (u32 i = 0; i < e.getChildCount(); ++i)
         {
-            Entity::Ref child = e->getChildByIndex(i);
-            serialize(a[i], child);
+            Entity * child = e.getChildByIndex(i);
+            serialize(a[i], *child);
         }
     }
 }
 
 //------------------------------------------------------------------------------
 // Static
-Entity::Ref Entity::unserialize(JsonBox::Value & o, Entity::Ref parent)
+Entity * Entity::unserialize(JsonBox::Value & o, Entity * parent)
 {
     std::string typeName = o[SN_JSON_TYPE_TAG].getString();
     ObjectType * ot = ObjectTypeDatabase::get().getType(typeName);
@@ -366,7 +368,7 @@ Entity::Ref Entity::unserialize(JsonBox::Value & o, Entity::Ref parent)
         Object * obj = instantiateDerivedObject(typeName, Entity::__sGetClassName());
         if (obj)
         {
-            Entity::Ref e((Entity*)obj);
+            Entity * e((Entity*)obj);
             e->unserializeState(o);
             if (o[SN_JSON_ENTITY_CHILDREN_TAG].isArray())
             {
@@ -405,10 +407,10 @@ void Entity::unserializeState(JsonBox::Value & o)
     sn::serialize(o, m_tags);
 
     // TODO FIXME Do this only when the scene changes to non-null
-    SceneRef scene = getScene();
+    Scene * scene = getScene();
     for (auto it = m_tags.begin(); it != m_tags.end(); ++it)
     {
-        scene->registerTaggedEntity(shared_from_this(), *it);
+        scene->registerTaggedEntity(*this, *it);
     }
 }
 

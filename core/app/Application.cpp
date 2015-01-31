@@ -95,7 +95,7 @@ int Application::executeEx()
     {
         // Load the scene
         String filePath = m_pathToProjects + L"/" + mainModuleInfo.directory + L"/" + mainModuleInfo.startupScene;
-        m_scene.reset(new Scene());
+        m_scene = new Scene();
         m_scene->loadFromFile(toString(filePath));
     }
 
@@ -175,9 +175,9 @@ int Application::executeEx()
     if (m_scene)
     {
         m_scene->destroyChildren();
-        if (m_scene.use_count() > 1)
-            SN_ERROR("Scene is leaking " << (m_scene.use_count() - 1) << " times");
-        m_scene = nullptr;
+        if (m_scene->getRefCount() > 1)
+            SN_ERROR("Scene is leaking " << (m_scene->getRefCount() - 1) << " times");
+        m_scene->release();
     }
 
     // TODO uninitialize all scripts before modules get destroyed

@@ -1,5 +1,4 @@
-﻿#include <iostream>
-#include <core/app/appmain.hpp>
+﻿#include <core/app/appmain.hpp>
 
 int main(int argc, char * argv[])
 {

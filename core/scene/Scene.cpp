@@ -4,62 +4,62 @@ namespace sn
 {
 
 //------------------------------------------------------------------------------
-void Scene::registerUpdatableEntity(Entity::Ref e, s16 order, s16 layer)
+void Scene::registerUpdatableEntity(Entity & e, s16 order, s16 layer)
 {
     s32 packedOrder = static_cast<s32>(order) | (static_cast<s32>(layer) << 16);
 #ifdef SN_BUILD_DEBUG
     auto it = m_updatableEntities.find(packedOrder);
     if (it != m_updatableEntities.end())
     {
-        if (it->second.find(e) != it->second.end())
+        if (it->second.find(&e) != it->second.end())
         {
-            SN_ERROR("Scene::registerUpdatableEntity: entity " << e->toString() << " already registered with order " << order << " and layer " << layer);
+            SN_ERROR("Scene::registerUpdatableEntity: entity " << e.toString() << " already registered with order " << order << " and layer " << layer);
             return;
         }
     }
 #endif
-    m_updatableEntities[packedOrder].insert(e);
+    m_updatableEntities[packedOrder].insert(&e);
 }
 
 //------------------------------------------------------------------------------
-void Scene::unregisterUpdatableEntity(Entity::Ref e)
+void Scene::unregisterUpdatableEntity(Entity & e)
 {
     for (auto it = m_updatableEntities.begin(); it != m_updatableEntities.end(); ++it)
     {
-        if (it->second.erase(e) != 0)
+        if (it->second.erase(&e) != 0)
             return;
     }
 #ifdef SN_BUILD_DEBUG
-    SN_WARNING("Scene::unregisterUpdatableEntity: entity " << e->toString() << " was not registered");
+    SN_WARNING("Scene::unregisterUpdatableEntity: entity " << e.toString() << " was not registered");
 #endif
 }
 
 //------------------------------------------------------------------------------
-void Scene::registerTaggedEntity(Entity::Ref e, const std::string & tag)
+void Scene::registerTaggedEntity(Entity & e, const std::string & tag)
 {
 #ifdef SN_BUILD_DEBUG
     auto it = m_taggedEntities.find(tag);
     if (it != m_taggedEntities.end())
     {
-        if (it->second.find(e) != it->second.end())
+        if (it->second.find(&e) != it->second.end())
         {
-            SN_ERROR("Scene::registerTaggedEntity: entity " << e->toString() << " already registered with tag " << tag);
+            SN_ERROR("Scene::registerTaggedEntity: entity " << e.toString() << " already registered with tag " << tag);
             return;
         }
     }
 #endif
-    m_taggedEntities[tag].insert(e);
+    m_taggedEntities[tag].insert(&e);
 }
 
 //------------------------------------------------------------------------------
-void Scene::unregisterTaggedEntity(Entity::Ref e, const std::string & tag)
+void Scene::unregisterTaggedEntity(Entity & e, const std::string & tag)
 {
-    if (m_taggedEntities[tag].erase(e) == 0)
-        SN_WARNING("Scene::unregisterTaggedEntity: entity " << e->toString() << " was not registered with tag " << tag);
+    if (m_taggedEntities[tag].erase(&e) == 0)
+        SN_WARNING("Scene::unregisterTaggedEntity: entity " << e.toString() << " was not registered with tag " << tag);
 }
 
 //------------------------------------------------------------------------------
-void Scene::setParent(Entity::Ref newParent)
+void Scene::setParent(Entity * newParent)
 {
     SN_ERROR("Scene::setParent: a scene cannot have a parent.");
 }
@@ -109,7 +109,9 @@ void Scene::loadFromFile(const std::string & filePath)
     u32 len = docEntities.getArray().size();
     for (u32 i = 0; i < len; ++i)
     {
-        Entity::unserialize(docEntities[i], shared_from_this());
+        // Note: the returned child will be automatically added to the children list,
+        // as soon as setParent() is called
+        Entity::unserialize(docEntities[i], this);
     }
 }
 
@@ -120,7 +122,7 @@ void Scene::saveToFile(const std::string & filePath)
     JsonBox::Value & docEntities = doc["entities"];
     for (u32 i = 0; i < getChildCount(); ++i)
     {
-        Entity::serialize(docEntities[i], getChildByIndex(i));
+        Entity::serialize(docEntities[i], *getChildByIndex(i));
     }
 
     sn::saveToFile(doc, filePath);

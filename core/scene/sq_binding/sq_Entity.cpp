@@ -1,7 +1,25 @@
-#include "../Entity.hpp"
 #include "sq_scene.hpp"
-#include "../../squirrel/bind_tools.hpp"
-#include <memory>
+#include <iostream>
+
+SN_SQ_DEFINE_SCRIPTOBJECT_VARTYPE(sn::Entity)
+
+//namespace Sqrat {
+//        template<>                                                            
+//    struct Var<sn::Entity*> {
+//        
+//        sn::Entity* value;
+//        Var(HSQUIRRELVM vm, SQInteger idx) : 
+//            value(ClassType<sn::Entity>::GetInstance(vm, idx, true))
+//        {}                                                                
+//        static void push(HSQUIRRELVM vm, sn::Entity* value) {
+//                value->pushSquirrelObject(vm);                                
+//                /*ClassType<_className>::PushInstance(vm, value);*/           
+//                sq_setreleasehook(
+//                    vm, -1, &sqRefCountedReleaseHook<sn::Entity>
+//                );                                                            
+//        }                                                                 
+//    };                                                                    
+//} /* namespace Sqrat */
 
 namespace sn
 {
@@ -11,13 +29,16 @@ static SQInteger Entity_sqGetChildByName(HSQUIRRELVM v)
 {
     if (sq_gettop(v) == 2)
     {
-        Sqrat::Var<std::shared_ptr<Entity> > self(v, 1);
+        Sqrat::Var<Entity*> self(v, 1);
         Sqrat::Var<const std::string&> childName(v, 2);
         if (!Sqrat::Error::Occurred(v))
         {
-            Entity::Ref child = self.value->getChildByName(childName.value);
+            Entity * child = self.value->getChildByName(childName.value);
             if (child)
+            {
                 child->pushSquirrelObject(v);
+                sq_setreleasehook(v, -1, &Sqrat::sqRefCountedReleaseHook<sn::Entity>);
+            }
             else
                 sq_pushnull(v);
             return 1;
@@ -33,18 +54,21 @@ void registerEntity(HSQUIRRELVM vm)
        
     const char * className = "Entity";
         
-    Class<Entity::Ref> c(vm, className);
-        
-    c.Prop("name", &Entity::getName, &Entity::setName);
-    c.Func("hasTag", &Entity::hasTag);
-    c.Func("addTag", &Entity::addTag);
-    c.Func("removeTag", &Entity::removeTag);
-    c.Func("destroyChildren", &Entity::destroyChildren);
-    c.Func("createChild", &Entity::createChild);
-    c.Func("setUpdatable", &Entity::setUpdatable);
-    c.SquirrelFunc("getChildByName", Entity_sqGetChildByName);
-        
-    RootTable(vm).Bind(className, c);
+//    RootTable(vm).Bind(className, Class<Entity>(vm, className)
+    RootTable(vm).Bind(className, Class<Entity, RefCountedAllocator<Entity>>(vm, className)
+        .Prop("name", &Entity::getName, &Entity::setName)
+        .Func("hasTag", &Entity::hasTag)
+        .Func("addTag", &Entity::addTag)
+        .Func("removeTag", &Entity::removeTag)
+        .Func("destroyChildren", &Entity::destroyChildren)
+        .Func("createChild", &Entity::createChildNoParams)
+        .Func("setUpdatable", &Entity::setUpdatable)
+        .SquirrelFunc("getChildByName", &Entity_sqGetChildByName)
+    );
+    
+    //c.SquirrelFunc("getChildByName", Entity_sqGetChildByName);
 }
     
 } // namespace sn
+
+

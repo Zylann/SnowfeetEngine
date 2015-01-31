@@ -80,7 +80,7 @@ private:
     ScriptEngine m_scriptEngine;
 
     // Top-level scene
-    Scene::Ref m_scene;
+    Scene * m_scene;
 
     String m_pathToMainMod;
     String m_pathToProjects;

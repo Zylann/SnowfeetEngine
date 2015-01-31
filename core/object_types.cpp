@@ -8,6 +8,7 @@ namespace sn
 
 void registerObjectTypes(ObjectTypeDatabase & otb)
 {
+    otb.registerType<ScriptObject>();
     otb.registerType<Entity>();
     otb.registerType<Scene>();
 }

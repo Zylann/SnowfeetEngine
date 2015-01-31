@@ -4,21 +4,15 @@
 #include <core/types.hpp>
 #include <core/reflect/Object.hpp>
 #include <core/json/json_utils.hpp>
-#include <core/squirrel/bind_tools.hpp>
+#include <core/app/ScriptObject.hpp>
 
 #include <vector>
 #include <string>
 #include <bitset>
 #include <unordered_set>
 
-#define _SN_DECLARE_PUSHSQUIRRELOBJ()                                      \
-    virtual void pushSquirrelObject(HSQUIRRELVM vm) {                      \
-        Sqrat::PushVar(vm, shared_from_this());                            \
-    }
-
 #define SN_ENTITY(_className, _baseName)                                   \
-    _SN_DECLARE_PUSHSQUIRRELOBJ()                                          \
-    SN_OBJECT(_className, _baseName)
+    SN_SCRIPT_OBJECT(_className, _baseName)
 
 namespace sn
 {
@@ -32,30 +26,18 @@ enum EntityFlags
 };
 
 class Scene;
-// Note: we can't use Scene::Ref here because it's impossible to forward-declare it
-typedef std::shared_ptr<Scene> SceneRef;
-typedef std::weak_ptr<Scene> SceneWeakRef;
 
-class SN_API Entity : 
-    public std::enable_shared_from_this<Entity>,
-    public Object
+class SN_API Entity : public ScriptObject
 {
 public:
 
-    SN_ENTITY(sn::Entity, sn::Object);
+    SN_ENTITY(sn::Entity, sn::Object)
 
     Entity() :
-        Object()
+        ScriptObject(),
+        r_parent(nullptr),
+        r_scene(nullptr)
     {}
-
-    virtual ~Entity()
-    {
-        if (r_parent)
-            r_parent->removeChild(this);
-        destroyChildren();
-        for (auto it = m_tags.begin(); it != m_tags.end(); ++it)
-            removeTag(*it);
-    }
 
     inline const std::string & getName() const { return m_name; }
     void setName(const std::string & name);
@@ -75,56 +57,59 @@ public:
 
     std::string toString() const;
 
-    inline Entity::Ref getParent() const { return r_parent; }
-    virtual void setParent(Entity::Ref newParent);
-    Entity::Ref getRoot() const;
+    inline Entity * getParent() const { return r_parent; }
+    virtual void setParent(Entity * newParent);
+    Entity * getRoot() const;
 
-    SceneRef getScene() const;
+    Scene * getScene() const;
 
     inline u32 getChildCount() const { return m_children.size(); }
-    inline Entity::Ref getChildByIndex(u32 i) const { return m_children[i]; }
-    Entity::Ref getChildByName(const std::string & name) const;
-    Entity::Ref getChildByType(const std::string & name) const;
-    Entity::Ref addChild(Entity::Ref child); // Don't use directly
-    u32 removeChild(Entity::Ref child); // Don't use directly
-    Entity::Ref createChild(const std::string & typeName = "");
-    Entity::Ref requireChild(const std::string & typeName);
-    u32 indexOfChild(Entity::Ref child) const;
-    inline bool containsChild(const Entity::Ref child) const { return indexOfChild(child) != m_children.size(); }
+    inline Entity * getChildByIndex(u32 i) const { return m_children[i]; }
+    Entity * getChildByName(const std::string & name) const;
+    Entity * getChildByType(const std::string & name) const;
+    Entity * addChild(Entity * child); // Don't use directly
+    u32 removeChild(Entity * child); // Don't use directly
+    Entity * createChildNoParams() { return createChild(); }
+    Entity * createChild(const std::string & typeName = "");
+    Entity * requireChild(const std::string & typeName);
+    u32 indexOfChild(const Entity * child) const;
+    inline bool containsChild(const Entity * child) const { return indexOfChild(child) != m_children.size(); }
 
     // Convenience
     template <class Entity_T>
-    std::shared_ptr<Entity_T> createChild()
+    Entity_T * createChild()
     {
-        Entity::Ref e = createChild(Entity_T::__sGetClassName());
+        Entity * e = createChild(Entity_T::__sGetClassName());
         if (e)
-            return std::static_pointer_cast<Entity_T>(e);
+            return static_cast<Entity_T*>(e);
         else
             return nullptr;
     }
 
     // Convenience
     template <class Entity_T>
-    std::shared_ptr<Entity_T> getChild()
+    Entity_T * getChild()
     {
-        std::shared_ptr<Entity> e = getChildByType(Entity_T::__sGetClassName());
+        Entity * e = getChildByType(Entity_T::__sGetClassName());
         if (e)
-            return std::static_pointer_cast<Entity_T>(e);
+            return static_cast<Entity_T*>(e);
         else
             return nullptr;
     }
 
     void destroyChildren();
 
+    /// \brief Same as release(), but notifies children and parent before calling release().
     virtual void destroy();
+    /// \brief Schedules a destroy() at the end of the current update.
     virtual void destroyLater();
 
     //---------------------------------------------
     // Serialization
     //---------------------------------------------
 
-    static void serialize(JsonBox::Value & o, Entity::Ref e);
-    static Entity::Ref unserialize(JsonBox::Value & o, Entity::Ref parent);
+    static void serialize(JsonBox::Value & o, Entity & e);
+    static Entity * unserialize(JsonBox::Value & o, Entity * parent);
 
     virtual void serializeState(JsonBox::Value & o);
     virtual void unserializeState(JsonBox::Value & o);
@@ -139,19 +124,19 @@ public:
     virtual void onFirstUpdate() {}
     virtual void onUpdate() {}
 
+protected:
+    virtual ~Entity();
+
 private:
     void propagateOnReady();
-
-    u32 removeChild(Entity * child);
-    void removeChild(u32 index);
-    //Entity::Ref getChildByPointer(Entity * child);
+    void removeChildAtIndex(u32 index);
 
 private:
     std::bitset<8> m_flags;
     std::string m_name;
-    std::vector<Entity::Ref> m_children; // Owned by the entity
-    Entity::WeakRef r_parent; // Not owned by the entity
-    mutable SceneWeakRef r_scene; // Not owned by the entity
+    std::vector<Entity*> m_children; // Owned by the entity
+    Entity * r_parent; // Not owned by the entity
+    mutable Scene * r_scene; // Not owned by the entity
     std::unordered_set<std::string> m_tags;
 };
 
