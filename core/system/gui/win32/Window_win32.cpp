@@ -1,6 +1,8 @@
 ﻿#include "../../../util/assert.hpp"
 #include "../Window.hpp"
 #include "Window_win32.hpp"
+#include "../SystemGUI.hpp"
+#include "../Event.hpp"
 
 namespace sn
 {
@@ -39,6 +41,14 @@ void WindowImpl::onEvent(UINT message, WPARAM wParam, LPARAM lParam)
     if (r_window.getHandle() == NULL)
         return;
 
+    SystemGUI & manager = r_window.getManager();
+
+    Event e(SN_EVENT_RAW);
+    e.raw.wparam = wParam;
+    e.raw.lparam = lParam;
+
+    e.windowID = manager.getWindowID(&r_window);
+
     switch (message)
     {
     case WM_DESTROY:
@@ -47,8 +57,35 @@ void WindowImpl::onEvent(UINT message, WPARAM wParam, LPARAM lParam)
         break;
 
     case WM_CLOSE:
-        // TODO WM_CLOSE
+        e.type = SN_EVENT_WINDOW_CLOSED;
+        manager.pushEvent(e);
         break;
+
+    case WM_SIZE:
+    {
+        e.type = SN_EVENT_WINDOW_RESIZED;
+        IntRect r = r_window.getClientRect();
+        e.window.x = r.x;
+        e.window.y = r.y;
+        e.window.width = r.width;
+        e.window.height = r.height;
+        manager.pushEvent(e);
+    }
+        break;
+
+    case WM_SETFOCUS:
+    {
+        e.type = SN_EVENT_WINDOW_GAINED_FOCUS;
+        manager.pushEvent(e);
+    }
+        break;
+
+    case WM_KILLFOCUS:
+    {
+        e.type = SN_EVENT_WINDOW_LOST_FOCUS;
+        manager.pushEvent(e);
+        break;
+    }
 
     case WM_SETCURSOR:
         // The mouse has moved, if the cursor is in our window we must refresh the cursor
@@ -57,6 +94,7 @@ void WindowImpl::onEvent(UINT message, WPARAM wParam, LPARAM lParam)
         break;
 
     default:
+        manager.pushEvent(e);
         break;
     }
 }
@@ -146,6 +184,9 @@ void Window::onCreate(WindowParams params, bool isFirst)
 
     if (params.style & SN_WS_MAXIMIZABLE)
         dwStyle |= WS_MAXIMIZEBOX;
+
+    if (params.style & SN_WS_SHOWN)
+        dwStyle |= WS_VISIBLE;
 
     // TODO handle more window flags
 

@@ -53,10 +53,16 @@ void SystemGUI::refWindow(Window & win)
 void SystemGUI::unrefWindow(Window & win)
 {
     SN_ASSERT(m_windows.find(&win) != m_windows.end(), "SystemGUI: window not referenced");
-    u32 id=0;
-    SN_ASSERT(getWindowID(&win, &id), "SystemGUI: getWindowID failure");
+    u32 id = getWindowID(&win);
     m_idToWindow.erase(id);
     m_windows.erase(&win);
+}
+
+//------------------------------------------------------------------------------
+Window * SystemGUI::createWindow(WindowParams params)
+{
+    // Note: the window is referenced from its constructor
+    return new Window(*this, params);
 }
 
 //------------------------------------------------------------------------------
@@ -88,20 +94,36 @@ Window * SystemGUI::getWindowByID(u32 id)
 }
 
 //------------------------------------------------------------------------------
-bool SystemGUI::getWindowID(Window * win, u32 * id)
+u32 SystemGUI::getWindowID(Window * win)
 {
     auto it = m_windows.find(win);
-    if (it == m_windows.end())
-        return false;
-    else if (id)
-        *id = it->second;
-    return true;
+    SN_ASSERT(it != m_windows.end(), "Window is not referenced");
+    return it->second;
 }
 
 //------------------------------------------------------------------------------
 u32 SystemGUI::makeWindowID()
 {
     return m_nextWindowID++;
+}
+
+//------------------------------------------------------------------------------
+void SystemGUI::pushEvent(Event e)
+{
+    m_events.push(e);
+}
+
+//------------------------------------------------------------------------------
+bool SystemGUI::popEvent(Event & e)
+{
+    if (m_events.empty())
+        return false;
+    else
+    {
+        e = m_events.front();
+        m_events.pop();
+        return true;
+    }
 }
 
 } // namespace sn

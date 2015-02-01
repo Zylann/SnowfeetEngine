@@ -1,9 +1,8 @@
 ﻿#include "../../util/assert.hpp"
 #include "../../util/typecheck.hpp"
 #include "Window.hpp"
-#include "WindowContainer.hpp"
+//#include "WindowContainer.hpp"
 #include "SystemGUI.hpp"
-#include <map>
 
 namespace sn
 {
@@ -12,7 +11,7 @@ namespace sn
 Window::Window(SystemGUI & manager, WindowParams params):
     r_manager(manager),
     m_handle(nullptr),
-    m_parent(nullptr),
+    //m_parent(nullptr),
     m_impl(nullptr)
 {
     bool isFirst = r_manager.getWindowCount() == 0;
@@ -24,29 +23,34 @@ Window::Window(SystemGUI & manager, WindowParams params):
     if (params.parent)
     {
         Window * pwin = r_manager.getWindowByHandle(params.parent);
-        SN_ASSERT(pwin != nullptr && pwin->isContainer(), "Window: invalid parent (" << (u32)pwin << ")");
-        m_parent = checked_cast<WindowContainer*>(pwin);
+        //SN_ASSERT(pwin != nullptr && pwin->isContainer(), "Window: invalid parent (" << (u32)pwin << ")");
+        //m_parent = checked_cast<WindowContainer*>(pwin);
     }
 
-    if (m_parent)
-    {
-        m_parent->onAddChild(this);
-    }
+    //if (m_parent)
+    //{
+    //    m_parent->onAddChild(this);
+    //}
 }
 
 //------------------------------------------------------------------------------
 Window::~Window()
 {
-    if (m_parent)
-    {
-        m_parent->onRemoveChild(this);
-    }
+    //if (m_parent)
+    //{
+    //    m_parent->onRemoveChild(this);
+    //}
 
     onDestroy();
 
     r_manager.unrefWindow(*this);
 }
 
+//------------------------------------------------------------------------------
+bool Window::isOpen() const
+{
+    return m_handle != 0;
+}
 
 } // namespace sn
 

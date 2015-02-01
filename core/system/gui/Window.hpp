@@ -1,11 +1,11 @@
 ﻿#ifndef __HEADER_SN_WINDOW__
 #define __HEADER_SN_WINDOW__
 
-#include <string>
-
 #include <core/math/Rect.hpp>
-#include <core/system/gui/Layout.hpp>
+//#include <core/system/gui/Layout.hpp>
 #include <core/util/NonCopyable.hpp>
+
+#include <string>
 
 namespace sn
 {
@@ -33,7 +33,7 @@ enum WindowStyle
 };
 
 //------------------------------------------------------------------------------
-struct WindowParams
+struct SN_API WindowParams
 {
     WindowParams(
         WindowHandle parent_,
@@ -51,7 +51,6 @@ struct WindowParams
     IntRect rect;
     std::string title;
     unsigned int style;
-    //std::string winClass; // Used on windows
 };
 
 //------------------------------------------------------------------------------
@@ -61,14 +60,14 @@ class WindowContainer;
 
 //------------------------------------------------------------------------------
 /// \brief A rectangular area on the screen (canvas, tab bar, separator...)
-class Window : public NonCopyable
+class SN_API Window : public NonCopyable
 {
 public:
 
-    Window(SystemGUI & manager, WindowParams params = WindowParams(NULL, "Window"));
+    Window(SystemGUI & manager, WindowParams params = WindowParams(nullptr, "Window"));
     virtual ~Window();
 
-    //inline bool isCreated() const { return m_handle != 0; }
+    bool isOpen() const;
 
     inline void show() { setVisible(true); }
     void setVisible(bool visible);
@@ -84,7 +83,7 @@ public:
     void setClientRect(IntRect rect);
     IntRect getClientRect() const;
 
-    virtual bool isContainer() const { return false; }
+    //virtual bool isContainer() const { return false; }
 
     inline SystemGUI & getManager() const { return r_manager; }
 
@@ -102,7 +101,7 @@ private:
     WindowHandle m_handle;
     std::string m_title;
 
-    WindowContainer * m_parent;
+    //WindowContainer * m_parent;
 
     WindowImpl * m_impl;
 };

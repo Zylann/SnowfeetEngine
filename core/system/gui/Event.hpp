@@ -11,11 +11,15 @@ namespace sn
 
 enum EventType
 {
+    SN_EVENT_RAW,
+
     SN_EVENT_WINDOW_CLOSED,
     SN_EVENT_WINDOW_MOVED,
     SN_EVENT_WINDOW_RESIZED,
     SN_EVENT_WINDOW_MINIMIZED,
     SN_EVENT_WINDOW_RESTORED,
+    SN_EVENT_WINDOW_GAINED_FOCUS,
+    SN_EVENT_WINDOW_LOST_FOCUS,
 
     SN_EVENT_KEY_DOWN,
     SN_EVENT_KEY_UP,
@@ -31,9 +35,9 @@ enum EventType
 
     SN_EVENT_JOYSTICK_CONNECTED,
     SN_EVENT_JOYSTICK_DISCONNECTED,
-    SN_EVENT_JOYSTICK_DOWN,
-    SN_EVENT_JOYSTICK_UP,
-    SN_EVENT_JOYSTICK_MOVED,
+    SN_EVENT_JOYSTICK_DOWN, // Button down
+    SN_EVENT_JOYSTICK_UP, // Button up
+    SN_EVENT_JOYSTICK_MOVED, // Axis delta
 
     SN_EVENT_TOUCH_DOWN,
     SN_EVENT_TOUCH_UP,
@@ -42,11 +46,10 @@ enum EventType
     SN_EVENT_COUNT // Keep last
 };
 
-struct Event
+struct SN_API Event
 {
     struct WindowEvent
     {
-        //u32 window;
         s32 x;
         s32 y;
         u32 width;
@@ -94,19 +97,32 @@ struct Event
         s32 lastY;
     };
 
-    Event()
+    struct RawEvent
+    {
+        s32 type;
+        s32 wparam;
+        s32 lparam;
+    };
+
+    Event(EventType type_)
     {
         memset(this, 0, sizeof(Event));
+        type = type_;
     }
 
     EventType type;
 
+    /// \brief ID of the window where the event occurred
+    u32 windowID;
+
+    // TODO union? (we should be able to pick the window ID on all events)
     WindowEvent window;
     KeyboardEvent keyboard;
     TextEvent text;
     MouseEvent mouse;
     JoystickEvent joystick;
     TouchEvent touch;
+    RawEvent raw;
 
 };
 
