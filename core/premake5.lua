@@ -18,6 +18,8 @@ project "SnowfeetCore"
 		"ws2_32"
 	}
 	defines {
+		-- To allow modules to use bindings from the core
+		"SCRAT_EXPORT"
 	}
 	filter "configurations:Debug"
 		targetdir "../_bin/debug"
