@@ -19,7 +19,7 @@ namespace sn
 {
 
 /// \brief All classes accessible and creatable from scripts must inherit this class.
-class ScriptObject : public RefCounted, public Object
+class SN_API ScriptObject : public RefCounted, public Object
 {
 public:
     SN_SCRIPT_OBJECT(sn::ScriptObject, sn::Object)
