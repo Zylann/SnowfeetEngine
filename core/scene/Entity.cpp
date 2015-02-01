@@ -120,6 +120,8 @@ std::string Entity::toString() const
 //------------------------------------------------------------------------------
 void Entity::setParent(Entity * newParent)
 {
+    // TODO FIXME Scene registrations such as update or tags must be notified too if the scene changes!
+
     if (r_parent != nullptr && newParent == nullptr)
     {
         r_parent->removeChild(this);

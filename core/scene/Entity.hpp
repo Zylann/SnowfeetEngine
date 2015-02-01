@@ -21,7 +21,8 @@ enum EntityFlags
     SN_EF_ENABLED = 0,
     SN_EF_DESTROYED = 1,
     SN_EF_FIRST_UPDATE = 2,
-    SN_EF_UPDATABLE = 3
+    SN_EF_UPDATABLE = 3,
+    SN_EF_STICKY = 4
 };
 
 class Scene;
@@ -30,7 +31,7 @@ class SN_API Entity : public ScriptObject
 {
 public:
 
-    SN_ENTITY(sn::Entity, sn::Object)
+    SN_ENTITY(sn::Entity, sn::ScriptObject)
 
     Entity() :
         ScriptObject(),
