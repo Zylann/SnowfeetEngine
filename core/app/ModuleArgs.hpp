@@ -15,8 +15,6 @@
 /// \brief This struct is passed as single argument of the loading function of a native module.
 struct SN_API ModuleLoadArgs
 {
-    //asIScriptEngine * scriptEngine;
-    //CSerializer * serializer;
     HSQUIRRELVM squirrelVM;
     sn::ObjectTypeDatabase * objectTypeDatabase;
 };
@@ -24,8 +22,6 @@ struct SN_API ModuleLoadArgs
 /// \brief This struct is passed as single argument of the unloading function of a native module.
 struct SN_API ModuleUnloadArgs
 {
-    //asIScriptEngine * scriptEngine;
-    //CSerializer * serializer;
     HSQUIRRELVM squirrelVM;
     sn::ObjectTypeDatabase * objectTypeDatabase;
 };

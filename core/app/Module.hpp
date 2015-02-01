@@ -24,7 +24,7 @@ namespace CallbackName
 
 class Application;
 class ModuleImpl;
-class ScriptEngine;
+class ScriptManager;
 
 class SN_API Module
 {
@@ -33,7 +33,7 @@ public:
     Module(Application & app, const ModuleInfo & info);
     ~Module();
 
-    bool loadNativeBindings(ScriptEngine & scriptEngine);
+    bool loadNativeBindings(ScriptManager & scriptEngine);
     bool compileScripts();
     bool loadAssets();
 
@@ -55,7 +55,7 @@ private:
 
     void getScriptFiles(std::vector<String> & out_filePaths, const std::set<String> & extensions);
 
-    bool loadNativeBindingsImpl(ScriptEngine & scriptEngine);
+    bool loadNativeBindingsImpl(ScriptManager & scriptEngine);
 
     void unloadNativeBindings();
     void unloadNativeBindingsImpl();

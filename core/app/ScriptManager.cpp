@@ -1,4 +1,4 @@
-#include "ScriptEngine.hpp"
+#include "ScriptManager.hpp"
 #include "../util/assert.hpp"
 #include "../util/stringutils.hpp"
 #include "../util/Exception.hpp"
@@ -8,12 +8,6 @@
 //#include "../system/console/as_binding/as_console.hpp"
 
 #include <stdarg.h>
-
-#ifdef SQUNICODE
-	#define scvprintf vfwprintf
-#else
-	#define scvprintf vfprintf
-#endif
 
 namespace sn
 {
@@ -64,7 +58,8 @@ void sqPrintfunc(HSQUIRRELVM v, const SQChar *s, ...)
 {
 	va_list vl;
 	va_start(vl, s);
-	scvprintf(stdout, s, vl);
+    SN_LOG(s);
+	//scvprintf(stdout, s, vl);
 	va_end(vl);
 }
 
@@ -72,22 +67,23 @@ void sqErrorfunc(HSQUIRRELVM v, const SQChar *s, ...)
 {
 	va_list vl;
 	va_start(vl, s);
-	scvprintf(stderr, s, vl);
+    SN_LOG(s);
+	//scvprintf(stderr, s, vl);
 	va_end(vl);
 }
 
 //==============================================================================
-// ScriptEngine
+// ScriptManager
 //==============================================================================
 
 //------------------------------------------------------------------------------
-ScriptEngine::ScriptEngine(Application & app) :
+ScriptManager::ScriptManager(Application & app) :
     r_app(app),
     m_squirrelVM(nullptr)
 {}
 
 //------------------------------------------------------------------------------
-ScriptEngine::~ScriptEngine()
+ScriptManager::~ScriptManager()
 {
     if (m_squirrelVM)
     {
@@ -96,7 +92,7 @@ ScriptEngine::~ScriptEngine()
 }
 
 //------------------------------------------------------------------------------
-void ScriptEngine::initialize()
+void ScriptManager::initialize()
 {
     SN_ASSERT(m_squirrelVM == nullptr, "initialize called twice");
 
@@ -117,7 +113,7 @@ void ScriptEngine::initialize()
 }
 
 //------------------------------------------------------------------------------
-bool ScriptEngine::compileSquirrelModule(const std::string & modName, const std::string & modNamespace, const std::vector<String> & files)
+bool ScriptManager::compileSquirrelModule(const std::string & modName, const std::string & modNamespace, const std::vector<String> & files)
 {
     // Compile scripts
     std::vector<Sqrat::Script> scripts;
@@ -148,7 +144,7 @@ bool ScriptEngine::compileSquirrelModule(const std::string & modName, const std:
 }
 
 //------------------------------------------------------------------------------
-void ScriptEngine::registerCoreAPI()
+void ScriptManager::registerCoreAPI()
 {
     SN_LOG("Registering core API");
 

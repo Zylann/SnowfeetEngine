@@ -1,11 +1,11 @@
 ﻿/*
-ScriptEngine.hpp
+ScriptManager.hpp
 Copyright (C) 2010-2014 Marc GILLERON
 This file is part of the SnowfeetEngine project.
 */
 
-#ifndef __HEADER_SCRIPTENGINE__
-#define __HEADER_SCRIPTENGINE__
+#ifndef __HEADER_SCRIPTMANAGER__
+#define __HEADER_SCRIPTMANAGER__
 
 //#include <angelscript.h>
 //#include <core/angelscript/addons/serializer/serializer.h>
@@ -19,12 +19,12 @@ namespace sn
 class Application;
 
 /// \brief Handles functionnality related to scripts
-class SN_API ScriptEngine
+class SN_API ScriptManager
 {
 public:
 
-    ScriptEngine(Application & app);
-    ~ScriptEngine();
+    ScriptManager(Application & app);
+    ~ScriptManager();
 
     void initialize();
 
@@ -43,5 +43,5 @@ private:
 
 } // namespace sn
 
-#endif // __HEADER_SCRIPTENGINE__
+#endif // __HEADER_SCRIPTMANAGER__
 

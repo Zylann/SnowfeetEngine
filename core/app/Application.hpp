@@ -31,7 +31,7 @@
 #include <core/reflect/ObjectTypeDatabase.hpp>
 #include <core/app/CommandLine.hpp>
 #include <core/app/Module.hpp>
-#include <core/app/ScriptEngine.hpp>
+#include <core/app/ScriptManager.hpp>
 #include <core/app/TimeStepper.hpp>
 #include <core/scene/Scene.hpp>
 #include <map>
@@ -54,7 +54,7 @@ public:
     // Gets the absolute path to the projects folder
     inline String getPathToProjects() const { return m_pathToProjects; }
 
-    inline ScriptEngine & getScriptEngine() { return m_scriptEngine; }
+    inline ScriptManager & getScriptManager() { return m_scriptEngine; }
 
     // Sets the running flag to false in order to exit the application
     // at the end of the current update.
@@ -77,7 +77,7 @@ private:
     // Attributes
     //------------------------------------
 
-    ScriptEngine m_scriptEngine;
+    ScriptManager m_scriptEngine;
 
     // Top-level scene
     Scene * m_scene;

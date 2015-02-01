@@ -79,7 +79,7 @@ Module::~Module()
 }
 
 //------------------------------------------------------------------------------
-bool Module::loadNativeBindings(ScriptEngine & scriptEngine)
+bool Module::loadNativeBindings(ScriptManager & scriptEngine)
 {
     ObjectTypeDatabase & otb = ObjectTypeDatabase::get();
     otb.beginModule(m_info.name);
@@ -160,7 +160,7 @@ void Module::unloadNativeBindings()
 
         if (f != nullptr)
         {
-            ScriptEngine & scriptEngine = r_app.getScriptEngine();
+            ScriptManager & scriptEngine = r_app.getScriptManager();
 
             // Execute exit point
             int unloadResult = f({
@@ -230,7 +230,7 @@ bool Module::compileScripts()
     if (!scriptFiles.empty())
     {
         // Compile
-        bool compiled = r_app.getScriptEngine().compileSquirrelModule(
+        bool compiled = r_app.getScriptManager().compileSquirrelModule(
             m_info.name,
             m_info.scriptNamespace,
             scriptFiles
@@ -262,7 +262,7 @@ bool Module::compileScripts()
 //
 //    clearCallbacks();
 //
-//    asIScriptEngine * as = r_app.getScriptEngine().getEngine();
+//    asIScriptEngine * as = r_app.getScriptManager().getEngine();
 //    asIScriptModule * asModule = as->GetModule(m_info.name.c_str());
 //
 //    // TODO Handle multiple callback signatures
@@ -308,7 +308,7 @@ bool Module::loadAssets()
 //    auto it = m_scriptCallbacks.find(cbName);
 //    if (it != m_scriptCallbacks.end())
 //    {
-//        asIScriptContext * context = r_app.getScriptEngine().getContext();
+//        asIScriptContext * context = r_app.getScriptManager().getContext();
 //
 //        // For each function registered for this callback
 //        for (u32 i = 0; i < it->second.size(); ++i)
@@ -318,7 +318,7 @@ bool Module::loadAssets()
 //            context->Prepare(f);
 //
 //            // Execute
-//            r_app.getScriptEngine().executeContext(*context);
+//            r_app.getScriptManager().executeContext(*context);
 //        }
 //    }
 //}
@@ -329,7 +329,7 @@ bool Module::loadAssets()
 //    auto it = m_scriptCallbacks.find(CallbackName::UPDATE);
 //    if (it != m_scriptCallbacks.end())
 //    {
-//        asIScriptContext * context = r_app.getScriptEngine().getContext();
+//        asIScriptContext * context = r_app.getScriptManager().getContext();
 //
 //        // For each update function registered for this callback
 //        for (u32 i = 0; i < it->second.size(); ++i)
@@ -342,7 +342,7 @@ bool Module::loadAssets()
 //            context->SetArgObject(0, &delta);
 //
 //            // Execute
-//            r_app.getScriptEngine().executeContext(*context);
+//            r_app.getScriptManager().executeContext(*context);
 //        }
 //    }
 //}
