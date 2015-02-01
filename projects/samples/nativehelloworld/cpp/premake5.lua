@@ -1,18 +1,9 @@
 project "SampleNativeHello"
 	platforms { "x32" }
-	kind "SharedLib"
-	language "C++"
-	dependson { 
-		"SnowfeetCore"
-	}
-	location "."
-	targetdir ".."
+	commonModConfigCPP()
 	files {
 		"**.hpp",
 		"**.cpp",
-	}
-	links {
-		"SnowfeetCore",
 	}
 	filter "configurations:Debug"
 		objdir "_obj/debug"

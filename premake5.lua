@@ -1,3 +1,7 @@
+--------------------------------------------
+-- Solution
+--------------------------------------------
+
 solution "SnowfeetEngine"
 	platforms { "x32" }
 	--location "."
@@ -23,6 +27,8 @@ solution "SnowfeetEngine"
 		}
 
 	--------------------------------------------
+	-- Core
+	--------------------------------------------
 
 	-- Core stuff
 	include("json")
@@ -32,7 +38,46 @@ solution "SnowfeetEngine"
 	include("main")
 	include("zlib")
 
-	-- Modules stuff:
+	--------------------------------------------
+	-- Modules
+	--------------------------------------------
+
+	function commonLinks()
+		links {
+			"SnowfeetCore",
+
+			-- Note: I don't think both should be there,
+			-- because they already are statically linked to the core,
+			-- which in turn is linked to modules...
+			"Squirrel",
+			"JsonBox"
+		}
+	end
+
+	function commonIncludes()
+		--
+	end
+
+	function commonDefines()
+		-- Modules bindings have to include core bindings
+		-- if they want to interact with them
+		defines {
+			"SCRAT_IMPORT"
+		}
+	end
+
+	function commonModConfigCPP()
+		kind "SharedLib"
+		language "C++"
+		dependson { "SnowfeetCore" }
+		location "."
+		targetdir ".."
+		commonLinks()
+		commonIncludes()
+		commonDefines()
+	end
+
+	-- Include modules:
 	-- Walks througth folders to include compliant premake5 projects
 	local fileList = os.matchfiles("./projects/**premake5.lua")
 	for k,fpath in pairs(fileList) do
@@ -42,33 +87,5 @@ solution "SnowfeetEngine"
 		then
 			--print(fpath)
 			dofile(fpath)
-			
-			-- Common stuff:
-
-			-- Modules bindings have to include core bindings
-			-- if they want to interact with them
-			defines {
-				"SCRAT_IMPORT"
-			}
 		end
 	end
-
-
-	-- OLD CODE
-
-	-- include("json")
-	-- include("angelscript")
-	-- include("core")
-	-- include("main")
-	-- include("zlib")
-
-	-- -- Modules
-	-- include("projects/mods/render/cpp")
-	-- include("projects/mods/image/cpp")
-
-	-- -- Tools
-	-- include("projects/tools/editor/cpp")	
-
-	-- -- Samples
-	-- include("projects/samples/nativehelloworld/cpp")
-

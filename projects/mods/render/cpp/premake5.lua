@@ -1,16 +1,13 @@
+------------------------------------------
 project "ModRender"
 	platforms { "x32" }
-	kind "SharedLib"
-	language "C++"
+	commonModConfigCPP()
 	dependson { 
-		"SnowfeetCore",
 		"glew"
 	}
 	includedirs {
 		"glew/include"
 	}
-	location "."
-	targetdir ".."
 	files {
 		"*.hpp",
 		"*.cpp",
@@ -19,7 +16,6 @@ project "ModRender"
 		"win32/*.cpp"
 	}
 	links {
-		"SnowfeetCore",
 		"glew",
 		"opengl32"
 	}
@@ -42,6 +38,7 @@ project "ModRender"
 			"WIN32_LEAN_AND_MEAN",
 			"GLEW_STATIC"
 		}
+
 
 ------------------------------------------
 project "glew"
