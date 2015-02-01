@@ -2,7 +2,6 @@
 #define __HEADER_SN_ENTITY__
 
 #include <core/types.hpp>
-#include <core/reflect/Object.hpp>
 #include <core/json/json_utils.hpp>
 #include <core/app/ScriptObject.hpp>
 

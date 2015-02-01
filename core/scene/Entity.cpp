@@ -18,7 +18,7 @@ Entity::~Entity()
     destroyChildren();
     for (auto it = m_tags.begin(); it != m_tags.end(); ++it)
         removeTag(*it);
-    SN_LOG("Entity " << getName() << " destroyed");
+    //SN_LOG("Entity " << getName() << " destroyed");
 }
 
 //------------------------------------------------------------------------------
