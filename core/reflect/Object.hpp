@@ -9,6 +9,7 @@
 // - Type IDs must be the same on whatever platform or compiler
 // - You have to manually register types somewhere for C++ technical reasons
 
+// TODO use C++11 constexpr?
 #define _SN_STATIC_STRING(_name, _value)                                       \
     static const char * _name() {                                              \
         static const char * str = _value;                                      \
