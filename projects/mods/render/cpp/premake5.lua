@@ -9,8 +9,13 @@ project "ModRender"
 		"glew/include"
 	}
 	files {
+		"*.h",
 		"*.hpp",
 		"*.cpp",
+		"entities/*.hpp",
+		"entities/*.cpp",
+		"sq_binding/*.hpp",
+		"sq_binding/*.cpp",
 		-- TODO Move these to platform-specific filter
 		"win32/*.hpp",
 		"win32/*.cpp"

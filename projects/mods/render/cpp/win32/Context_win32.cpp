@@ -7,6 +7,8 @@
 namespace sn
 {
 
+// https://www.opengl.org/discussion_boards/showthread.php/173031-Easy-OpenGL-context-creation
+
 ContextImpl::ContextImpl(Context & context, const Window & win):
 	r_context(context),
 	m_hrc(nullptr),

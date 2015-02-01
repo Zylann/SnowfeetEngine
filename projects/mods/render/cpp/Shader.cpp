@@ -1,10 +1,11 @@
 ﻿#include "Shader.hpp"
 
-namespace sn
-{
+namespace sn {
+namespace render {
 
-// TODO Shader
+    // TODO Shader
 
+} // namespace render
 } // namespace sn
 
 

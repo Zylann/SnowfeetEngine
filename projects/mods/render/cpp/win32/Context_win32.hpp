@@ -18,7 +18,6 @@ public:
 
 private:
 
-	// https://www.opengl.org/discussion_boards/showthread.php/173031-Easy-OpenGL-context-creation
 	static HGLRC glCreateMinimalContext(HWND hwnd);
 	static HGLRC glCreateContext(HWND hwnd, HGLRC sharedContext, int majorVersion, int minorVersion, int multiSampleMode = 0);
 

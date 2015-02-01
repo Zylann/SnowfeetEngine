@@ -1,8 +1,8 @@
 ﻿#include "ShaderAssetType.hpp"
 #include <core/util/stringutils.hpp>
 
-namespace sn
-{
+namespace sn {
+namespace render {
 
 bool ShaderAssetType::canLoad(String path, const AssetMetadata & meta) const
 {
@@ -16,6 +16,6 @@ Asset * ShaderAssetType::createInstance()
     return nullptr;
 }
 
+} // namespace render
 } // namespace sn
-
 
