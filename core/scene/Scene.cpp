@@ -59,6 +59,40 @@ void Scene::unregisterTaggedEntity(Entity & e, const std::string & tag)
 }
 
 //------------------------------------------------------------------------------
+Entity * Scene::getTaggedEntity(const std::string & tag)
+{
+    auto it = m_taggedEntities.find(tag);
+    if (it != m_taggedEntities.end())
+    {
+        if (it->second.empty())
+            return nullptr;
+        else
+            return *(it->second.begin());
+    }
+    else
+    {
+        return nullptr;
+    }
+}
+
+//------------------------------------------------------------------------------
+std::vector<Entity*> Scene::getTaggedEntities(const std::string & tag)
+{
+    std::vector<Entity*> entities;
+    auto it = m_taggedEntities.find(tag);
+    if (it != m_taggedEntities.end())
+    {
+        if (!it->second.empty())
+        {
+            const auto & taggedEntities = it->second;
+            for (auto it2 = taggedEntities.begin(); it2 != taggedEntities.end(); ++it2)
+                entities.push_back(*it2);
+        }
+    }
+    return entities;
+}
+
+//------------------------------------------------------------------------------
 void Scene::setParent(Entity * newParent)
 {
     SN_ERROR("Scene::setParent: a scene cannot have a parent.");

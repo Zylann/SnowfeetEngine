@@ -36,6 +36,16 @@ public:
     void registerTaggedEntity(Entity & e, const std::string & tag);
     void unregisterTaggedEntity(Entity & e, const std::string & tag);
 
+    /// \brief Returns the first encountered entity having the given tag.
+    /// \param tag: tag to search
+    /// \return an entity with the tag, or nullptr if none have it
+    Entity * getTaggedEntity(const std::string & tag);
+
+    /// \brief Returns all entities having the given tag.
+    /// \param tag: tag to search
+    /// \return list of all entities having the tags. Can be empty.
+    std::vector<Entity*> getTaggedEntities(const std::string & tag);
+
     void setParent(Entity * newParent) override;
 
     void destroy() override;
