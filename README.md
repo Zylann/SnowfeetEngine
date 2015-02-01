@@ -132,4 +132,5 @@ https://bitbucket.org/premake/premake-dev/wiki/Building_Premake
 Or use a windows executable I built:
 http://zylannprods.fr/dl/premake5.exe
 
-There are also nightlies on SourceForge but I didn't checked them out yet.
+There are also nightlies on SourceForge:
+http://sourceforge.net/projects/premake/files/Premake/nightlies/
