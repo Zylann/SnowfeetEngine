@@ -1,7 +1,5 @@
 #include "sq_scene.hpp"
 
-SN_SQ_DEFINE_SCRIPTOBJECT_VARTYPE(sn::Scene)
-
 namespace sn
 {
 

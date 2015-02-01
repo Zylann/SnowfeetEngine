@@ -1,8 +1,6 @@
 #include "sq_scene.hpp"
 #include <iostream>
 
-SN_SQ_DEFINE_SCRIPTOBJECT_VARTYPE(sn::Entity)
-
 //namespace Sqrat {
 //        template<>                                                            
 //    struct Var<sn::Entity*> {
