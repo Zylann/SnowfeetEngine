@@ -7,6 +7,10 @@ project "Squirrel"
 		"**.h",
 		"**.cpp"
 	}
+	defines {
+		-- Override to allow modules to access squirrel functions
+		"SQUIRREL_API=__declspec(dllexport)"
+	}
 	filter "configurations:Debug"
 		targetdir "../_bin/debug"
 		objdir "../_obj/debug"
