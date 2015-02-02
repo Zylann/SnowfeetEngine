@@ -7,7 +7,7 @@ in case things don't work as expected.
 
 Note 2: This document explains a planned design. It may be not fully implemented
 at the moment, and will be refreshed as soon as features are operational.
-Things are subject to change, if greater ideas emerge.
+Things are subject to change, if greater ideas emerge. After all, I'm still lrearning.
 
 
 Built-in structure
@@ -19,9 +19,9 @@ by the command line.
 
 The default directory is the built-in "projects/", which is split into several sub-folders:
 - mods: core modules, not runnable.
-- samples: runnables module showing how to do basic things.
+- samples: runnable modules showing how to do basic things.
 - tools: built-in tools (made for the engine, with the engine!)
-- games: your games!
+- games: the actual projects you may work on!
 - usermods: future special folder for user-generated content (actual "mods" from player's point of view).
 
 
@@ -187,11 +187,11 @@ Let's say you have three standalone modules, A, B and C.
 Then, you have a module D, which is natively required by C.
 What happens if A is defined like this?
 
-{
-	"dependencies":{
-		"A", "B", "C", "D"
+	{
+		"dependencies":[
+			"B", "C", "D"
+		]
 	}
-}
 
 An error will be raised, because you are trying to load D, that is already
 natively loaded by C. The engine knows this because of the contents of C.mod.
