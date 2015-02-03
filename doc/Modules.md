@@ -6,8 +6,8 @@ The planned graphical editor will do all that for you, but it's good to know how
 in case things don't work as expected.
 
 Note 2: This document explains a planned design. It may be not fully implemented
-at the moment, and will be refreshed as soon as features are operational.
-Things are subject to change, if greater ideas emerge. After all, I'm still lrearning.
+at the moment, and will be refreshed as soon as features get operational.
+Things are subject to change, if greater ideas emerge. After all, I'm still learning.
 
 
 Built-in structure
