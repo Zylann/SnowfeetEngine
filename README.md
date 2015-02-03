@@ -27,11 +27,12 @@ For more info about how modules work, see documentation files.
 Notes
 =====
 
-Scripting
----------
-Althouth scripting must be easier than writing C++, I believe scripts must be written by decent programmers.
-Creative people without good knowledge in programming should use tools adapted for them, not writing code.
-I take this into account for the choice of a scripting language as well as the development of a full-featured visual editor.
+What the engine does now
+------------------------
+
+Visually, not much. But many things are done under the hood:
+I focus on the core to work before starting modules such as graphics, sound and shiny stuff.
+I need a proper base to work on, so it's my main focus at the moment.
 
 
 Web export
@@ -51,7 +52,9 @@ if it is supported enough by the engine.
 How to compile
 =============
 
-You will need the following:
+The whole engine is entirely provided as source code.
+
+You will need the following to compile everything:
 - A C++11 compiler
 - Premake5 (See bottom of this README)
 - Optionally, an IDE
@@ -65,11 +68,11 @@ which makes writing build scripts very easy.
 
 0) Get the engine from its Git repository, or download a zip file from Github
 
-1) Run premake_yourPlatform_yourBuildSystem_yourConfig
+1) Run one of the provided premake_** shell scripts, or write your own
 2) You should now see your project file at the root of the repo.
 
 Example with Visual Studio 2013:
-1) Run premake_win32_vs2013_debug.bat
+1) Run premake_vs2013_debug.bat
 2) SnowfeetEngine.sln appeared at the root, open it
 3) Build the solution
 
