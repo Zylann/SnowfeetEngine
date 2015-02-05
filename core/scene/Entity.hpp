@@ -27,6 +27,7 @@ enum EntityFlags
 
 class Scene;
 
+/// \brief Base class for all components of the scene.
 class SN_API Entity : public ScriptObject
 {
 public:
@@ -45,8 +46,11 @@ public:
     inline bool getFlag(u32 position) const { return m_flags.at(position); }
     void setFlag(u32 position, bool v);
 
+    /// \brief Tells if the entity is enabled
     bool isEnabled() const;
+    /// \brief Tells if the entity is enabled without looking at its parent enabled state
     inline bool isEnabledSelf() const { return m_flags.at(SN_EF_ENABLED); }
+    /// \brief Enables the entity (the parent overrides this if it is disabled).
     void setEnabled(bool e);
 
     void setUpdatable(bool enable=true, s16 order=0, s16 layer=0);
