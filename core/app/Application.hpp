@@ -68,6 +68,8 @@ public:
 
     //static Application & get();
 
+    // TODO Move SystemGUI here as a member variable, and let Application be the only one singleton?
+
 private:
 
     void printCommandLineUsage();

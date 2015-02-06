@@ -11,6 +11,7 @@ This file is part of the SnowfeetEngine project.
 #include "../system/console/console.hpp"
 #include "../object_types.hpp"
 #include <ctime>
+#include "../system/gui/SystemGUI.hpp"
 
 namespace sn
 {
@@ -149,7 +150,10 @@ int Application::executeEx()
         Clock frameClock;
         m_timeStepper.onBeginFrame();
 
-        // TODO Event processing
+        // Process system GUI messages
+        SystemGUI::get().processEvents();
+
+        // TODO Forward events to the game
 
         std::vector<Time> deltas = m_timeStepper.getCallDeltas();
         for (u32 i = 0; i < deltas.size() && m_runFlag; ++i)
@@ -160,9 +164,7 @@ int Application::executeEx()
             update(deltas[i]);
         }
 
-        // TODO Render call
-        // Note: no render call will be effective if there is nothing to draw
-
+        // TODO this doesn't makes sense without a render context, so put this in RenderManager?
         // Sleep until the next frame
         Time sleepTime = m_timeStepper.getMinDelta() - frameClock.getElapsedTime();
         if (sleepTime.asMilliseconds() > 0)
