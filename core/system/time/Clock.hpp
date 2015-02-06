@@ -1,6 +1,6 @@
 ﻿/*
 Clock.hpp
-Copyright (C) 2010-2014 Marc GILLERON
+Copyright (C) 2014-2015 Marc GILLERON
 This file is part of the SnowfeetEngine.
 */
 
@@ -15,15 +15,12 @@ namespace sn
 class SN_API Clock
 {
 public:
-
     Clock();
 
     Time getElapsedTime() const;
-
     Time restart();
 
 private:
-
     /// \brief time of last reset
     Time m_startTime;
 

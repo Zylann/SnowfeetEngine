@@ -1,4 +1,10 @@
-﻿#ifndef __HEADER_SN_THREAD__
+﻿/*
+Thread.hpp
+Copyright (C) 2014-2015 Marc GILLERON
+This file is part of the SnowfeetEngine project.
+*/
+
+#ifndef __HEADER_SN_THREAD__
 #define __HEADER_SN_THREAD__
 
 #include <core/util/NonCopyable.hpp>
@@ -12,7 +18,6 @@ class ThreadImpl;
 class SN_API Thread : NonCopyable
 {
 public:
-
     Thread(void(*func)());
     ~Thread();
 
@@ -23,7 +28,6 @@ public:
     static void sleep(Time duration);
 
 private:
-
     friend class ThreadImpl;
 
     void run();

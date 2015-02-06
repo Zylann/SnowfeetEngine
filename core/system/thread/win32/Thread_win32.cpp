@@ -1,4 +1,10 @@
-﻿#include "../Thread.hpp"
+﻿/*
+Thread_win32.hpp
+Copyright (C) 2014-2015 Marc GILLERON
+This file is part of the SnowfeetEngine project.
+*/
+
+#include "../Thread.hpp"
 #include <core/types.hpp>
 #include <core/util/assert.hpp>
 

@@ -1,4 +1,10 @@
-﻿#ifndef __HEADER_SN_AUTOTILER__
+﻿/*
+AutoTiler.hpp
+Copyright (C) 2014-2015 Marc GILLERON
+This file is part of the SnowfeetEngine project.
+*/
+
+#ifndef __HEADER_SN_AUTOTILER__
 #define __HEADER_SN_AUTOTILER__
 
 #include <vector>

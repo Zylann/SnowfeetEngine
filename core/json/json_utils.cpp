@@ -1,4 +1,10 @@
-﻿#include <fstream>
+﻿/*
+json_utils.cpp
+Copyright (C) 2010-2015 Marc GILLERON
+This file is part of the SnowfeetEngine project.
+*/
+
+#include <fstream>
 #include <core/json/json_utils.hpp>
 #include <core/util/Log.hpp>
 

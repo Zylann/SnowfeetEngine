@@ -1,9 +1,16 @@
+/*
+ScriptObject.hpp
+Copyright (C) 2014-2015 Marc GILLERON
+This file is part of the SnowfeetEngine project.
+*/
+
 #ifndef __HEADER_SN_SCRIPTOBJECT__
 #define __HEADER_SN_SCRIPTOBJECT__
 
 #include <core/squirrel/sqrat.h>
 #include <core/reflect/Object.hpp>
 #include <core/util/RefCounted.hpp>
+#include <type_traits>
 
 #define _SN_DECLARE_PUSHSQUIRRELOBJ(_className)                        \
     virtual void pushSquirrelObject(HSQUIRRELVM vm) {                  \

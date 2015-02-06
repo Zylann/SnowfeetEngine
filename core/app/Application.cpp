@@ -1,4 +1,10 @@
-﻿#include "Application.hpp"
+﻿/*
+Application.cpp
+Copyright (C) 2014-2015 Marc GILLERON
+This file is part of the SnowfeetEngine project.
+*/
+
+#include "Application.hpp"
 #include "../util/Log.hpp"
 #include "Module.hpp"
 #include "../system/thread/Thread.hpp"

@@ -1,4 +1,10 @@
-﻿#include "../filesystem.hpp"
+﻿/*
+filesystem_win32.cpp
+Copyright (C) 2012-2015 Marc GILLERON
+This file is part of the SnowfeetEngine project.
+*/
+
+#include "../filesystem.hpp"
 #include "../../../util/Log.hpp"
 #include <Windows.h>
 

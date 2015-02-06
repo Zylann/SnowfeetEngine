@@ -1,3 +1,9 @@
+/*
+Entity.cpp
+Copyright (C) 2014-2015 Marc GILLERON
+This file is part of the SnowfeetEngine project.
+*/
+
 #include <core/util/Log.hpp>
 #include <core/util/assert.hpp>
 #include <sstream>

@@ -1,4 +1,10 @@
-﻿#include "../Time.hpp"
+﻿/*
+Time_win32.cpp
+Copyright (C) 2014-2015 Marc GILLERON
+This file is part of the SnowfeetEngine project.
+*/
+
+#include "../Time.hpp"
 #include <Windows.h>
 
 namespace sn

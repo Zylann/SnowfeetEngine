@@ -1,6 +1,6 @@
 ﻿/*
 SampledCurve.hpp
-Copyright (c) Marc GILLERON (2013-2014)
+Copyright (c) Marc GILLERON (2013-2015)
 This file is part of the SnowfeetEngine project.
 */
 

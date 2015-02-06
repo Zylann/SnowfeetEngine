@@ -1,4 +1,10 @@
-﻿#ifndef __HEADER_MODULE_INFO__
+﻿/*
+ModuleInfo.hpp
+Copyright (C) 2014-2015 Marc GILLERON
+This file is part of the SnowfeetEngine project.
+*/
+
+#ifndef __HEADER_MODULE_INFO__
 #define __HEADER_MODULE_INFO__
 
 #include <core/util/String.hpp>

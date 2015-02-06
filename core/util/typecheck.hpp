@@ -9,6 +9,12 @@ This file is part of the SnowfeetEngine project.
 
 #include <typeinfo>
 #include <core/config.hpp>
+/*
+typecheck.hpp
+Copyright (C) 2012-2015 Marc GILLERON
+This file is part of the SnowfeetEngine project.
+*/
+
 #include <core/util/Log.hpp>
 #include <memory>
 

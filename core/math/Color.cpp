@@ -1,7 +1,7 @@
 ﻿/*
-Color.hpp
-Copyright (C) 2010-2014 Marc GILLERON
-This file is part of the SnowfeetFramework project.
+Color.cpp
+Copyright (C) 2010-2015 Marc GILLERON
+This file is part of the SnowfeetEngine project.
 */
 
 #include <sstream>

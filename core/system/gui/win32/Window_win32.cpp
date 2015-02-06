@@ -1,4 +1,10 @@
-﻿#include "../../../util/assert.hpp"
+﻿/*
+Window_win32.hpp
+Copyright (C) 2014-2015 Marc GILLERON
+This file is part of the SnowfeetEngine project.
+*/
+
+#include "../../../util/assert.hpp"
 #include "../Window.hpp"
 #include "Window_win32.hpp"
 #include "../SystemGUI.hpp"

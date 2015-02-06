@@ -1,3 +1,9 @@
+/*
+assert.hpp
+Copyright (C) 2014-2015 Marc GILLERON
+This file is part of the SnowfeetEngine project.
+*/
+
 #ifndef __HEADER_SN_ASSERT__
 #define __HEADER_SN_ASSERT__
 

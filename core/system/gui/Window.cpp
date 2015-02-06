@@ -1,4 +1,10 @@
-﻿#include "../../util/assert.hpp"
+﻿/*
+Window.cpp
+Copyright (C) 2014-2015 Marc GILLERON
+This file is part of the SnowfeetEngine project.
+*/
+
+#include "../../util/assert.hpp"
 #include "../../util/typecheck.hpp"
 #include "Window.hpp"
 //#include "WindowContainer.hpp"

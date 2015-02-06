@@ -1,8 +1,7 @@
 ﻿/*
 PriorityQueueB.hpp
 Contribution by Marc GILLERON (2013)
-Base on the work of Gustavo FRANCO (2006)
-This file is part of the SnowfeetEngine project.
+Based on the work of Gustavo FRANCO (2006)
 */
 
 #ifndef __HEADER_SN_PRIORITYQUEUEB__

@@ -1,4 +1,10 @@
-﻿#include <cassert>
+﻿/*
+ObjectTypeDatabase.cpp
+Copyright (C) 2014-2015 Marc GILLERON
+This file is part of the SnowfeetEngine project.
+*/
+
+#include <cassert>
 #include "ObjectTypeDatabase.hpp"
 
 namespace sn

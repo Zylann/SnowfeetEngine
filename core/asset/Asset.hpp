@@ -1,4 +1,10 @@
-﻿#ifndef __HEADER_SN_ASSET__
+﻿/*
+Asset.hpp
+Copyright (C) 2014-2015 Marc GILLERON
+This file is part of the SnowfeetEngine project.
+*/
+
+#ifndef __HEADER_SN_ASSET__
 #define __HEADER_SN_ASSET__
 
 #include <core/config.hpp>

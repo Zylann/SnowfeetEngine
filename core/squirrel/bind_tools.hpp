@@ -1,3 +1,9 @@
+/*
+bind_tools.hpp
+Copyright (C) 2015-2015 Marc GILLERON
+This file is part of the SnowfeetEngine project.
+*/
+
 #ifndef __HEADER_SN_SQ_BIND_TOOLS__
 #define __HEADER_SN_SQ_BIND_TOOLS__
 

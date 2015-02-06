@@ -1,6 +1,6 @@
 ﻿/*
 Direction.hpp
-Copyright (C) 2012-2014 Marc GILLERON
+Copyright (C) 2012-2015 Marc GILLERON
 This file is part of the SnowfeetFramework project.
 */
 

@@ -1,4 +1,10 @@
-﻿#ifndef __HEADER_SN_ASSET_METADATA__
+﻿/*
+AssetMetadata.hpp
+Copyright (C) 2014-2015 Marc GILLERON
+This file is part of the SnowfeetEngine project.
+*/
+
+#ifndef __HEADER_SN_ASSET_METADATA__
 #define __HEADER_SN_ASSET_METADATA__
 
 #include <core/json/json_utils.hpp>

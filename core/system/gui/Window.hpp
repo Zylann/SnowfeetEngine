@@ -1,4 +1,10 @@
-﻿#ifndef __HEADER_SN_WINDOW__
+﻿/*
+Window.hpp
+Copyright (C) 2014-2015 Marc GILLERON
+This file is part of the SnowfeetEngine project.
+*/
+
+#ifndef __HEADER_SN_WINDOW__
 #define __HEADER_SN_WINDOW__
 
 #include <core/math/Rect.hpp>

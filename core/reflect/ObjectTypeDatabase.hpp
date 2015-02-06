@@ -1,4 +1,10 @@
-﻿#ifndef __HEADER_SN_OBJECT_TYPE_DATABASE__
+﻿/*
+ObjectTypeDatabase.hpp
+Copyright (C) 2014-2015 Marc GILLERON
+This file is part of the SnowfeetEngine project.
+*/
+
+#ifndef __HEADER_SN_OBJECT_TYPE_DATABASE__
 #define __HEADER_SN_OBJECT_TYPE_DATABASE__
 
 #include <vector>

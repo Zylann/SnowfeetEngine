@@ -1,4 +1,10 @@
-﻿#ifndef __HEADER_SN_MODULE__
+﻿/*
+Module.hpp
+Copyright (C) 2014-2015 Marc GILLERON
+This file is part of the SnowfeetEngine project.
+*/
+
+#ifndef __HEADER_SN_MODULE__
 #define __HEADER_SN_MODULE__
 
 #include <core/app/ModuleArgs.hpp>

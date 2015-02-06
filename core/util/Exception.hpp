@@ -7,6 +7,12 @@ This file is part of the SnowfeetEngine.
 #ifndef __HEADER_SN_EXCEPTION__
 #define __HEADER_SN_EXCEPTION__
 
+/*
+Exception.hpp
+Copyright (C) 2010-2015 Marc GILLERON
+This file is part of the SnowfeetEngine project.
+*/
+
 #include <string>
 #include <exception>
 #include <core/config.hpp>
