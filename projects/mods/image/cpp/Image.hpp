@@ -42,6 +42,9 @@ public:
     void setPixel(u32 x, u32 y, Color color);
 
     void fill(Color color);
+
+    //void replaceColor(Color oldColor, Color newColor);
+
 private:
 
     ~Image();
