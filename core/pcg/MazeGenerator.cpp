@@ -1,4 +1,10 @@
-﻿#include <list>
+﻿/*
+MazeGenerator.cpp
+Copyright (C) 2014-2015 Marc GILLERON
+This file is part of the SnowfeetEngine project.
+*/
+
+#include <list>
 #include <core/pcg/MazeGenerator.hpp>
 #include <core/math/Vector2.hpp>
 #include <core/util/Log.hpp>

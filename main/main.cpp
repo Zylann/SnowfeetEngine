@@ -1,12 +1,8 @@
-﻿#include <iostream>
-//#include <Windows.h>
-#include <core/app/Application.hpp>
+﻿#include <core/app/appmain.hpp>
 
 int main(int argc, char * argv[])
 {
-    std::cout << "Hello Universe!" << std::endl;
-    sn::Application app;
-    return app.execute(sn::CommandLine(argc, argv));
+    return sn::appMain(argc, argv);
 }
 
 //int PASCAL WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR lpszCmdLine, int nCmdShow)

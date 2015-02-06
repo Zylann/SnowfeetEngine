@@ -2,12 +2,11 @@
 #include <core/asset/AssetDatabase.hpp>
 
 #include "mod_SnowfeetImage.h"
-#include "as_binding/as_image.hpp"
 
 
 int loadSnowfeetModule_ModImage(ModuleLoadArgs args)
 {
-    sn::register_image(*args.scriptEngine);
+    //sn::register_image(*args.scriptEngine);
     //adb.addLoader<sn::Shader>(new sn::ShaderLoader());
     return 0;
 }

@@ -1,14 +1,14 @@
 ﻿//
 // config.hpp
-// Copyright (C) 2010-2014 Marc GILLERON
+// Copyright (C) 2010-2015 Marc GILLERON
 // This file is part of the SnowfeetEngine project.
 //
 
 #ifndef __HEADER_SN_CONFIG__
 #define __HEADER_SN_CONFIG__
 
-#define SN_VERSION 141101
-#define SN_VERSION_STRING "14.11.1"
+#define SN_VERSION 150127
+#define SN_VERSION_STRING "15.01.27"
 
 //------------------------------------------------------------------------------
 // Switches

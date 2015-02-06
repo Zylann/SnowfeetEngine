@@ -2,7 +2,6 @@
 #define __HEADER_SN_SAMPLE_MOD_NATIVEHELLO__
 
 #include <core/app/ModuleArgs.hpp>
-#include <core/config.hpp>
 
 extern "C"
 {

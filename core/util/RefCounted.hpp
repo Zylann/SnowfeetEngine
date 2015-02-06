@@ -1,4 +1,10 @@
-﻿#ifndef __HEADER_SN_REFCOUNTED__
+﻿/*
+RefCounted.hpp
+Copyright (C) 2014-2015 Marc GILLERON
+This file is part of the SnowfeetEngine project.
+*/
+
+#ifndef __HEADER_SN_REFCOUNTED__
 #define __HEADER_SN_REFCOUNTED__
 
 #include <core/util/assert.hpp>

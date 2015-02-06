@@ -1,0 +1,7 @@
+{
+	"startupScene":"main.scene",
+	"dependencies":[
+		"mods/render/render.mod.json"
+	]
+}
+

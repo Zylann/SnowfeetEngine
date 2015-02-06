@@ -1,4 +1,10 @@
-﻿#ifndef __HEADER_SN_ASSET_TYPE__
+﻿/*
+AssetType.hpp
+Copyright (C) 2014-2015 Marc GILLERON
+This file is part of the SnowfeetEngine project.
+*/
+
+#ifndef __HEADER_SN_ASSET_TYPE__
 #define __HEADER_SN_ASSET_TYPE__
 
 #include <core/asset/Asset.hpp>

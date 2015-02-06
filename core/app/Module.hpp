@@ -1,12 +1,16 @@
-﻿#ifndef __HEADER_SN_MODULE__
+﻿/*
+Module.hpp
+Copyright (C) 2014-2015 Marc GILLERON
+This file is part of the SnowfeetEngine project.
+*/
+
+#ifndef __HEADER_SN_MODULE__
 #define __HEADER_SN_MODULE__
 
 #include <core/app/ModuleArgs.hpp>
 #include <core/app/ModuleInfo.hpp>
 #include <core/system/time/Time.hpp>
 #include <core/system/lib/SharedLib.hpp>
-
-#include <angelscript.h>
 
 #include <set>
 #include <list>
@@ -26,7 +30,7 @@ namespace CallbackName
 
 class Application;
 class ModuleImpl;
-class ScriptEngine;
+class ScriptManager;
 
 class SN_API Module
 {
@@ -35,7 +39,7 @@ public:
     Module(Application & app, const ModuleInfo & info);
     ~Module();
 
-    bool loadNativeBindings(ScriptEngine & scriptEngine);
+    bool loadNativeBindings(ScriptManager & scriptEngine);
     bool compileScripts();
     bool loadAssets();
 
@@ -46,10 +50,10 @@ public:
         std::set<String> * openSet = nullptr
     );
 
-    bool hasUpdateFunction();
+    //bool hasUpdateFunction();
 
-    void callVoidCallback(std::string cbName);
-    void onUpdate(Time delta);
+    //void callVoidCallback(std::string cbName);
+    //void onUpdate(Time delta);
 
     inline const ModuleInfo & getInfo() const { return m_info; }
 
@@ -57,15 +61,13 @@ private:
 
     void getScriptFiles(std::vector<String> & out_filePaths, const std::set<String> & extensions);
 
-    bool loadNativeBindingsImpl(ScriptEngine & scriptEngine);
+    bool loadNativeBindingsImpl(ScriptManager & scriptEngine);
 
     void unloadNativeBindings();
     void unloadNativeBindingsImpl();
 
-    void referenceCallbacks();
-    void clearCallbacks();
-
-    std::map<std::string, std::vector<asIScriptFunction*>> m_scriptCallbacks;
+    //void referenceCallbacks();
+    //void clearCallbacks();
 
     const ModuleInfo m_info;
     Application & r_app;

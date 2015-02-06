@@ -3,7 +3,7 @@ project "SnowfeetCore"
 	kind "SharedLib"
 	language "C++"
 	dependson {
-		"AngelScript",
+		"Squirrel",
 		"JsonBox"
 	}
 	location "."
@@ -12,25 +12,18 @@ project "SnowfeetCore"
 		"**.hpp",
 		"**.cpp"
 	}
-	-- includedirs {
-	-- 	"../angelscript", -- For AngelScript
-	-- 	"../json", -- For JsonBox
-	-- 	".." -- For the core to work as a library
-	-- }
 	links {
-		"AngelScript",
+		"Squirrel",
 		"JsonBox",
 		"ws2_32"
 	}
 	defines {
-		"AS_ADDON_SCRIPTTYPE_USE_STLSTRING=1"
+		-- To allow modules to use bindings from the core
+		"SCRAT_EXPORT"
 	}
 	filter "configurations:Debug"
 		targetdir "../_bin/debug"
 		objdir "../_obj/debug"
-		defines {
-			"SN_BUILD_DEBUG"
-		}
 	filter "configurations:Release"
 		targetdir "../_bin/release"
 		objdir "../_obj/release"

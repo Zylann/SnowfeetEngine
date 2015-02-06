@@ -1,4 +1,10 @@
-﻿#include "CommandLine.hpp"
+﻿/*
+CommandLine.cpp
+Copyright (C) 2014-2015 Marc GILLERON
+This file is part of the SnowfeetEngine project.
+*/
+
+#include "CommandLine.hpp"
 #include "../util/stringutils.hpp"
 #include "../util/Log.hpp"
 #include <sstream>

@@ -1,3 +1,9 @@
+/*
+SharedLib.hpp
+Copyright (C) 2014-2015 Marc GILLERON
+This file is part of the SnowfeetEngine project.
+*/
+
 #ifndef __HEADER_SN_SHARED_LIB__
 #define __HEADER_SN_SHARED_LIB__
 

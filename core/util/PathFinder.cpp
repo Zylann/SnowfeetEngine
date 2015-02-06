@@ -1,4 +1,11 @@
-﻿#include <core/util/PathFinder.hpp>
+﻿/*
+PathFinder.cpp
+Contribution by Marc GILLERON (2013)
+Based on the work of Gustavo FRANCO (2006)
+*/
+
+
+#include <core/util/PathFinder.hpp>
 #include <core/util/Log.hpp>
 
 namespace sn

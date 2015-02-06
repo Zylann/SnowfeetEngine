@@ -1,4 +1,10 @@
-﻿#ifndef __HEADER_SN_FILESYSTEM__
+﻿/*
+filesystem.cpp
+Copyright (C) 2012-2015 Marc GILLERON
+This file is part of the SnowfeetEngine project.
+*/
+
+#ifndef __HEADER_SN_FILESYSTEM__
 #define __HEADER_SN_FILESYSTEM__
 
 #include <core/util/String.hpp>
@@ -17,6 +23,8 @@ struct FileNode
     String path;
     bool isDirectory;
 };
+
+// Platform-specific
 
 bool pathExists(String path);
 bool makeDir(String path);

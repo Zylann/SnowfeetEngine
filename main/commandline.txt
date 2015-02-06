@@ -1,1 +1,1 @@
--p ../projects -x samples/helloworld/helloworld.mod.json
+-p ../projects -x samples/rendertest/rendertest.mod.json

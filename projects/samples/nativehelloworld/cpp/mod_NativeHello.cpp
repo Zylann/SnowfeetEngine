@@ -1,6 +1,5 @@
-#include <core/app/ModuleArgs.hpp>
-#include "NativeHello.hpp"
 #include "mod_NativeHello.hpp"
+#include "NativeHello.hpp"
 
 namespace hello
 {

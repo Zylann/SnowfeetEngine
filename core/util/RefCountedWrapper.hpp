@@ -1,3 +1,9 @@
+/*
+RefCountedWrapper.hpp
+Copyright (C) 2015-2015 Marc GILLERON
+This file is part of the SnowfeetEngine project.
+*/
+
 #ifndef __HEADER_SN_REFCOUNTEDWRAPPER__
 #define __HEADER_SN_REFCOUNTEDWRAPPER__
 
@@ -69,4 +75,3 @@ private:
 } // namespace sn
 
 #endif // __HEADER_SN_REFCOUNTEDWRAPPER__
-

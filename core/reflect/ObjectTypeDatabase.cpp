@@ -1,4 +1,10 @@
-﻿#include <cassert>
+﻿/*
+ObjectTypeDatabase.cpp
+Copyright (C) 2014-2015 Marc GILLERON
+This file is part of the SnowfeetEngine project.
+*/
+
+#include <cassert>
 #include "ObjectTypeDatabase.hpp"
 
 namespace sn
@@ -83,7 +89,7 @@ void ObjectTypeDatabase::unregisterModule(const std::string & name)
 
     if (count == 0)
     {
-        SN_WARNING("ObjectTypeDatabase::unregisterModule: no type found in module \"" << name << "\"");
+        SN_LOG("ObjectTypeDatabase::unregisterModule: no type found in module \"" << name << "\"");
     }
 }
 

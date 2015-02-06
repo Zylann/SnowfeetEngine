@@ -1,3 +1,9 @@
+/*
+Window_win32.hpp
+Copyright (C) 2012-2015 Marc GILLERON
+This file is part of the SnowfeetEngine project.
+*/
+
 #ifndef __HEADER_WINDOW_WIN32__
 #define __HEADER_WINDOW_WIN32__
 

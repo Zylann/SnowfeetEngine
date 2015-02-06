@@ -1,3 +1,9 @@
+/*
+Entity.cpp
+Copyright (C) 2014-2015 Marc GILLERON
+This file is part of the SnowfeetEngine project.
+*/
+
 #include <core/util/Log.hpp>
 #include <core/util/assert.hpp>
 #include <sstream>
@@ -9,6 +15,17 @@
 
 namespace sn
 {
+
+//------------------------------------------------------------------------------
+Entity::~Entity()
+{
+    if (r_parent)
+        r_parent->removeChild(this);
+    destroyChildren();
+    for (auto it = m_tags.begin(); it != m_tags.end(); ++it)
+        removeTag(*it);
+    //SN_LOG("Entity " << getName() << " destroyed");
+}
 
 //------------------------------------------------------------------------------
 void Entity::setName(const std::string & name)
@@ -46,9 +63,9 @@ void Entity::setUpdatable(bool updatable, s16 order, s16 layer)
         if (scene)
         {
             if (updatable)
-                scene->registerUpdatableEntity(this, order, layer);
+                scene->registerUpdatableEntity(*this, order, layer);
             else
-                scene->unregisterUpdatableEntity(this);
+                scene->unregisterUpdatableEntity(*this);
         }
         else
         {
@@ -68,7 +85,7 @@ void Entity::addTag(const std::string & tag)
     {
         Scene * scene = getScene();
         if (scene)
-            scene->registerTaggedEntity(this, tag);
+            scene->registerTaggedEntity(*this, tag);
         else
             SN_ERROR("Entity::addTag: scene not found from entity " << toString());
     }
@@ -85,7 +102,7 @@ void Entity::removeTag(const std::string & tag)
     {
         Scene * scene = getScene();
         if (scene)
-            scene->unregisterTaggedEntity(this, tag);
+            scene->unregisterTaggedEntity(*this, tag);
         else
             SN_ERROR("Entity::removeTag: scene not found from entity " << toString());
     }
@@ -109,16 +126,32 @@ std::string Entity::toString() const
 //------------------------------------------------------------------------------
 void Entity::setParent(Entity * newParent)
 {
-    if (r_parent)
-        r_parent->removeChild(this);
-    r_parent = newParent;
-    if (newParent)
+    // TODO FIXME Scene registrations such as update or tags must be notified too if the scene changes!
+
+    if (r_parent != nullptr && newParent == nullptr)
     {
-        newParent->addChild(this);
-        if (newParent->isInstanceOf<Scene>() && r_scene == nullptr)
+        r_parent->removeChild(this);
+        r_parent = newParent;
+    }
+    else if (newParent != nullptr)
+    {
+        if (r_parent == nullptr)
         {
-            r_scene = (Scene*)newParent;
-            propagateOnReady();
+            r_parent = newParent;
+            r_parent->addChild(this);
+
+            if (newParent->isInstanceOf<Scene>() && r_scene == nullptr)
+            {
+                r_scene = static_cast<Scene*>(newParent);
+                propagateOnReady();
+            }
+        }
+        else
+        {
+            // Just swap ownership
+            r_parent->removeChild(this);
+            r_parent = newParent;
+            r_parent->addChild(this);
         }
     }
 }
@@ -150,15 +183,17 @@ Entity * Entity::getRoot() const
 //------------------------------------------------------------------------------
 Scene * Entity::getScene() const
 {
-    if (r_scene == nullptr)
+    Scene * scene = r_scene;
+    if (!scene)
     {
         Entity * root = getRoot();
         if (root && root->isInstanceOf<Scene>())
         {
-            r_scene = (Scene*)root;
+            scene = static_cast<Scene*>(root);
+            r_scene = scene;
         }
     }
-    return r_scene;
+    return scene;
 }
 
 //------------------------------------------------------------------------------
@@ -166,9 +201,8 @@ Entity * Entity::getChildByName(const std::string & name) const
 {
     for (auto it = m_children.begin(); it != m_children.end(); ++it)
     {
-        Entity * e = *it;
-        if (e->getName() == name)
-            return e;
+        if ((*it)->getName() == name)
+            return *it;
     }
     return nullptr;
 }
@@ -178,12 +212,22 @@ Entity * Entity::getChildByType(const std::string & name) const
 {
     for (auto it = m_children.begin(); it != m_children.end(); ++it)
     {
-        Entity * e = *it;
-        if (e->getObjectType().is(name))
-            return e;
+        if ((*it)->getObjectType().is(name))
+            return *it;
     }
     return nullptr;
 }
+
+//------------------------------------------------------------------------------
+//Entity::Ref Entity::getChildByPointer(Entity * child)
+//{
+//    for (auto it = m_children.begin(); it != m_children.end(); ++it)
+//    {
+//        if (it->get() == child)
+//            return *it;
+//    }
+//    return nullptr;
+//}
 
 //------------------------------------------------------------------------------
 Entity * Entity::addChild(Entity * child)
@@ -219,25 +263,25 @@ u32 Entity::indexOfChild(const Entity * child) const
 //------------------------------------------------------------------------------
 Entity * Entity::createChild(const std::string & typeName)
 {
-    Entity * e = nullptr;
+    Entity * child = nullptr;
 
     if (typeName.empty())
     {
-        Entity * e = new Entity();
+        child = new Entity();
     }
     else
     {
         Object * obj = instantiateDerivedObject(typeName, Entity::__sGetBaseClassName());
         if (obj)
-            e = (Entity*)obj;
+            child = (Entity*)obj;
     }
 
-    if (e)
+    if (child)
     {
-        e->setParent(this);
+        child->setParent(this);
     }
 
-    return e;
+    return child;
 }
 
 //------------------------------------------------------------------------------
@@ -250,16 +294,23 @@ Entity * Entity::requireChild(const std::string & typeName)
 }
 
 //------------------------------------------------------------------------------
-u32 Entity::removeChild(const Entity * child)
+u32 Entity::removeChild(Entity * child)
 {
     u32 i = indexOfChild(child);
     if (i != m_children.size())
+        removeChildAtIndex(i);
+    return i;
+}
+
+//------------------------------------------------------------------------------
+void Entity::removeChildAtIndex(u32 index)
+{
+    if (index < m_children.size())
     {
-        m_children[i] = nullptr;
-        m_children[i] = m_children.back();
+        m_children[index] = nullptr;
+        m_children[index] = m_children.back();
         m_children.pop_back();
     }
-    return i;
 }
 
 //------------------------------------------------------------------------------
@@ -268,7 +319,7 @@ void Entity::destroyChildren()
     auto children = m_children;
     for (auto it = children.begin(); it != children.end(); ++it)
     {
-        (*it)->release();
+        (*it)->destroy();
     }
     m_children.clear();
 }
@@ -276,15 +327,25 @@ void Entity::destroyChildren()
 //------------------------------------------------------------------------------
 void Entity::destroy()
 {
-    onDestroy();
-    setFlag(SN_EF_DESTROYED, true);
-    release();
+    if (!getFlag(SN_EF_DESTROYED))
+    {
+        onDestroy();
+        setFlag(SN_EF_DESTROYED, true);
+        // TODO Instant destruction
+        release();
+    }
+    else
+    {
+        SN_ERROR("Attempt to call destroy() on an already destroyed entity!");
+    }
 }
 
 //------------------------------------------------------------------------------
 void Entity::destroyLater()
 {
-    setFlag(SN_EF_DESTROYED, true);
+    SN_WARNING("Entity::destroyLater(): not implemented yet");
+    // TODO Different flag?
+    //setFlag(SN_EF_DESTROYED, true);
 }
 
 //------------------------------------------------------------------------------
@@ -298,15 +359,15 @@ void Entity::serialize(JsonBox::Value & o, Entity & e)
         JsonBox::Value & a = o[SN_JSON_ENTITY_CHILDREN_TAG];
         for (u32 i = 0; i < e.getChildCount(); ++i)
         {
-            Entity & child = *(e.getChildByIndex(i));
-            serialize(a[i], child);
+            Entity * child = e.getChildByIndex(i);
+            serialize(a[i], *child);
         }
     }
 }
 
 //------------------------------------------------------------------------------
 // Static
-Entity * Entity::unserialize(JsonBox::Value & o, Entity & parent)
+Entity * Entity::unserialize(JsonBox::Value & o, Entity * parent)
 {
     std::string typeName = o[SN_JSON_TYPE_TAG].getString();
     ObjectType * ot = ObjectTypeDatabase::get().getType(typeName);
@@ -315,7 +376,7 @@ Entity * Entity::unserialize(JsonBox::Value & o, Entity & parent)
         Object * obj = instantiateDerivedObject(typeName, Entity::__sGetClassName());
         if (obj)
         {
-            Entity * e = (Entity*)obj;
+            Entity * e((Entity*)obj);
             e->unserializeState(o);
             if (o[SN_JSON_ENTITY_CHILDREN_TAG].isArray())
             {
@@ -323,10 +384,10 @@ Entity * Entity::unserialize(JsonBox::Value & o, Entity & parent)
                 u32 len = a.getArray().size();
                 for (u32 i = 0; i < len; ++i)
                 {
-                    Entity::unserialize(a[i], *e);
+                    Entity::unserialize(a[i], e);
                 }
             }
-            e->setParent(&parent);
+            e->setParent(parent);
             return e;
         }
         // Error message already handled by the instantiate helper
@@ -353,10 +414,11 @@ void Entity::unserializeState(JsonBox::Value & o)
     setEnabled(o["enabled"].getBoolean());
     sn::serialize(o, m_tags);
 
+    // TODO FIXME Do this only when the scene changes to non-null
     Scene * scene = getScene();
     for (auto it = m_tags.begin(); it != m_tags.end(); ++it)
     {
-        scene->registerTaggedEntity(this, *it);
+        scene->registerTaggedEntity(*this, *it);
     }
 }
 

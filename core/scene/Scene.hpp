@@ -1,3 +1,9 @@
+/*
+Scene.hpp
+Copyright (C) 2014-2015 Marc GILLERON
+This file is part of the SnowfeetEngine project.
+*/
+
 #ifndef __HEADER_SN_SCENE__
 #define __HEADER_SN_SCENE__
 
@@ -21,25 +27,40 @@ class SN_API Scene : public Entity
 {
 public:
 
-    SN_ABSTRACT_OBJECT(sn::Scene, sn::Object)
+    SN_ENTITY(sn::Scene, sn::Entity)
 
-    Scene() : Entity()
+    Scene() : 
+        Entity(), 
+        m_quitFlag(false)
     {
         setName("Scene");
     }
 
-    void registerUpdatableEntity(Entity * e, s16 order, s16 layer);
-    void unregisterUpdatableEntity(Entity * e);
+    void registerUpdatableEntity(Entity & e, s16 order, s16 layer);
+    void unregisterUpdatableEntity(Entity & e);
 
-    void registerTaggedEntity(Entity * e, const std::string & tag);
-    void unregisterTaggedEntity(Entity * e, const std::string & tag);
+    void registerTaggedEntity(Entity & e, const std::string & tag);
+    void unregisterTaggedEntity(Entity & e, const std::string & tag);
 
-    void setParent(Entity * newParent);
+    /// \brief Returns the first encountered entity having the given tag.
+    /// \param tag: tag to search
+    /// \return an entity with the tag, or nullptr if none have it
+    Entity * getTaggedEntity(const std::string & tag);
+
+    /// \brief Returns all entities having the given tag.
+    /// \param tag: tag to search
+    /// \return list of all entities having the tags. Can be empty.
+    std::vector<Entity*> getTaggedEntities(const std::string & tag);
+
+    void setParent(Entity * newParent) override;
 
     void destroy() override;
     void destroyLater() override;
 
     void onUpdate() override;
+
+    inline void quit() { m_quitFlag = true; }
+    inline bool getQuitFlag() const { return m_quitFlag; }
 
     void loadFromFile(const std::string & filePath);
     void saveToFile(const std::string & filePath);
@@ -47,6 +68,8 @@ public:
 private:
     std::unordered_map<std::string, std::unordered_set<Entity*>> m_taggedEntities;
     std::map<s32, std::unordered_set<Entity*>> m_updatableEntities;
+    bool m_quitFlag;
+
 };
 
 } // namespace sn

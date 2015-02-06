@@ -1,33 +1,32 @@
+------------------------------------------
 project "ModRender"
 	platforms { "x32" }
-	kind "SharedLib"
-	language "C++"
+	commonModConfigCPP()
 	dependson { 
-		"SnowfeetCore",
 		"glew"
 	}
 	includedirs {
 		"glew/include"
 	}
-	location "."
-	targetdir ".."
 	files {
+		"*.h",
 		"*.hpp",
 		"*.cpp",
+		"entities/*.hpp",
+		"entities/*.cpp",
+		"sq_binding/*.hpp",
+		"sq_binding/*.cpp",
 		-- TODO Move these to platform-specific filter
 		"win32/*.hpp",
 		"win32/*.cpp"
 	}
 	links {
-		"SnowfeetCore",
-		"JsonBox",
 		"glew",
 		"opengl32"
 	}
 	filter "configurations:Debug"
 		objdir "_obj/debug"
 		defines {
-			"SN_BUILD_DEBUG",
 			-- glew (static)
 			"WIN32",
 			"_LIB",
@@ -44,6 +43,7 @@ project "ModRender"
 			"WIN32_LEAN_AND_MEAN",
 			"GLEW_STATIC"
 		}
+
 
 ------------------------------------------
 project "glew"

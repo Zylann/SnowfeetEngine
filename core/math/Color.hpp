@@ -1,6 +1,6 @@
 ﻿/*
 Color.hpp
-Copyright (C) 2010-2014 Marc GILLERON
+Copyright (C) 2010-2015 Marc GILLERON
 This file is part of the SnowfeetEngine project.
 */
 
@@ -16,6 +16,8 @@ This file is part of the SnowfeetEngine project.
 
 namespace sn
 {
+
+// TODO Refactor this to have a Color<float> and Color<u8>
 
 /*
     Stores a color using 4 unsigned byte values for red, green, blue and alpha.

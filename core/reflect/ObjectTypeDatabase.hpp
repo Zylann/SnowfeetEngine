@@ -1,4 +1,10 @@
-﻿#ifndef __HEADER_SN_OBJECT_TYPE_DATABASE__
+﻿/*
+ObjectTypeDatabase.hpp
+Copyright (C) 2014-2015 Marc GILLERON
+This file is part of the SnowfeetEngine project.
+*/
+
+#ifndef __HEADER_SN_OBJECT_TYPE_DATABASE__
 #define __HEADER_SN_OBJECT_TYPE_DATABASE__
 
 #include <vector>
@@ -33,7 +39,7 @@ public:
         std::string baseName = Object_T::__sGetBaseClassName();
 
         // Check if the object has already been registered
-        SN_ASSERT(!isRegistered(typeName), "ObjectTypeDatabase::registerType: registered the same type twice ! (" << typeName << ")");
+        SN_ASSERT(!isRegistered(typeName), "ObjectTypeDatabase::registerType: registered the same type twice! (" << typeName << ")");
 
         ObjectType * type = new ObjectType(typeName, baseName);
 

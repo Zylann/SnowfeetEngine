@@ -1,10 +1,17 @@
-﻿#include "Application.hpp"
+﻿/*
+Application.cpp
+Copyright (C) 2014-2015 Marc GILLERON
+This file is part of the SnowfeetEngine project.
+*/
+
+#include "Application.hpp"
 #include "../util/Log.hpp"
 #include "Module.hpp"
 #include "../system/thread/Thread.hpp"
 #include "../system/console/console.hpp"
 #include "../object_types.hpp"
 #include <ctime>
+#include "../system/gui/SystemGUI.hpp"
 
 namespace sn
 {
@@ -61,12 +68,6 @@ int Application::execute(CommandLine commandLine)
 
     SN_LOG("Exit execute()");
 
-#ifdef SN_BUILD_DEBUG
-    // Maintains the console window open on exit
-    std::cout << "I: Execution finished with code " << exitCode << ". Press a key to dismiss..." << std::endl;
-	pauseConsole();
-#endif
-
     return exitCode;
 }
 
@@ -106,24 +107,42 @@ int Application::executeEx()
     }
 
     // Call onCreate
-    callVoidCallback(CallbackName::CREATE);
+    //callVoidCallback(CallbackName::CREATE);
 
     // Test presence of update function
-    if (!mainModule->hasUpdateFunction())
-    {
-        SN_LOG("The main module has no script with " << CallbackName::UPDATE << " function, "
-            "the application will not enter the main loop.");
-        m_runFlag = false;
-    }
+    //if (!mainModule->hasUpdateFunction())
+    //{
+    //    SN_LOG("The main module has no script with " << CallbackName::UPDATE << " function, "
+    //        "the application will not enter the main loop.");
+    //    m_runFlag = false;
+    //}
 
     // Configure time stepper (at last, to minimize the "startup lag")
     m_timeStepper.setDeltaRange(Time::seconds(1.f / 70.f), Time::seconds(1.f / 30.f));
 
-    if (m_runFlag)
+    //if (m_runFlag)
+    //{
+    //    // Call start callbacks
+    //    callVoidCallback(CallbackName::START);
+    //}
+
+    if (m_scene)
     {
-        // Call start callbacks
-        callVoidCallback(CallbackName::START);
+        if (m_scene->getQuitFlag())
+            m_runFlag = false;
+        if (m_scene->getChildCount() == 0)
+        {
+            SN_DLOG("The scene is empty, the application will quit");
+            m_runFlag = false;
+        }
     }
+    else
+    {
+        SN_DLOG("No startup scene, the application will quit");
+        m_runFlag = false;
+    }
+
+    SN_LOG("Entering main loop");
 
     // Enter the main loop
     while (m_runFlag)
@@ -131,7 +150,10 @@ int Application::executeEx()
         Clock frameClock;
         m_timeStepper.onBeginFrame();
 
-        // TODO Event processing
+        // Process system GUI messages
+        SystemGUI::get().processEvents();
+
+        // TODO Forward events to the game
 
         std::vector<Time> deltas = m_timeStepper.getCallDeltas();
         for (u32 i = 0; i < deltas.size() && m_runFlag; ++i)
@@ -142,12 +164,7 @@ int Application::executeEx()
             update(deltas[i]);
         }
 
-        if (m_runFlag && m_scene)
-            m_scene->onUpdate();
-
-        // TODO Render call
-        // Note: no render call will be effective if there is nothing to draw
-
+        // TODO this doesn't makes sense without a render context, so put this in RenderManager?
         // Sleep until the next frame
         Time sleepTime = m_timeStepper.getMinDelta() - frameClock.getElapsedTime();
         if (sleepTime.asMilliseconds() > 0)
@@ -158,13 +175,17 @@ int Application::executeEx()
         m_timeStepper.onEndFrame();
     }
 
+    SN_LOG("Exiting main loop");
+
     // Call destroy callbacks
-    callVoidCallback(CallbackName::DESTROY);
+    //callVoidCallback(CallbackName::DESTROY);
 
     if (m_scene)
     {
+        m_scene->destroyChildren();
+        if (m_scene->getRefCount() > 1)
+            SN_ERROR("Scene is leaking " << (m_scene->getRefCount() - 1) << " times");
         m_scene->release();
-        m_scene = nullptr;
     }
 
     // TODO uninitialize all scripts before modules get destroyed
@@ -173,23 +194,25 @@ int Application::executeEx()
 }
 
 //------------------------------------------------------------------------------
-void Application::callVoidCallback(const std::string & cbName)
-{
-    for (auto it = m_modules.begin(); it != m_modules.end(); ++it)
-    {
-        Module & m = *(it->second);
-        m.callVoidCallback(cbName);
-    }
-}
+//void Application::callVoidCallback(const std::string & cbName)
+//{
+//    for (auto it = m_modules.begin(); it != m_modules.end(); ++it)
+//    {
+//        Module & m = *(it->second);
+//        m.callVoidCallback(cbName);
+//    }
+//}
 
 //------------------------------------------------------------------------------
 void Application::update(Time delta)
 {
-    for (auto it = m_modules.begin(); it != m_modules.end(); ++it)
-    {
-        Module & m = *(it->second);
-        m.onUpdate(delta);
-    }
+    if (m_scene)
+        m_scene->onUpdate();
+    //for (auto it = m_modules.begin(); it != m_modules.end(); ++it)
+    //{
+    //    Module & m = *(it->second);
+    //    m.onUpdate(delta);
+    //}
 }
 
 //------------------------------------------------------------------------------
@@ -275,7 +298,7 @@ Module * Application::loadModule(const String & path)
         try
         {
             // Reset default namespace to avoid registering in a wrong namespace
-            m_scriptEngine.getEngine()->SetDefaultNamespace("");
+            //m_scriptEngine.getEngine()->SetDefaultNamespace("");
 
             // Create Module object
             mod = new Module(*this, info);

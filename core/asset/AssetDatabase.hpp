@@ -1,4 +1,10 @@
-﻿#ifndef __HEADER_SN_ASSETDATABASE__
+﻿/*
+AssetDatabase.hpp
+Copyright (C) 2014-2015 Marc GILLERON
+This file is part of the SnowfeetEngine project.
+*/
+
+#ifndef __HEADER_SN_ASSETDATABASE__
 #define __HEADER_SN_ASSETDATABASE__
 
 #include <core/util/typecheck.hpp>

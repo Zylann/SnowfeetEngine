@@ -2,7 +2,7 @@ Snowfeet Engine
 ====================
 
 This is an experimental, cross-platform, modular, general purpose game engine.
-Its core programming language is C++, and AngelScript for scripting (but it's not definitive).
+Its core programming language is C++, and Squirrel for scripting.
 I develop it as a hobby, for fun.
 
 It is a spin-off of an earlier version called "Snowfeet Framework",
@@ -18,45 +18,26 @@ Engine structure
 =================
 
 The engine is made of a core and any number of modules.
-
 The core is written in C++ and includes only common functionnality.
-Keep in mind that anything present in the core cannot be removed for a game project's needs.
-Then, for instance, the core does NOT includes any rendering engine, sound or anything visual,
-because you could implement a singleplayer RPG as well as a command-line game server.
+Modules are dynamic and you can adjust what you need for any project.
 
-Modules are pluggable parts you can get for different projects, depending on your needs.
-A game is created as a runnable module.
-A module can contain assets, scripts and native code.
-C++ code in modules compile into libraries, exposing a common interface for the core to load them.
-The core will never directly use native modules, so each native module code must have bindings for the scripting layer.
-The graphics engine will be a module, as well as sound, physics or advanced networking.
-Modules can have dependencies, but they must be optional as much as possible,
-and may only interact on scripting side, not native: 
-Take a module, put it into your project, and it should just work.
+For more info about how modules work, see documentation files.
 
-Scripts are the glue between the core and modules.
-Current candidates include AngelScript, Squirrel or maybe the future Javascript Harmony.
-The requirements for scripts are the following:
-- Scalability: can we build big projects with it?
-- Minimal probability of runtime human errors (I'm looking at you, Lua)
-- Reasonable performance
-- Ability to be hot-reloaded
-- Be user-friendly
-- Be lightweight
 
 Notes
 =====
 
-Scripting
----------
-Althouth scripting must be easier than writing C++, I believe scripts must be written by decent programmers.
-Creative people without good knowledge in programming should use tools adapted for them, not writing code.
-I take this into account for the choice of a scripting language.
+What the engine does now
+------------------------
+
+Visually, not much. But many things are done under the hood:
+I focus on the core to work before starting modules such as graphics, sound and shiny stuff.
+I need a proper base to work on, so it's my main focus at the moment.
 
 
 Web export
 ----------
-I might try Emscripten, one day.
+I might try Emscripten, one day. Sounds like fun.
 
 
 Binaries
@@ -71,7 +52,9 @@ if it is supported enough by the engine.
 How to compile
 =============
 
-You will need the following:
+The whole engine is entirely provided as source code.
+
+You will need the following to compile everything:
 - A C++11 compiler
 - Premake5 (See bottom of this README)
 - Optionally, an IDE
@@ -85,11 +68,11 @@ which makes writing build scripts very easy.
 
 0) Get the engine from its Git repository, or download a zip file from Github
 
-1) Run premake_yourPlatform_yourBuildSystem_yourConfig
+1) Run one of the provided premake_** shell scripts, or write your own
 2) You should now see your project file at the root of the repo.
 
 Example with Visual Studio 2013:
-1) Run premake_win32_vs2013_debug.bat
+1) Run premake_vs2013_debug.bat
 2) SnowfeetEngine.sln appeared at the root, open it
 3) Build the solution
 
@@ -132,4 +115,5 @@ https://bitbucket.org/premake/premake-dev/wiki/Building_Premake
 Or use a windows executable I built:
 http://zylannprods.fr/dl/premake5.exe
 
-There are also nightlies on SourceForge but I didn't checked them out yet.
+There are also nightlies on SourceForge:
+http://sourceforge.net/projects/premake/files/Premake/nightlies/

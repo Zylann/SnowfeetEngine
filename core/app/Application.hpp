@@ -25,13 +25,19 @@
 // They've become so rare they worth billions of credits, and...
 // Are you still reading this? Go on!
 
+/*
+Application.hpp
+Copyright (C) 2014-2015 Marc GILLERON
+This file is part of the SnowfeetEngine project.
+*/
+
 #ifndef __HEADER_SN_APPLICATION__
 #define __HEADER_SN_APPLICATION__
 
 #include <core/reflect/ObjectTypeDatabase.hpp>
 #include <core/app/CommandLine.hpp>
 #include <core/app/Module.hpp>
-#include <core/app/ScriptEngine.hpp>
+#include <core/app/ScriptManager.hpp>
 #include <core/app/TimeStepper.hpp>
 #include <core/scene/Scene.hpp>
 #include <map>
@@ -54,13 +60,15 @@ public:
     // Gets the absolute path to the projects folder
     inline String getPathToProjects() const { return m_pathToProjects; }
 
-    inline ScriptEngine & getScriptEngine() { return m_scriptEngine; }
+    inline ScriptManager & getScriptManager() { return m_scriptEngine; }
 
     // Sets the running flag to false in order to exit the application
     // at the end of the current update.
     void quit();
 
     //static Application & get();
+
+    // TODO Move SystemGUI here as a member variable, and let Application be the only one singleton?
 
 private:
 
@@ -71,13 +79,13 @@ private:
     //void compileScripts();
 
     void update(Time delta);
-    void callVoidCallback(const std::string & cbName);
+    //void callVoidCallback(const std::string & cbName);
 
     //------------------------------------
     // Attributes
     //------------------------------------
 
-    ScriptEngine m_scriptEngine;
+    ScriptManager m_scriptEngine;
 
     // Top-level scene
     Scene * m_scene;
@@ -85,6 +93,7 @@ private:
     String m_pathToMainMod;
     String m_pathToProjects;
 
+    // TODO Maybe we don't need this in the core, only graphics or physics simulation really need stable frequency.
     TimeStepper m_timeStepper;
 
     // [directory] => Module

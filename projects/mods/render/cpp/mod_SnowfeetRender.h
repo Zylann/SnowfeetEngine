@@ -2,7 +2,6 @@
 #define __HEADER_SN_SNOWFEET_RENDER__
 
 #include <core/app/ModuleArgs.hpp>
-#include <core/config.hpp>
 
 extern "C"
 {

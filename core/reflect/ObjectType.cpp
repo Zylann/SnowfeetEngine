@@ -1,4 +1,10 @@
-﻿#include "ObjectType.hpp"
+﻿/*
+ObjectType.hpp
+Copyright (C) 2014-2015 Marc GILLERON
+This file is part of the SnowfeetEngine project.
+*/
+
+#include "ObjectType.hpp"
 #include "ObjectTypeDatabase.hpp"
 
 namespace sn

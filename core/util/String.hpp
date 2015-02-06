@@ -1,4 +1,10 @@
-﻿#ifndef __HEADER_SN_STRING__
+﻿/*
+String.hpp
+Copyright (C) 2015-2015 Marc GILLERON
+This file is part of the SnowfeetEngine project.
+*/
+
+#ifndef __HEADER_SN_STRING__
 #define __HEADER_SN_STRING__
 
 #include <string>

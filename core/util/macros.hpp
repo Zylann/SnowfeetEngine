@@ -7,8 +7,6 @@ This file is part of the SnowfeetEngine project.
 #ifndef __HEADER_SN_MACROS__
 #define __HEADER_SN_MACROS__
 
-#include <sstream>
-#include <cassert>
 #include <core/config.hpp>
 
 // Place this at the beginning of a code section that must be called once.
@@ -22,4 +20,5 @@ This file is part of the SnowfeetEngine project.
         assert(__callOnce)
 
 #endif // __HEADER_SN_MACROS__
+
 

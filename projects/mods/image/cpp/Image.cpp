@@ -213,5 +213,30 @@ void Image::fill(Color color)
     }
 }
 
+//------------------------------------------------------------------------------
+//void Image::replaceColor(Color oldColor, Color newColor)
+//{
+//    unsigned char oldColorV[4] = { oldColor.r, oldColor.g, oldColor.b, oldColor.a };
+//    unsigned char newColorV[4] = { newColor.r, newColor.g, newColor.b, newColor.a };
+//
+//    for (unsigned int i = 0; i < m_pixels.size(); i += m_channels)
+//    {
+//        unsigned char * pixel = &m_pixels[i];
+//        bool match = true;
+//        for (unsigned int c = 0; c < m_channels && !match; ++c)
+//        {
+//            if (pixel[c] != oldColorV[c])
+//                match = false;
+//        }
+//        if (match)
+//        {
+//            for (unsigned int c = 0; c < m_channels; ++c)
+//            {
+//                pixel[c] = newColorV[c];
+//            }
+//        }
+//    }
+//}
+
 } // namespace sn
 
