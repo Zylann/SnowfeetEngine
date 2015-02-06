@@ -10,6 +10,7 @@ This file is part of the SnowfeetEngine project.
 #include <core/system/gui/Window.hpp>
 #include <core/util/NonCopyable.hpp>
 #include <core/system/gui/Event.hpp>
+#include <core/math/Vector2.hpp>
 
 #include <map>
 #include <queue>
@@ -40,6 +41,9 @@ public:
     u32 getWindowID(Window * win);
 
     inline u32 getWindowCount() const { return m_windows.size(); }
+
+    // Platform-specific
+    Vector2u getDesktopSize() const;
 
     // Platform-specific
     /// \brief Polls messages from the system's pump and dispatches them to all windows in the current thread.
