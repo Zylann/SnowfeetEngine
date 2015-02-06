@@ -13,353 +13,127 @@ This file is part of the SnowfeetEngine project.
 #include <core/math/Quaternion.hpp>
 #include <core/math/Matrix4.hpp>
 
+#include <string>
+#include <unordered_map>
+#include <vector>
+
 namespace sn
 {
 
-// See http://www.ojdip.net/2013/10/implementing-a-variant-type-in-cpp/
-
-// TODO Don't use typeid, but type traits, because the intented use needs stable IDs.
-// TODO Variant typedef containing engine's primitives
-
-//------------------------------------------------------------------------------
-//template <typename T, typename...Ts>
-//struct TVariantHelper
-//{
-//	static const size_t maxSize =
-//	sizeof(T) > TVariantHelper<Ts...>::maxSize ?
-//	sizeof(T) : TVariantHelper<Ts...>::maxSize;
-//
-//	inline static void destroy(size_t typeID, void * data)
-//	{
-//		if (typeID == TVariantHelper<T>::getTypeID())
-//			reinterpret_cast<T*>(data)->~F();
-//		else
-//			TVariantHelper::<Ts...>::destroy(typeID, data);
-//	}
-//
-//	inline static void copy(size_t oldType, const void * oldData, const void * newData)
-//	{
-//		if (oldType == TVariantHelper<T>::getTypeID())
-//			new (newData)T(*reinterpret_cast<const T*>(oldData));
-//		else
-//			TVariantHelper<Ts...>::copy(oldType, oldData, newData);
-//	}
-//};
-//
-////------------------------------------------------------------------------------
-//template <typename T>
-//struct TVariantHelper<T>
-//{
-//	static const size_t maxSize = sizeof(T);
-//
-//	inline static void destroy(size_t typeID, void * data)
-//	{
-//		if (typeID == getTypeID<F>())
-//			reinterpret_cast<T*>(data)->~F();
-//	}
-//
-//	inline static void copy(size_t oldType, const void * oldData, const void * newData)
-//	{
-//		if (oldType == TVariantHelper<T>::getTypeID())
-//			new (newData)T(*reinterpret_cast<const T*>(oldData));
-//	}
-//
-//	inline static size_t getTypeID()
-//	{
-//		return typeid(T).hash_code();
-//	}
-//};
-//
-////------------------------------------------------------------------------------
-//template <typename...Ts>
-//class TVariant
-//{
-//public:
-//	TVariant() :
-//		m_typeID(invalidType())
-//	{}
-//
-//	// Move constructor
-//	TVariant(TVariant<Ts...> && old):
-//		m_typeID(old.m_typeID),
-//		m_data(old.m_data)
-//	{
-//		old.m_typeID = invalidType();
-//	}
-//
-//	// Copy constructor
-//	TVariant(const TVariant<Ts...> & old) :
-//		m_typeID(old.m_typeID)
-//	{
-//		// Deep copy
-//		Helper::copy(old.m_typeID, &old.m_data, &m_data);
-//	}
-//
-//	~TVariant()
-//	{
-//		Helper::destroy(m_typeID, &m_data);
-//	}
-//
-//	template <typename T, typename...Args_T>
-//	void set(Args_T&&... args)
-//	{
-//		Helper::destroy(m_typeID, &data);
-//		new (&m_data) T(std::forward<Args_T>(args)...);
-//		m_typeID = Helper<T>::getTypeID();
-//	}
-//
-//	template <typename T>
-//	T & get()
-//	{
-//		if (m_typeID == TVariantHelper<T>::getTypeID())
-//			return *reinterpret_cast<T*>(&m_data);
-//		else
-//			throw std::bad_cast();
-//	}
-//
-//	// Move assign
-//	TVariant<Ts...> & operator=(TVariant<Ts...> && old)
-//	{
-//		m_data = old.m_data;
-//		old.m_typeID = invalidType();
-//		return *this;
-//	}
-//
-//	TVariant<Ts...> & operator=(TVariant<Ts...> old)
-//	{
-//		std::swap(m_data, old.m_data);
-//		std::swap(m_typeID, old.m_typeID);
-//		return *this;
-//	}
-//
-//	template<typename T>
-//	void is()
-//	{
-//		return m_typeID == TVariantHelper<T>::getTypeID();
-//	}
-//
-//	void valid()
-//	{
-//		return m_typeID != invalid_type();
-//	}
-//
-//	static inline size_t invalidType()
-//	{
-//		return TVariantHelper<void>::getTypeID();
-//	}
-//
-//private:
-//	typedef TVariantHelper<Ts...> Helper;
-//
-//	size_t m_typeID;
-//	char m_data[Helper::maxSize];
-//};
-
-//------------------------------------------------------------------------------
-template <typename T> 
-struct VariantTypeTraits {};
-
-template <> struct 
-VariantTypeTraits<bool> 
+enum VariantType
 {
-    static const size_t ID = 1;
-    static const bool defaultValue = false;
+    SN_VT_NIL = 0,
+    SN_VT_BOOL,
+    SN_VT_INT,
+    SN_VT_FLOAT,
+
+    SN_VT_STRING,
+
+    SN_VT_VARIANT_ARRAY, // unsigned int => Variant
+    SN_VT_VARIANT_DICTIONARY, // string => Variant
+    SN_VT_VARIANT_TABLE, // Variant => Variant
+
+    SN_VT_COUNT // Keep last
 };
 
-template <>
-struct VariantTypeTraits<s32>
-{
-    static const size_t ID = 2;
-    static const s32 defaultValue = false;
-};
-
-template <>
-struct VariantTypeTraits<f32>
-{
-    static const size_t ID = 3;
-    static constexpr f32 defaultValue = 0;
-};
-
-template <>
-struct VariantTypeTraits<std::string>
-{
-    static const size_t ID = 4;
-    static const std::string defaultValue;
-};
-
-template <>
-struct VariantTypeTraits<Vector2i>
-{
-    static const size_t ID = 5;
-    static const Vector2i defaultValue;
-};
-
-template <>
-struct VariantTypeTraits<Vector2f>
-{
-    static const size_t ID = 6;
-    static const Vector2f defaultValue;
-};
-
-template <>
-struct VariantTypeTraits<Vector3i>
-{
-    static const size_t ID = 7;
-    static const Vector3i defaultValue;
-};
-
-template <>
-struct VariantTypeTraits<Vector3f>
-{ 
-    static const size_t ID = 8;
-    static const Vector3f defaultValue;
-};
-
-template <>
-struct VariantTypeTraits<Vector<s32,4>>
-{
-    static const size_t ID = 9;
-    static const Vector<s32,4> defaultValue;
-};
-
-template <>
-struct VariantTypeTraits<Vector<f32,4>>
-{
-    static const size_t ID = 10;
-    static const Vector<f32, 4> defaultValue;
-};
-
-template <>
-struct VariantTypeTraits<Quaternion>
-{
-    static const size_t ID = 11;
-    static const Quaternion defaultValue;
-};
-
-template <>
-struct VariantTypeTraits<Matrix4>
-{
-    static const size_t ID = 12;
-    static const Matrix4 defaultValue;
-};
-
-//------------------------------------------------------------------------------
-template <typename T, typename...Ts>
-struct TVariantHelper
-{
-	inline static void destroy(size_t typeID, void * ptr)
-	{
-		if (typeID == TVariantHelper<T>::ID)
-			delete reinterpret_cast<T*>(ptr);
-		else
-			TVariantHelper::<Ts...>::destroy(typeID, ptr);
-	}
-
-	inline static void copy(size_t oldType, const void * oldPtr, const void *& newPtr)
-	{
-		if (oldType == TVariantHelper<T>::ID)
-			newPtr = new T(*reinterpret_cast<const T*>(oldPtr));
-		else
-			TVariantHelper<Ts...>::copy(oldType, oldPtr, newPtr);
-	}
-};
-
-//------------------------------------------------------------------------------
-template <typename T>
-struct TVariantHelper<T>
-{
-	inline static void destroy(size_t typeID, void * ptr)
-	{
-		if (typeID == VariantTypeTraits<F>::ID)
-            delete reinterpret_cast<T*>(ptr);
-	}
-
-	inline static void copy(size_t oldType, const void * oldPtr, const void *& newPtr)
-	{
-		if (oldType == VariantTypeTraits<T>::ID)
-			newPtr = new T(*reinterpret_cast<const T*>(oldPtr));
-	}
-};
-
-//------------------------------------------------------------------------------
-template <typename...Ts>
-class TVariant
+/// \brief Template-free implementation of a variant type
+class Variant
 {
 public:
-	TVariant() :
-		m_typeID(invalidType()),
-        m_ptr(nullptr)
-	{}
 
-	// Copy constructor
-	TVariant(const TVariant<Ts...> & old) :
-		m_typeID(old.m_typeID)
-	{
-		// Deep copy
-		Helper::copy(old.m_typeID, old.m_ptr, m_ptr);
-	}
+    typedef std::string String;
+    typedef std::vector<Variant> VariantArray;
+    typedef std::unordered_map<std::string, Variant> VariantDictionary;
+    typedef std::unordered_map<Variant, Variant> VariantTable;
 
-	~TVariant()
-	{
-		Helper::destroy(m_typeID, &m_ptr);
-	}
+    union VariantData
+    {
+        bool vBool;
+        s32 vInt;
+        f32 vFloat;
+        String * pString;
+        VariantArray * pArray;
+        VariantDictionary * pDictionary;
+        VariantTable * pTable;
+    };
 
-	template <typename T, typename...Args_T>
-	void set(Args_T&&... args)
-	{
-        Helper::destroy(m_typeID, &m_ptr);
-		new (&m_data) T(std::forward<Args_T>(args)...);
-		m_typeID = Helper<T>::getTypeID();
-	}
+    Variant() :                             m_type(SN_VT_NIL)                 {}
+    Variant(bool b) :                       m_type(SN_VT_BOOL)                { m_data.vBool = b; }
+    //Variant(u32 n) :                        m_type(SN_VT_INT)                 { m_data.vInt = n; }
+    Variant(s32 n) :                        m_type(SN_VT_INT)                 { m_data.vInt = n; }
+    Variant(f32 n) :                        m_type(SN_VT_FLOAT)               { m_data.vFloat = n; }
+    Variant(const String & s) :             m_type(SN_VT_STRING)              { m_data.pString = new String(s); }
+    Variant(const VariantArray & o) :       m_type(SN_VT_VARIANT_ARRAY)       { m_data.pArray = new VariantArray(o); }
+    Variant(const VariantDictionary & o) :  m_type(SN_VT_VARIANT_DICTIONARY)  { m_data.pDictionary = new VariantDictionary(o); }
+    Variant(const VariantTable & o);
+    Variant(const Variant & other);
 
-	template <typename T>
-	T & get()
-	{
-		if (m_typeID == TVariantHelper<T>::getTypeID())
-			return *reinterpret_cast<T*>(&m_data);
-		else
-			throw std::bad_cast();
-	}
+    ~Variant();
 
-	// Move assign
-	TVariant<Ts...> & operator=(TVariant<Ts...> && old)
-	{
-		m_data = old.m_data;
-		old.m_typeID = invalidType();
-		return *this;
-	}
+    void reset();
+    void reset(VariantType t);
 
-	TVariant<Ts...> & operator=(TVariant<Ts...> old)
-	{
-		std::swap(m_data, old.m_data);
-		std::swap(m_typeID, old.m_typeID);
-		return *this;
-	}
+    inline VariantType getType() const { return m_type; }
 
-	template<typename T>
-	void is()
-	{
-		return m_typeID == TVariantHelper<T>::getTypeID();
-	}
+    inline bool isNil() const         { return m_type == SN_VT_NIL; }
+    inline bool isBool() const        { return m_type == SN_VT_BOOL; }
+    inline bool isInt() const         { return m_type == SN_VT_INT; }
+    inline bool isFloat() const       { return m_type == SN_VT_FLOAT; }
+    inline bool isString() const      { return m_type == SN_VT_STRING; }
+    inline bool isArray() const       { return m_type == SN_VT_VARIANT_ARRAY; }
+    inline bool isDictionary() const  { return m_type == SN_VT_VARIANT_DICTIONARY; }
+    inline bool isTable() const       { return m_type == SN_VT_VARIANT_TABLE; }
 
-	void valid()
-	{
-		return m_typeID != invalid_type();
-	}
+    inline bool getBool() const                             { return m_data.vBool; }
+    inline s32 getInt() const                               { return m_data.vInt; }
+    inline f32 getFloat() const                             { return m_data.vFloat; }
+    inline const String & getString() const                 { return *m_data.pString; }
+    inline const VariantArray & getArray() const            { return *m_data.pArray; }
+    inline const VariantDictionary & getDictionary() const  { return *m_data.pDictionary; }
+    inline const VariantTable & getTable() const            { return *m_data.pTable; }
 
-	static inline size_t invalidType()
-	{
-		return TVariantHelper<void>::getTypeID();
-	}
+    Variant & operator=(bool b);
+    Variant & operator=(s32 n);
+    Variant & operator=(f32 n);
+    Variant & operator=(const String & str);
+    Variant & operator=(const VariantArray & va);
+    Variant & operator=(const VariantDictionary & vd);
+    Variant & operator=(const VariantTable & vt);
+    Variant & operator=(const Variant & other);
+
+    bool operator==(const Variant & other) const;
+
+    //Variant & operator[](size_t index);
+    //Variant & operator[](const String & fieldName);
+    //Variant & operator[](const Variant & key);
+
+    size_t getHash() const;
 
 private:
-	typedef TVariantHelper<Ts...> Helper;
 
-	size_t m_typeID;
-	void * m_ptr;
+    VariantType m_type;
+    VariantData m_data;
 };
 
+std::string toString(VariantType vt);
+std::string toString(const Variant & v);
+
 } // namespace sn
+
+/// Std Hash
+namespace std
+{
+    template <>
+    struct hash<sn::Variant>
+    {
+        // 32-bit integer (x,y) hash
+        inline size_t operator()(const sn::Variant & v) const
+        {
+            return v.getHash();
+        }
+    };
+
+} // namespace std
 
 #endif // __HEADER_SN_VARIANT__
 
