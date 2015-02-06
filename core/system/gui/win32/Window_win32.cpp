@@ -182,6 +182,9 @@ void Window::onCreate(WindowParams params, bool isFirst)
 
     s32 dwStyle = WS_CLIPCHILDREN;
 
+    if (params.style & SN_WS_RESIZEABLE)
+        dwStyle |= WS_SIZEBOX;
+
     if (params.style & SN_WS_CAPTION)
         dwStyle |= WS_CAPTION;
 
@@ -196,8 +199,6 @@ void Window::onCreate(WindowParams params, bool isFirst)
 
     if (params.style & SN_WS_SHOWN)
         dwStyle |= WS_VISIBLE;
-
-    // TODO handle more window flags
 
     HINSTANCE hAppInstance = GetModuleHandle(NULL);
 

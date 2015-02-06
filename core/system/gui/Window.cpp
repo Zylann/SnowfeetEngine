@@ -23,6 +23,12 @@ Window::Window(SystemGUI & manager, WindowParams params):
     bool isFirst = r_manager.getWindowCount() == 0;
 
     r_manager.refWindow(*this);
+    if (params.style & SN_WS_CENTERED)
+    {
+        Vector2u desktopSize = manager.getDesktopSize();
+        params.rect.x = (static_cast<s32>(desktopSize.x()) - params.rect.width) / 2;
+        params.rect.y = (static_cast<s32>(desktopSize.y()) - params.rect.height) / 2;
+    }
 
     onCreate(params, isFirst);
 

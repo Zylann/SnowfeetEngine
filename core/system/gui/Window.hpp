@@ -29,6 +29,8 @@ enum WindowStyle
     SN_WS_SHOWN = 16, // Show on create
     SN_WS_FULLSCREEN = 32,
     SN_WS_CAPTION = 64, // Title bar
+    SN_WS_RESIZEABLE = 128,
+    SN_WS_CENTERED = 256,
 
     _SN_WS_DEFAULT = SN_WS_BORDER
         | SN_WS_CLOSABLE
@@ -36,6 +38,8 @@ enum WindowStyle
         | SN_WS_MINIMIZABLE
         | SN_WS_SHOWN
         | SN_WS_CAPTION
+        | SN_WS_RESIZEABLE
+        | SN_WS_CENTERED
 };
 
 //------------------------------------------------------------------------------
@@ -45,7 +49,7 @@ struct SN_API WindowParams
         WindowHandle parent_,
         const std::string title_,
         IntRect rect_ = IntRect(0, 0, 800, 480),
-        unsigned int style = _SN_WS_DEFAULT
+        u32 style = _SN_WS_DEFAULT
     ) :
         parent(parent_),
         rect(rect_),
