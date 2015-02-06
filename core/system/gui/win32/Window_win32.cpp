@@ -191,6 +191,9 @@ void Window::onCreate(WindowParams params, bool isFirst)
     if (params.style & SN_WS_MAXIMIZABLE)
         dwStyle |= WS_MAXIMIZEBOX;
 
+    if (params.style & SN_WS_CLOSABLE)
+        dwStyle |= WS_SYSMENU;
+
     if (params.style & SN_WS_SHOWN)
         dwStyle |= WS_VISIBLE;
 
