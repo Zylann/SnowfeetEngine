@@ -29,9 +29,11 @@ enum VariantType
 
     SN_VT_STRING,
 
-    SN_VT_VARIANT_ARRAY, // unsigned int => Variant
-    SN_VT_VARIANT_DICTIONARY, // string => Variant
-    SN_VT_VARIANT_TABLE, // Variant => Variant
+    SN_VT_ARRAY, // unsigned int => Variant
+    SN_VT_DICTIONARY, // string => Variant
+    //SN_VT_TABLE, // Variant => Variant
+
+    // TODO Support for VariantTable (Variant => Variant)
 
     SN_VT_COUNT // Keep last
 };
@@ -42,9 +44,9 @@ class Variant
 public:
 
     typedef std::string String;
-    typedef std::vector<Variant> VariantArray;
-    typedef std::unordered_map<std::string, Variant> VariantDictionary;
-    typedef std::unordered_map<Variant, Variant> VariantTable;
+    typedef std::vector<Variant> Array;
+    typedef std::unordered_map<std::string, Variant> Dictionary;
+    //typedef std::unordered_map<Variant, Variant> VariantTable;
 
     union VariantData
     {
@@ -52,25 +54,28 @@ public:
         s32 vInt;
         f32 vFloat;
         String * pString;
-        VariantArray * pArray;
-        VariantDictionary * pDictionary;
-        VariantTable * pTable;
+        Array * pArray;
+        Dictionary * pDictionary;
+        //VariantTable * pTable;
     };
 
-    Variant() :                             m_type(SN_VT_NIL)                 {}
-    Variant(bool b) :                       m_type(SN_VT_BOOL)                { m_data.vBool = b; }
-    //Variant(u32 n) :                        m_type(SN_VT_INT)                 { m_data.vInt = n; }
-    Variant(s32 n) :                        m_type(SN_VT_INT)                 { m_data.vInt = n; }
-    Variant(f32 n) :                        m_type(SN_VT_FLOAT)               { m_data.vFloat = n; }
-    Variant(const String & s) :             m_type(SN_VT_STRING)              { m_data.pString = new String(s); }
-    Variant(const VariantArray & o) :       m_type(SN_VT_VARIANT_ARRAY)       { m_data.pArray = new VariantArray(o); }
-    Variant(const VariantDictionary & o) :  m_type(SN_VT_VARIANT_DICTIONARY)  { m_data.pDictionary = new VariantDictionary(o); }
-    Variant(const VariantTable & o);
+    Variant() :                       m_type(SN_VT_NIL)         {}
+    Variant(bool b) :                 m_type(SN_VT_BOOL)        { m_data.vBool = b; }
+    //Variant(u32 n) :                  m_type(SN_VT_INT)         { m_data.vInt = n; }
+    Variant(s32 n) :                  m_type(SN_VT_INT)         { m_data.vInt = n; }
+    Variant(f32 n) :                  m_type(SN_VT_FLOAT)       { m_data.vFloat = n; }
+    Variant(const String & s) :       m_type(SN_VT_STRING)      { m_data.pString = new String(s); }
+    Variant(const Array & o) :        m_type(SN_VT_ARRAY)       { m_data.pArray = new Array(o); }
+    Variant(const Dictionary & o) :   m_type(SN_VT_DICTIONARY)  { m_data.pDictionary = new Dictionary(o); }
+    //Variant(const Table & o);
     Variant(const Variant & other);
 
     ~Variant();
 
+    /// \brief Clears contents and sets the type to NIL.
     void reset();
+
+    /// \brief Clears contents and sets the given type.
     void reset(VariantType t);
 
     inline VariantType getType() const { return m_type; }
@@ -80,31 +85,33 @@ public:
     inline bool isInt() const         { return m_type == SN_VT_INT; }
     inline bool isFloat() const       { return m_type == SN_VT_FLOAT; }
     inline bool isString() const      { return m_type == SN_VT_STRING; }
-    inline bool isArray() const       { return m_type == SN_VT_VARIANT_ARRAY; }
-    inline bool isDictionary() const  { return m_type == SN_VT_VARIANT_DICTIONARY; }
-    inline bool isTable() const       { return m_type == SN_VT_VARIANT_TABLE; }
+    inline bool isArray() const       { return m_type == SN_VT_ARRAY; }
+    inline bool isDictionary() const  { return m_type == SN_VT_DICTIONARY; }
+    //inline bool isTable() const       { return m_type == SN_VT_TABLE; }
 
-    inline bool getBool() const                             { return m_data.vBool; }
-    inline s32 getInt() const                               { return m_data.vInt; }
-    inline f32 getFloat() const                             { return m_data.vFloat; }
-    inline const String & getString() const                 { return *m_data.pString; }
-    inline const VariantArray & getArray() const            { return *m_data.pArray; }
-    inline const VariantDictionary & getDictionary() const  { return *m_data.pDictionary; }
-    inline const VariantTable & getTable() const            { return *m_data.pTable; }
+    void assertType(VariantType t) const;
+
+    bool getBool() const;
+    s32 getInt() const;
+    f32 getFloat() const;
+    const String & getString() const;
+    const Array & getArray() const;
+    const Dictionary & getDictionary() const;
+    //const VariantTable & getTable() const;
 
     Variant & operator=(bool b);
     Variant & operator=(s32 n);
     Variant & operator=(f32 n);
     Variant & operator=(const String & str);
-    Variant & operator=(const VariantArray & va);
-    Variant & operator=(const VariantDictionary & vd);
-    Variant & operator=(const VariantTable & vt);
+    Variant & operator=(const Array & va);
+    Variant & operator=(const Dictionary & vd);
+    //Variant & operator=(const Table & vt);
     Variant & operator=(const Variant & other);
 
     bool operator==(const Variant & other) const;
 
-    //Variant & operator[](size_t index);
-    //Variant & operator[](const String & fieldName);
+    Variant & operator[](size_t index);
+    Variant & operator[](const String & fieldName);
     //Variant & operator[](const Variant & key);
 
     size_t getHash() const;
