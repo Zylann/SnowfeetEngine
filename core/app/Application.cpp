@@ -200,6 +200,8 @@ int Application::executeEx()
         m_scene->release();
     }
 
+    SystemGUI::get().destroyAllWindows();
+
     // TODO uninitialize all scripts before modules get destroyed
 
     return 0;

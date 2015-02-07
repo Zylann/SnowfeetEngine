@@ -49,6 +49,8 @@ public:
     /// \brief Polls messages from the system's pump and dispatches them to all windows in the current thread.
     static void processEvents();
 
+    void destroyAllWindows();
+
     //--------------------------------
     // Internal
     //--------------------------------

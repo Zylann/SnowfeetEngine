@@ -27,10 +27,7 @@ SystemGUI::SystemGUI():
 //------------------------------------------------------------------------------
 SystemGUI::~SystemGUI()
 {
-    while (!m_windows.empty())
-    {
-        delete m_windows.begin()->first;
-    }
+    destroyAllWindows();
     onDestroy();
 }
 
@@ -44,6 +41,15 @@ void SystemGUI::onCreate()
 void SystemGUI::onDestroy()
 {
 
+}
+
+//------------------------------------------------------------------------------
+void SystemGUI::destroyAllWindows()
+{
+    while (!m_windows.empty())
+    {
+        delete m_windows.begin()->first;
+    }
 }
 
 //------------------------------------------------------------------------------
