@@ -22,11 +22,7 @@ class WindowImpl
 {
 public:
 
-    WindowImpl(Window & win) :
-        r_window(win),
-        m_cursor(NULL)
-    {
-    }
+    WindowImpl(Window & win);
 
     void onEvent(UINT message, WPARAM wParam, LPARAM lParam);
     

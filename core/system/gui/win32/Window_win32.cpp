@@ -41,6 +41,13 @@ void registerWindowClass()
 // WindowImpl
 //==============================================================================
 
+WindowImpl::WindowImpl(Window & win) :
+    r_window(win)
+{
+    // Default cursor
+    m_cursor = LoadCursor(NULL, IDC_ARROW);
+}
+
 //------------------------------------------------------------------------------
 void WindowImpl::onEvent(UINT message, WPARAM wParam, LPARAM lParam)
 {
