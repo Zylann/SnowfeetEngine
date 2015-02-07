@@ -8,6 +8,7 @@ This file is part of the SnowfeetEngine.
 #define __HEADER_SN_MATH__
 
 #include <cmath>
+#include <algorithm> // For min/max
 #include <cstdlib>
 #include <ctime>
 #include <core/types.hpp>
@@ -86,26 +87,6 @@ inline bool isZero(const f64 a, const f64 tolerance = ROUNDING_ERROR_F64)
 inline bool isZero(const f32 a, const f32 tolerance = ROUNDING_ERROR_F32)
 {
     return fabsf(a) <= tolerance;
-}
-
-#ifdef min
-#undef min
-#endif
-
-template<class T>
-inline const T & min(const T & a, const T & b)
-{
-    return a < b ? a : b;
-}
-
-#ifdef max
-#undef max
-#endif
-
-template<class T>
-inline const T & max(const T & a, const T & b)
-{
-    return a > b ? a : b;
 }
 
 /// \brief Clamps x to the given interval. If x is greater or lesser than

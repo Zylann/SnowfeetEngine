@@ -108,18 +108,18 @@ u16 Color::asRGBA16() const
 //------------------------------------------------------------------------------
 void Color::multiply(f32 s)
 {
-    r = static_cast<u8>(math::min(r * s, 255.f));
-    g = static_cast<u8>(math::min(g * s, 255.f));
-    b = static_cast<u8>(math::min(b * s, 255.f));
-    a = static_cast<u8>(math::min(a * s, 255.f));
+    r = static_cast<u8>(std::min(r * s, 255.f));
+    g = static_cast<u8>(std::min(g * s, 255.f));
+    b = static_cast<u8>(std::min(b * s, 255.f));
+    a = static_cast<u8>(std::min(a * s, 255.f));
 }
 
 //------------------------------------------------------------------------------
 void Color::multiplyRGB(f32 s)
 {
-    r = static_cast<u8>(math::min(r * s, 255.f));
-    g = static_cast<u8>(math::min(g * s, 255.f));
-    b = static_cast<u8>(math::min(b * s, 255.f));
+    r = static_cast<u8>(std::min(r * s, 255.f));
+    g = static_cast<u8>(std::min(g * s, 255.f));
+    b = static_cast<u8>(std::min(b * s, 255.f));
 }
 
 //------------------------------------------------------------------------------
@@ -147,10 +147,10 @@ std::string Color::toString() const
 Color Color::operator+(const Color & other) const
 {
     return Color(
-        math::min((u32)r + (u32)other.r, 255u),
-        math::min((u32)g + (u32)other.g, 255u),
-        math::min((u32)b + (u32)other.b, 255u),
-        math::min((u32)a + (u32)other.a, 255u));
+        std::min((u32)r + (u32)other.r, 255u),
+        std::min((u32)g + (u32)other.g, 255u),
+        std::min((u32)b + (u32)other.b, 255u),
+        std::min((u32)a + (u32)other.a, 255u));
 }
 
 //------------------------------------------------------------------------------
@@ -166,10 +166,10 @@ Color Color::operator-(const Color & other) const
 //------------------------------------------------------------------------------
 Color & Color::operator+=(const Color & other)
 {
-    r = math::min((u32)r + (u32)other.r, 255u);
-    g = math::min((u32)g + (u32)other.g, 255u);
-    b = math::min((u32)b + (u32)other.b, 255u);
-    a = math::min((u32)a + (u32)other.a, 255u);
+    r = std::min((u32)r + (u32)other.r, 255u);
+    g = std::min((u32)g + (u32)other.g, 255u);
+    b = std::min((u32)b + (u32)other.b, 255u);
+    a = std::min((u32)a + (u32)other.a, 255u);
     return *this;
 }
 
