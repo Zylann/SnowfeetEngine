@@ -151,7 +151,7 @@ int Application::executeEx()
         m_timeStepper.onBeginFrame();
 
         // Process system GUI messages
-        SystemGUI::get().processEvents();
+        SystemGUI::processEvents();
 
         // TODO Forward events to the game
 

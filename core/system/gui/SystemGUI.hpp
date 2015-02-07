@@ -43,11 +43,11 @@ public:
     inline u32 getWindowCount() const { return m_windows.size(); }
 
     // Platform-specific
-    Vector2u getDesktopSize() const;
+    static Vector2u getDesktopSize();
 
     // Platform-specific
     /// \brief Polls messages from the system's pump and dispatches them to all windows in the current thread.
-    void processEvents();
+    static void processEvents();
 
     //--------------------------------
     // Internal

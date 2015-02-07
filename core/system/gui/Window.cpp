@@ -25,7 +25,7 @@ Window::Window(SystemGUI & manager, WindowParams params):
     r_manager.refWindow(*this);
     if (params.style & SN_WS_CENTERED)
     {
-        Vector2u desktopSize = manager.getDesktopSize();
+        Vector2u desktopSize = SystemGUI::getDesktopSize();
         params.rect.x = (static_cast<s32>(desktopSize.x()) - params.rect.width) / 2;
         params.rect.y = (static_cast<s32>(desktopSize.y()) - params.rect.height) / 2;
     }

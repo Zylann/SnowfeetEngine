@@ -4,7 +4,8 @@
 namespace sn
 {
 
-Vector2u SystemGUI::getDesktopSize() const
+// Static
+Vector2u SystemGUI::getDesktopSize()
 {
     HDC screenDC = GetDC(NULL);
     int w = GetDeviceCaps(screenDC, HORZRES);
@@ -13,6 +14,7 @@ Vector2u SystemGUI::getDesktopSize() const
     return Vector2u(w,h);
 }
 
+// Static
 void SystemGUI::processEvents()
 {
     MSG message;
