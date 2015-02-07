@@ -22,8 +22,11 @@ Entity::~Entity()
     if (r_parent)
         r_parent->removeChild(this);
     destroyChildren();
-    for (auto it = m_tags.begin(); it != m_tags.end(); ++it)
-        removeTag(*it);
+
+    // We need to iterate this way because removeTag() modifies m_tags
+    while (!m_tags.empty())
+        removeTag(*m_tags.begin());
+
     //SN_LOG("Entity " << getName() << " destroyed");
 }
 
@@ -96,7 +99,7 @@ void Entity::addTag(const std::string & tag)
 }
 
 //------------------------------------------------------------------------------
-void Entity::removeTag(const std::string & tag)
+void Entity::removeTag(const std::string tag)
 {
     if (m_tags.erase(tag))
     {

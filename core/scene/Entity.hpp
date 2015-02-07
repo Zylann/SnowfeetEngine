@@ -63,7 +63,7 @@ public:
 
     inline bool hasTag(const std::string & tag) const { return m_tags.find(tag) != m_tags.end(); }
     void addTag(const std::string & tag);
-    void removeTag(const std::string & tag);
+    void removeTag(const std::string tag); // not a reference because tag could refer to a string in the tag list
 
     std::string toString() const;
 
