@@ -189,7 +189,25 @@ inline void serialize(JsonBox::Value & o, const Color & color)
 }
 
 //------------------------------------------------------------------------------
+inline void serialize(JsonBox::Value & o, const Color8 & color)
+{
+    o[(size_t)0] = color.r;
+    o[1] = color.g;
+    o[2] = color.b;
+    o[3] = color.a;
+}
+
+//------------------------------------------------------------------------------
 inline void unserialize(JsonBox::Value & o, Color & color)
+{
+    color.r = static_cast<f32>(o[(size_t)0].getDouble());
+    color.g = static_cast<f32>(o[1].getDouble());
+    color.b = static_cast<f32>(o[2].getDouble());
+    color.a = static_cast<f32>(o[3].getDouble());
+}
+
+//------------------------------------------------------------------------------
+inline void unserialize(JsonBox::Value & o, Color8 & color)
 {
     color.r = o[(size_t)0].getInt();
     color.g = o[1].getInt();

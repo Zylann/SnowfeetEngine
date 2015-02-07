@@ -1,5 +1,5 @@
 ﻿/*
-Color.cpp
+Color8.cpp
 Copyright (C) 2010-2015 Marc GILLERON
 This file is part of the SnowfeetEngine project.
 */
@@ -11,21 +11,63 @@ This file is part of the SnowfeetEngine project.
 namespace sn
 {
 
-Color::Color() : r(0), g(0), b(0), a(255)
+//==============================================================================
+// Color
+//==============================================================================
+
+Color::Color(const Color8 & c8)
+{
+    r = static_cast<f32>(c8.r) / 255.0f;
+    g = static_cast<f32>(c8.g) / 255.0f;
+    b = static_cast<f32>(c8.b) / 255.0f;
+    a = static_cast<f32>(c8.a) / 255.0f;
+}
+
+//------------------------------------------------------------------------------
+void Color::clamp()
+{
+    r = math::clamp(r, 0.f, 1.f);
+    g = math::clamp(g, 0.f, 1.f);
+    b = math::clamp(b, 0.f, 1.f);
+    a = math::clamp(a, 0.f, 1.f);
+}
+
+//------------------------------------------------------------------------------
+std::string Color::toString() const
+{
+    std::stringstream ss;
+    ss << "(r=" << r
+        << ", g=" << g
+        << ", b=" << b
+        << ", a=" << a << ")";
+    return ss.str();
+}
+
+//------------------------------------------------------------------------------
+std::string operator+(std::string const & a, Color const & b)
+{
+    return a + b.toString();
+}
+
+//==============================================================================
+// Color8
+//==============================================================================
+
+Color8::Color8() : r(0), g(0), b(0), a(255)
 {}
 
 //------------------------------------------------------------------------------
-Color::Color(unsigned int hex)
+Color8::Color8(unsigned int hex)
 {
     setFromRGBA32(hex);
 }
 
 //------------------------------------------------------------------------------
-Color::Color(u8 r0, u8 g0, u8 b0, u8 a0) : r(r0), g(g0), b(b0), a(a0)
+Color8::Color8(u8 r0, u8 g0, u8 b0, u8 a0) : r(r0), g(g0), b(b0), a(a0)
 {}
 
 //------------------------------------------------------------------------------
-Color::Color(const Color & other)
+Color8::Color8(const Color8 & other)
 {
     r = other.r;
     g = other.g;
@@ -34,8 +76,17 @@ Color::Color(const Color & other)
 }
 
 //------------------------------------------------------------------------------
+Color8::Color8(const Color & other)
+{
+    r = static_cast<u8>(other.r * 255.0f);
+    g = static_cast<u8>(other.g * 255.0f);
+    b = static_cast<u8>(other.b * 255.0f);
+    a = static_cast<u8>(other.a * 255.0f);
+}
+
+//------------------------------------------------------------------------------
 #if defined SN_SFML
-Color::Color(const sf::Color & color)
+Color8::Color8(const sf::Color8 & color)
 {
     set(color.r, color.g, color.b, color.a);
 }
@@ -43,14 +94,14 @@ Color::Color(const sf::Color & color)
 
 //------------------------------------------------------------------------------
 #if defined SN_SFML
-sf::Color Color::toSfColor() const
+sf::Color8 Color8::toSfColor() const
 {
-    return sf::Color(r, g, b, a);
+    return sf::Color8(r, g, b, a);
 }
 #endif
 
 //------------------------------------------------------------------------------
-void Color::setf(f32 r0, f32 g0, f32 b0, f32 a0)
+void Color8::setf(f32 r0, f32 g0, f32 b0, f32 a0)
 {
     r = static_cast<u8>(255.f * r0);
     g = static_cast<u8>(255.f * g0);
@@ -59,7 +110,7 @@ void Color::setf(f32 r0, f32 g0, f32 b0, f32 a0)
 }
 
 //------------------------------------------------------------------------------
-void Color::set(u8 r0, u8 g0, u8 b0, u8 a0)
+void Color8::set(u8 r0, u8 g0, u8 b0, u8 a0)
 {
     r = r0;
     g = g0;
@@ -68,7 +119,7 @@ void Color::set(u8 r0, u8 g0, u8 b0, u8 a0)
 }
 
 //------------------------------------------------------------------------------
-void Color::set(Color other)
+void Color8::set(Color8 other)
 {
     r = other.r;
     g = other.g;
@@ -77,7 +128,7 @@ void Color::set(Color other)
 }
 
 //------------------------------------------------------------------------------
-void Color::setFromRGBA32(unsigned int hex)
+void Color8::setFromRGBA32(unsigned int hex)
 {
                     a = hex & 0xff;
     hex = hex >> 8;	b = hex & 0xff;
@@ -86,7 +137,7 @@ void Color::setFromRGBA32(unsigned int hex)
 }
 
 //------------------------------------------------------------------------------
-u32 Color::asRGBA32() const
+u32 Color8::asRGBA32() const
 {
     u32 hex = r;
     hex = hex << 8; hex |= g;
@@ -96,7 +147,7 @@ u32 Color::asRGBA32() const
 }
 
 //------------------------------------------------------------------------------
-u16 Color::asRGBA16() const
+u16 Color8::asRGBA16() const
 {
     u16 oct = r >> 4;
     oct = oct << 8; oct |= g >> 4;
@@ -106,7 +157,7 @@ u16 Color::asRGBA16() const
 }
 
 //------------------------------------------------------------------------------
-void Color::multiply(f32 s)
+void Color8::multiply(f32 s)
 {
     r = static_cast<u8>(std::min(r * s, 255.f));
     g = static_cast<u8>(std::min(g * s, 255.f));
@@ -115,7 +166,7 @@ void Color::multiply(f32 s)
 }
 
 //------------------------------------------------------------------------------
-void Color::multiplyRGB(f32 s)
+void Color8::multiplyRGB(f32 s)
 {
     r = static_cast<u8>(std::min(r * s, 255.f));
     g = static_cast<u8>(std::min(g * s, 255.f));
@@ -123,7 +174,7 @@ void Color::multiplyRGB(f32 s)
 }
 
 //------------------------------------------------------------------------------
-void Color::multiplyU8(u8 ku)
+void Color8::multiplyU8(u8 ku)
 {
     const float kf = static_cast<f32>(ku) / 255.f;
     r = (u8)((f32)r * kf);
@@ -133,20 +184,20 @@ void Color::multiplyU8(u8 ku)
 }
 
 //------------------------------------------------------------------------------
-std::string Color::toString() const
+std::string Color8::toString() const
 {
     std::stringstream ss;
-    ss << "(R=" << (s32)r
-      << ", G=" << (s32)g
-      << ", B=" << (s32)b
-      << ", A=" << (s32)a << ")";
+    ss << "(r=" << (s32)r
+      << ", g=" << (s32)g
+      << ", b=" << (s32)b
+      << ", a=" << (s32)a << ")";
     return ss.str();
 }
 
 //------------------------------------------------------------------------------
-Color Color::operator+(const Color & other) const
+Color8 Color8::operator+(const Color8 & other) const
 {
-    return Color(
+    return Color8(
         std::min((u32)r + (u32)other.r, 255u),
         std::min((u32)g + (u32)other.g, 255u),
         std::min((u32)b + (u32)other.b, 255u),
@@ -154,9 +205,9 @@ Color Color::operator+(const Color & other) const
 }
 
 //------------------------------------------------------------------------------
-Color Color::operator-(const Color & other) const
+Color8 Color8::operator-(const Color8 & other) const
 {
-    return Color(
+    return Color8(
         r > other.r ? r - other.r : 0,
         g > other.g ? g - other.g : 0,
         b > other.b ? b - other.b : 0,
@@ -164,7 +215,7 @@ Color Color::operator-(const Color & other) const
 }
 
 //------------------------------------------------------------------------------
-Color & Color::operator+=(const Color & other)
+Color8 & Color8::operator+=(const Color8 & other)
 {
     r = std::min((u32)r + (u32)other.r, 255u);
     g = std::min((u32)g + (u32)other.g, 255u);
@@ -174,7 +225,7 @@ Color & Color::operator+=(const Color & other)
 }
 
 //------------------------------------------------------------------------------
-Color & Color::operator-=(const Color & other)
+Color8 & Color8::operator-=(const Color8 & other)
 {
     r = r > other.r ? r - other.r : 0;
     r = g > other.g ? g - other.g : 0;
@@ -184,13 +235,13 @@ Color & Color::operator-=(const Color & other)
 }
 
 //------------------------------------------------------------------------------
-std::string operator+(std::string const & a, Color const & b)
+std::string operator+(std::string const & a, Color8 const & b)
 {
     return a + b.toString();
 }
 
 //------------------------------------------------------------------------------
-std::ostream & operator<<(std::ostream & os, const Color & col)
+std::ostream & operator<<(std::ostream & os, const Color8 & col)
 {
     return os << col.toString();
 }

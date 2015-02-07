@@ -24,7 +24,7 @@ Image::~Image()
 }
 
 //------------------------------------------------------------------------------
-void Image::create(u32 width, u32 height, Color fillColor)
+void Image::create(u32 width, u32 height, Color8 fillColor)
 {
     clear();
     m_size = Vector2u(width, height);
@@ -187,14 +187,14 @@ bool Image::saveToFile(const std::string & filePath, std::string formatExtension
 }
 
 //------------------------------------------------------------------------------
-Color Image::getPixel(u32 x, u32 y) const
+Color8 Image::getPixel(u32 x, u32 y) const
 {
     const u8 * ptr = &m_pixels[getPixelIndex(x, y)];
-    return Color(ptr[0], ptr[1], ptr[2], ptr[3]);
+    return Color8(ptr[0], ptr[1], ptr[2], ptr[3]);
 }
 
 //------------------------------------------------------------------------------
-void Image::setPixel(u32 x, u32 y, Color color)
+void Image::setPixel(u32 x, u32 y, Color8 color)
 {
     u8 * ptr = &m_pixels[getPixelIndex(x, y)];
     ptr[0] = color.r;
@@ -204,7 +204,7 @@ void Image::setPixel(u32 x, u32 y, Color color)
 }
 
 //------------------------------------------------------------------------------
-void Image::fill(Color color)
+void Image::fill(Color8 color)
 {
     unsigned char colorV[4] = { color.r, color.g, color.b, color.a };
     for (unsigned int i = 0; i < m_pixels.size(); i += m_channels)
@@ -214,7 +214,7 @@ void Image::fill(Color color)
 }
 
 //------------------------------------------------------------------------------
-//void Image::replaceColor(Color oldColor, Color newColor)
+//void Image::replaceColor(Color8 oldColor, Color8 newColor)
 //{
 //    unsigned char oldColorV[4] = { oldColor.r, oldColor.g, oldColor.b, oldColor.a };
 //    unsigned char newColorV[4] = { newColor.r, newColor.g, newColor.b, newColor.a };

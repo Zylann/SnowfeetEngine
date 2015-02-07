@@ -20,7 +20,7 @@ public:
     
     Image();
 
-    void create(u32 width, u32 height, Color fillColor = Color());
+    void create(u32 width, u32 height, Color8 fillColor = Color8());
     void clear();
 
     bool loadFromFile(const std::string & filePath) override;
@@ -38,12 +38,12 @@ public:
         return (x + y * m_size.x()) * m_channels;
     }
 
-    Color getPixel(u32 x, u32 y) const;
-    void setPixel(u32 x, u32 y, Color color);
+    Color8 getPixel(u32 x, u32 y) const;
+    void setPixel(u32 x, u32 y, Color8 color);
 
-    void fill(Color color);
+    void fill(Color8 color);
 
-    //void replaceColor(Color oldColor, Color newColor);
+    //void replaceColor(Color8 oldColor, Color8 newColor);
 
 private:
 
