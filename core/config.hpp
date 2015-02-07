@@ -20,10 +20,6 @@
 // Enables static compilation config.
 //#define SN_STATIC
 
-// [Deprecated][Obsolete]
-// Hint to ease SFML integration
-//#define SN_SFML
-
 //------------------------------------------------------------------------------
 // Exports
 

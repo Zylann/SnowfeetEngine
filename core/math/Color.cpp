@@ -85,22 +85,6 @@ Color8::Color8(const Color & other)
 }
 
 //------------------------------------------------------------------------------
-#if defined SN_SFML
-Color8::Color8(const sf::Color8 & color)
-{
-    set(color.r, color.g, color.b, color.a);
-}
-#endif
-
-//------------------------------------------------------------------------------
-#if defined SN_SFML
-sf::Color8 Color8::toSfColor() const
-{
-    return sf::Color8(r, g, b, a);
-}
-#endif
-
-//------------------------------------------------------------------------------
 void Color8::setf(f32 r0, f32 g0, f32 b0, f32 a0)
 {
     r = static_cast<u8>(255.f * r0);

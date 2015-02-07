@@ -199,66 +199,6 @@ void MazeGenerator::connectRandomNodes(f32 chance)
     }
 }
 
-//------------------------------------------------------------------------------
-#ifdef SN_SFML
-
-void MazeGenerator::bakeTexture(sf::Image & tex)
-{
-    tex.create(3*grid.sizeX(), 3*grid.sizeY(), sf::Color(0,0,0,0));
-
-    // Draw paths
-    for(u32 y  = 0; y < grid.sizeY(); ++y)
-    {
-        for(u32 x  = 0; x < grid.sizeX(); ++x)
-        {
-            u32 px = x*3;
-            u32 py = y*3;
-
-            u32 c = grid.getNoEx(x,y);
-
-            // Background
-            sf::Color color;
-            if(c & DISABLED_BIT) // disabled?
-            {
-                color = sf::Color(128, 0, 0);
-            }
-            else if((c & UNVISITED_BIT)==0) // visited?
-            {
-                color = sf::Color::Black;
-            }
-            else
-            {
-                color = sf::Color(0, 0, 0, 128);
-            }
-            for(u32 x2 = px; x2 < px+3; ++x2)
-            {
-                for(u32 y2 = py; y2 < py+3; ++y2)
-                {
-                    tex.setPixel(x2, y2, color);
-                }
-            }
-
-            // Path
-            if(c & Direction::ANY_BITS)
-            {
-                tex.setPixel(px+1, py+1, sf::Color::White);
-
-                for(u32 d = 0; d < 4; ++d)
-                {
-                    if(c & (1 << d))
-                    {
-                        Vector2i pos = Vector2i(px+1, py+1) + Direction::toVector<s32>(d);
-                        tex.setPixel(pos.x(), pos.y(), sf::Color::White);
-                    }
-                }
-            }
-        }
-    }
-}
-
-#endif
-
-
 } // namespace sn
 
 

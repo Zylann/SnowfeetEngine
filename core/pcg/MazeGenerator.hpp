@@ -14,10 +14,6 @@ This file is part of the SnowfeetEngine project.
 #include <core/math/math.hpp>
 #include <core/pcg/Direction.hpp>
 
-#ifdef SN_SFML
-#include <SFML/Graphics.hpp>
-#endif
-
 namespace sn
 {
 
@@ -50,14 +46,6 @@ public:
     /// \param seedX: Seed x.
     /// \param seedY: Seed y.
     void generate(u32 seedX, u32 seedY);
-
-#ifdef SN_SFML
-
-    /// \brief Bakes a texture that visually represents the generated maze.
-    /// Useful for debug purpose.
-    void bakeTexture(sf::Image & tex);
-
-#endif
 
 private:
 

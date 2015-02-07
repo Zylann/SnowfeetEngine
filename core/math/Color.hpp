@@ -10,10 +10,6 @@ This file is part of the SnowfeetEngine project.
 #include <string>
 #include <core/types.hpp>
 
-#ifdef SN_SFML
-    #include <SFML/Graphics.hpp>
-#endif
-
 namespace sn
 {
 
@@ -62,16 +58,6 @@ struct SN_API Color8
     Color8(const Color8 & other);
 
     Color8(const Color & other);
-
-#ifdef SN_SFML
-    // Constructs a color from a SFML color
-    Color(const sf::Color & color);
-#endif
-
-#ifdef SN_SFML
-    // Converts this color to a SFML color
-    sf::Color toSfColor() const;
-#endif
 
     // Assigns [0,1] float values to this color
     void setf(float r0, float g0, float b0, float a0 = 1);
@@ -123,10 +109,6 @@ struct SN_API Color8
 std::string operator+(std::string const & a, Color8 const & b);
 
 std::ostream & operator<<(std::ostream & os, const Color8 & col);
-
-//#ifdef SN_SFML
-//	sf::Color & operator=(sf::Color & sfcolor, const Color & color);
-//#endif
 
 } // namespace sn
 
