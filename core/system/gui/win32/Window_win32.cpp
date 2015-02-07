@@ -6,9 +6,10 @@ This file is part of the SnowfeetEngine project.
 
 #include "../../../util/assert.hpp"
 #include "../Window.hpp"
-#include "Window_win32.hpp"
 #include "../SystemGUI.hpp"
 #include "../Event.hpp"
+
+#include "Window_win32.hpp"
 
 namespace sn
 {
