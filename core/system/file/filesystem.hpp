@@ -13,6 +13,8 @@ This file is part of the SnowfeetEngine project.
 namespace sn
 {
 
+/// \brief Represents a file descriptor in file system functions.
+/// (Not to be mixed with actual file read/write)
 struct FileNode
 {
     FileNode(String path_, bool isDirectory_) :
@@ -26,8 +28,18 @@ struct FileNode
 
 // Platform-specific
 
+/// \brief Tests if the given path exists (wether it's to a file or folder)
+/// \return true if the path exists, false otherwise
 bool pathExists(String path);
+
+/// \brief Creates a directory at the given path, if the parent directory exists.
+/// \return true on success, false on error 
 bool makeDir(String path);
+
+/// \brief Gets the list of files and directories within a directory (not recursive)
+/// \param topDirectory: directory from which to list the files
+/// \param out_nodes: returned list of file nodes
+/// \return true on success, false on error
 bool getFiles(String topDirectory, std::vector<FileNode> & out_nodes);
 
 } // namespace sn

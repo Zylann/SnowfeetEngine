@@ -69,7 +69,8 @@ class WindowImpl;
 class WindowContainer;
 
 //------------------------------------------------------------------------------
-/// \brief A rectangular area on the screen (canvas, tab bar, separator...)
+/// \brief A rectangular area on the screen.
+/// It's the frontier between the system's GUI and what the engine will show by itself.
 class SN_API Window : public NonCopyable
 {
 public:

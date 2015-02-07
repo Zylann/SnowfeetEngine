@@ -158,6 +158,7 @@ int Application::executeEx()
             Event ev;
             while (SystemGUI::get().popEvent(ev))
             {
+                // Forward event to the scene
                 if (!m_scene->onSystemEvent(ev))
                 {
                     // If the event has not been handled, perform default actions
