@@ -80,7 +80,7 @@ struct Rect
     inline T minX() const { return x; }
     inline T minY() const { return y; }
     inline T maxX() const { return x + width; }
-    inline T maxY() const { return x + height; }
+    inline T maxY() const { return y + height; }
 
 };
 
