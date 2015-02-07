@@ -9,6 +9,7 @@ This file is part of the SnowfeetEngine project.
 
 #include <core/scene/Entity.hpp>
 #include <core/util/RefCounted.hpp>
+#include <core/system/gui/Event.hpp>
 #include <map>
 
 namespace sn
@@ -58,6 +59,8 @@ public:
     void destroyLater() override;
 
     void onUpdate() override;
+
+    bool onSystemEvent(const Event & ev);
 
     inline void quit() { m_quitFlag = true; }
     inline bool getQuitFlag() const { return m_quitFlag; }

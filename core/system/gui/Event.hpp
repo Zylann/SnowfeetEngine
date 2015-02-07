@@ -17,6 +17,7 @@ namespace sn
 
 enum EventType
 {
+    SN_EVENT_NONE,
     SN_EVENT_RAW,
 
     SN_EVENT_WINDOW_CLOSED,
@@ -110,7 +111,7 @@ struct SN_API Event
         s32 lparam;
     };
 
-    Event(EventType type_)
+    Event(EventType type_ = SN_EVENT_NONE)
     {
         memset(this, 0, sizeof(Event));
         type = type_;

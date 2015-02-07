@@ -153,7 +153,19 @@ int Application::executeEx()
         // Process system GUI messages
         SystemGUI::processEvents();
 
-        // TODO Forward events to the game
+        if (m_scene)
+        {
+            Event ev;
+            while (SystemGUI::get().popEvent(ev))
+            {
+                if (!m_scene->onSystemEvent(ev))
+                {
+                    // If the event has not been handled, perform default actions
+                    if (ev.type == SN_EVENT_WINDOW_CLOSED)
+                        quit();
+                }
+            }
+        }
 
         std::vector<Time> deltas = m_timeStepper.getCallDeltas();
         for (u32 i = 0; i < deltas.size() && m_runFlag; ++i)

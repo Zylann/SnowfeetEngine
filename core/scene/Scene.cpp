@@ -139,6 +139,13 @@ void Scene::onUpdate()
 }
 
 //------------------------------------------------------------------------------
+bool Scene::onSystemEvent(const Event & ev)
+{
+    // TODO EventDispatcher
+    return false; // Not handled
+}
+
+//------------------------------------------------------------------------------
 void Scene::loadFromFile(const std::string & filePath)
 {
     JsonBox::Value doc;
