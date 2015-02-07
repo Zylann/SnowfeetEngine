@@ -81,7 +81,7 @@ int Application::executeEx()
     }
 
     // Initialize global random seed
-    std::srand(std::time(NULL));
+    math::randomSeed();
 
     registerObjectTypes(ObjectTypeDatabase::get());
 
