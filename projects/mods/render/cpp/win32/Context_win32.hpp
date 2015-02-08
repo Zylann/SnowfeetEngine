@@ -4,28 +4,31 @@
 #include "../Context.hpp"
 #include <Windows.h>
 
-namespace sn
-{
+namespace sn {
+namespace render {
 
 class ContextImpl
 {
 public:
-	ContextImpl(Context & context, const Window & win);
-	~ContextImpl();
+    ContextImpl(Context & context, const Window & win);
+    ~ContextImpl();
 
-	inline bool isInitialized() const { return m_hrc != nullptr; }
-	bool makeCurrent();
+    inline bool isInitialized() const { return m_hrc != nullptr; }
+    bool makeCurrent();
+
+    void swapBuffers();
 
 private:
 
-	static HGLRC glCreateMinimalContext(HWND hwnd);
-	static HGLRC glCreateContext(HWND hwnd, HGLRC sharedContext, int majorVersion, int minorVersion, int multiSampleMode = 0);
+    static HGLRC glCreateMinimalContext(HWND hwnd);
+    static HGLRC glCreateContext(HWND hwnd, HGLRC sharedContext, int majorVersion, int minorVersion, int multiSampleMode = 0);
 
-	Context & r_context;
-	HGLRC m_hrc;
-	HDC m_dc;
+    Context & r_context;
+    HGLRC m_hrc;
+    HDC m_dc;
 };
 
+} // namespace render
 } // namespace sn
 
 #endif //__HEADER_SN_CONTEXT_WIN32__

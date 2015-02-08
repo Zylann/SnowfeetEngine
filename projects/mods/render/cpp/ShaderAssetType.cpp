@@ -7,7 +7,7 @@ namespace render {
 bool ShaderAssetType::canLoad(String path, const AssetMetadata & meta) const
 {
     String ext = getFileExtension(path);
-    return ext == L"vs" || ext == L"ps" || ext == L".shader";
+    return ext == L"vs" || ext == L"ps" || ext == L"gs" || ext == L"shader";
 }
 
 Asset * ShaderAssetType::createInstance()

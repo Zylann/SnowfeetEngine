@@ -1,9 +1,13 @@
-﻿#include "mod_SnowfeetRender.h"
-#include "Shader.hpp"
-#include "entities/RenderManager.hpp"
+﻿#include <core/asset/AssetDatabase.hpp>
+
+#include "mod_SnowfeetRender.h"
+#include "ShaderProgram.hpp"
 #include "sq_binding/sq_render.hpp"
 
-#include <core/asset/AssetDatabase.hpp>
+#include "entities/RenderManager.hpp"
+#include "entities/Camera.hpp"
+#include "entities/Drawable.hpp"
+
 
 namespace sn {
 namespace render {
@@ -11,6 +15,8 @@ namespace render {
     void registerObjectTypes(ObjectTypeDatabase & otb)
     {
         otb.registerType<RenderManager>();
+        otb.registerType<Camera>();
+        otb.registerType<Drawable>();
     }
 
 } // namespace render

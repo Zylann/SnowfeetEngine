@@ -19,6 +19,10 @@ public:
     ~RenderManager();
 
     void onReady() override;
+    void onUpdate() override;
+    
+private:
+    void render();
 
 private:
     Context * m_context;

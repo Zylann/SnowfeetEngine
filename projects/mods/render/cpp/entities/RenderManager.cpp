@@ -28,11 +28,47 @@ void RenderManager::onReady()
 
     addTag(TAG);
 
+    // Register to update manager.
+    // Arbitrary values. The layer is given quite high so gameplay should be updated before.
+    setUpdatable(true, 0, 32000);
+
+    // Get or create window in which we'll render
     Window * win = SystemGUI::get().getWindowByID(0);
     if (win == nullptr)
         win = SystemGUI::get().createWindow();
 
-    //m_context = new Context(*win);
+    // Create rendering context
+    if (win)
+        m_context = new Context(*win);
+}
+
+void RenderManager::onUpdate()
+{
+    // Render!
+    render();
+}
+
+void RenderManager::render()
+{
+    if (m_context == nullptr)
+        return; // Can't render
+
+    m_context->clearTarget();
+
+    // BEGIN TEST CODE
+
+    Mesh mesh;
+    //mesh.setPrimitiveType(SNR_PT_TRIANGLES);
+    mesh.addPosition(-0.5f, -0.5f);
+    mesh.addPosition(0.f, 0.5f);
+    mesh.addPosition(0.5f, -0.5f);
+
+    m_context->drawMesh(mesh);
+
+    // END TEST CODE
+
+    // Display rendered surface
+    m_context->swapBuffers();
 }
 
 } // namespace render
