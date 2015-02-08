@@ -40,6 +40,10 @@ std::string SN_API fileNameWithoutExtension(std::string path);
 std::string SN_API toString(const std::wstring & wstr);
 std::wstring SN_API toWideString(const std::string & str);
 
+/// \brief Gets the file extension within the given path, if any (the dot is included).
+std::string SN_API getFileExtension(const std::string & str);
+
+/// \brief Gets the file extension within the given path, if any (the dot is included).
 std::wstring SN_API getFileExtension(const std::wstring & str);
 
 // Returns the folder in which the given file is.

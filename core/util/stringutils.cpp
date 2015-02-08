@@ -213,13 +213,27 @@ std::wstring toWideString(const std::string & str)
 std::wstring getFileExtension(const std::wstring & str)
 {
     size_t sepIndex = str.find_last_of('.');
-    if (sepIndex != std::string::npos)
+    if (sepIndex != std::wstring::npos)
     {
         return str.substr(sepIndex);
     }
     else
     {
         return L"";
+    }
+}
+
+//------------------------------------------------------------------------------
+std::string getFileExtension(const std::string & str)
+{
+    size_t sepIndex = str.find_last_of('.');
+    if (sepIndex != std::string::npos)
+    {
+        return str.substr(sepIndex);
+    }
+    else
+    {
+        return "";
     }
 }
 
