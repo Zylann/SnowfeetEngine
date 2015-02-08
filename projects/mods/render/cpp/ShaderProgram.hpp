@@ -18,10 +18,24 @@ namespace render {
 enum VertexAttribute
 {
     SNR_ATTRIB_POSITION = 0,
-    SNR_ATTRIB_COLOR = 1,
-    SNR_ATTRIB_TEXCOORD = 2,
-    SNR_ATTRIB_NORMAL = 3
+    SNR_ATTRIB_COLOR,
+    SNR_ATTRIB_TEXCOORD,
+    SNR_ATTRIB_NORMAL,
+    //...
+    SNR_ATTRIB_COUNT // Keep last
 };
+
+enum ShaderType
+{
+    SNR_ST_VERTEX = 0,
+    SNR_ST_FRAGMENT,
+    SNR_ST_GEOMETRY,
+    //...
+    SNR_ST_COUNT // Keep last
+};
+
+std::string toString(VertexAttribute st);
+std::string toString(ShaderType st);
 
 class SN_API ShaderProgram : public Asset
 {
@@ -32,34 +46,11 @@ public:
     // Constructs an empty program.
     ShaderProgram():
         Asset(),
-        m_programID(0),
-        m_vertex(nullptr),
-        m_geometry(nullptr),
-        m_fragment(nullptr)
+        m_programID(0)
     {}
 
-    bool loadFromFile(const std::string & filePath) override
-    {
-        // TODO
-        return false;
-    }
-
-    // Compiles and links the program from up to 3 shader types.
-    // An empty source path means no shader, but at least 1 must be specified.
-    // The old program will be erased if called twice.
-    bool loadFromFiles(
-        const std::string & vertSourcePath,
-        const std::string & geomSourcePath,
-        const std::string & fragSourcePath
-    );
-
-    // load() shortcut with only vertex and fragment shader
-    inline bool loadFromFiles(
-        const std::string & vertSourcePath,
-        const std::string & fragSourcePath)
-    {
-        return loadFromFiles(vertSourcePath, "", fragSourcePath);
-    }
+    bool loadFromFile(const std::string & filePath);
+    bool loadFromSourceCode(const std::unordered_map<ShaderType, std::string> & sources);
 
     // Deletes the program and its shaders.
     void unload();
@@ -87,18 +78,13 @@ private:
     // Loads a shader from a source file,
     // and returns its ID in outShaderID.
     // Returns true if success, false if not.
-    static bool loadShader(
-        GLuint & outShaderID, GLenum type,
-        const std::string & sourcePath
-    );
+    static bool loadShaderFromSourceCode(GLuint & outShaderID, ShaderType typeGeneric, const std::string & source);
 
     struct Shader
     {
-        std::string sourcePath;
         GLuint ID;
-
-        Shader(GLuint sID, const std::string path):
-            sourcePath(path), ID(sID)
+        Shader(GLuint sID):
+            ID(sID)
         {}
     };
 
@@ -107,9 +93,9 @@ private:
     // Note: Uniforms affect a geometry (while attribs affect vertices)
     std::unordered_map<std::string, GLint> m_uniforms;
 
-    Shader * m_vertex;
-    Shader * m_geometry;
-    Shader * m_fragment;
+    // List of compiled shaders, indexed by ShaderType.
+    // Entries can be null, except required shaders such as vertex and fragment.
+    std::vector<Shader*> m_shaders;
 
 };
 

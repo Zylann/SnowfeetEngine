@@ -1,8 +1,53 @@
 ﻿#include <core/util/Log.hpp>
+#include "ShaderLoader.hpp"
 #include "ShaderProgram.hpp"
 
 namespace sn {
 namespace render {
+
+//==============================================================================
+// Enums
+//==============================================================================
+
+GLuint shaderTypeToGL(ShaderType st)
+{
+    switch (st)
+    {
+    case SNR_ST_VERTEX: return GL_VERTEX_SHADER; break;
+    case SNR_ST_FRAGMENT: return GL_FRAGMENT_SHADER; break;
+    case SNR_ST_GEOMETRY: return GL_GEOMETRY_SHADER; break;
+    default:
+        SN_ASSERT(false, "Invalid state");
+        return 0;
+    }
+}
+
+std::string toString(ShaderType st)
+{
+    switch (st)
+    {
+    case SNR_ST_VERTEX: return "Vertex";
+    case SNR_ST_FRAGMENT: return "Fragment";
+    case SNR_ST_GEOMETRY: return "Geometry";
+    default: return "ShaderType[" + std::to_string((s32)st) + "]";
+    }
+}
+
+std::string toString(VertexAttribute attrib)
+{
+    switch (attrib)
+    {
+    case SNR_ATTRIB_POSITION: return "Position";
+    case SNR_ATTRIB_COLOR: return "Color";
+    case SNR_ATTRIB_TEXCOORD: return "Texcoord";
+    case SNR_ATTRIB_NORMAL: return "Normal";
+    default: return "VertexAttrib[" + std::to_string((s32)attrib) + "]";
+    }
+}
+
+//==============================================================================
+// ShaderProgram
+//==============================================================================
 
 ShaderProgram::~ShaderProgram()
 {
@@ -11,95 +56,74 @@ ShaderProgram::~ShaderProgram()
 
 void ShaderProgram::unload()
 {
-    glDeleteProgram(m_programID);
-    m_programID = 0;
+    if (m_programID)
+    {
+        for (auto it = m_shaders.begin(); it != m_shaders.end(); ++it)
+        {
+            Shader * shader = *it;
+            if (shader)
+            {
+                glDetachShader(m_programID, shader->ID);
+                glDeleteShader(shader->ID);
+                delete shader;
+            }
+        }
 
-    if (m_vertex != nullptr)
-    {
-        glDetachShader(m_programID, m_vertex->ID);
-        glDeleteShader(m_vertex->ID);
-        delete m_vertex;
-        m_vertex = nullptr;
+        glDeleteProgram(m_programID);
+        m_programID = 0;
     }
-    if (m_geometry != nullptr)
-    {
-        glDetachShader(m_programID, m_geometry->ID);
-        glDeleteShader(m_geometry->ID);
-        delete m_geometry;
-        m_geometry = nullptr;
-    }
-    if (m_fragment != nullptr)
-    {
-        glDetachShader(m_programID, m_fragment->ID);
-        glDeleteShader(m_fragment->ID);
-        delete m_fragment;
-        m_fragment = nullptr;
-    }
+
+    m_shaders.clear();
 }
 
-bool ShaderProgram::loadFromFiles(
-    const std::string & vertSourcePath,
-    const std::string & geomSourcePath,
-    const std::string & fragSourcePath)
+bool ShaderProgram::loadFromFile(const std::string & filePath)
 {
-    if (vertSourcePath.empty() && geomSourcePath.empty() && fragSourcePath.empty())
+    return ShaderLoader::loadFromFile(*this, filePath);
+}
+
+bool ShaderProgram::loadFromSourceCode(const std::unordered_map<ShaderType, std::string> & sources)
+{
+    // Check if none of the sources is empty
+    for (auto it = sources.begin(); it != sources.end(); ++it)
     {
-        SN_ERROR("ShaderProgram::load: all source paths are empty.");
-        return false;
+        if (it->second.empty())
+        {
+            SN_ERROR("ShaderProgram::loadFromSourceCode: source code is empty for shader type " << toString(it->first));
+            return false;
+        }
     }
 
-    // Deletes the program if it was already loaded
+    // Deletes the old program if it was already loaded
     unload();
 
     // Create shaders
-
     GLuint sID;
-
-    // Vertex shader
-    if (!vertSourcePath.empty()) // If specified
+    for (auto it = sources.begin(); it != sources.end(); ++it)
     {
-        if (!loadShader(sID, GL_VERTEX_SHADER, vertSourcePath))
+        ShaderType shaderType = it->first;
+        if (!loadShaderFromSourceCode(sID, shaderType, it->second))
         {
+            // Error
+            unload();
             return false;
         }
-        m_vertex = new Shader(sID, vertSourcePath);
-    }
-
-    // Geometry shader
-    if (!geomSourcePath.empty()) // If specified
-    {
-        if (!loadShader(sID, GL_GEOMETRY_SHADER, geomSourcePath))
-        {
-            unload(); // Cancel all
-            return false; // Failed
-        }
-        m_geometry = new Shader(sID, geomSourcePath);
-    }
-
-    // Pixel shader
-    if (!fragSourcePath.empty()) // If specified
-    {
-        if (!loadShader(sID, GL_FRAGMENT_SHADER, fragSourcePath))
-        {
-            unload(); // Cancel all
-            return false; // Failed
-        }
-        m_fragment = new Shader(sID, fragSourcePath);
+        if (m_shaders.size() < shaderType)
+            m_shaders.resize(shaderType + 1, nullptr);
+        m_shaders[shaderType] = new Shader(sID);
     }
 
     // Link shaders into a program
-
     SN_LOG("linking shader program...");
-
     m_programID = glCreateProgram();
-
     // Attach shaders to the program
-    if (m_vertex != nullptr)
-        glAttachShader(m_programID, m_vertex->ID);
-    if (m_geometry != nullptr)
-        glAttachShader(m_programID, m_geometry->ID);
-    if (m_fragment != nullptr)
-        glAttachShader(m_programID, m_fragment->ID);
+    for (auto it = m_shaders.begin(); it != m_shaders.end(); ++it)
+    {
+        Shader * shader = *it;
+        if (shader)
+        {
+            glAttachShader(m_programID, shader->ID);
+        }
+    }
 
     // Generic input shader variables (only for OpenGL3-based experimental version)
     //		glBindAttribLocation(m_programID, Attrib::POSITION, "in_Position");
@@ -107,10 +131,10 @@ bool ShaderProgram::loadFromFiles(
     //		glBindAttribLocation(m_programID, Attrib::TEXCOORD0, "in_TexCoord0");
     //		glBindAttribLocation(m_programID, Attrib::NORMAL, "in_Normal");
 
+    // Link
     glLinkProgram(m_programID);
 
     // Check errors
-
     GLint isLinked = 0;
     glGetProgramiv(m_programID, GL_LINK_STATUS, &isLinked);
     if (isLinked != GL_TRUE)
@@ -139,35 +163,17 @@ bool ShaderProgram::loadFromFiles(
     return true; // Fine !
 }
 
-bool ShaderProgram::loadShader(GLuint & outShaderID, GLenum type, const std::string & sourcePath)
+// Static
+bool ShaderProgram::loadShaderFromSourceCode(GLuint & outShaderID, ShaderType typeGeneric, const std::string & source)
 {
-    SN_LOG("Compiling shader " << sourcePath << "...");
-
-    // Load shader source
-
-    std::string source, sourceLine;
-
-    // Open source file
-    std::ifstream sourceFile(sourcePath.c_str());
-    if (!sourceFile)
-    {
-        SN_ERROR("ShaderProgram::loadShader: Unable to read source file (" << sourcePath << "). Cause: can't open, or file don't exists.");
-        return false;
-    }
-
-    // Read the whole content of the file
-    while (std::getline(sourceFile, sourceLine))
-        source += sourceLine + '\n';
-
-    // Close source file
-    sourceFile.close();
+    SN_LOG("Compiling shader type " << toString(typeGeneric) << "... ");
 
     // Create and compile shader
-
+    GLenum type = shaderTypeToGL(typeGeneric);
     outShaderID = glCreateShader(type);
     if (outShaderID == 0)
     {
-        SN_ERROR("ShaderProgram::loadShader: Unable to create shader. Cause: unknown type (" << (int)type << ")");
+        SN_ERROR("ShaderProgram::loadShaderFromSourceCode: Unable to create shader. Cause: unknown type (" << toString(typeGeneric) << ")");
         return false;
     }
 
@@ -177,10 +183,8 @@ bool ShaderProgram::loadShader(GLuint & outShaderID, GLenum type, const std::str
     glCompileShader(outShaderID);
 
     // Check compilation
-
     GLint isCompiled = 0;
     glGetShaderiv(outShaderID, GL_COMPILE_STATUS, &isCompiled);
-
     if (isCompiled != GL_TRUE)
     {
         // Retrieve error log size
@@ -195,7 +199,7 @@ bool ShaderProgram::loadShader(GLuint & outShaderID, GLenum type, const std::str
         glGetShaderInfoLog(outShaderID, errorSize, &errorSize, errorStr);
 
         // Display the error
-        SN_ERROR("ShaderProgram::loadShader: Compile error(s). (shader type is " << type << ")");
+        SN_ERROR("ShaderProgram::loadShader: Compile error(s). (shader type is " << toString(typeGeneric) << ")");
         SN_ERROR(errorStr);
 
         // Free memory and return
