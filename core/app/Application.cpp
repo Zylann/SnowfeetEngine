@@ -5,25 +5,25 @@ This file is part of the SnowfeetEngine project.
 */
 
 #include "Application.hpp"
-#include "../util/Log.hpp"
 #include "Module.hpp"
+#include "../util/Log.hpp"
 #include "../system/thread/Thread.hpp"
 #include "../system/console/console.hpp"
 #include "../object_types.hpp"
-#include <ctime>
 #include "../system/gui/SystemGUI.hpp"
+#include "../asset/AssetDatabase.hpp"
 
 namespace sn
 {
 
 //------------------------------------------------------------------------------
-//Application * g_instance = nullptr;
+Application * g_applicationInstance = nullptr;
 
 //------------------------------------------------------------------------------
-//Application & Application::get()
-//{
-//    return *g_instance;
-//}
+Application & Application::get()
+{
+    return *g_applicationInstance;
+}
 
 //------------------------------------------------------------------------------
 Application::Application() :
@@ -31,13 +31,14 @@ Application::Application() :
     m_scene(nullptr),
     m_runFlag(false)
 {
-    //SN_ASSERT(g_instance == nullptr, "E: Application: multiple instances are not allowed.");
-    //g_instance = this;
+    SN_ASSERT(g_applicationInstance == nullptr, "Application: multiple instances are not allowed.");
+    g_applicationInstance = this;
 }
 
 //------------------------------------------------------------------------------
 Application::~Application()
 {
+	// Unload modules
     for (auto it = m_modules.begin(); it != m_modules.end(); ++it)
     {
         delete it->second;

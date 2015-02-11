@@ -48,13 +48,14 @@ namespace sn
 /// \brief Top-level class handling the execution of the program.
 /// There must be only one Application instance created in the
 /// whole program execution.
-class SN_API Application
+class SN_API Application : public NonCopyable
 {
 public:
 
     Application();
     ~Application();
 
+	static Application & get();
     int execute(CommandLine commandLine);
 
     // Gets the absolute path to the projects folder
@@ -66,7 +67,6 @@ public:
     // at the end of the current update.
     void quit();
 
-    //static Application & get();
 
     // TODO Move SystemGUI here as a member variable, and let Application be the only one singleton?
 
