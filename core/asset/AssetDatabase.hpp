@@ -25,7 +25,7 @@ enum AssetLoadStatus
 };
 
 /// \brief Contains all resources currently loaded by the application.
-class SN_API AssetDatabase
+class SN_API AssetDatabase : public NonCopyable
 {
 public:
 
@@ -36,12 +36,17 @@ public:
     // however, due to the dynamic modular nature of the engine, we can't use compile-time
     // type checking in every part.
 
-    AssetDatabase(String root);
+    AssetDatabase();
     ~AssetDatabase();
+
+	static AssetDatabase & get();
+
+	void setRoot(const String & root);
 
     /// \brief Loads all assets contained in a given module directory.
     /// This function blocks until everything is loaded.
     void loadAssets(const ModuleInfo & modInfo);
+
 
     AssetLoadStatus loadAssetFromFile(const String & path, const std::string & moduleName);
     //bool releaseAsset(IAsset * asset);

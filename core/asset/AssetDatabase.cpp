@@ -18,9 +18,22 @@ namespace sn
 {
 
 //------------------------------------------------------------------------------
-AssetDatabase::AssetDatabase(String root):
-    m_root(root)
+AssetDatabase & AssetDatabase::get()
 {
+	static AssetDatabase m_database;
+	return m_database;
+}
+
+//------------------------------------------------------------------------------
+AssetDatabase::AssetDatabase()
+{
+}
+
+//------------------------------------------------------------------------------
+void AssetDatabase::setRoot(const String & root)
+{
+	SN_ASSERT(m_assets.empty(), "Cannot set root after assets have been loaded!");
+	m_root = root;
 }
 
 //------------------------------------------------------------------------------

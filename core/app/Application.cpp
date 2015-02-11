@@ -88,6 +88,9 @@ int Application::executeEx()
 
     m_scriptEngine.initialize();
 
+	// Initialize AssetDatabase
+	AssetDatabase::get().setRoot(m_pathToProjects);
+
     // Consider the app to be running from now
     m_runFlag = true;
 
@@ -201,6 +204,8 @@ int Application::executeEx()
             SN_ERROR("Scene is leaking " << (m_scene->getRefCount() - 1) << " times");
         m_scene->release();
     }
+
+	AssetDatabase::get().releaseAssets();
 
     SystemGUI::get().destroyAllWindows();
 
