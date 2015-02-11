@@ -15,6 +15,8 @@ This file is part of the SnowfeetEngine project.
 namespace sn
 {
 
+typedef std::unordered_map<std::string, ObjectType*> ObjectTypeMap;
+
 /// \brief Singleton class that allows the creation of objects from their name or ID.
 /// It can be used for native serialization and basic reflection.
 /// \warning Not thread-safe yet.
@@ -74,6 +76,8 @@ public:
     /// \return the object type, or null if not found.
     ObjectType * getType(const std::string & typeName);
 
+    inline const ObjectTypeMap & getTypes() const { return m_registeredTypes; }
+
     void beginModule(const std::string & name);
     void endModule();
     void unregisterModule(const std::string & name);
@@ -101,7 +105,7 @@ private:
 private:
 
     // References to registered types
-    std::unordered_map<std::string,ObjectType*> m_registeredTypes;
+    ObjectTypeMap m_registeredTypes;
 
     std::string m_currentModule;
 
