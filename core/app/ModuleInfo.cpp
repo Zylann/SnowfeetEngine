@@ -23,7 +23,7 @@ bool ModuleInfo::loadFromFile(const String & pathToProjects, const String & modP
 
     modFilePath = modPath;
     directory = getFileFolder(modFilePath);
-    name = fileNameWithoutExtension(toString(modFilePath));
+    name = getFileNameWithoutExtension(toString(modFilePath));
 
     // Get full path
     String fullPath = pathToProjects + L'/' + modPath;
