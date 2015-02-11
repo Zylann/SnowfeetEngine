@@ -5,6 +5,14 @@ This file is part of the SnowfeetEngine project.
 */
 
 #include "AssetDatabase.hpp"
+#include <core/system/file/filesystem.hpp>
+#include <core/reflect/ObjectTypeDatabase.hpp>
+#include <core/util/Log.hpp>
+#include <core/util/stringutils.hpp>
+
+#ifdef SN_BUILD_DEBUG
+#include <core/system/time/Clock.hpp>
+#endif
 
 namespace sn
 {
@@ -18,47 +26,126 @@ AssetDatabase::AssetDatabase(String root):
 //------------------------------------------------------------------------------
 AssetDatabase::~AssetDatabase()
 {
-    // Delete assets
-    // TODO AssetDatabase::~AssetDatabase
-
-    // Delete types
-    for (auto it = m_types.begin(); it != m_types.end(); ++it)
-    {
-        delete it->second;
-    }
+    releaseAssets();
 }
 
 //------------------------------------------------------------------------------
-bool AssetDatabase::addType(std::string type, IAssetType * loader)
+void AssetDatabase::loadAssets(const ModuleInfo & modInfo)
 {
-    auto it = m_types.find(type);
-    if (it != m_types.end())
+#ifdef SN_BUILD_DEBUG
+    Clock clock;
+#endif
+    std::vector<FileNode> files;
+    getFilesRecursively(modInfo.directory, files);
+    u32 count = 0;
+    for (auto it = files.begin(); it != files.end(); ++it)
     {
-        SN_ERROR("Cannot add new loader, the asset type \"" << type << "\" is already registered");
-        return false;
+        const FileNode & file = *it;
+        if (loadAssetFromFile(file.path, modInfo.name))
+        {
+            ++count;
+        }
+    }
+#ifdef SN_BUILD_DEBUG
+    SN_LOG("Loaded " << count << " assets in " << clock.getElapsedTime().asSeconds() << " seconds");
+#endif
+}
+
+//------------------------------------------------------------------------------
+AssetLoadStatus AssetDatabase::loadAssetFromFile(const String & path, const std::string & moduleName)
+{
+    // Retrieve metadata
+    AssetMetadata metadata;
+    metadata.path = path;
+    metadata.module = moduleName;
+    metadata.loadFromFile(path); // Not fatal if the .meta file isn't found
+    
+    // Find loader:
+    // TODO [Optimize] the following is hammerish. Find a better solution? I'm sure there is one.
+
+    Asset * asset = nullptr;
+
+    const ObjectTypeDatabase & otb = ObjectTypeDatabase::get();
+    const ObjectTypeMap & types = otb.getTypes();
+    const ObjectType & assetType = Asset::__sGetObjectType();
+
+    // Iterate over all classes inheriting sn::Asset and call their canLoad() method
+    for (auto it = types.begin(); it != types.end(); ++it)
+    {
+        const ObjectType & t = *(it->second);
+        if (t.is(assetType))
+        {
+            Asset * candidateAsset = (Asset*)(t.instantiate());
+            if (candidateAsset->canLoad(metadata))
+            {
+                if (asset == nullptr)
+                {
+                    asset = candidateAsset;
+                }
+                else
+                {
+                    SN_WERROR(L"Cannot determine which asset loader to use for file '" << path << L"'.");
+                    SN_ERROR("Candidates are: " << asset->getObjectType().name << ", " << candidateAsset->getObjectType().name);
+                    asset->release();
+                    candidateAsset->release();
+                    return SN_ALS_ERROR;
+                }
+            }
+            else
+            {
+                candidateAsset->release();
+            }
+        }
+    }
+
+    if (asset == nullptr)
+    {
+        // Cannot load this file type. The file will be ignored.
+        return SN_ALS_MISMATCH;
+    }
+
+    const std::string & typeName = asset->getObjectType().name;
+
+    // Check if not already loaded
+    std::string assetName = getFileNameWithoutExtension(toString(path));
+    if (m_assets[moduleName][typeName][assetName] != nullptr)
+    {
+        SN_ERROR("Asset " << toString(path) << " is already loaded "
+            "under registry [" << moduleName << "][" << typeName << "][" << assetName << "]");
+        asset->release();
+        return SN_ALS_ERROR;
+    }
+
+    SN_DLOG("Loading asset " << toString(path) << "...");
+
+    // Open file stream
+    std::ifstream ifs(metadata.path, std::ios::binary | std::ios::in);
+    if (!ifs.good())
+    {
+        SN_ERROR("Cannot open file " << toString(metadata.path) << " for asset of type " << typeName);
+        asset->release();
+        return SN_ALS_ERROR;
+    }
+
+    // Assign metadata
+    asset->m_metadata = metadata;
+
+    // Load asset
+    if (asset->loadFromStream(ifs))
+    {
+        // Success
+        ifs.close();
+        // Store asset
+        m_assets[moduleName][typeName][assetName] = asset;
+        return SN_ALS_LOADED;
     }
     else
     {
-        m_types.insert(std::make_pair(type, loader));
-        return true;
+        // Loading failure, shouldn't have happened
+        asset->release();
+        SN_ERROR("An error occurred when loading asset " << toString(metadata.path) << " of type " << typeName);
+        return SN_ALS_ERROR;
     }
-}
-
-//------------------------------------------------------------------------------
-IAssetType * AssetDatabase::getType(std::string type)
-{
-    auto it = m_types.find(type);
-    if (it != m_types.end())
-        return it->second;
-    else
-        return nullptr;
-}
-
-//------------------------------------------------------------------------------
-bool AssetDatabase::loadAssetFromFile(String path, bool reload)
-{
-    // TODO AssetDatabase::loadAssetFromFile
-    return false;
 }
 
 //------------------------------------------------------------------------------
@@ -69,18 +156,42 @@ bool AssetDatabase::loadAssetFromFile(String path, bool reload)
 //}
 
 //------------------------------------------------------------------------------
-// Gets an asset. If it returns null, the asset may not have been loaded or is in progress.
-Asset * AssetDatabase::getAsset(const std::string & callingModule, const std::string & type, const String & name)
+void AssetDatabase::releaseAssets()
 {
-    // TODO AssetDatabase::getAsset
-    return nullptr;
+    u32 leakCount = 0;
+    for (auto it1 = m_assets.begin(); it1 != m_assets.end(); ++it1)
+    {
+        for (auto it2 = it1->second.begin(); it2 != it1->second.end(); ++it2)
+        {
+            for (auto it3 = it2->second.begin(); it2 != it1->second.end(); ++it2)
+            {
+                Asset * asset = it3->second;
+#ifdef SN_BUILD_DEBUG
+                AssetMetadata meta = asset->getAssetMetadata();
+#endif
+                u32 refcount = asset->release();
+                if (refcount > 0)
+                {
+#ifdef SN_BUILD_DEBUG
+                    SN_WWARNING(L"Asset " << meta.path << L" is still referenced " << refcount << L" times");
+#else
+                    ++leakCount;
+#endif
+                }
+            }
+        }
+    }
+    if (leakCount > 0)
+    {
+        SN_WARNING(leakCount << " assets are still referenced after deletion from the database");
+    }
 }
 
 //------------------------------------------------------------------------------
-AssetMetadata * AssetDatabase::getAssetMetadata(Asset * asset)
+// Gets an asset. If it returns null, the asset may not have been loaded or is in progress.
+Asset * AssetDatabase::getAsset(const std::string & moduleName, const std::string & type, const std::string & name)
 {
-    // TODO AssetDatabase::getAssetMetadata
-    return nullptr;
+    return m_assets[moduleName][type][name];
 }
 
 } // namespace sn

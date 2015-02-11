@@ -24,6 +24,13 @@ Image::~Image()
 }
 
 //------------------------------------------------------------------------------
+bool Image::canLoad(const AssetMetadata & meta) const
+{
+    String ext = getFileExtension(meta.path);
+    return ext == L".png" || ext == L".tga" || ext == L".bmp";
+}
+
+//------------------------------------------------------------------------------
 void Image::create(u32 width, u32 height, Color8 fillColor)
 {
     clear();
@@ -42,7 +49,7 @@ void Image::clear()
 }
 
 //------------------------------------------------------------------------------
-bool Image::loadFromFile(const std::string & filePath)
+bool Image::loadFromStream(std::ifstream & ifs)
 {
     // Reset image
     clear();
@@ -51,27 +58,21 @@ bool Image::loadFromFile(const std::string & filePath)
     s32 width = 0;
     s32 height = 0;
     s32 channels = 0;
-    u8 * pixels = stbi_load(filePath.c_str(), &width, &height, &channels, STBI_rgb_alpha);
 
-    if (pixels && width && height)
+    // TODO [Optimize] I was tired when writing this
+    std::vector<char> buffer;
+    while (!ifs.eof())
     {
-        // Assign loaded data
-        m_size.x() = static_cast<u32>(width);
-        m_size.y() = static_cast<u32>(height);
-        m_channels = static_cast<u32>(channels);
-        m_pixels.resize(m_size.x() * m_size.y() * m_channels);
-        memcpy(&m_pixels[0], pixels, m_pixels.size());
-
-        // Free STB data
-        stbi_image_free(pixels);
-
-        return true;
+        buffer.push_back(ifs.get());
     }
-    else
+
+    if (buffer.empty())
     {
-        SN_ERROR("Failed to load image from file \"" << filePath << "\": " << stbi_failure_reason());
+        SN_ERROR("The image file is empty");
         return false;
     }
+    else
+        return loadFromMemory(&buffer[0], buffer.size());
 }
 
 //------------------------------------------------------------------------------

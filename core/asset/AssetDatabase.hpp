@@ -8,12 +8,21 @@ This file is part of the SnowfeetEngine project.
 #define __HEADER_SN_ASSETDATABASE__
 
 #include <core/util/typecheck.hpp>
-#include <core/asset/AssetType.hpp>
-#include <map>
+#include <core/asset/Asset.hpp>
+#include <core/asset/AssetMetadata.hpp>
+#include <core/app/ModuleInfo.hpp>
+#include <unordered_map>
 
 
 namespace sn
 {
+
+enum AssetLoadStatus
+{
+    SN_ALS_LOADED = 0,
+    SN_ALS_MISMATCH,
+    SN_ALS_ERROR
+};
 
 /// \brief Contains all resources currently loaded by the application.
 class SN_API AssetDatabase
@@ -30,53 +39,38 @@ public:
     AssetDatabase(String root);
     ~AssetDatabase();
 
-    IAssetType * getType(std::string type);
+    /// \brief Loads all assets contained in a given module directory.
+    /// This function blocks until everything is loaded.
+    void loadAssets(const ModuleInfo & modInfo);
 
-    bool loadAssetFromFile(String path, bool reload=false);
+    AssetLoadStatus loadAssetFromFile(const String & path, const std::string & moduleName);
     //bool releaseAsset(IAsset * asset);
 
     // Gets an asset. If it returns null, the asset may not have been loaded or is in progress.
-    Asset * getAsset(const std::string & callingModule, const std::string & type, const String & name);
-
-    AssetMetadata * getAssetMetadata(Asset * asset);
+    Asset * getAsset(const std::string & moduleName, const std::string & type, const std::string & name);
 
     // Template version of getAsset, compiled in your native code.
     // It works only if you used the SN_ASSET macro of your asset class.
     template <class Asset_T>
-    Asset_T * getAsset(const std::string & callingModule, const String & name)
+    Asset_T * getAsset(const std::string & moduleName, const String & name)
     {
         // Note: use SN_ASSET in your asset class
-        IAsset * a = getAsset(Asset_T::__sGetDatabaseTypeName(), callingModule, name);
+        IAsset * a = getAsset(moduleName, Asset_T::__sGetDatabaseTypeName(), name);
         if (a)
             return checked_cast<Asset_T*>(a);
         else
             return nullptr;
     }
 
-    template <class Asset_T>
-    bool addType(IAssetType * type)
-    {
-        // Note: use SN_ASSET in your asset class
-        return addLoader(Asset_T::sGetDatabaseTypeName(), type);
-    }
-
-private:
-
-	bool addType(std::string name, IAssetType * type);
+    void releaseAssets();
 
 private:
 
     // Top directory where assets are located (usually the "projects" directory)
     String m_root;
 
-    // [typeName] => AssetType
-    std::map<std::string, IAssetType*> m_types;
-
-    // [typeName][name][moduleName] => Asset
-    std::map< std::string, std::map<String, std::map<std::string,Asset*> > > m_assets;
-
-    // [Asset] => AssetMetadata
-    std::map<Asset*, AssetMetadata> m_metadatas;
+    // [moduleName][typeName][name] => Asset
+    std::unordered_map< std::string, std::unordered_map<std::string, std::unordered_map<std::string, Asset*> > > m_assets;
 
 };
 

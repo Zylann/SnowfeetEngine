@@ -32,7 +32,7 @@ public:
     bool saveToFile(String metaPath);
 
     std::string type;
-    String module;
+    std::string module;
     String path;
     AssetLoadingMode loadingMode;
     JsonBox::Value json;

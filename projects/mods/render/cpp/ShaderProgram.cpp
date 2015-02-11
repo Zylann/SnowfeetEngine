@@ -1,4 +1,5 @@
 ﻿#include <core/util/Log.hpp>
+#include <core/util/stringutils.hpp>
 #include "ShaderLoader.hpp"
 #include "ShaderProgram.hpp"
 
@@ -52,6 +53,13 @@ std::string toString(VertexAttribute attrib)
 ShaderProgram::~ShaderProgram()
 {
     unload();
+}
+
+bool ShaderProgram::canLoad(const AssetMetadata & meta) const
+{
+    String ext = sn::getFileExtension(meta.path);
+    return ext == L".shader";
+    //return ext == L".vs" || ext == L".ps" || ext == L".gs" || ext == L".shader";
 }
 
 void ShaderProgram::unload()

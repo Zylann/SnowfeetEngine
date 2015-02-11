@@ -273,7 +273,7 @@ public:
     T m_v[N];
 };
 
-template <typename T, unsigned int N>
+template <typename T, u32 N>
 std::string toString(const Vector<T, N> & v)
 {
     std::stringstream ss;

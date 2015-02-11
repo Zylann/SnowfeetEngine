@@ -41,7 +41,7 @@ class SN_API ShaderProgram : public Asset
 {
 public:
 
-    SN_ASSET("shader");
+    SN_ASSET(sn::render::ShaderProgram)
 
     // Constructs an empty program.
     ShaderProgram():
@@ -49,6 +49,9 @@ public:
         m_programID(0)
     {}
 
+    bool canLoad(const AssetMetadata & meta) const override;
+
+    // TODO loadFromStream()
     bool loadFromFile(const std::string & filePath);
     bool loadFromSourceCode(const std::unordered_map<ShaderType, std::string> & sources);
 

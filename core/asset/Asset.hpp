@@ -8,35 +8,49 @@ This file is part of the SnowfeetEngine project.
 #define __HEADER_SN_ASSET__
 
 #include <core/config.hpp>
-#include <core/util/RefCounted.hpp>
+#include <core/app/ScriptObject.hpp>
+#include <core/asset/AssetMetadata.hpp>
 
-// Put this macro into your asset classes to define its database type name.
-// Examples: "image", "texture", "sound", "soundbuffer", "shader", "font"...
-#define SN_ASSET(dbTypeName)\
-    static const char * __sGetDatabaseTypeName() {\
-        static const char * name = dbTypeName; \
-        return name; \
-    }
+// Put this macro into your asset classes just like SN_OBJECT.
+// Example: SN_ASSET(sn::render::ShaderProgram)
+#define SN_ASSET(_className) \
+    SN_SCRIPT_OBJECT(_className, sn::Asset)
 
 namespace sn
 {
 
-// TODO Use shared_ptr for resources
+class AssetDatabase;
 
 /// \brief Interface inherited by all asset classes.
 /// Modules are free to register their own types if they derive from IAssetType.
-/// If the object you want to turn into an asset is a class already, you have to wrap it.
-class SN_API Asset : public RefCounted
+/// Note: If the object you want to turn into an asset is a class already, you have to wrap it.
+class SN_API Asset : public ScriptObject
 {
 public:
-	Asset() : RefCounted() {}
+    SN_SCRIPT_OBJECT(sn::Asset, sn::ScriptObject)
 
-	virtual bool loadFromFile(const std::string & filePath) = 0;
+    /// \brief Default constructor.
+    /// All assets have a default constructor making an empty asset.
+	Asset() : ScriptObject() {}
+
+    /// \brief Tells if the asset pointed by metadata can be loaded by this type.
+    /// Common tests include file extension or checking the first bytes of the file.
+    virtual bool canLoad(const AssetMetadata & metadata) const = 0;
+
+    /// \brief Loads the asset from a file (info is in metadata)
+    virtual bool loadFromStream(std::ifstream & ifs) = 0;
+
+    inline const AssetMetadata & getAssetMetadata() const { return m_metadata; }
 
 protected:
 	// Because refcount
 	// TODO Notify AssetDatabase?
 	virtual ~Asset() {}
+
+private:
+    friend class AssetDatabase;
+
+    AssetMetadata m_metadata;
 };
 
 } // namespace sn

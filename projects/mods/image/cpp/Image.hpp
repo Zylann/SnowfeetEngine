@@ -16,14 +16,15 @@ class SN_API Image : public Asset
 {
 public:
 
-    SN_ASSET("image");
+    SN_ASSET(sn::Image)
     
     Image();
 
+    bool loadFromStream(std::ifstream & ifs) override;
+    bool canLoad(const AssetMetadata & meta) const override;
+
     void create(u32 width, u32 height, Color8 fillColor = Color8());
     void clear();
-
-    bool loadFromFile(const std::string & filePath) override;
 
     bool loadFromMemory(const void * data, u32 dataSize);
     bool loadFromPixels(const u8 * pixels, u32 width, u32 height, u32 channels = 4);
