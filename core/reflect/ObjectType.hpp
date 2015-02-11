@@ -91,7 +91,7 @@ struct SN_API ObjectType
     /// It does the same thing as "new MyObject()", where className = "MyObject".
     /// \return pointer to dynamically allocated object instance, or null if the object
     /// couldn't be allocated (as for abstract types).
-    Object * instantiate();
+    Object * instantiate() const;
 
 };
 

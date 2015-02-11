@@ -57,7 +57,7 @@ bool ObjectType::is(const ObjectType & other, bool includeInheritance) const
 }
 
 //------------------------------------------------------------------------------
-Object * ObjectType::instantiate()
+Object * ObjectType::instantiate() const
 {
     Object * obj = factory();
 #ifdef SN_BUILD_DEBUG
