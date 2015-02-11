@@ -42,6 +42,14 @@ bool makeDir(String path);
 /// \return true on success, false on error
 bool getFiles(String topDirectory, std::vector<FileNode> & out_nodes);
 
+// Platform-independent
+
+/// \brief Recursively gets the list of files within a directory.
+/// \param topDirectory: directory from which to list the files
+/// \param out_nodes: returned list of file nodes, in arbitrary order. No directories.
+/// \return true on success, false on error
+bool getFilesRecursively(String topDirectory, std::vector<FileNode> & out_nodes);
+
 } // namespace sn
 
 #endif // __HEADER_SN_FILESYSTEM__
