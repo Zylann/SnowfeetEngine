@@ -60,7 +60,7 @@ void AssetDatabase::loadAssets(const ModuleInfo & modInfo)
         }
     }
 #ifdef SN_BUILD_DEBUG
-    SN_LOG("Loaded " << count << " assets in " << clock.getElapsedTime().asSeconds() << " seconds");
+    SN_LOG("Loaded " << count << " assets from " << modInfo.name << " in " << clock.getElapsedTime().asSeconds() << " seconds");
 #endif
 }
 

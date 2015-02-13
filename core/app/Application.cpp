@@ -88,6 +88,8 @@ int Application::executeEx()
 
     m_scriptEngine.initialize();
 
+    m_scene = new Scene();
+
 	// Initialize AssetDatabase
 	AssetDatabase::get().setRoot(m_pathToProjects);
 
@@ -106,43 +108,17 @@ int Application::executeEx()
     {
         // Load the scene
         String filePath = m_pathToProjects + L"/" + mainModuleInfo.directory + L"/" + mainModuleInfo.startupScene;
-        m_scene = new Scene();
         m_scene->loadFromFile(toString(filePath));
     }
-
-    // Call onCreate
-    //callVoidCallback(CallbackName::CREATE);
-
-    // Test presence of update function
-    //if (!mainModule->hasUpdateFunction())
-    //{
-    //    SN_LOG("The main module has no script with " << CallbackName::UPDATE << " function, "
-    //        "the application will not enter the main loop.");
-    //    m_runFlag = false;
-    //}
 
     // Configure time stepper (at last, to minimize the "startup lag")
     m_timeStepper.setDeltaRange(Time::seconds(1.f / 70.f), Time::seconds(1.f / 30.f));
 
-    //if (m_runFlag)
-    //{
-    //    // Call start callbacks
-    //    callVoidCallback(CallbackName::START);
-    //}
-
-    if (m_scene)
+    if (m_scene->getQuitFlag())
+        m_runFlag = false;
+    if (m_scene->getChildCount() == 0)
     {
-        if (m_scene->getQuitFlag())
-            m_runFlag = false;
-        if (m_scene->getChildCount() == 0)
-        {
-            SN_DLOG("The scene is empty, the application will quit");
-            m_runFlag = false;
-        }
-    }
-    else
-    {
-        SN_DLOG("No startup scene, the application will quit");
+        SN_DLOG("The scene is empty, the application will quit");
         m_runFlag = false;
     }
 
@@ -157,18 +133,15 @@ int Application::executeEx()
         // Process system GUI messages
         SystemGUI::processEvents();
 
-        if (m_scene)
+        Event ev;
+        while (SystemGUI::get().popEvent(ev))
         {
-            Event ev;
-            while (SystemGUI::get().popEvent(ev))
+            // Forward event to the scene
+            if (!m_scene->onSystemEvent(ev))
             {
-                // Forward event to the scene
-                if (!m_scene->onSystemEvent(ev))
-                {
-                    // If the event has not been handled, perform default actions
-                    if (ev.type == SN_EVENT_WINDOW_CLOSED)
-                        quit();
-                }
+                // If the event has not been handled, perform default actions
+                if (ev.type == SN_EVENT_WINDOW_CLOSED)
+                    quit();
             }
         }
 
@@ -197,13 +170,10 @@ int Application::executeEx()
     // Call destroy callbacks
     //callVoidCallback(CallbackName::DESTROY);
 
-    if (m_scene)
-    {
-        m_scene->destroyChildren();
-        if (m_scene->getRefCount() > 1)
-            SN_ERROR("Scene is leaking " << (m_scene->getRefCount() - 1) << " times");
-        m_scene->release();
-    }
+    m_scene->destroyChildren();
+    if (m_scene->getRefCount() > 1)
+        SN_ERROR("Scene is leaking " << (m_scene->getRefCount() - 1) << " times");
+    m_scene->release();
 
 	AssetDatabase::get().releaseAssets();
 
@@ -324,12 +294,13 @@ Module * Application::loadModule(const String & path)
             // Create Module object
             mod = new Module(*this, info);
             
-            // Load native bindings
             mod->loadNativeBindings(m_scriptEngine);
-
-            // Load static assets and scripts
-            mod->loadAssets();
             mod->compileScripts();
+
+            if (m_scene)
+            {
+                mod->createServices(*m_scene);
+            }
 
             m_modules.insert(std::make_pair(info.directory, mod));
             lastModule = mod;
@@ -341,8 +312,16 @@ Module * Application::loadModule(const String & path)
             throw ex;
             return false;
         }
+    }
 
-        SN_LOG("");
+    SN_LOG("-------------");
+
+    // Load Assets afterwards (so now all services assets would require should be available)
+    for (auto it = modulesToLoad.begin(); it != modulesToLoad.end(); ++it)
+    {
+        // Load static assets
+        const ModuleInfo & info = *it;
+        AssetDatabase::get().loadAssets(info);
     }
 
     // Note: the last loaded module will be the one we requested when calling this function

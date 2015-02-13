@@ -1,9 +1,5 @@
 {
 	"entities":[
-		{
-			"@type":"sn::render::RenderManager",
-			"name":"render_manager"
-		}
 	]
 }
 

@@ -44,6 +44,16 @@ bool ModuleInfo::loadFromFile(const String & pathToProjects, const String & modP
     // Get startup scene if any
     startupScene = toWideString(v["startupScene"].getString());
 
+    // Get services if any
+    if (v["services"].isArray())
+    {
+        const JsonBox::Array & a = v["services"].getArray();
+        for (u32 i = 0; i < a.size(); ++i)
+        {
+            services.push_back(a[i].getString());
+        }
+    }
+
     // Get bindings
     {
         const JsonBox::Array & a = v["bindings"].getArray();

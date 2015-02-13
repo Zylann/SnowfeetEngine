@@ -253,6 +253,24 @@ bool Module::compileScripts()
 }
 
 //------------------------------------------------------------------------------
+void Module::createServices(Scene & scene)
+{
+    for (auto it = m_info.services.begin(); it != m_info.services.end(); ++it)
+    {
+        std::string typeName = *it;
+        if (scene.getChildByType(typeName))
+        {
+            SN_WARNING("Service " << typeName << " already created");
+        }
+        else
+        {
+            SN_LOG("Creating service " << typeName);
+            scene.createChild(typeName);
+        }
+    }
+}
+
+//------------------------------------------------------------------------------
 //void Module::clearCallbacks()
 //{
 //    for (auto it = m_scriptCallbacks.begin(); it != m_scriptCallbacks.end(); ++it)
@@ -300,13 +318,6 @@ bool Module::compileScripts()
 //{
 //    return m_scriptCallbacks[CallbackName::UPDATE].size() > 0;
 //}
-
-//------------------------------------------------------------------------------
-bool Module::loadAssets()
-{
-    // TODO
-    return true;
-}
 
 //------------------------------------------------------------------------------
 //void Module::callVoidCallback(std::string cbName)

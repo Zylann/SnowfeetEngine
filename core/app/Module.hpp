@@ -31,6 +31,7 @@ namespace CallbackName
 class Application;
 class ModuleImpl;
 class ScriptManager;
+class Scene;
 
 class SN_API Module
 {
@@ -41,7 +42,7 @@ public:
 
     bool loadNativeBindings(ScriptManager & scriptEngine);
     bool compileScripts();
-    bool loadAssets();
+    void createServices(Scene & scene);
 
     static void calculateDependencies(
         const String & pathToProjects,

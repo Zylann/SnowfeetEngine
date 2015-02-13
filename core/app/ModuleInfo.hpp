@@ -23,6 +23,7 @@ struct ModuleInfo
     std::string scriptNamespace;
     std::vector<String> dependencies;
     String startupScene;
+    std::vector<std::string> services; // class names of sticky entities to create on load
 
     //! The order is important in this container !//
     std::vector<String> bindings;
