@@ -3,9 +3,36 @@
 #include "Context_win32.hpp"
 #include <GL/glew.h>
 #include <GL/wglew.h>
+#include <tchar.h>
 
 namespace sn {
 namespace render {
+
+// TODO Move this as a core/system helper
+std::string Win32_GetWindowLastError()
+{
+       std::string lastError =  _T("");
+       DWORD errorCode = ::GetLastError();
+       if( errorCode != 0 )
+       {
+             LPSTR messageBuffer = NULL;
+             size_t size = FormatMessageA( FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+                                                                   NULL,
+                                                                   errorCode,
+                                                                   MAKELANGID( LANG_NEUTRAL, SUBLANG_DEFAULT ),
+                                                                   (LPSTR)&messageBuffer,
+                                                                   0,
+                                                                   NULL );
+#ifdef UNICODE
+             Win32String message = Win32_AnsiToUnicode(messageBuffer);
+#else
+             std::string message( messageBuffer, size );
+#endif
+             lastError = message;
+             LocalFree( messageBuffer );
+       }
+       return lastError;
+}
 
 //==============================================================================
 // ContextImpl
@@ -125,6 +152,29 @@ HGLRC ContextImpl::glCreateContext(HWND hwnd, HGLRC sharedContext, int majorVers
     pfd.cDepthBits = 32;
     pfd.iLayerType = PFD_MAIN_PLANE;
 
+	// Complete example, FYI
+	//PIXELFORMATDESCRIPTOR  pfd = 
+	//{ 
+	//	sizeof(PIXELFORMATDESCRIPTOR),   // size of this pfd
+	//	1,                               // version number
+	//	PFD_DRAW_TO_WINDOW |             // support window
+	//	PFD_SUPPORT_OPENGL |             // support OpenGL
+	//	PFD_DOUBLEBUFFER,                // double buffered
+	//	PFD_TYPE_RGBA,                   // RGBA type
+	//	32,                              // 32-bit color depth
+	//	0, 0, 0, 0, 0, 0,                // color bits ignored
+	//	0,                               // no alpha buffer
+	//	0,                               // shift bit ignored
+	//	0,                               // no accumulation buffer
+	//	0, 0, 0, 0,                      // accum bits ignored
+	//	32,                              // 32-bit z-buffer
+	//	32,                              // 32-bits stencil buffer
+	//	0,                               // no auxiliary buffer
+	//	PFD_MAIN_PLANE,                  // main layer
+	//	0,                               // reserved
+	//	0, 0, 0                          // layer masks ignored
+	//};
+
     // Use forward-compatible context for version 3.3+
     int contextFlags = 0;
     if ((majorVersion >= 3 && minorVersion >= 3) || majorVersion > 3)
@@ -136,6 +186,8 @@ HGLRC ContextImpl::glCreateContext(HWND hwnd, HGLRC sharedContext, int majorVers
     int pixelFormat;
     float fAttributes[] = { 0, 0 };
     unsigned int countFormats = 0;
+	// TODO Factorise this!
+	bool isValid = false;
     if (multiSampleMode > 1)
     {
         int iAttributes[] = {
@@ -151,7 +203,7 @@ HGLRC ContextImpl::glCreateContext(HWND hwnd, HGLRC sharedContext, int majorVers
             WGL_SAMPLES_ARB, multiSampleMode,
             0, 0
         };
-        wglChoosePixelFormatARB(hdc, iAttributes, fAttributes, 1, &pixelFormat, &countFormats);
+        isValid = wglChoosePixelFormatARB(hdc, iAttributes, fAttributes, 1, &pixelFormat, &countFormats);
     }
     else
     {
@@ -167,8 +219,9 @@ HGLRC ContextImpl::glCreateContext(HWND hwnd, HGLRC sharedContext, int majorVers
             WGL_SAMPLE_BUFFERS_ARB, GL_FALSE,
             0, 0
         };
-        wglChoosePixelFormatARB(hdc, iAttributes, fAttributes, 1, &pixelFormat, &countFormats);
+        isValid = wglChoosePixelFormatARB(hdc, iAttributes, fAttributes, 1, &pixelFormat, &countFormats);
     }
+	//pixelFormat = ChoosePixelFormat(hdc, &pfd);
     if (countFormats != 0)
     {
         if (SetPixelFormat(hdc, pixelFormat, &pfd))
@@ -190,7 +243,7 @@ HGLRC ContextImpl::glCreateContext(HWND hwnd, HGLRC sharedContext, int majorVers
         }
         else
         {
-            SN_ERROR("SetPixelFormat failed");
+            SN_ERROR("SetPixelFormat failed: " << Win32_GetWindowLastError());
         }
     }
     else
