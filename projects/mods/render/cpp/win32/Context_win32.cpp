@@ -161,42 +161,24 @@ HGLRC ContextImpl::glCreateContext(HWND hwnd, HGLRC sharedContext, int majorVers
     int pixelFormat;
     float fAttributes[] = { 0, 0 };
     unsigned int countFormats = 0;
-	// TODO Factorise this!
-	bool isValid = false;
-    if (multiSampleMode > 1)
-    {
-        int iAttributes[] = {
-            WGL_DRAW_TO_WINDOW_ARB, GL_TRUE,
-            WGL_SUPPORT_OPENGL_ARB, GL_TRUE,
-            WGL_ACCELERATION_ARB, WGL_FULL_ACCELERATION_ARB,
-            WGL_COLOR_BITS_ARB, 24,
-            WGL_ALPHA_BITS_ARB, 8,
-            WGL_DEPTH_BITS_ARB, 24,
-            WGL_STENCIL_BITS_ARB, GL_TRUE,
-            WGL_DOUBLE_BUFFER_ARB, GL_TRUE,
-            WGL_SAMPLE_BUFFERS_ARB, GL_TRUE,
-            WGL_SAMPLES_ARB, multiSampleMode,
-            0, 0
-        };
-        isValid = wglChoosePixelFormatARB(hdc, iAttributes, fAttributes, 1, &pixelFormat, &countFormats);
-    }
-    else
-    {
-        int iAttributes[] = {
-            WGL_DRAW_TO_WINDOW_ARB, GL_TRUE,
-            WGL_SUPPORT_OPENGL_ARB, GL_TRUE,
-            WGL_ACCELERATION_ARB, WGL_FULL_ACCELERATION_ARB,
-            WGL_COLOR_BITS_ARB, 24,
-            WGL_ALPHA_BITS_ARB, 8,
-            WGL_DEPTH_BITS_ARB, 24,
-            WGL_STENCIL_BITS_ARB, 0,
-            WGL_DOUBLE_BUFFER_ARB, GL_TRUE,
-            WGL_SAMPLE_BUFFERS_ARB, GL_FALSE,
-            0, 0
-        };
-        isValid = wglChoosePixelFormatARB(hdc, iAttributes, fAttributes, 1, &pixelFormat, &countFormats);
-    }
-	//pixelFormat = ChoosePixelFormat(hdc, &pfd);
+
+    int iAttributes[] = {
+        WGL_DRAW_TO_WINDOW_ARB, GL_TRUE,
+        WGL_SUPPORT_OPENGL_ARB, GL_TRUE,
+        WGL_ACCELERATION_ARB, WGL_FULL_ACCELERATION_ARB,
+        WGL_COLOR_BITS_ARB, 24,
+        WGL_ALPHA_BITS_ARB, 8,
+        WGL_DEPTH_BITS_ARB, 24,
+        WGL_STENCIL_BITS_ARB, GL_TRUE,
+        WGL_DOUBLE_BUFFER_ARB, GL_TRUE,
+        WGL_SAMPLE_BUFFERS_ARB, (multiSampleMode > 1 ? GL_TRUE : GL_FALSE),
+        (multiSampleMode > 1 ? WGL_SAMPLES_ARB : 0), (multiSampleMode > 1 ? multiSampleMode : 0),
+        0, 0
+    };
+
+    wglChoosePixelFormatARB(hdc, iAttributes, fAttributes, 1, &pixelFormat, &countFormats);
+
+    //pixelFormat = ChoosePixelFormat(hdc, &pfd);
     if (countFormats != 0)
     {
         if (SetPixelFormat(hdc, pixelFormat, &pfd))
