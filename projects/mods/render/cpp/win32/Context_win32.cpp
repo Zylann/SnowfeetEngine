@@ -4,35 +4,10 @@
 #include <GL/glew.h>
 #include <GL/wglew.h>
 #include <tchar.h>
+#include <core/system/win32/helpers_win32.hpp>
 
 namespace sn {
 namespace render {
-
-// TODO Move this as a core/system helper
-std::string Win32_GetWindowLastError()
-{
-       std::string lastError =  _T("");
-       DWORD errorCode = ::GetLastError();
-       if( errorCode != 0 )
-       {
-             LPSTR messageBuffer = NULL;
-             size_t size = FormatMessageA( FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
-                                                                   NULL,
-                                                                   errorCode,
-                                                                   MAKELANGID( LANG_NEUTRAL, SUBLANG_DEFAULT ),
-                                                                   (LPSTR)&messageBuffer,
-                                                                   0,
-                                                                   NULL );
-#ifdef UNICODE
-             Win32String message = Win32_AnsiToUnicode(messageBuffer);
-#else
-             std::string message( messageBuffer, size );
-#endif
-             lastError = message;
-             LocalFree( messageBuffer );
-       }
-       return lastError;
-}
 
 //==============================================================================
 // ContextImpl
@@ -243,7 +218,7 @@ HGLRC ContextImpl::glCreateContext(HWND hwnd, HGLRC sharedContext, int majorVers
         }
         else
         {
-            SN_ERROR("SetPixelFormat failed: " << Win32_GetWindowLastError());
+            SN_ERROR("SetPixelFormat failed: " << win32::getLastError());
         }
     }
     else
