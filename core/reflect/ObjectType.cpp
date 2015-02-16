@@ -69,5 +69,17 @@ Object * ObjectType::instantiate() const
     return obj;
 }
 
+//------------------------------------------------------------------------------
+bool operator==(const ObjectType & a, const ObjectType & b)
+{
+    return a.name == b.name;
+}
+
+//------------------------------------------------------------------------------
+bool operator!=(const ObjectType & a, const ObjectType & b)
+{
+    return a.name != b.name;
+}
+
 } // namespace sn
 

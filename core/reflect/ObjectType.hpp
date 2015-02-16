@@ -92,8 +92,11 @@ struct SN_API ObjectType
     /// \return pointer to dynamically allocated object instance, or null if the object
     /// couldn't be allocated (as for abstract types).
     Object * instantiate() const;
-
 };
+
+bool SN_API operator==(const ObjectType & a, const ObjectType & b);
+bool SN_API operator!=(const ObjectType & a, const ObjectType & b);
+
 
 } // namespace sn
 
