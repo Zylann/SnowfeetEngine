@@ -1,5 +1,5 @@
-﻿#include "Context.hpp"
-#include <GL/glew.h>
+﻿#include <GL/glew.h>
+#include "Context.hpp"
 
 namespace sn {
 namespace render {

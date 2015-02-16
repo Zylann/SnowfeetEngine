@@ -10,6 +10,7 @@ This file is part of the SnowfeetEngine project.
 #include <core/math/Vector2.hpp>
 #include <core/math/Vector3.hpp>
 #include <core/math/Color.hpp>
+#include <core/app/ScriptObject.hpp>
 #include <vector>
 #include <GL/glew.h>
 
@@ -27,9 +28,10 @@ enum PrimitiveType
     SNR_PT_QUADS          = 3
 };
 
-class Mesh
+class Mesh : public ScriptObject
 {
 public:
+    SN_SCRIPT_OBJECT(sn::render::Mesh, sn::ScriptObject)
 
     Mesh() :
         m_primitiveType(SNR_PT_TRIANGLES),

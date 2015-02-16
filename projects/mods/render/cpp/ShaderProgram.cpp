@@ -115,7 +115,7 @@ bool ShaderProgram::loadFromSourceCode(const std::unordered_map<ShaderType, std:
             unload();
             return false;
         }
-        if (m_shaders.size() < shaderType)
+        if (m_shaders.size() < static_cast<u32>(shaderType)) // enums are ints, not uints
             m_shaders.resize(shaderType + 1, nullptr);
         m_shaders[shaderType] = new Shader(sID);
     }

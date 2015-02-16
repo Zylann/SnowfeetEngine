@@ -7,6 +7,8 @@
 namespace sn {
 namespace render {
 
+class Camera;
+
 class RenderManager : public Entity
 {
 public:
@@ -23,6 +25,7 @@ public:
     
 private:
     void render();
+    void renderCamera(Camera & camera);
 
 private:
     Context * m_context;

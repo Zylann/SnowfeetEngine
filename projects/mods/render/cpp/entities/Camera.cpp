@@ -3,6 +3,8 @@
 namespace sn {
 namespace render {
 
+const std::string Camera::TAG = "Camera";
+
 void Camera::lookAt(Vector3f position)
 {
     // TODO
