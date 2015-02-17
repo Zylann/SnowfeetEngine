@@ -12,70 +12,63 @@ This file is part of the SnowfeetEngine project.
 namespace sn
 {
 
-/// \brief Wraps an object inheriting RefCounted and 
-/// automatically addRef() and release() it upon construction and destruction.
+/// \brief RAII ownership container for RefCounted types.
+/// Automatically calls addRef() and release().
 template <class RefCounted_T>
-class SharedRef
+class SN_API SharedRef
 {
 public:
     SharedRef() :
-		m_obj(nullptr)
+		m_ptr(nullptr)
 	{}
 
-    explicit SharedRef(RefCounted_T * obj) :
-        m_obj(obj)
+    explicit SharedRef(RefCounted_T * ptr) :
+        m_ptr(obj)
     {
 		addRef();
     }
-
-    SharedRef(const RefCountedWrapper & other) :
-		m_obj(other.m_obj)
-    {
-		addRef();
-	}
 
     ~SharedRef()
     {
 		release();
 	}
+	
+	//-------------------------------------------
+	// Methods
+	//-------------------------------------------
 
-	inline bool isNull() const { return m_obj == nullptr; }
+	inline bool isNull() const { return m_ptr == nullptr; }
+	inline RefCounted_T * get() const { return m_ptr; }
 
-    inline RefCounted_T * operator->() { return m_obj; }
-    inline RefCounted_T & operator*() { return *m_obj; }
-
-    inline const RefCounted_T * operator->() const { return m_obj; }
-    inline const RefCounted_T & operator*() const { return *m_obj; }
-
-    inline SharedRef & operator=(RefCountedWrapper & other)
+	inline void set(RefCounted_T * ptr)
 	{
-		release();
-		m_obj = other.m_obj;
-		addRef();
+		if (m_ptr)
+			m_ptr->release();
+		m_ptr = ptr;
+		if (m_ptr)
+			m_ptr->addRef();
+	}
+
+	//-------------------------------------------
+	// Operators
+	//-------------------------------------------
+
+	//inline RefCounted_T * operator->() { return m_obj; }
+    //inline RefCounted_T & operator*() { return *m_obj; }
+
+    //inline const RefCounted_T * operator->() const { return m_obj; }
+    //inline const RefCounted_T & operator*() const { return *m_obj; }
+
+	inline SharedRef & operator=(SharedRef & other)
+	{
+		set(other.m_ptr);
 		return *this;
 	}
 
 private:
-	inline void addRef()
-	{
-		if (m_obj)
-			m_obj->addRef();
-	}
+    RefCounted_T * m_ptr;
 
-	inline void release()
-	{
-		if (m_obj)
-			m_obj->release();
-		m_obj = nullptr;
-	}
-
-    RefCounted_T * m_obj;
 };
-
-//class WeakRefCountedWrapper
-//{
-//
-//};
 
 } // namespace sn
 
