@@ -4,8 +4,8 @@ Copyright (C) 2015-2015 Marc GILLERON
 This file is part of the SnowfeetEngine project.
 */
 
-#ifndef __HEADER_SN_REFCOUNTEDWRAPPER__
-#define __HEADER_SN_REFCOUNTEDWRAPPER__
+#ifndef __HEADER_SN_SHAREDREF__
+#define __HEADER_SN_SHAREDREF__
 
 #include <core/util/RefCounted.hpp>
 
@@ -15,26 +15,26 @@ namespace sn
 /// \brief Wraps an object inheriting RefCounted and 
 /// automatically addRef() and release() it upon construction and destruction.
 template <class RefCounted_T>
-class RefCountedWrapper
+class SharedRef
 {
 public:
-	RefCountedWrapper() :
+    SharedRef() :
 		m_obj(nullptr)
 	{}
 
-    explicit RefCountedWrapper(RefCounted_T * obj):
+    explicit SharedRef(RefCounted_T * obj) :
         m_obj(obj)
     {
 		addRef();
     }
 
-    RefCountedWrapper(const RefCountedWrapper & other):
+    SharedRef(const RefCountedWrapper & other) :
 		m_obj(other.m_obj)
     {
 		addRef();
 	}
 
-    ~RefCountedWrapper()
+    ~SharedRef()
     {
 		release();
 	}
@@ -47,7 +47,7 @@ public:
     inline const RefCounted_T * operator->() const { return m_obj; }
     inline const RefCounted_T & operator*() const { return *m_obj; }
 
-	inline RefCountedWrapper & operator=(RefCountedWrapper & other)
+    inline SharedRef & operator=(RefCountedWrapper & other)
 	{
 		release();
 		m_obj = other.m_obj;
@@ -72,6 +72,11 @@ private:
     RefCounted_T * m_obj;
 };
 
+//class WeakRefCountedWrapper
+//{
+//
+//};
+
 } // namespace sn
 
-#endif // __HEADER_SN_REFCOUNTEDWRAPPER__
+#endif // __HEADER_SN_SHAREDREF__
