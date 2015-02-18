@@ -28,6 +28,10 @@ public:
 		m_sharedState->release();
 	}
 
+	//---------------------------------------------
+	// Methods
+	//---------------------------------------------
+
 	void set(RefCounted_T * ptr)
 	{
 		if (m_ptr)
@@ -48,6 +52,16 @@ public:
 	RefCounted_T * get()
 	{
 		return m_ptr;
+	}
+
+	//---------------------------------------------
+	// Operators
+	//---------------------------------------------
+
+	inline WeakRef & operator=(SharedRef & other)
+	{
+		set(other.m_ptr);
+		return *this;
 	}
 
 private:
