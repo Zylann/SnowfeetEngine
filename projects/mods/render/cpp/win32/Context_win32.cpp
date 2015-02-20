@@ -1,8 +1,12 @@
 #include <core/util/Log.hpp>
 #include <core/util/assert.hpp>
+
+//#include "../gl_check.hpp"
 #include "Context_win32.hpp"
+
 #include <GL/glew.h>
 #include <GL/wglew.h>
+
 #include <tchar.h>
 #include <core/system/win32/helpers_win32.hpp>
 

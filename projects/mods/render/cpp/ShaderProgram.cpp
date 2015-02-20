@@ -1,5 +1,6 @@
 ﻿#include <core/util/Log.hpp>
 #include <core/util/stringutils.hpp>
+#include "gl_check.hpp"
 #include "ShaderLoader.hpp"
 #include "ShaderProgram.hpp"
 
@@ -71,13 +72,13 @@ void ShaderProgram::unload()
             Shader * shader = *it;
             if (shader)
             {
-                glDetachShader(m_programID, shader->ID);
-                glDeleteShader(shader->ID);
+                glCheck(glDetachShader(m_programID, shader->ID));
+                glCheck(glDeleteShader(shader->ID));
                 delete shader;
             }
         }
 
-        glDeleteProgram(m_programID);
+        glCheck(glDeleteProgram(m_programID));
         m_programID = 0;
     }
 
@@ -122,14 +123,14 @@ bool ShaderProgram::loadFromSourceCode(const std::unordered_map<ShaderType, std:
 
     // Link shaders into a program
     SN_LOG("linking shader program...");
-    m_programID = glCreateProgram();
+    m_programID = glCreateProgram(); // TODO Verify output value?
     // Attach shaders to the program
     for (auto it = m_shaders.begin(); it != m_shaders.end(); ++it)
     {
         Shader * shader = *it;
         if (shader)
         {
-            glAttachShader(m_programID, shader->ID);
+            glCheck(glAttachShader(m_programID, shader->ID));
         }
     }
 
@@ -140,23 +141,23 @@ bool ShaderProgram::loadFromSourceCode(const std::unordered_map<ShaderType, std:
     //		glBindAttribLocation(m_programID, Attrib::NORMAL, "in_Normal");
 
     // Link
-    glLinkProgram(m_programID);
+    glCheck(glLinkProgram(m_programID));
 
     // Check errors
     GLint isLinked = 0;
-    glGetProgramiv(m_programID, GL_LINK_STATUS, &isLinked);
+    glCheck(glGetProgramiv(m_programID, GL_LINK_STATUS, &isLinked));
     if (isLinked != GL_TRUE)
     {
         // Retrieve error log size
         GLint errorSize = 0;
-        glGetProgramiv(m_programID, GL_INFO_LOG_LENGTH, &errorSize);
+        glCheck(glGetProgramiv(m_programID, GL_INFO_LOG_LENGTH, &errorSize));
 
         // This string will contain the error message
         char * errorStr = new char[errorSize + 1];
         errorStr[errorSize] = '\0';
 
         // Retrieve the error log
-        glGetProgramInfoLog(m_programID, errorSize, &errorSize, errorStr);
+        glCheck(glGetProgramInfoLog(m_programID, errorSize, &errorSize, errorStr));
 
         // Display the error
         SN_ERROR("ShaderProgram::load: Link error(s).");
@@ -178,7 +179,7 @@ bool ShaderProgram::loadShaderFromSourceCode(GLuint & outShaderID, ShaderType ty
 
     // Create and compile shader
     GLenum type = shaderTypeToGL(typeGeneric);
-    outShaderID = glCreateShader(type);
+    outShaderID = glCreateShader(type); // TODO Verify output?
     if (outShaderID == 0)
     {
         SN_ERROR("ShaderProgram::loadShaderFromSourceCode: Unable to create shader. Cause: unknown type (" << toString(typeGeneric) << ")");
@@ -187,24 +188,24 @@ bool ShaderProgram::loadShaderFromSourceCode(GLuint & outShaderID, ShaderType ty
 
     const GLchar * sourceStr = source.c_str();
 
-    glShaderSource(outShaderID, 1, &sourceStr, 0);
-    glCompileShader(outShaderID);
+    glCheck(glShaderSource(outShaderID, 1, &sourceStr, 0));
+    glCheck(glCompileShader(outShaderID));
 
     // Check compilation
     GLint isCompiled = 0;
-    glGetShaderiv(outShaderID, GL_COMPILE_STATUS, &isCompiled);
+    glCheck(glGetShaderiv(outShaderID, GL_COMPILE_STATUS, &isCompiled));
     if (isCompiled != GL_TRUE)
     {
         // Retrieve error log size
         GLint errorSize = 0;
-        glGetShaderiv(outShaderID, GL_INFO_LOG_LENGTH, &errorSize);
+        glCheck(glGetShaderiv(outShaderID, GL_INFO_LOG_LENGTH, &errorSize));
 
         // This string will contain the error message
         char * errorStr = new char[errorSize + 1];
         errorStr[errorSize] = '\0';
 
         // Retrieve the error log
-        glGetShaderInfoLog(outShaderID, errorSize, &errorSize, errorStr);
+        glCheck(glGetShaderInfoLog(outShaderID, errorSize, &errorSize, errorStr));
 
         // Display the error
         SN_ERROR("ShaderProgram::loadShader: Compile error(s). (shader type is " << toString(typeGeneric) << ")");
@@ -212,7 +213,7 @@ bool ShaderProgram::loadShaderFromSourceCode(GLuint & outShaderID, ShaderType ty
 
         // Free memory and return
         delete[] errorStr;
-        glDeleteShader(outShaderID);
+        glCheck(glDeleteShader(outShaderID));
 
         return false; // Error
     }
@@ -222,27 +223,27 @@ bool ShaderProgram::loadShaderFromSourceCode(GLuint & outShaderID, ShaderType ty
 
 void ShaderProgram::setParam(const std::string & name, f32 value)
 {
-    glUniform1f(getUniformLocation(name), value);
+    glCheck(glUniform1f(getUniformLocation(name), value));
 }
 
 void ShaderProgram::setParam(const std::string & name, f32 x, f32 y)
 {
-    glUniform2f(getUniformLocation(name), x, y);
+    glCheck(glUniform2f(getUniformLocation(name), x, y));
 }
 
 void ShaderProgram::setParam(const std::string & name, f32 x, f32 y, f32 z)
 {
-    glUniform3f(getUniformLocation(name), x, y, z);
+    glCheck(glUniform3f(getUniformLocation(name), x, y, z));
 }
 
 void ShaderProgram::setParam(const std::string & name, f32 x, f32 y, f32 z, f32 w)
 {
-    glUniform4f(getUniformLocation(name), x, y, z, w);
+    glCheck(glUniform4f(getUniformLocation(name), x, y, z, w));
 }
 
 void ShaderProgram::setParam(const std::string & name, const f32 matrixValues[16], bool transpose)
 {
-    glUniformMatrix4fv(getUniformLocation(name), 1, transpose, matrixValues);
+    glCheck(glUniformMatrix4fv(getUniformLocation(name), 1, transpose, matrixValues));
 }
 
 GLint ShaderProgram::getUniformLocation(const std::string & name)
@@ -251,7 +252,7 @@ GLint ShaderProgram::getUniformLocation(const std::string & name)
     auto it = m_uniforms.find(name);
     if (it == m_uniforms.end())
     {
-        loc = glGetUniformLocation(m_programID, name.c_str());
+        loc = glCheck(glGetUniformLocation(m_programID, name.c_str()));
         m_uniforms[name] = loc;
     }
     else

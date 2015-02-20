@@ -1,4 +1,5 @@
-﻿#include <GL/glew.h>
+﻿#include "gl_check.hpp"
+#include <GL/glew.h>
 #include "Context.hpp"
 
 namespace sn {
@@ -27,12 +28,12 @@ void Context::drawMesh(const Mesh & mesh)
     if (mesh.isEmpty())
         return;
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, &mesh.getVertices()[0]);
-    glEnableVertexAttribArray(0);
+    glCheck(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, &mesh.getVertices()[0]));
+    glCheck(glEnableVertexAttribArray(0));
 
-    glDrawArrays(mesh.getInternalPrimitiveType(), 0, mesh.getVertices().size());
+    glCheck(glDrawArrays(mesh.getInternalPrimitiveType(), 0, mesh.getVertices().size()));
 
-    glDisableVertexAttribArray(0);
+    glCheck(glDisableVertexAttribArray(0));
 }
 
 void Context::useProgram(const ShaderProgram * shader)
@@ -40,12 +41,12 @@ void Context::useProgram(const ShaderProgram * shader)
     if (shader)
     {
         // Start using shader
-        glUseProgram(shader->getID());
+        glCheck(glUseProgram(shader->getID()));
     }
     else
     {
         // Stop using shader
-        glUseProgram(0);
+        glCheck(glUseProgram(0));
     }
 }
 
