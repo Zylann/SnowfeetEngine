@@ -17,7 +17,8 @@ public:
 
     Camera():
         Entity(),
-        m_isOrtho(false)
+        m_isOrtho(false),
+        m_drawOrder(0)
     {}
 
     void lookAt(Vector3f position);
