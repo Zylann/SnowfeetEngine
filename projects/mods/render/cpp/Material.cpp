@@ -5,8 +5,6 @@ namespace render {
 
 Material::~Material()
 {
-    if (m_shader)
-        m_shader->release();
 }
 
 bool Material::canLoad(const AssetMetadata & meta) const
@@ -18,11 +16,7 @@ bool Material::canLoad(const AssetMetadata & meta) const
 void Material::setShader(ShaderProgram * shader)
 {
     SN_ASSERT(shader != nullptr, "Material shader cannot be null");
-    if (m_shader)
-        m_shader->release();
-    m_shader = shader;
-    if (m_shader)
-        m_shader->addRef();
+	m_shader.set(shader);
 }
 
 

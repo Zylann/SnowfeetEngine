@@ -9,17 +9,11 @@ const std::string Drawable::TAG = "Drawable";
 
 Drawable::~Drawable()
 {
-    if (m_material)
-        m_material->release();
 }
 
 void Drawable::setMaterial(Material * material)
 {
-    if (m_material)
-        m_material->release();
-    m_material = material;
-    if (m_material)
-        m_material->addRef();
+    m_material.set(material);
 }
 
 Drawable::Drawable()

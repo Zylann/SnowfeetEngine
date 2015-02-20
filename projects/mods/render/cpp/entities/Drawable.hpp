@@ -2,6 +2,7 @@
 #define __HEADER_SN_RENDER_DRAWABLE__
 
 #include <core/scene/Entity.hpp>
+#include <core/util/SharedRef.hpp>
 //#include <mods/render/cpp/Mesh.hpp>
 #include "../Mesh.hpp"
 #include "../Material.hpp"
@@ -26,7 +27,7 @@ public:
     inline s32 getDrawOrder() const { return m_drawOrder; }
 
     void setMaterial(Material * material);
-    inline Material * getMaterial() const { return m_material; }
+    inline Material * getMaterial() const { return m_material.get(); }
 
 private:
     ~Drawable();
@@ -34,7 +35,7 @@ private:
 private:
     std::bitset<32> m_visibilityFlags;
     Mesh * m_mesh;
-    Material * m_material;
+    SharedRef<Material> m_material;
     s32 m_drawOrder;
 
 };

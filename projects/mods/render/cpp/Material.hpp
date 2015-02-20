@@ -2,6 +2,7 @@
 #define __HEADER_SN_RENDER_MATERIAL__
 
 #include <core/asset/Asset.hpp>
+#include <core/util/SharedRef.hpp>
 #include "ShaderProgram.hpp"
 
 namespace sn {
@@ -29,13 +30,13 @@ public:
     //------------------------------------
 
     void setShader(ShaderProgram * shader);
-    inline ShaderProgram * getShader() const { return m_shader; }
+    inline ShaderProgram * getShader() const { return m_shader.get(); }
 
 private:
     ~Material();
 
 private:
-    ShaderProgram * m_shader;
+    SharedRef<ShaderProgram> m_shader;
 
 };
 
