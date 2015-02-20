@@ -23,14 +23,16 @@ public:
 	{}
 
     explicit SharedRef(RefCounted_T * ptr) :
-        m_ptr(obj)
+        m_ptr(ptr)
     {
-		addRef();
+		if (m_ptr)
+			m_ptr->addRef();
     }
 
     ~SharedRef()
     {
-		release();
+		if (m_ptr)
+			m_ptr->release();
 	}
 	
 	//-------------------------------------------

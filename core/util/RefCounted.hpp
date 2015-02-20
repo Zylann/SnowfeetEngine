@@ -12,7 +12,7 @@ This file is part of the SnowfeetEngine project.
 namespace sn
 {
 
-/// \brief Internal reference counter
+/// \brief Internal reference counter for objects inheriting RefCounted
 class SharedState
 {
 public:
