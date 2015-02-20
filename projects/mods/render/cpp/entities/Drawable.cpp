@@ -18,7 +18,7 @@ void Drawable::setMaterial(Material * material)
 
 Drawable::Drawable()
 {
-    m_mesh = new Mesh();
+    m_mesh.set(new Mesh());
 }
 
 void Drawable::onReady()

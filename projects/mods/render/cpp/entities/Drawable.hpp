@@ -21,7 +21,7 @@ public:
 
     void onReady() override;
 
-    const Mesh * getMesh() const { return m_mesh; }
+    const Mesh * getMesh() const { return m_mesh.get(); }
 
     inline void setDrawOrder(s32 order) { m_drawOrder = order; }
     inline s32 getDrawOrder() const { return m_drawOrder; }
@@ -34,7 +34,7 @@ private:
 
 private:
     std::bitset<32> m_visibilityFlags;
-    Mesh * m_mesh;
+    SharedRef<Mesh> m_mesh;
     SharedRef<Material> m_material;
     s32 m_drawOrder;
 
