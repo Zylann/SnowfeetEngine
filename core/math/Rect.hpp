@@ -77,6 +77,36 @@ struct Rect
     }
 
     //-----------------------------
+    bool intersects(const Rect<T> & other)
+    {
+        return  maxY() >= other.minY() &&
+                minY() <= other.maxY() &&
+                maxX() >= other.minX() &&
+                minX() <= other.maxX();
+    }
+
+    //-----------------------------
+    void addPoint(const T px, const T py)
+    {
+        if (px < x)
+            x = px;
+        if (py < y)
+            y = py;
+        if (px - x >= width)
+            width = px - x;
+        if (py - y >= height)
+            height = py - y;
+    }
+
+    //-----------------------------
+    std::string toString()
+    {
+        std::stringstream ss;
+        ss << "(x=" << x << ", y=" << y << ", w=" << width << ", h=" << height << ")";
+        return ss.str();
+    }
+
+    //-----------------------------
     inline T minX() const { return x; }
     inline T minY() const { return y; }
     inline T maxX() const { return x + width; }
