@@ -199,6 +199,31 @@ inline u32 bitcount(u32 value)
     return count;
 }
 
+// Nice documentation about bit hacks:
+// http://graphics.stanford.edu/~seander/bithacks.html
+
+/// \brief Tests if the given number is a power of two.
+inline bool isPowerOfTwo(u32 x)
+{
+    return (x != 0) && !(x & (x - 1));
+}
+
+/// \brief Calculates the base 2 logarithm of the given unsigned integer.
+inline u32 u32log2(u32 x)
+{
+    u32 r = 0;
+    while (x >>= 1)
+        ++r;
+    return r;
+}
+
+/// \brief Calculates the next power-of-2, greater than x number.
+/// If x is a power of two, the next power of two is returned.
+inline u32 upperPowerOfTwo(u32 x)
+{
+    return 1 << (u32log2(x) + 1);
+}
+
 // TODO math: fast rsqrt for vector normalization
 
 } // namespace math
