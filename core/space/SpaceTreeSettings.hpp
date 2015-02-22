@@ -1,15 +1,15 @@
-#ifndef __HEADER_SN_SPACE_QUADTREESETTINGS__
-#define __HEADER_SN_SPACE_QUADTREESETTINGS__
+#ifndef __HEADER_SN_SPACE_SPACETREESETTINGS__
+#define __HEADER_SN_SPACE_SPACETREESETTINGS__
 
 #include <core/types.hpp>
 
 namespace sn
 {
 
-class SN_API QuadTreeSettings
+class SN_API SpaceTreeSettings
 {
 public:
-    QuadTreeSettings() :
+    SpaceTreeSettings() :
         m_maxDepth(4),
         m_rootSize(1024),
         m_worldScale(1)

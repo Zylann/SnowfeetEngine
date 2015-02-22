@@ -2,7 +2,6 @@
 #define __HEADER_SN_SPACE_QUADTREENODE__
 
 #include <core/space/SpacePartitioner.hpp>
-#include <core/space/QuadTreeSettings.hpp>
 #include <core/util/NonCopyable.hpp>
 #include <core/math/Vector2.hpp>
 #include <unordered_set>
@@ -12,13 +11,30 @@ namespace sn
 
 class QuadTree;
 
-/// \brief Internal data structure used by QuadTree.
-/// Works with integer coordinates for better efficiency.
-class QuadTreeNode : public NonCopyable
+class SpaceTreeNodeBase : public NonCopyable
 {
 public:
     typedef std::unordered_set<ISpacePartitioner::Userdata> ObjectsList;
 
+    SpaceTreeNodeBase(u32 size, u32 depth) :
+        m_size(size),
+        m_depth(depth)
+    {}
+
+    inline const ObjectsList & getObjects() const { return m_objects; }
+
+protected:
+    s32 m_size;
+    u32 m_depth;
+
+    ObjectsList m_objects;
+};
+
+/// \brief Internal data structure used by QuadTree.
+/// Works with integer coordinates for better efficiency.
+class QuadTreeNode : public SpaceTreeNodeBase
+{
+public:
     static const u32 INVALID_QUAD = 4;
 
     QuadTreeNode(QuadTree & manager, const Vector2i & position, u32 size, u32 depth);
@@ -31,11 +47,6 @@ public:
     /// \brief Removes an object from this node.
     /// Assumes that the object's bounds are entirely within the node.
     void remove(ISpacePartitioner::Userdata obj, const IntRect & bounds);
-
-    inline const ObjectsList & getObjects() const
-    {
-        return m_objects;
-    }
 
     inline bool isLeaf() { return m_children[0] == nullptr; }
     inline bool isEmpty() { return m_objects.empty() && m_children[0] == nullptr; }
@@ -66,10 +77,6 @@ private:
     QuadTreeNode * m_children[4];
 
     Vector2i m_position;
-    s32 m_size;
-    u32 m_depth;
-
-    ObjectsList m_objects;
 };
 
 } // namespace sn

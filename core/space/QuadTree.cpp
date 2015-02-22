@@ -17,7 +17,7 @@ QuadTree::~QuadTree()
 }
 
 //------------------------------------------------------------------------------
-void QuadTree::applySettings(const QuadTreeSettings & newSettings)
+void QuadTree::applySettings(const SpaceTreeSettings & newSettings)
 {
     m_settings = newSettings;
     m_settings.fix();
@@ -40,10 +40,10 @@ void QuadTree::add(Userdata obj, const FloatRect & bounds)
 IntRect QuadTree::convertObjectBounds(const FloatRect & bounds)
 {
     return IntRect::fromPositionSize(
-        bounds.x * m_settings.getWorldScale(),
-        bounds.y * m_settings.getWorldScale(),
-        bounds.width * m_settings.getWorldScale(),
-        bounds.height * m_settings.getWorldScale()
+        static_cast<s32>(bounds.x() * m_settings.getWorldScale()),
+        static_cast<s32>(bounds.y() * m_settings.getWorldScale()),
+        static_cast<s32>(bounds.width() * m_settings.getWorldScale()),
+        static_cast<s32>(bounds.height() * m_settings.getWorldScale())
     );
 }
 
@@ -105,13 +105,13 @@ void QuadTree::debugPrint(std::ostream & os)
     os << "Roots: " << m_roots.size() << std::endl;
     os << "KeyBounds: " << keyBounds.toString() << std::endl;
 
-    unsigned int xlim = 79;
-    unsigned int ylim = 79;
+    s32 xlim = 79;
+    s32 ylim = 79;
 
-    if (keyBounds.width > xlim)
-        keyBounds.width = xlim;
-    if (keyBounds.height > ylim)
-        keyBounds.height = ylim;
+    if (keyBounds.width() > xlim)
+        keyBounds.width() = xlim;
+    if (keyBounds.height() > ylim)
+        keyBounds.height() = ylim;
 
     os << "Grid: " << std::endl;
     for (s32 y = keyBounds.minY(); y < keyBounds.maxY(); ++y)

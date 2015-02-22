@@ -26,8 +26,8 @@ Window::Window(SystemGUI & manager, WindowParams params):
     if (params.style & SN_WS_CENTERED)
     {
         Vector2u desktopSize = SystemGUI::getDesktopSize();
-        params.rect.x = (static_cast<s32>(desktopSize.x()) - params.rect.width) / 2;
-        params.rect.y = (static_cast<s32>(desktopSize.y()) - params.rect.height) / 2;
+        params.rect.x() = (static_cast<s32>(desktopSize.x()) - params.rect.width()) / 2;
+        params.rect.y() = (static_cast<s32>(desktopSize.y()) - params.rect.height()) / 2;
     }
 
     onCreate(params, isFirst);

@@ -1,32 +1,35 @@
 #include <core/util/Log.hpp>
 #include <core/math/math.hpp>
-#include "QuadTreeSettings.hpp"
+#include "SpaceTreeSettings.hpp"
 
 namespace sn
 {
 
-void QuadTreeSettings::setMaxDepth(u32 maxDepth)
+//------------------------------------------------------------------------------
+void SpaceTreeSettings::setMaxDepth(u32 maxDepth)
 {
     m_maxDepth = maxDepth;
 }
 
-void QuadTreeSettings::setRootSize(s32 rootSize)
+//------------------------------------------------------------------------------
+void SpaceTreeSettings::setRootSize(s32 rootSize)
 {
     m_rootSize = rootSize;
 }
 
-void QuadTreeSettings::fix()
+//------------------------------------------------------------------------------
+void SpaceTreeSettings::fix()
 {
     if (!math::isPowerOfTwo(m_rootSize))
     {
-        SN_WARNING("QuadTreeSettings rootSize is not a power of two. Adjusting...");
+        SN_WARNING("SpaceTreeSettings rootSize is not a power of two. Adjusting...");
         m_rootSize = math::upperPowerOfTwo(m_rootSize);
         SN_DLOG("rootSize=" << m_rootSize);
     }
 
     if ((m_rootSize >> m_maxDepth) < 1)
     {
-        SN_WARNING("QuadTreeSettings rootSize is not valid for integer representation. Adjusting...");
+        SN_WARNING("SpaceTreeSettings rootSize is not valid for integer representation. Adjusting...");
 
         s32 scale = 1;
         while ((m_rootSize >> m_maxDepth) < 1)

@@ -79,10 +79,10 @@ void WindowImpl::onEvent(UINT message, WPARAM wParam, LPARAM lParam)
     {
         e.type = SN_EVENT_WINDOW_RESIZED;
         IntRect r = r_window.getClientRect();
-        e.window.x = r.x;
-        e.window.y = r.y;
-        e.window.width = r.width;
-        e.window.height = r.height;
+        e.window.x = r.x();
+        e.window.y = r.y();
+        e.window.width = r.width();
+        e.window.height = r.height();
         manager.pushEvent(e);
     }
         break;
@@ -279,8 +279,8 @@ void Window::setRect(IntRect rect)
         0,
         rect.minX(),
         rect.minY(),
-        rect.width,
-        rect.height,
+        rect.width(),
+        rect.height(),
         SWP_NOZORDER | SWP_NOACTIVATE
     );
 }

@@ -15,7 +15,7 @@ This file is part of the SnowfeetEngine project.
 #include <core/math/Range.hpp>
 #include <core/math/Vector.hpp>
 #include <core/math/Quaternion.hpp>
-#include <core/math/Rect.hpp>
+#include <core/math/Area.hpp>
 #include <core/math/Color.hpp>
 #include <core/math/Matrix4.hpp>
 
@@ -146,30 +146,30 @@ inline void unserialize(JsonBox::Value & o, Vector<s32,N> & vec)
 
 //------------------------------------------------------------------------------
 template <typename T>
-inline void serialize(JsonBox::Value & o, const Rect<T> & rect)
+inline void serialize(JsonBox::Value & o, const Area<T,2> & rect)
 {
-    o["x"] = rect.left;
-    o["y"] = rect.top;
-    o["w"] = rect.width;
-    o["h"] = rect.height;
+    o["x"] = rect.x();
+    o["y"] = rect.y();
+    o["w"] = rect.width();
+    o["h"] = rect.height();
 }
 
 //------------------------------------------------------------------------------
-inline void unserialize(JsonBox::Value & o, FloatRect & rect)
+inline void unserialize(JsonBox::Value & o, Area<f32,2> & rect)
 {
-    rect.x      = static_cast<f32>(o["x"].getDouble());
-    rect.y      = static_cast<f32>(o["y"].getDouble());
-    rect.width  = static_cast<f32>(o["w"].getDouble());
-    rect.height = static_cast<f32>(o["h"].getDouble());
+    rect.x()      = static_cast<f32>(o["x"].getDouble());
+    rect.y()      = static_cast<f32>(o["y"].getDouble());
+    rect.width()  = static_cast<f32>(o["w"].getDouble());
+    rect.height() = static_cast<f32>(o["h"].getDouble());
 }
 
 //------------------------------------------------------------------------------
-inline void unserialize(JsonBox::Value & o, IntRect & rect)
+inline void unserialize(JsonBox::Value & o, Area<s32,2> & rect)
 {
-    rect.x      = o["x"].getInt();
-    rect.y      = o["y"].getInt();
-    rect.width  = o["w"].getInt();
-    rect.height = o["h"].getInt();
+    rect.x()      = o["x"].getInt();
+    rect.y()      = o["y"].getInt();
+    rect.width()  = o["w"].getInt();
+    rect.height() = o["h"].getInt();
 }
 
 //------------------------------------------------------------------------------

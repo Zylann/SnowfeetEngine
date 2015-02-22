@@ -6,10 +6,9 @@ namespace sn
 
 //------------------------------------------------------------------------------
 QuadTreeNode::QuadTreeNode(QuadTree & manager, const Vector2i & position, u32 size, u32 depth) :
+    SpaceTreeNodeBase(size, depth),
     r_manager(manager),
-    m_position(position),
-    m_size(size),
-    m_depth(depth)
+    m_position(position)
 {
     m_children[0] = nullptr;
 }
@@ -119,7 +118,7 @@ u32 QuadTreeNode::findQuadIndex(const IntRect & bounds)
 
     // Test if bounds would fit in one sub-quad:
     // If the size fits regardless of a position
-    if (bounds.width < subSize && bounds.height < subSize)
+    if (bounds.width() < subSize && bounds.height() < subSize)
     {
         Vector2i subCenter = Vector2i(
             m_position.x() + subSize,
@@ -136,8 +135,8 @@ u32 QuadTreeNode::findQuadIndex(const IntRect & bounds)
             // [0][1]
 
             // Calculate which quad to choose
-            choosenQuad = bounds.x - m_position.x() < subSize ? 0 : 1;
-            if (bounds.y - m_position.y() >= subSize)
+            choosenQuad = bounds.x() - m_position.x() < subSize ? 0 : 1;
+            if (bounds.y() - m_position.y() >= subSize)
                 choosenQuad += 2;
         }
     }

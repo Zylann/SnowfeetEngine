@@ -2,6 +2,7 @@
 #define __HEADER_SN_SPACE_QUADTREE__
 
 #include <core/space/QuadTreeNode.hpp>
+#include <core/space/SpaceTreeSettings.hpp>
 #include <core/math/Vector2.hpp>
 #include <unordered_map>
 
@@ -23,7 +24,7 @@ public:
     void query(const FloatRect & bounds, std::vector<Userdata> & results) override;
     void clear();
 
-    inline const QuadTreeSettings & getSettings() const { return m_settings; }
+    inline const SpaceTreeSettings & getSettings() const { return m_settings; }
 
     // TODO setSettings(QuadTreeSettings)
 
@@ -47,11 +48,11 @@ private:
 
     IntRect calculateTotalKeyBounds();
 
-    void applySettings(const QuadTreeSettings & newSettings);
+    void applySettings(const SpaceTreeSettings & newSettings);
     IntRect convertObjectBounds(const FloatRect & bounds);
 
 private:
-    QuadTreeSettings m_settings;
+    SpaceTreeSettings m_settings;
     std::unordered_map<Vector2i,QuadTreeNode*> m_roots;
 
 };
