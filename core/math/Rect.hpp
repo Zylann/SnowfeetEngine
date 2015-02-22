@@ -8,6 +8,7 @@ This file is part of the SnowfeetEngine project.
 #define __HEADER_SN_RECT__
 
 #include <core/types.hpp>
+#include <sstream> // For toString()
 
 namespace sn
 {
@@ -77,12 +78,30 @@ struct Rect
     }
 
     //-----------------------------
-    bool intersects(const Rect<T> & other)
+    bool intersects(const Rect<T> & other) const
     {
-        return  maxY() >= other.minY() &&
-                minY() <= other.maxY() &&
-                maxX() >= other.minX() &&
-                minX() <= other.maxX();
+        return  maxX() >= other.minX() &&
+                maxY() >= other.minY() &&
+                minX() <= other.maxX() &&
+                minY() <= other.maxY();
+    }
+
+    //-----------------------------
+    bool intersects(const T px, const T py, const T pw, const T ph) const
+    {
+        return  maxX() >= px &&
+                maxY() >= py &&
+                minX() <= px + pw &&
+                minY() <= py + ph;
+    }
+
+    //-----------------------------
+    bool intersects(const T px, const T py, const T ps) const
+    {
+        return  maxX() >= px &&
+                maxY() >= py &&
+                minX() <= px + ps &&
+                minY() <= py + ps;
     }
 
     //-----------------------------
@@ -99,7 +118,7 @@ struct Rect
     }
 
     //-----------------------------
-    std::string toString()
+    std::string toString() const
     {
         std::stringstream ss;
         ss << "(x=" << x << ", y=" << y << ", w=" << width << ", h=" << height << ")";
