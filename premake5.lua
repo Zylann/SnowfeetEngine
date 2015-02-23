@@ -38,6 +38,8 @@ solution "SnowfeetEngine"
 	include("main")
 	include("zlib")
 
+	include("tests")
+
 	--------------------------------------------
 	-- Modules
 	--------------------------------------------
