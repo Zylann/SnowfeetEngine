@@ -27,7 +27,29 @@ static inline Vector<T, 3> crossProduct(const Vector<T, 3>& v1, const Vector<T, 
     );
 }
 
+inline size_t getHash(const sn::Vector3i & v)
+{
+    return (((size_t)v.x()) * 73856093)
+		^ (((size_t)v.y()) * 19349663)
+		^ (((size_t)v.z()) * 83492791);
+}
+
 } // namespace sn
+
+/// Std Hash
+namespace std
+{
+    template <>
+    struct hash<sn::Vector3i>
+    {
+        // 32-bit integer (x,y) hash
+        inline size_t operator()(const sn::Vector3i & v) const
+        {
+            return sn::getHash(v);
+        }
+    };
+
+} // namespace std
 
 #endif // __HEADER_SN_VECTOR3__
 
