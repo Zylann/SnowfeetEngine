@@ -11,10 +11,10 @@ namespace sn
 
 /// \brief QuadTree structure with unlimited bounds (my first implementation ever).
 /// It implements a quad grid where each bucket can subdivide to a tree, depending on choosen settings.
-class SN_API QuadTree : public ISpacePartitioner, public NonCopyable
+class SN_API QuadTree : public ISpacePartitioner2D, public NonCopyable
 {
 public:
-    typedef ISpacePartitioner::Userdata Userdata;
+    typedef SpacePartitionUserdata Userdata;
 
     QuadTree();
     ~QuadTree();

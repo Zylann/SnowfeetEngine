@@ -27,7 +27,7 @@ QuadTreeNode::~QuadTreeNode()
 // because we know what is the max depth (just an idea, didn't thought which actual calculations)
 
 //------------------------------------------------------------------------------
-void QuadTreeNode::add(ISpacePartitioner::Userdata obj, const IntRect & bounds)
+void QuadTreeNode::add(SpacePartitionUserdata obj, const IntRect & bounds)
 {
     const u32 maxDepth = r_manager.getSettings().getMaxDepth();
     if (m_depth < maxDepth)
@@ -58,7 +58,7 @@ void QuadTreeNode::add(ISpacePartitioner::Userdata obj, const IntRect & bounds)
 }
 
 //------------------------------------------------------------------------------
-void QuadTreeNode::remove(ISpacePartitioner::Userdata obj, const IntRect & bounds)
+void QuadTreeNode::remove(SpacePartitionUserdata obj, const IntRect & bounds)
 {
     QuadTreeNode * node = findNode(bounds);
     SN_ASSERT(node != nullptr, "Invalid state: QuadTreeNode not found");

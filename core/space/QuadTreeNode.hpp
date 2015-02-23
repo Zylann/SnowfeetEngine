@@ -14,7 +14,7 @@ class QuadTree;
 class SpaceTreeNodeBase : public NonCopyable
 {
 public:
-    typedef std::unordered_set<ISpacePartitioner::Userdata> ObjectsList;
+    typedef std::unordered_set<SpacePartitionUserdata> ObjectsList;
 
     SpaceTreeNodeBase(u32 size, u32 depth) :
         m_size(size),
@@ -42,11 +42,11 @@ public:
 
     /// \brief Adds an object to this node.
     /// Assumes that the object's bounds are entirely within the node.
-    void add(ISpacePartitioner::Userdata obj, const IntRect & bounds);
+    void add(SpacePartitionUserdata obj, const IntRect & bounds);
 
     /// \brief Removes an object from this node.
     /// Assumes that the object's bounds are entirely within the node.
-    void remove(ISpacePartitioner::Userdata obj, const IntRect & bounds);
+    void remove(SpacePartitionUserdata obj, const IntRect & bounds);
 
     inline bool isLeaf() { return m_children[0] == nullptr; }
     inline bool isEmpty() { return m_objects.empty() && m_children[0] == nullptr; }

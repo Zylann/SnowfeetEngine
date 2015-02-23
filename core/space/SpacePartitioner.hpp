@@ -7,23 +7,71 @@
 namespace sn
 {
 
-// TODO This is for 2D, generalize for 3D
-class ISpacePartitioner
+typedef void* SpacePartitionUserdata;
+
+//------------------------------------------------------------------------------
+class SN_API ISpacePartitioner2D
 {
 public:
-    typedef void* Userdata;
+    virtual ~ISpacePartitioner2D() {}
 
-    virtual ~ISpacePartitioner() {}
+    virtual void add(SpacePartitionUserdata obj, const FloatRect & bounds) = 0;
+    virtual void remove(SpacePartitionUserdata obj, const FloatRect & bounds) = 0;
+    virtual void query(const FloatRect & bounds, std::vector<SpacePartitionUserdata> & results) = 0;
 
-    virtual void add(Userdata obj, const FloatRect & bounds) = 0;
-    virtual void remove(Userdata obj, const FloatRect & bounds) = 0;
-    virtual void query(const FloatRect & bounds, std::vector<Userdata> & results) = 0;
     virtual void clear() = 0;
 
-    virtual void move(Userdata obj, const FloatRect & oldBounds, const FloatRect & newBounds)
+    virtual void move(SpacePartitionUserdata obj, const FloatRect & oldBounds, const FloatRect & newBounds)
     {
         remove(obj, oldBounds);
         add(obj, newBounds);
+    }
+
+};
+
+//------------------------------------------------------------------------------
+class SN_API ISpacePartitioner3D : public ISpacePartitioner2D
+{
+public:
+    virtual ~ISpacePartitioner3D() {}
+
+    virtual void add(SpacePartitionUserdata obj, const FloatAABB & bounds) = 0;
+    virtual void remove(SpacePartitionUserdata obj, const FloatAABB & bounds) = 0;
+    virtual void query(const FloatAABB & bounds, std::vector<SpacePartitionUserdata> & results) = 0;
+
+    //virtual void clear() = 0;
+
+    virtual void move(SpacePartitionUserdata obj, const FloatAABB & oldBounds, const FloatAABB & newBounds)
+    {
+        remove(obj, oldBounds);
+        add(obj, newBounds);
+    }
+
+    virtual void add(SpacePartitionUserdata obj, const FloatRect & bounds)
+    {
+        add(obj, FloatAABB::fromPositionSize(
+            bounds.x(), bounds.y(), 0, 
+            bounds.width(), bounds.height(), 0)
+        );
+    }
+
+    virtual void remove(SpacePartitionUserdata obj, const FloatRect & bounds)
+    {
+        remove(obj, FloatAABB::fromPositionSize(
+            bounds.x(), bounds.y(), 0, 
+            bounds.width(), bounds.height(), 0)
+        );
+    }
+
+    virtual void query(const FloatRect & bounds, std::vector<SpacePartitionUserdata> & results)
+    {
+        query(
+            FloatAABB::fromPositionSize(
+                bounds.x(), bounds.y(), 0,
+                bounds.width(), bounds.height(), 0
+            ),
+            results
+        );
     }
 
 };

@@ -133,10 +133,10 @@ void QuadTree::debugPrint(std::ostream & os)
 QuadTree::Boundaries QuadTree::getConvertedBoundaries(const FloatRect & bounds)
 {
     return {
-        floor(bounds.minX() / static_cast<f32>(m_settings.getRootSize())) * m_settings.getWorldScale(),
-        floor(bounds.minY() / static_cast<f32>(m_settings.getRootSize())) * m_settings.getWorldScale(),
-        ceil(bounds.maxX() / static_cast<f32>(m_settings.getRootSize())) * m_settings.getWorldScale(),
-        ceil(bounds.maxY() / static_cast<f32>(m_settings.getRootSize())) * m_settings.getWorldScale()
+        floor(bounds.minX() / static_cast<f32>(m_settings.getRootSize() * m_settings.getWorldScale())),
+        floor(bounds.minY() / static_cast<f32>(m_settings.getRootSize() * m_settings.getWorldScale())),
+        ceil(bounds.maxX() / static_cast<f32>(m_settings.getRootSize() * m_settings.getWorldScale())),
+        ceil(bounds.maxY() / static_cast<f32>(m_settings.getRootSize() * m_settings.getWorldScale()))
     };
 }
 
