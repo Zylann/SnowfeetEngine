@@ -234,8 +234,8 @@ private:
 //        && a.height != b.height;
 //}
 
-typedef Area<s32, 2> IntAABB;
-typedef Area<f32, 2> FloatAABB;
+typedef Area<s32, 3> IntAABB;
+typedef Area<f32, 3> FloatAABB;
 
 } // namespace sn
 
