@@ -7,7 +7,12 @@
 namespace sn
 {
 
-typedef void* SpacePartitionUserdata;
+//------------------------------------------------------------------------------
+class SN_API ISpacePartitionObject
+{
+public:
+	virtual ~ISpacePartitionObject() {}
+};
 
 //------------------------------------------------------------------------------
 class SN_API ISpacePartitioner2D
@@ -15,13 +20,12 @@ class SN_API ISpacePartitioner2D
 public:
     virtual ~ISpacePartitioner2D() {}
 
-    virtual void add(SpacePartitionUserdata obj, const FloatRect & bounds) = 0;
-    virtual void remove(SpacePartitionUserdata obj, const FloatRect & bounds) = 0;
-    virtual void query(const FloatRect & bounds, std::vector<SpacePartitionUserdata> & results) = 0;
-
+    virtual void add(ISpacePartitionObject * obj, const FloatRect & bounds) = 0;
+    virtual void remove(ISpacePartitionObject * obj, const FloatRect & bounds) = 0;
+    virtual void query(const FloatRect & bounds, std::vector<ISpacePartitionObject*> & results) = 0;
     virtual void clear() = 0;
 
-    virtual void move(SpacePartitionUserdata obj, const FloatRect & oldBounds, const FloatRect & newBounds)
+    virtual void move(ISpacePartitionObject * obj, const FloatRect & oldBounds, const FloatRect & newBounds)
     {
         remove(obj, oldBounds);
         add(obj, newBounds);
@@ -35,19 +39,22 @@ class SN_API ISpacePartitioner3D : public ISpacePartitioner2D
 public:
     virtual ~ISpacePartitioner3D() {}
 
-    virtual void add(SpacePartitionUserdata obj, const FloatAABB & bounds) = 0;
-    virtual void remove(SpacePartitionUserdata obj, const FloatAABB & bounds) = 0;
-    virtual void query(const FloatAABB & bounds, std::vector<SpacePartitionUserdata> & results) = 0;
-
+    virtual void add(ISpacePartitionObject * obj, const FloatAABB & bounds) = 0;
+    virtual void remove(ISpacePartitionObject * obj, const FloatAABB & bounds) = 0;
+    virtual void query(const FloatAABB & bounds, std::vector<ISpacePartitionObject*> & results) = 0;
     //virtual void clear() = 0;
 
-    virtual void move(SpacePartitionUserdata obj, const FloatAABB & oldBounds, const FloatAABB & newBounds)
+	//----------------------------------------
+	// Default implementations for 2D subset
+	//----------------------------------------
+
+    virtual void move(ISpacePartitionObject * obj, const FloatAABB & oldBounds, const FloatAABB & newBounds)
     {
         remove(obj, oldBounds);
         add(obj, newBounds);
     }
 
-    virtual void add(SpacePartitionUserdata obj, const FloatRect & bounds)
+    virtual void add(ISpacePartitionObject * obj, const FloatRect & bounds)
     {
         add(obj, FloatAABB::fromPositionSize(
             bounds.x(), bounds.y(), 0, 
@@ -55,7 +62,7 @@ public:
         );
     }
 
-    virtual void remove(SpacePartitionUserdata obj, const FloatRect & bounds)
+    virtual void remove(ISpacePartitionObject * obj, const FloatRect & bounds)
     {
         remove(obj, FloatAABB::fromPositionSize(
             bounds.x(), bounds.y(), 0, 
@@ -63,7 +70,7 @@ public:
         );
     }
 
-    virtual void query(const FloatRect & bounds, std::vector<SpacePartitionUserdata> & results)
+    virtual void query(const FloatRect & bounds, std::vector<ISpacePartitionObject*> & results)
     {
         query(
             FloatAABB::fromPositionSize(
@@ -75,12 +82,6 @@ public:
     }
 
 };
-
-//class ISpacePartitionObject
-//{
-//public:
-//    virtual ~ISpacePartitionObject() {}
-//};
 
 } // namespace sn
 

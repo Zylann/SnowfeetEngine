@@ -14,14 +14,12 @@ namespace sn
 class SN_API QuadTree : public ISpacePartitioner2D, public NonCopyable
 {
 public:
-    typedef SpacePartitionUserdata Userdata;
-
     QuadTree();
     ~QuadTree();
 
-    void add(Userdata obj, const FloatRect & bounds) override;
-    void remove(Userdata obj, const FloatRect & bounds) override;
-    void query(const FloatRect & bounds, std::vector<Userdata> & results) override;
+    void add(ISpacePartitionObject * obj, const FloatRect & bounds) override;
+    void remove(ISpacePartitionObject * obj, const FloatRect & bounds) override;
+    void query(const FloatRect & bounds, std::vector<ISpacePartitionObject*> & results) override;
     void clear();
 
     inline const SpaceTreeSettings & getSettings() const { return m_settings; }

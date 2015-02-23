@@ -1,7 +1,7 @@
 #ifndef __HEADER_SN_SPACE_QUADTREENODE__
 #define __HEADER_SN_SPACE_QUADTREENODE__
 
-#include <core/space/SpacePartitioner.hpp>
+#include <core/space/SpaceTreeNodeBase.hpp>
 #include <core/util/NonCopyable.hpp>
 #include <core/math/Vector2.hpp>
 #include <unordered_set>
@@ -10,25 +10,6 @@ namespace sn
 {
 
 class QuadTree;
-
-class SpaceTreeNodeBase : public NonCopyable
-{
-public:
-    typedef std::unordered_set<SpacePartitionUserdata> ObjectsList;
-
-    SpaceTreeNodeBase(u32 size, u32 depth) :
-        m_size(size),
-        m_depth(depth)
-    {}
-
-    inline const ObjectsList & getObjects() const { return m_objects; }
-
-protected:
-    s32 m_size;
-    u32 m_depth;
-
-    ObjectsList m_objects;
-};
 
 /// \brief Internal data structure used by QuadTree.
 /// Works with integer coordinates for better efficiency.
@@ -42,11 +23,11 @@ public:
 
     /// \brief Adds an object to this node.
     /// Assumes that the object's bounds are entirely within the node.
-    void add(SpacePartitionUserdata obj, const IntRect & bounds);
+    void add(ISpacePartitionObject * obj, const IntRect & bounds);
 
     /// \brief Removes an object from this node.
     /// Assumes that the object's bounds are entirely within the node.
-    void remove(SpacePartitionUserdata obj, const IntRect & bounds);
+    void remove(ISpacePartitionObject * obj, const IntRect & bounds);
 
     inline bool isLeaf() { return m_children[0] == nullptr; }
     inline bool isEmpty() { return m_objects.empty() && m_children[0] == nullptr; }

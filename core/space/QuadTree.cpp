@@ -24,7 +24,7 @@ void QuadTree::applySettings(const SpaceTreeSettings & newSettings)
 }
 
 //------------------------------------------------------------------------------
-void QuadTree::add(Userdata obj, const FloatRect & bounds)
+void QuadTree::add(ISpacePartitionObject * obj, const FloatRect & bounds)
 {
     std::vector<QuadTreeNode*> nodes;
     getOrCreateNodes(bounds, nodes);
@@ -48,7 +48,7 @@ IntRect QuadTree::convertObjectBounds(const FloatRect & bounds)
 }
 
 //------------------------------------------------------------------------------
-void QuadTree::remove(Userdata obj, const FloatRect & bounds)
+void QuadTree::remove(ISpacePartitionObject * obj, const FloatRect & bounds)
 {
     std::vector<QuadTreeNode*> nodes;
     getOrCreateNodes(bounds, nodes);
@@ -74,7 +74,7 @@ void QuadTree::remove(Userdata obj, const FloatRect & bounds)
 }
 
 //------------------------------------------------------------------------------
-void QuadTree::query(const FloatRect & bounds, std::vector<Userdata> & results)
+void QuadTree::query(const FloatRect & bounds, std::vector<ISpacePartitionObject*> & results)
 {
     std::vector<QuadTreeNode*> nodes;
     getNodes(bounds, nodes);
