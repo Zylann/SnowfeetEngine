@@ -6,6 +6,11 @@
 namespace sn
 {
 
+// Helpers
+inline s32 getSizeFromMinMax(s32 min, s32 max) { return max - min + 1; }
+inline f32 getSizeFromMinMax(f32 min, f32 max) { return max - min; }
+
+// TODO Rename Area => Bounds?
 template <typename T, unsigned int N>
 class Area
 {
@@ -23,6 +28,7 @@ public:
     }
 
     //-----------------------------
+	/// \brief Constructs a 2D area from an origin and max position, where max is included in bounds.
     static Area fromMinMax(T minX, T minY, T maxX, T maxY)
     {
         SN_STATIC_ASSERT(N == 2);
@@ -38,10 +44,14 @@ public:
             maxY = minY;
             minY = temp;
         }
-        return Area(minX, minY, maxX - minX, maxY - minY);
+        return Area(minX, minY, 
+			getSizeFromMinMax(minX,maxX), 
+			getSizeFromMinMax(minY,maxY)
+		);
     }
 
     //-----------------------------
+	/// \brief Constructs a 3D area from an origin and max position, where max is included in bounds.
     static Area fromMinMax(T minX, T minY, T minZ, T maxX, T maxY, T maxZ)
     {
         SN_STATIC_ASSERT(N == 3);
@@ -63,7 +73,11 @@ public:
             maxZ = minZ;
             minZ = temp;
         }
-        return Area(minX, minY, minZ, maxX - minX, maxY - minY, maxZ - minZ);
+        return Area(minX, minY, minZ, 
+			getSizeFromMinMax(minX,maxX),
+			getSizeFromMinMax(minY,maxY),
+			getSizeFromMinMax(minZ,maxZ)
+		);
     }
 
     //-----------------------------
