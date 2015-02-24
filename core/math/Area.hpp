@@ -70,10 +70,18 @@ public:
     Area() {}
 
     //-----------------------------
+    Area(const Area<T,N> & other):
+        m_origin(other.m_origin),
+        m_size(other.m_size)
+    {}
+
+    //-----------------------------
     Area(T px, T py, T width, T height) :
         m_origin(px, py),
         m_size(width, height)
-    {}
+    {
+        SN_STATIC_ASSERT(N == 2);
+    }
 
     //-----------------------------
     Area(T px, T py, T pz, T width, T height, T depth) :
@@ -82,7 +90,7 @@ public:
     {}
 
     //-----------------------------
-    bool contains(T px, T py)
+    bool contains(T px, T py) const
     {
         SN_STATIC_ASSERT(N >= 2);
         return px >= x() 
@@ -92,7 +100,7 @@ public:
     }
 
     //-----------------------------
-    bool contains(T px, T py, T pz)
+    bool contains(T px, T py, T pz) const
     {
         SN_STATIC_ASSERT(N == 3);
         return px >= x() 
@@ -101,6 +109,17 @@ public:
             && px < x() + width() 
             && py < y + height() 
             && pz < z + depth();
+    }
+
+    //-----------------------------
+    bool contains(const Vector<T, N> & other) const
+    {
+        for (u32 d = 0; d < N; ++d)
+        {
+            if (other[d] < m_origin[d] || other[d] >= m_origin[d] + m_size[d])
+                return false;
+        }
+        return true;
     }
 
     //-----------------------------
@@ -174,6 +193,19 @@ public:
     }
 
     //-----------------------------
+    void addPoint(const Vector<T, N> & p)
+    {
+        for (u32 d = 0; d < N; ++d)
+        {
+            if (p[d] < m_origin[d])
+                m_origin[d] = px;
+            
+            if (p[d] - m_origin[d] >= m_size[d])
+                m_size[d] = p[d] - m_origin[d];
+        }
+    }
+
+    //-----------------------------
     std::string toString() const
     {
         std::stringstream ss;
@@ -182,8 +214,12 @@ public:
     }
 
     //-----------------------------
-    Vector<T, N> & origin() const { return m_origin; }
-    Vector<T, N> & size() const { return m_size; }
+    Vector<T, N> & origin() { return m_origin; }
+    Vector<T, N> & size() { return m_size; }
+
+    //-----------------------------
+    const Vector<T, N> & origin() const { return m_origin; }
+    const Vector<T, N> & size() const { return m_size; }
 
     //-----------------------------
     Vector<T, N> getMin() const { return m_origin; }
