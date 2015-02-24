@@ -8,7 +8,7 @@
 namespace sn
 {
 
-/// \brief Common code base for SpaceTrees. Not meant to be used for polymorphism.
+/// \brief Common code base for SpaceTreeNodes. Not meant to be used for polymorphism.
 class SpaceTreeNodeBase : public NonCopyable
 {
 public:
