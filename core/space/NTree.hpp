@@ -125,6 +125,7 @@ private:
     //--------------------------
     void getNodes(const Area<f32, 2> & bounds, std::vector<NTreeNode<D>*> & outNodes)
     {
+		SN_STATIC_ASSERT(D == 2);
         Boundaries b = getConvertedBoundaries(bounds);
         for (s32 y = b.min.y(); y < b.max.y(); ++y)
         {
@@ -143,6 +144,7 @@ private:
     //--------------------------
     void getNodes(const Area<f32, 3> & bounds, std::vector<NTreeNode<D>*> & outNodes)
     {
+		SN_STATIC_ASSERT(D == 3);
         Boundaries b = getConvertedBoundaries(bounds);
         for (s32 z = b.min.z(); z < b.max.z(); ++z)
         {
@@ -164,6 +166,7 @@ private:
     //--------------------------
     void getOrCreateNodes(const Area<f32, 2> & bounds, std::vector<NTreeNode<D>*> & outNodes)
     {
+		SN_STATIC_ASSERT(D == 2);
         Boundaries b = getConvertedBoundaries(bounds);
         for (s32 y = b.min.y(); y < b.max.y(); ++y)
         {
@@ -188,6 +191,7 @@ private:
     //--------------------------
     void getOrCreateNodes(const Area<f32, 3> & bounds, std::vector<NTreeNode<D>*> & outNodes)
     {
+		SN_STATIC_ASSERT(D == 2);
         Boundaries b = getConvertedBoundaries(bounds);
         for (s32 z = b.min.z(); z < b.max.z(); ++z)
         {
