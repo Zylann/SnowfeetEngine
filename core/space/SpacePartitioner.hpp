@@ -48,7 +48,7 @@ public:
 	// Default implementations for 2D subset
 	//----------------------------------------
 
-    virtual void move(ISpacePartitionObject * obj, const FloatAABB & oldBounds, const FloatAABB & newBounds)
+    virtual void move(ISpacePartitionObject * obj, const FloatRect & oldBounds, const FloatRect & newBounds)
     {
         remove(obj, oldBounds);
         add(obj, newBounds);
