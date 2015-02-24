@@ -14,12 +14,14 @@ namespace sn
 //------------------------------------------------------------------------------
 bool pathExists(String path)
 {
+    path = FilePath::platformize(path);
     return (GetFileAttributesW(path.c_str()) != INVALID_FILE_ATTRIBUTES);
 }
 
 //------------------------------------------------------------------------------
 bool makeDir(String path)
 {
+    path = FilePath::platformize(path);
     if (path.empty())
         return false;
     BOOL success = CreateDirectoryW(path.c_str(), NULL);
@@ -39,6 +41,8 @@ bool getFiles(String topDirectory, std::vector<FileNode> & out_nodes)
     bool searchResult;
     bool success = false;
 
+    topDirectory = FilePath::platformize(topDirectory);
+
     //content.dirPath = dirPath;
     String path = topDirectory + L"\\*.*";
     WIN32_FIND_DATAW findData;
@@ -57,10 +61,10 @@ bool getFiles(String topDirectory, std::vector<FileNode> & out_nodes)
                 isDirectory = true;
 
             String fileName = findData.cFileName;
-            // not include '.' and '..' folders (current and parent)
+            // Don't include '.' and '..' folders (current and parent)
             if (fileName != L"." && fileName != L"..")
             {
-                out_nodes.push_back(FileNode(fileName, isDirectory));
+                out_nodes.push_back(FileNode(FilePath::normalize(fileName), isDirectory));
             }
         }
 

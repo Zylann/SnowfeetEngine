@@ -9,6 +9,7 @@ This file is part of the SnowfeetEngine project.
 
 #include <core/util/String.hpp>
 #include <vector>
+#include <core/system/file/FilePath.hpp>
 
 namespace sn
 {
