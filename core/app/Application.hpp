@@ -81,6 +81,10 @@ private:
     void update(Time delta);
     //void callVoidCallback(const std::string & cbName);
 
+private:
+    static Application * g_applicationInstance;
+
+private:
     //------------------------------------
     // Attributes
     //------------------------------------

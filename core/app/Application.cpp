@@ -17,7 +17,7 @@ namespace sn
 {
 
 //------------------------------------------------------------------------------
-Application * g_applicationInstance = nullptr;
+Application * Application::g_applicationInstance = nullptr;
 
 //------------------------------------------------------------------------------
 Application & Application::get()
