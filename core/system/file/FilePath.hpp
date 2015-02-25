@@ -6,7 +6,7 @@
 namespace sn
 {
 
-class FilePath
+class SN_API FilePath
 {
 public:
 
