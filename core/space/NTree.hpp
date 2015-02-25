@@ -191,7 +191,7 @@ private:
     //--------------------------
     void getOrCreateNodes(const Area<f32, 3> & bounds, std::vector<NTreeNode<D>*> & outNodes)
     {
-		SN_STATIC_ASSERT(D == 2);
+		SN_STATIC_ASSERT(D == 3);
         Boundaries b = getConvertedBoundaries(bounds);
         for (s32 z = b.min.z(); z < b.max.z(); ++z)
         {
