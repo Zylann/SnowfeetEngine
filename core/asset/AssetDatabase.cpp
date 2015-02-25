@@ -49,7 +49,7 @@ void AssetDatabase::loadAssets(const ModuleInfo & modInfo)
     Clock clock;
 #endif
     std::vector<FileNode> files;
-    getFilesRecursively(modInfo.directory, files);
+    getFilesRecursively(FilePath::join(m_root, modInfo.directory), files);
     u32 count = 0;
     for (auto it = files.begin(); it != files.end(); ++it)
     {
@@ -74,7 +74,7 @@ AssetLoadStatus AssetDatabase::loadAssetFromFile(const String & path, const std:
     metadata.loadFromFile(path); // Not fatal if the .meta file isn't found
     
     // Find loader:
-    // TODO [Optimize] the following is hammerish. Find a better solution? I'm sure there is one.
+    // TODO [Optimize] the following is hammerish and sometimes conflictish. Find a better solution? I'm sure there is one.
 
     Asset * asset = nullptr;
 
@@ -88,26 +88,33 @@ AssetLoadStatus AssetDatabase::loadAssetFromFile(const String & path, const std:
         const ObjectType & t = *(it->second);
         if (t.is(assetType))
         {
-            Asset * candidateAsset = (Asset*)(t.instantiate());
-            if (candidateAsset->canLoad(metadata))
-            {
-                if (asset == nullptr)
-                {
-                    asset = candidateAsset;
-                }
-                else
-                {
-                    SN_WERROR(L"Cannot determine which asset loader to use for file '" << path << L"'.");
-                    SN_ERROR("Candidates are: " << asset->getObjectType().name << ", " << candidateAsset->getObjectType().name);
-                    asset->release();
-                    candidateAsset->release();
-                    return SN_ALS_ERROR;
-                }
-            }
-            else
-            {
-                candidateAsset->release();
-            }
+			if (!t.isAbstract())
+			{
+				Asset * candidateAsset = (Asset*)(t.instantiate());
+				if (candidateAsset->canLoad(metadata))
+				{
+					if (asset == nullptr)
+					{
+						asset = candidateAsset;
+					}
+					else
+					{
+						SN_WERROR(L"Cannot determine which asset loader to use for file '" << path << L"'.");
+						SN_ERROR("Candidates are: " << asset->getObjectType().name << ", " << candidateAsset->getObjectType().name);
+						asset->release();
+						candidateAsset->release();
+						return SN_ALS_ERROR;
+					}
+				}
+				else
+				{
+					candidateAsset->release();
+				}
+			}
+			else
+			{
+				SN_DLOG("Ignored asset type " << t.toString() << " because it is abstract");
+			}
         }
     }
 

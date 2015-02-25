@@ -175,6 +175,7 @@ int Application::executeEx()
         SN_ERROR("Scene is leaking " << (m_scene->getRefCount() - 1) << " times");
     m_scene->release();
 
+	SN_LOG("Releasing assets...");
 	AssetDatabase::get().releaseAssets();
 
     SystemGUI::get().destroyAllWindows();

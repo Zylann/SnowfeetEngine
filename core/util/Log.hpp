@@ -30,16 +30,22 @@ This file is part of the SnowfeetEngine project.
         sn::Log::get().wprint(logType, wss.str());\
     } while (false)
 
+#ifdef SN_BUILD_DEBUG
+#define _SN_LOG_PREFIX __FILE__ << ":" << __LINE__ << ": " << 
+#else
+#define _SN_LOG_PREFIX
+#endif
+
 #define SN_LOG(expr)        _SN_LOG(sn::SN_LTM_INFO, expr)
 #define SN_DLOG(expr)       _SN_LOG(sn::SN_LTM_DEBUG, expr)
 #define SN_WARNING(expr)    _SN_LOG(sn::SN_LTM_WARNING, expr)
-#define SN_ERROR(expr)      _SN_LOG(sn::SN_LTM_ERROR, expr)
+#define SN_ERROR(expr)      _SN_LOG(sn::SN_LTM_ERROR, _SN_LOG_PREFIX expr)
 #define SN_MORE(expr)       _SN_LOG(sn::SN_LTM_MORE, expr)
 
 #define SN_WLOG(wexpr)      _SN_WLOG(sn::SN_LTM_INFO, wexpr)
 #define SN_WDLOG(wexpr)     _SN_WLOG(sn::SN_LTM_DEBUG, wexpr)
 #define SN_WWARNING(wexpr)  _SN_WLOG(sn::SN_LTM_WARNING, wexpr)
-#define SN_WERROR(wexpr)    _SN_WLOG(sn::SN_LTM_ERROR, wexpr)
+#define SN_WERROR(wexpr)    _SN_WLOG(sn::SN_LTM_ERROR, _SN_LOG_PREFIX wexpr)
 #define SN_WMORE(expr)      _SN_WLOG(sn::SN_LTM_MORE, wexpr)
 
 //------------------------------------------------------------------------------

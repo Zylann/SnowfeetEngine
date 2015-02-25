@@ -54,6 +54,8 @@ public:
         // Register factory function
         type->factory = Object_T::instantiate;
 
+		type->m_isAbstract = std::is_abstract<Object_T>();
+
         // Register type
         m_registeredTypes[type->name] = type;
 

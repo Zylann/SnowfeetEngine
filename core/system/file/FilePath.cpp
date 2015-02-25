@@ -16,14 +16,14 @@ String FilePath::join(const String & str1, const String & str2, char separator)
 
     if (isSeparator(a) ^ isSeparator(b))
     {
+        return str1 + str2;
+    }
+    else
+    {
         if (isSeparator(a))
             return str1.substr(0, str1.size()-1) + str2;
         else
             return str1 + (wchar_t)separator + str2;
-    }
-    else
-    {
-        return str1 + str2;
     }
 }
 
