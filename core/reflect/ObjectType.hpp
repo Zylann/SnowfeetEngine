@@ -87,11 +87,16 @@ struct SN_API ObjectType
     bool is(const std::string & typeName, bool includeInheritance=true) const;
     bool is(const ObjectType & other, bool includeInheritance=true) const;
 
+	inline bool isAbstract() const { return m_isAbstract; }
+
     /// \brief Creates a new instance of an object from its name.
     /// It does the same thing as "new MyObject()", where className = "MyObject".
     /// \return pointer to dynamically allocated object instance, or null if the object
     /// couldn't be allocated (as for abstract types).
     Object * instantiate() const;
+
+	bool m_isAbstract;
+
 };
 
 bool SN_API operator==(const ObjectType & a, const ObjectType & b);
