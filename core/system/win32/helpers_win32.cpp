@@ -22,6 +22,7 @@ std::string getLastError()
             NULL
         );
 #ifdef UNICODE
+        // TODO Implement this function...
         Win32String message = Win32_AnsiToUnicode(messageBuffer);
 #else
         std::string message(messageBuffer, size);

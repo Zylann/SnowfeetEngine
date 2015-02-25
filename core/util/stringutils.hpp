@@ -35,6 +35,7 @@ bool SN_API isPrintableChar(u8 c);
 
 std::string SN_API cropStr(std::string str, u8 c);
 
+// TODO Move file related functions to core/system/file
 std::string SN_API getFileNameWithoutExtension(std::string path);
 
 std::string SN_API toString(const std::wstring & wstr);
