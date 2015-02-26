@@ -24,13 +24,13 @@ bool ObjectType::is(const std::string & typeName, bool includeInheritance) const
 bool ObjectType::is(const ObjectType & other, bool includeInheritance) const
 {
     // If the object has a Null type
-    if(ID == 0)
+    if(m_ID == 0)
     {
         // Always return false
         return false;
     }
 
-    if(ID == other.ID)
+    if(m_ID == other.m_ID)
     {
         // Types exactly match
         return true;
@@ -42,12 +42,12 @@ bool ObjectType::is(const ObjectType & other, bool includeInheritance) const
         ObjectTypeDatabase & odb = ObjectTypeDatabase::get();
         const ObjectType * baseType = this;
 
-        while(!baseType->baseName.empty())
+        while(!baseType->m_baseName.empty())
         {
-            baseType = odb.getType(baseType->baseName);
+            baseType = odb.getType(baseType->m_baseName);
             if(baseType == nullptr)
                 return false;
-            if(baseType->ID == other.ID)
+            if(baseType->m_ID == other.m_ID)
                 return true;
         }
     }
@@ -59,7 +59,7 @@ bool ObjectType::is(const ObjectType & other, bool includeInheritance) const
 //------------------------------------------------------------------------------
 Object * ObjectType::instantiate() const
 {
-    Object * obj = factory();
+    Object * obj = m_factory();
 #ifdef SN_BUILD_DEBUG
     if (obj == nullptr)
     {
@@ -72,13 +72,14 @@ Object * ObjectType::instantiate() const
 //------------------------------------------------------------------------------
 bool operator==(const ObjectType & a, const ObjectType & b)
 {
-    return a.name == b.name;
+	// TODO Compare modules too?
+    return a.getName() == b.getName();
 }
 
 //------------------------------------------------------------------------------
 bool operator!=(const ObjectType & a, const ObjectType & b)
 {
-    return a.name != b.name;
+    return a.getName() != b.getName();
 }
 
 } // namespace sn

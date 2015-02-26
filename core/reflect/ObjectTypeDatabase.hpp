@@ -46,18 +46,18 @@ public:
         ObjectType * type = new ObjectType(typeName, baseName);
 
         //type->userData = userData;
-        type->moduleName = m_currentModule;
+        type->m_moduleName = m_currentModule;
 
         // Generate type ID
-        type->ID = m_nextID++;
+        type->m_ID = m_nextID++;
 
         // Register factory function
-        type->factory = Object_T::instantiate;
+        type->m_factory = Object_T::instantiate;
 
 		type->m_isAbstract = std::is_abstract<Object_T>();
 
         // Register type
-        m_registeredTypes[type->name] = type;
+        m_registeredTypes[type->getName()] = type;
 
 #ifdef SN_BUILD_DEBUG
         SN_DLOG("Registered " << type->toString());
@@ -90,7 +90,7 @@ private:
 
     // Private to prevent construction from the outside
     ObjectTypeDatabase() :
-        m_nextID(1) // IDs start at 1
+        m_nextID(1) // IDs start at 1, 0 means null
     {}
 
     ~ObjectTypeDatabase()

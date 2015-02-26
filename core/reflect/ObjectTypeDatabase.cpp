@@ -53,7 +53,7 @@ void ObjectTypeDatabase::endModule()
 //------------------------------------------------------------------------------
 void ObjectTypeDatabase::unregisterType(ObjectType & t)
 {
-    auto it = m_registeredTypes.find(t.name);
+    auto it = m_registeredTypes.find(t.getName());
     if (it != m_registeredTypes.end())
     {
         delete it->second;
@@ -80,7 +80,7 @@ void ObjectTypeDatabase::unregisterModule(const std::string & name)
     for (auto it = types.begin(); it != types.end(); ++it)
     {
         ObjectType * t = it->second;
-        if (t->moduleName == name)
+        if (t->getModuleName() == name)
         {
             unregisterType(*t);
             ++count;
