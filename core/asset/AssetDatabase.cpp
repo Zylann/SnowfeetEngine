@@ -100,7 +100,7 @@ AssetLoadStatus AssetDatabase::loadAssetFromFile(const String & path, const std:
 					else
 					{
 						SN_WERROR(L"Cannot determine which asset loader to use for file '" << path << L"'.");
-						SN_ERROR("Candidates are: " << asset->getObjectType().name << ", " << candidateAsset->getObjectType().name);
+						SN_ERROR("Candidates are: " << asset->getObjectType().getName() << ", " << candidateAsset->getObjectType().getName());
 						asset->release();
 						candidateAsset->release();
 						return SN_ALS_ERROR;
@@ -124,7 +124,7 @@ AssetLoadStatus AssetDatabase::loadAssetFromFile(const String & path, const std:
         return SN_ALS_MISMATCH;
     }
 
-    const std::string & typeName = asset->getObjectType().name;
+    const std::string & typeName = asset->getObjectType().getName();
 
     // Check if not already loaded
     std::string assetName = getFileNameWithoutExtension(toString(path));

@@ -17,64 +17,43 @@ namespace sn
 
 typedef u16 ObjectTypeID;
 
-/// \brief You can derive this class to store additional information when registering an ObjectType.
-/// \see ObjectType, ObjectTypeDatabase
-//class SN_API IObjectTypeUserData
-//{
-//private:
-//    IObjectTypeUserData() {}
-//public:
-//    virtual ~IObjectTypeUserData() {}
-//};
-
 class Object;
 
 /// \brief Meta-class of an object.
-struct SN_API ObjectType
+class SN_API ObjectType
 {
-    /// \brief Unique numeric ID of the component.
-    /// DO NOT modify (only done on type registration).
-    /// The value of IDs may be generated sequentially, starting from 1.
-    /// 0 means null type.
-    /// \warning IDs can change between two builds of the engine.
-    /// for an absolute version-safe comparison, use type names instead.
-    ObjectTypeID ID;
-
-    /// \brief Full unique name of the type.
-    std::string name;
-
-    /// \brief Name of the base class.
-    std::string baseName;
-
-    /// \brief Optional name of the module this object type is registered in.
-    std::string moduleName;
-
-    /// \brief you can store additional type information here when you register a type with ObjectTypeDatabase.
-    /// It will be destroyed automatically when the singleton lifetime ends,
-    /// unless you destroy it yourself and set it to null before.
-    //IObjectTypeUserData * userData;
-
-    std::function<Object*()> factory;
-
+public:
     ObjectType(
         const std::string & p_name,
         const std::string & p_baseName
     ) :
-        ID(0), // null ID, until the type gets registered
-        name(p_name),
-        baseName(p_baseName)
-        //userData(nullptr)
+        m_ID(0), // null ID, until the type gets registered
+        m_name(p_name),
+        m_baseName(p_baseName)
     {}
 
-    ~ObjectType()
-    {
-        //if(userData)
-        //    delete userData;
-    }
+    //~ObjectType()
+    //{
+    //}
 
-    void print(std::ostream & os) const
+    bool is(const std::string & typeName, bool includeInheritance=true) const;
+    bool is(const ObjectType & other, bool includeInheritance=true) const;
+
+    /// \brief Creates a new instance of an object from its name.
+    /// It does the same thing as "new MyObject()", where className = "MyObject".
+    /// \return pointer to dynamically allocated object instance, or null if the object
+    /// couldn't be allocated (as for abstract types).
+    Object * instantiate() const;
+
+	inline bool isAbstract() const { return m_isAbstract; }
+	inline ObjectTypeID getID() const { return m_ID; }
+	inline const std::string & getName() const { return m_name; }
+	inline const std::string & getBaseName() const { return m_baseName; }
+	inline const std::string & getModuleName() const { return m_moduleName; }
+
+	void print(std::ostream & os) const
     {
-        os << "{[" << ID << "]" << name << " : " << baseName << "}";
+        os << "{[" << m_ID << "]" << m_name << " : " << m_baseName << "}";
     }
 
     std::string toString() const
@@ -84,18 +63,29 @@ struct SN_API ObjectType
         return ss.str();
     }
 
-    bool is(const std::string & typeName, bool includeInheritance=true) const;
-    bool is(const ObjectType & other, bool includeInheritance=true) const;
-
-	inline bool isAbstract() const { return m_isAbstract; }
-
-    /// \brief Creates a new instance of an object from its name.
-    /// It does the same thing as "new MyObject()", where className = "MyObject".
-    /// \return pointer to dynamically allocated object instance, or null if the object
-    /// couldn't be allocated (as for abstract types).
-    Object * instantiate() const;
+private:
+	friend class ObjectTypeDatabase;
 
 	bool m_isAbstract;
+
+	/// \brief Unique numeric ID of the component.
+    /// DO NOT modify (only done on type registration).
+    /// The value of IDs may be generated sequentially, starting from 1.
+    /// 0 means null type.
+    /// \warning IDs can change between two builds of the engine.
+    /// for an absolute version-safe comparison, use type names instead.
+    ObjectTypeID m_ID;
+
+    /// \brief Full unique name of the type.
+    std::string m_name;
+
+    /// \brief Name of the base class.
+    std::string m_baseName;
+
+    /// \brief Optional name of the module this object type is registered in.
+    std::string m_moduleName;
+
+    std::function<Object*()> m_factory;
 
 };
 
