@@ -8,9 +8,11 @@ This file is part of the SnowfeetEngine project.
 #define __HEADER_SN_OBJECTTYPE__
 
 #include <string>
-#include <sstream>
 #include <functional>
+#include <unordered_map>
+
 #include <core/types.hpp>
+#include <core/reflect/ObjectProperty.hpp>
 
 namespace sn
 {
@@ -32,9 +34,39 @@ public:
         m_baseName(p_baseName)
     {}
 
-    //~ObjectType()
-    //{
-    //}
+    ~ObjectType()
+    {
+        for (auto it = m_properties.begin(); it != m_properties.end(); ++it)
+            delete it->second;
+    }
+
+    // TODO Handle setters returning *this for chaining
+    template <class C, typename T>
+    ObjectType & addProperty(const std::string & name, T(C::*getterMethod)(), void(C::*setterMethod)(T))
+    {
+        SN_ASSERT(!hasProperty(name), "Property " << name << " registered twice on ObjectType " << toString());
+        ObjectProperty * property = new ObjectProperty(name);
+        if (getterMethod)
+            property->setGetterMethod(getterMethod);
+        if (setterMethod)
+            property->setSetterMethod(setterMethod);
+        m_properties[name] = property;
+        return *this;
+    }
+
+    template <class C, typename T>
+    ObjectType & addProperty(const std::string & name, T(C::*getterMethod)())
+    {
+        SN_ASSERT(!hasProperty(name), "Property " << name << " registered twice on ObjectType " << toString());
+        ObjectProperty * property = new ObjectProperty(name);
+        if (getterMethod)
+            property->setGetterMethod(getterMethod);
+        m_properties[name] = property;
+        return *this;
+    }
+
+    bool hasProperty(const std::string & name) const;
+    const ObjectProperty * getProperty(const std::string & name) const;
 
     bool is(const std::string & typeName, bool includeInheritance=true) const;
     bool is(const ObjectType & other, bool includeInheritance=true) const;
@@ -51,17 +83,7 @@ public:
 	inline const std::string & getBaseName() const { return m_baseName; }
 	inline const std::string & getModuleName() const { return m_moduleName; }
 
-	void print(std::ostream & os) const
-    {
-        os << "{[" << m_ID << "]" << m_name << " : " << m_baseName << "}";
-    }
-
-    std::string toString() const
-    {
-        std::stringstream ss;
-        print(ss);
-        return ss.str();
-    }
+    std::string toString() const;
 
 private:
 	friend class ObjectTypeDatabase;
@@ -85,7 +107,10 @@ private:
     /// \brief Optional name of the module this object type is registered in.
     std::string m_moduleName;
 
+    /// \brief Closure responsible for object instances creation
     std::function<Object*()> m_factory;
+
+    std::unordered_map<std::string, ObjectProperty*> m_properties;
 
 };
 

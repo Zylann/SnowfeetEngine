@@ -35,7 +35,7 @@ public:
     /// However, IDs may differ if the version of the engine differ too, as there
     /// might be new objects.
     template <class Object_T>
-    void registerType()
+    ObjectType & registerType()
     {
         std::string typeName = Object_T::__sGetClassName();
         std::string baseName = Object_T::__sGetBaseClassName();
@@ -62,6 +62,7 @@ public:
 #ifdef SN_BUILD_DEBUG
         SN_DLOG("Registered " << type->toString());
 #endif
+        return *type;
     }
 
     template <class Object_T>

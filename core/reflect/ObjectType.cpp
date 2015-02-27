@@ -7,6 +7,8 @@ This file is part of the SnowfeetEngine project.
 #include "ObjectType.hpp"
 #include "ObjectTypeDatabase.hpp"
 
+#include <sstream>
+
 namespace sn
 {
 
@@ -57,6 +59,22 @@ bool ObjectType::is(const ObjectType & other, bool includeInheritance) const
 }
 
 //------------------------------------------------------------------------------
+bool ObjectType::hasProperty(const std::string & name) const
+{
+    return m_properties.find(name) != m_properties.end();
+}
+
+//------------------------------------------------------------------------------
+const ObjectProperty * ObjectType::getProperty(const std::string & name) const
+{
+    auto it = m_properties.find(name);
+    if (it != m_properties.end())
+        return it->second;
+    else
+        return nullptr;
+}
+
+//------------------------------------------------------------------------------
 Object * ObjectType::instantiate() const
 {
     Object * obj = m_factory();
@@ -67,6 +85,14 @@ Object * ObjectType::instantiate() const
     }
 #endif
     return obj;
+}
+
+//------------------------------------------------------------------------------
+std::string ObjectType::toString() const
+{
+    std::stringstream ss;
+    ss << "{[" << m_ID << "]" << m_name << " : " << m_baseName << "}";
+    return ss.str();
 }
 
 //------------------------------------------------------------------------------

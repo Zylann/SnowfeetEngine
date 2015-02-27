@@ -6,9 +6,11 @@
 
 #include <core/math/Vector3.hpp>
 #include <core/math/math.hpp>
+#include <core/space/NTree.hpp>
 #include <map>
 #include <set>
 
+#include "test_reflection.hpp"
 
 void testHashes()
 {
@@ -40,9 +42,17 @@ void testHashes()
     }
 }
 
+void testNTree()
+{
+    sn::NTree<3> octree;
+    octree.add(nullptr, sn::FloatAABB(0, 0, 0, 1, 1, 1));
+}
+
 int main(int argc, char * argv[])
 {
-    testHashes();
+    test_reflection();
+    //testNTree();
+    //testHashes();
     //return sn::appMain(argc, argv);
 }
 
