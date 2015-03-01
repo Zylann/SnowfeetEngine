@@ -36,7 +36,7 @@ def create_cpp_folder(root, modType, namespace, name):
 
 	exportMacro = "SN_MOD_EXPORT"
 
-	guard = "__HEADER_" + namespace.upper() + "_" + name.upper() + "__"
+	guard = "__HEADER_MOD_" + namespace.upper() + "_" + name.upper() + "__"
 
 	f = open(headerPath, "w+")
 	f.write(eol.join([
@@ -73,7 +73,7 @@ def create_cpp_folder(root, modType, namespace, name):
 		"",
 		loadFunc,
 		"{",
-		"\t" + regFuncName + "(*(args.objectTypeDatabase));",
+		"\t" + namespace + "::" + regFuncName + "(*(args.objectTypeDatabase));",
 		"\t// TODO implement",
 		"}",
 		"",
