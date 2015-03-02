@@ -10,22 +10,12 @@ This file is part of the SnowfeetEngine project.
 #include <core/system/gui/Window.hpp>
 #include "ShaderProgram.hpp"
 #include "Mesh.hpp"
+#include "ContextSettings.hpp"
 
 namespace sn {
 namespace render {
 
 class ContextImpl;
-
-struct ContextSettings
-{
-    u32 majorVersion;
-    u32 minorVersion;
-
-    ContextSettings() :
-        majorVersion(3),
-        minorVersion(3)
-    {}
-};
 
 class Context
 {
