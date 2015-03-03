@@ -5,6 +5,9 @@
 namespace sn {
 namespace render {
 
+// TODO Create a main OpenGL context that will be shared will all others
+// (A context must be created for each system window).
+
 Context::Context(Window & owner, ContextSettings settings) :
     m_impl(nullptr),
     r_window(&owner),
