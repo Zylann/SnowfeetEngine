@@ -185,18 +185,30 @@ void Module::unloadNativeBindings()
     ObjectTypeDatabase::get().unregisterModule(m_info.name);
 
     // Free libraries
-    libNameIt = m_info.bindings.rbegin();
-    for (auto it = m_sharedLibs.rbegin(); it != m_sharedLibs.rend(); ++it, ++libNameIt)
+    for (s32 i = m_sharedLibs.size()-1; i != -1; --i)
     {
-        SharedLib & lib = **it;
-        const String & libName = *libNameIt;
+        SharedLib * lib = m_sharedLibs[i];
+        const String & libName = m_info.bindings[i];
         SN_WLOG(L"Freeing shared lib \"" << libName << L"\"...");
-        if (!lib.unload())
+        if (!lib->unload())
         {
             SN_ERROR("An error occurred while freeing library");
         }
-        delete *it;
+        delete lib;
     }
+
+    //libNameIt = m_info.bindings.rbegin();
+    //for (auto it = m_sharedLibs.rbegin(); it != m_sharedLibs.rend(); ++it, ++libNameIt)
+    //{
+    //    SharedLib * lib = *it;
+    //    const String & libName = *libNameIt;
+    //    SN_WLOG(L"Freeing shared lib \"" << libName << L"\"...");
+    //    if (!lib->unload())
+    //    {
+    //        SN_ERROR("An error occurred while freeing library");
+    //    }
+    //    delete lib;
+    //}
 
     m_sharedLibs.clear();
 }
