@@ -27,6 +27,9 @@ Entity::~Entity()
     while (!m_tags.empty())
         removeTag(*m_tags.begin());
 
+	// Unregister update callback
+	setUpdatable(false);
+
     //SN_LOG("Entity " << getName() << " destroyed");
 }
 
