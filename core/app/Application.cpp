@@ -199,7 +199,11 @@ int Application::executeEx()
 void Application::update(Time delta)
 {
     if (m_scene)
+    {
         m_scene->onUpdate();
+        if (m_scene->getQuitFlag())
+            m_runFlag = false;
+    }
     //for (auto it = m_modules.begin(); it != m_modules.end(); ++it)
     //{
     //    Module & m = *(it->second);
