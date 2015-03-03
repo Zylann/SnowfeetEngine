@@ -15,11 +15,11 @@ HeadTracker::HeadTracker():
 
 HeadTracker::~HeadTracker()
 {
-    ovr_Shutdown();
     if (m_hmd)
     {
         ovrHmd_Destroy(m_hmd);
     }
+    ovr_Shutdown();
 }
 
 void HeadTracker::onReady()
@@ -31,10 +31,16 @@ void HeadTracker::onReady()
     else
     {
         m_hmd = ovrHmd_Create(0);
-        if (m_hmd == nullptr)
-        {
-            SN_ERROR("Couldn't create OVR HMD.");
-        }
+    }
+
+    if (m_hmd)
+    {
+        setUpdatable(true);
+    }
+    else
+    {
+        SN_ERROR("Couldn't create OVR HMD.");
+        getScene()->quit();
     }
 
     m_isFirstUpdate = true;
@@ -42,17 +48,14 @@ void HeadTracker::onReady()
 
 void HeadTracker::onUpdate()
 {
-    if (m_hmd == nullptr)
-    {
-        getScene()->quit();
-        ovrHmd_EndFrameTiming(m_hmd);
-    }
+    // At this point we assume the headset is plugged and working
 
     if (m_isFirstUpdate)
     {
         // We're inside the main loop already so we'll assume that the frame begins after our update and ends at the end of it.
         // TODO onBeforeRender() and onAfterRender() callbacks
         m_frameTiming = ovrHmd_BeginFrameTiming(m_hmd, 0);
+        m_isFirstUpdate = false;
     }
     else
     {
