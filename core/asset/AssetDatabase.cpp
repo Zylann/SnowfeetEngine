@@ -54,7 +54,7 @@ void AssetDatabase::loadAssets(const ModuleInfo & modInfo)
     for (auto it = files.begin(); it != files.end(); ++it)
     {
         const FileNode & file = *it;
-        if (loadAssetFromFile(file.path, modInfo.name))
+        if (loadAssetFromFile(file.path, modInfo.name) == SN_ALS_LOADED)
         {
             ++count;
         }
@@ -111,10 +111,10 @@ AssetLoadStatus AssetDatabase::loadAssetFromFile(const String & path, const std:
 					candidateAsset->release();
 				}
 			}
-			else
-			{
-				SN_DLOG("Ignored asset type " << t.toString() << " because it is abstract");
-			}
+			//else
+			//{
+			//	SN_DLOG("Ignored asset type " << t.toString() << " because it is abstract");
+			//}
         }
     }
 
