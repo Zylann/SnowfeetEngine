@@ -29,7 +29,6 @@ namespace CallbackName
 }
 
 class Application;
-class ModuleImpl;
 class ScriptManager;
 class Scene;
 
@@ -72,7 +71,6 @@ private:
 
     const ModuleInfo m_info;
     Application & r_app;
-    ModuleImpl * m_impl;
     std::vector<SharedLib*> m_sharedLibs;
 
 };

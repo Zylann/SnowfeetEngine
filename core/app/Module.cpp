@@ -68,8 +68,7 @@ void Module::calculateDependencies(
 //------------------------------------------------------------------------------
 Module::Module(Application & app, const ModuleInfo & info) :
     m_info(info),
-    r_app(app),
-    m_impl(nullptr)
+    r_app(app)
 {
     //m_scriptCallbacks.insert(std::make_pair(CallbackName::CREATE, std::vector<asIScriptFunction*>()));
     //m_scriptCallbacks.insert(std::make_pair(CallbackName::EVENT, std::vector<asIScriptFunction*>()));
