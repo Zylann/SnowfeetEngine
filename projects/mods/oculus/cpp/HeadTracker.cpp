@@ -24,6 +24,10 @@ HeadTracker::~HeadTracker()
 
 void HeadTracker::onReady()
 {
+    // TODO FIXME There is a strange bug when ovr_Initialize is called with neither runtime nor headset plugged in.
+    // SnowfeetEngine crashes at the very end of ModOculus unloading code (when destructors of Module ends),
+    // suggesting that the memory has been corrupted somehow.
+
     if (!ovr_Initialize())
     {
         SN_ERROR("Couldn't initialize OVR.");
