@@ -25,7 +25,7 @@ HeadTracker::~HeadTracker()
 void HeadTracker::onReady()
 {
     // TODO FIXME There is a strange bug when ovr_Initialize is called with neither runtime nor headset plugged in.
-    // SnowfeetEngine crashes at the very end of ModOculus unloading code (when destructors of Module ends),
+    // SnowfeetEngine crashes at the very end of ModOculus unloading code (when destructor of Module ends),
     // suggesting that the memory has been corrupted somehow.
     // It should be good to cleanly cancel things if required conditions aren't fulfilled.
 
@@ -40,12 +40,19 @@ void HeadTracker::onReady()
 
     if (m_hmd)
     {
+        ovrHmd_ConfigureTracking(m_hmd, ovrTrackingCap_Orientation | ovrTrackingCap_MagYawCorrection | ovrTrackingCap_Position, 0);
         setUpdatable(true);
     }
     else
     {
         SN_ERROR("Couldn't create OVR HMD.");
         getScene()->quit();
+    }
+
+    const char* err = ovrHmd_GetLastError(m_hmd);
+    if (err)
+    {
+        SN_ERROR(err);
     }
 
     m_isFirstUpdate = true;
