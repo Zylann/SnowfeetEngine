@@ -10,7 +10,7 @@ namespace render {
 class ContextImpl
 {
 public:
-    ContextImpl(Context & context, const Window & win);
+    ContextImpl(Context & context);
     ~ContextImpl();
 
     inline bool isInitialized() const { return m_hrc != nullptr; }
@@ -20,8 +20,8 @@ public:
 
 private:
 
-    static HGLRC glCreateMinimalContext(HWND hwnd);
-    static HGLRC glCreateContext(HWND hwnd, HGLRC sharedContext, int majorVersion, int minorVersion, int multiSampleMode = 0);
+    //HGLRC createMinimalContext();
+    void createContext(HGLRC sharedContext, ContextSettings & settings);
 
     Context & r_context;
     HGLRC m_hrc;

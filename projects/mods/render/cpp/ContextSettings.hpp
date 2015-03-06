@@ -3,6 +3,7 @@
 
 #include <core/types.hpp>
 #include <cmath>
+#include <sstream>
 
 namespace sn {
 namespace render {
@@ -31,7 +32,25 @@ struct ContextSettings
 			   std::abs(static_cast<int>(multiSampleLevel  - multiSampleLevel_));
 	}
 
+	std::string toString() const
+	{
+		std::stringstream ss;
+		ss << "{version=" << majorVersion << "." << minorVersion 
+			<< ", multiSampleLevel=" << multiSampleLevel 
+			<< ", stencilBits=" << stencilBits 
+			<< ", depthBits=" << depthBits << "}";
+		return ss.str();
+	}
 };
+
+inline bool operator!=(const ContextSettings & lhs, const ContextSettings & rhs)
+{
+	return lhs.majorVersion != rhs.majorVersion
+		|| lhs.minorVersion != rhs.minorVersion
+		|| lhs.multiSampleLevel != rhs.multiSampleLevel
+		|| lhs.stencilBits != rhs.stencilBits
+		|| lhs.depthBits != rhs.depthBits;
+}
 
 } // namespace render
 } // namespace sn

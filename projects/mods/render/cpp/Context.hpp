@@ -41,7 +41,7 @@ public:
 
 private:
     // Platform-specific
-    void initImpl(const Window & owner);
+    void initImpl();
     void deinitImpl();
 
     ContextImpl * m_impl;

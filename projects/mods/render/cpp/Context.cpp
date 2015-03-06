@@ -8,12 +8,18 @@ namespace render {
 // TODO Create a main OpenGL context that will be shared will all others
 // (A context must be created for each system window).
 
+//namespace
+//{
+//	Context * g_sharedContext = nullptr;
+//}
+
 Context::Context(Window & owner, ContextSettings settings) :
     m_impl(nullptr),
     r_window(&owner),
     m_settings(settings)
 {
-    initImpl(owner);
+	SN_LOG("Creating render context: " << settings.toString());
+    initImpl();
 }
 
 Context::~Context()
