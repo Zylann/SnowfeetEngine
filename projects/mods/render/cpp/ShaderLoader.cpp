@@ -7,6 +7,8 @@
 namespace sn {
 namespace render {
 
+
+//------------------------------------------------------------------------------
 bool ShaderLoader::loadFromFile(ShaderProgram & shaderProgram, const std::string & filePath)
 {
     std::string ext = getFileExtension(filePath);
@@ -25,6 +27,7 @@ bool ShaderLoader::loadFromFile(ShaderProgram & shaderProgram, const std::string
     return true;
 }
 
+//------------------------------------------------------------------------------
 bool ShaderLoader::loadMergedShaderFromFile(ShaderProgram & shaderProgram, const std::string & filePath)
 {
     std::ifstream ifs(filePath.c_str(), std::ios::in | std::ios::binary);

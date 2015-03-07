@@ -3,6 +3,7 @@
 namespace sn {
 namespace render {
 
+//------------------------------------------------------------------------------
 void Mesh::clear()
 {
     m_vertices.clear();
@@ -12,16 +13,19 @@ void Mesh::clear()
     m_indices.clear();
 }
 
+//------------------------------------------------------------------------------
 bool Mesh::isEmpty() const
 {
     return m_vertices.empty();
 }
 
+//------------------------------------------------------------------------------
 void Mesh::setPrimitiveType(PrimitiveType pt)
 {
     m_primitiveType = pt;
 }
 
+//------------------------------------------------------------------------------
 GLenum Mesh::getInternalPrimitiveType() const
 {
     switch (m_primitiveType)
@@ -38,31 +42,37 @@ GLenum Mesh::getInternalPrimitiveType() const
     }
 }
 
+//------------------------------------------------------------------------------
 void Mesh::addPosition(f32 x, f32 y, f32 z)
 {
     m_vertices.push_back(Vector3f(x, y, z));
 }
 
+//------------------------------------------------------------------------------
 void Mesh::addTexCoord(f32 x, f32 y)
 {
     m_uv.push_back(Vector2f(x, y));
 }
 
+//------------------------------------------------------------------------------
 void Mesh::addNormal(f32 x, f32 y, f32 z)
 {
     m_normals.push_back(Vector3f(x, y, z));
 }
 
+//------------------------------------------------------------------------------
 void Mesh::addColor(const Color & c)
 {
     m_colors.push_back(c);
 }
 
+//------------------------------------------------------------------------------
 //void Mesh::addIndex(u32 i)
 //{
 //    m_indices.push_back(i);
 //}
 
+//------------------------------------------------------------------------------
 // Static
 //u32 Mesh::calculateIndicesCount(PrimitiveType primitive, u32 primitiveCount)
 //{
@@ -79,6 +89,7 @@ void Mesh::addColor(const Color & c)
 //    }
 //}
 
+//------------------------------------------------------------------------------
 void Mesh::recalculateIndexes()
 {
     switch (m_primitiveType)
@@ -116,6 +127,7 @@ void Mesh::recalculateIndexes()
     }
 }
 
+//------------------------------------------------------------------------------
 std::string toString(PrimitiveType pt)
 {
     switch (pt)

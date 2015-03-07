@@ -9,7 +9,7 @@ namespace render {
 // Thanks to Megabyte Softworks, for its tutorial series on "from-scratch" OpenGL 3.3 
 // http://www.mbsoftworks.sk/index.php?page=tutorials&series=1
 
-
+//------------------------------------------------------------------------------
 LRESULT CALLBACK MsgHandlerSimpleOpenGLClass(HWND hWnd, UINT uiMsg, WPARAM wParam, LPARAM lParam)
 {
 	PAINTSTRUCT ps;
@@ -26,6 +26,7 @@ LRESULT CALLBACK MsgHandlerSimpleOpenGLClass(HWND hWnd, UINT uiMsg, WPARAM wPara
 	return 0;
 }
 
+//------------------------------------------------------------------------------
 bool ensureGLExtensions()
 {
 	// This function cannot be called twice

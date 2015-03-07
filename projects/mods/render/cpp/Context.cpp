@@ -13,6 +13,7 @@ namespace render {
 //	Context * g_sharedContext = nullptr;
 //}
 
+//------------------------------------------------------------------------------
 Context::Context(Window & owner, ContextSettings settings) :
     m_impl(nullptr),
     r_window(&owner),
@@ -22,16 +23,19 @@ Context::Context(Window & owner, ContextSettings settings) :
     initImpl();
 }
 
+//------------------------------------------------------------------------------
 Context::~Context()
 {
     deinitImpl();
 }
 
+//------------------------------------------------------------------------------
 void Context::clearTarget()
 {
     glClear(GL_COLOR_BUFFER_BIT);
 }
 
+//------------------------------------------------------------------------------
 void Context::drawMesh(const Mesh & mesh)
 {
     if (mesh.isEmpty())
@@ -45,6 +49,7 @@ void Context::drawMesh(const Mesh & mesh)
     glCheck(glDisableVertexAttribArray(0));
 }
 
+//------------------------------------------------------------------------------
 void Context::useProgram(const ShaderProgram * shader)
 {
     if (shader)

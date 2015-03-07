@@ -10,18 +10,21 @@ namespace render {
 
 const char * RenderManager::TAG = "RenderManager";
 
+//------------------------------------------------------------------------------
 RenderManager::RenderManager() : Entity(), m_context(nullptr)
 {
     // This entity is always present across scenes
     setFlag(SN_EF_STICKY, true);
 }
 
+//------------------------------------------------------------------------------
 RenderManager::~RenderManager()
 {
     if (m_context)
         delete m_context;
 }
 
+//------------------------------------------------------------------------------
 void RenderManager::onReady()
 {
     SN_ASSERT(m_context == nullptr, "Invalid state, m_context is not null");
@@ -48,12 +51,14 @@ void RenderManager::onReady()
     }
 }
 
+//------------------------------------------------------------------------------
 void RenderManager::onUpdate()
 {
     // Render!
     render();
 }
 
+//------------------------------------------------------------------------------
 // Helper
 template <typename T>
 T * checkTaggedType(const std::string & tag, Entity * e)
@@ -70,6 +75,7 @@ T * checkTaggedType(const std::string & tag, Entity * e)
     }
 }
 
+//------------------------------------------------------------------------------
 void RenderManager::render()
 {
     if (m_context == nullptr)
@@ -105,6 +111,7 @@ void RenderManager::render()
         renderCamera(**it);
     }
 
+    // TODO Remove this when basic testing is over
     // BEGIN TEST CODE
 
     Mesh mesh;
@@ -121,6 +128,7 @@ void RenderManager::render()
     m_context->swapBuffers();
 }
 
+//------------------------------------------------------------------------------
 void RenderManager::renderCamera(Camera & camera)
 {
     // Get drawables

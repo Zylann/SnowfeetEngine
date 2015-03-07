@@ -11,6 +11,7 @@ namespace render {
 // Enums
 //==============================================================================
 
+//------------------------------------------------------------------------------
 GLuint shaderTypeToGL(ShaderType st)
 {
     switch (st)
@@ -24,6 +25,7 @@ GLuint shaderTypeToGL(ShaderType st)
     }
 }
 
+//------------------------------------------------------------------------------
 std::string toString(ShaderType st)
 {
     switch (st)
@@ -35,6 +37,7 @@ std::string toString(ShaderType st)
     }
 }
 
+//------------------------------------------------------------------------------
 std::string toString(VertexAttribute attrib)
 {
     switch (attrib)
@@ -51,11 +54,13 @@ std::string toString(VertexAttribute attrib)
 // ShaderProgram
 //==============================================================================
 
+//------------------------------------------------------------------------------
 ShaderProgram::~ShaderProgram()
 {
     unload();
 }
 
+//------------------------------------------------------------------------------
 bool ShaderProgram::canLoad(const AssetMetadata & meta) const
 {
     String ext = sn::getFileExtension(meta.path);
@@ -63,6 +68,7 @@ bool ShaderProgram::canLoad(const AssetMetadata & meta) const
     //return ext == L".vs" || ext == L".ps" || ext == L".gs" || ext == L".shader";
 }
 
+//------------------------------------------------------------------------------
 void ShaderProgram::unload()
 {
     if (m_programID)
@@ -85,11 +91,13 @@ void ShaderProgram::unload()
     m_shaders.clear();
 }
 
+//------------------------------------------------------------------------------
 bool ShaderProgram::loadFromFile(const std::string & filePath)
 {
     return ShaderLoader::loadFromFile(*this, filePath);
 }
 
+//------------------------------------------------------------------------------
 bool ShaderProgram::loadFromSourceCode(const std::unordered_map<ShaderType, std::string> & sources)
 {
     // Check if none of the sources is empty
@@ -172,6 +180,7 @@ bool ShaderProgram::loadFromSourceCode(const std::unordered_map<ShaderType, std:
     return true; // Fine !
 }
 
+//------------------------------------------------------------------------------
 // Static
 bool ShaderProgram::loadShaderFromSourceCode(GLuint & outShaderID, ShaderType typeGeneric, const std::string & source)
 {
@@ -221,31 +230,37 @@ bool ShaderProgram::loadShaderFromSourceCode(GLuint & outShaderID, ShaderType ty
     return true; // Fine !
 }
 
+//------------------------------------------------------------------------------
 void ShaderProgram::setParam(const std::string & name, f32 value)
 {
     glCheck(glUniform1f(getUniformLocation(name), value));
 }
 
+//------------------------------------------------------------------------------
 void ShaderProgram::setParam(const std::string & name, f32 x, f32 y)
 {
     glCheck(glUniform2f(getUniformLocation(name), x, y));
 }
 
+//------------------------------------------------------------------------------
 void ShaderProgram::setParam(const std::string & name, f32 x, f32 y, f32 z)
 {
     glCheck(glUniform3f(getUniformLocation(name), x, y, z));
 }
 
+//------------------------------------------------------------------------------
 void ShaderProgram::setParam(const std::string & name, f32 x, f32 y, f32 z, f32 w)
 {
     glCheck(glUniform4f(getUniformLocation(name), x, y, z, w));
 }
 
+//------------------------------------------------------------------------------
 void ShaderProgram::setParam(const std::string & name, const f32 matrixValues[16], bool transpose)
 {
     glCheck(glUniformMatrix4fv(getUniformLocation(name), 1, transpose, matrixValues));
 }
 
+//------------------------------------------------------------------------------
 GLint ShaderProgram::getUniformLocation(const std::string & name)
 {
     GLint loc;
