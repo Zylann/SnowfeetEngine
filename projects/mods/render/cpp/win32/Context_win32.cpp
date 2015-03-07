@@ -212,9 +212,6 @@ void ContextImpl::createContext(HGLRC sharedContext, ContextSettings & settings)
     // Create the OpenGL context -- first try context versions >= 3.0 if it is requested (they require special code)
     while (!m_hrc && (settings.majorVersion >= 3))
     {
-		if (WGLEW_ARB_create_context)
-			SN_LOG("TOURTE");
-
         //PFNWGLCREATECONTEXTATTRIBSARBPROC wglCreateContextAttribsARB = reinterpret_cast<PFNWGLCREATECONTEXTATTRIBSARBPROC>(wglGetProcAddress("wglCreateContextAttribsARB"));
         if (wglCreateContextAttribsARB)
         {
