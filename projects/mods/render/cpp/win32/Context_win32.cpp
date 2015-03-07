@@ -81,9 +81,12 @@ ContextImpl::~ContextImpl()
     }
 }
 
-bool ContextImpl::makeCurrent()
+bool ContextImpl::makeCurrent(bool isCurrent)
 {
-    return m_hrc && m_dc && wglMakeCurrent(m_dc, m_hrc);
+    if (isCurrent)
+        return m_hrc && m_dc && wglMakeCurrent(m_dc, m_hrc);
+    else
+        return wglMakeCurrent(nullptr, nullptr);
 }
 
 // Static
@@ -291,9 +294,9 @@ void Context::deinitImpl()
         delete m_impl;
 }
 
-bool Context::makeCurrent()
+bool Context::makeCurrent(bool isCurrent)
 {
-    return m_impl->makeCurrent();
+    return m_impl->makeCurrent(isCurrent);
 }
 
 void Context::swapBuffers()

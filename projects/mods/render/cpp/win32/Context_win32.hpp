@@ -14,7 +14,7 @@ public:
     ~ContextImpl();
 
     inline bool isInitialized() const { return m_hrc != nullptr; }
-    bool makeCurrent();
+    bool makeCurrent(bool isCurrent);
 
     void swapBuffers();
 

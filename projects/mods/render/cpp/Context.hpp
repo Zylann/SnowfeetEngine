@@ -24,7 +24,7 @@ public:
     Context(Window & owner, ContextSettings settings = ContextSettings());
     ~Context();
 
-    bool makeCurrent();
+    bool makeCurrent(bool isCurrent=true);
 
     inline Window * getWindow() const { return r_window; }
 

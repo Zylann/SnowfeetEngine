@@ -42,7 +42,10 @@ void RenderManager::onReady()
 
     // Create rendering context
     if (win)
+    {
         m_context = new Context(*win);
+        m_context->makeCurrent();
+    }
 }
 
 void RenderManager::onUpdate()
