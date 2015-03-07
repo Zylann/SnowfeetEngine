@@ -6,6 +6,10 @@
 namespace sn {
 namespace render {
 
+// Thanks to Megabyte Softworks, for its tutorial series on "from-scratch" OpenGL 3.3 
+// http://www.mbsoftworks.sk/index.php?page=tutorials&series=1
+
+
 LRESULT CALLBACK MsgHandlerSimpleOpenGLClass(HWND hWnd, UINT uiMsg, WPARAM wParam, LPARAM lParam)
 {
 	PAINTSTRUCT ps;
@@ -28,6 +32,12 @@ bool ensureGLExtensions()
 	static bool initialized = false;
 	if (initialized)
 		return true;
+
+    // Accessing OpenGL context creation above 2.0 requires an extension.
+    // However, extensions are accessible only if we... created a context.
+    // So the point of the code below is to create a dummy OpenGL context first,
+    // initialize extensions and destroy this context. After that we'll have
+    // access to what we want.
 
 	HINSTANCE hInstance = GetModuleHandle(NULL);
 
@@ -98,6 +108,7 @@ bool ensureGLExtensions()
 
 	return bResult;
 }
+
 } // namespace render
 } // namespace sn
 
