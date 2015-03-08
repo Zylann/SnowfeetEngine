@@ -9,104 +9,101 @@ namespace render {
 
 
 //------------------------------------------------------------------------------
-bool ShaderLoader::loadFromFile(ShaderProgram & shaderProgram, const std::string & filePath)
+std::string ShaderLoader::extractPreprocessorCommand(const std::string & str)
 {
-    std::string ext = getFileExtension(filePath);
-
-    if (ext == ".shader")
+    u32 i = 0;
+    for (; i < str.size(); ++i)
     {
-        // Load the shader from a merged file
-        return loadMergedShaderFromFile(shaderProgram, filePath);
+        char c = str[i];
+        if (c == ' ' || c == '\t')
+            continue;
+        if (c == '#')
+            break;
+        else
+            return "";
     }
+    if (i < str.size())
+        return trim(str.substr(i + 1));
     else
-    {
-        SN_ERROR("Cannot load shader file, the \"" << ext << "\" file extension is not supported.");
-        return false;
-    }
-
-    return true;
+        return "";
 }
 
 //------------------------------------------------------------------------------
-bool ShaderLoader::loadMergedShaderFromFile(ShaderProgram & shaderProgram, const std::string & filePath)
+bool ShaderLoader::loadMergedShaderFromStream(ShaderProgram & shaderProgram, std::ifstream & ifs)
 {
-    std::ifstream ifs(filePath.c_str(), std::ios::in | std::ios::binary);
     if (!ifs.good())
     {
-        SN_ERROR("Couldn't open merged shader file \"" << filePath << '"');
+        SN_ERROR("Couldn't read merged shader stream");
         return false;
     }
 
-    const unsigned int VERTEX = SNR_ST_VERTEX;
-    const unsigned int FRAGMENT = SNR_ST_FRAGMENT;
-    const unsigned int NO_MODE = 2;
+    std::string sources[SNR_ST_COUNT];
+    bool openSection[SNR_ST_COUNT] = { false };
+    
+    std::map<std::string, ShaderType> commandToShaderType;
+    commandToShaderType["msh_vertex"] = SNR_ST_VERTEX;
+    commandToShaderType["msh_fragment"] = SNR_ST_FRAGMENT;
+    commandToShaderType["msh_geometry"] = SNR_ST_GEOMETRY;
 
-    std::string shaderStr[2];
-
-    unsigned int mode = NO_MODE;
-
-    const std::string vertexCommand = "#vertex";
-    const std::string fragmentCommand = "#fragment";
+    ShaderType currentShaderType = SNR_ST_COUNT;
+    u32 lineNumber = 1;
 
     // Extract each shader types from the file
     while (!ifs.eof())
     {
+        // Get current line
         std::string line;
         std::getline(ifs, line);
         line += '\n';
 
-        if (!line.empty() && line[0] == '#')
+        // Find command in it
+        std::string command = extractPreprocessorCommand(line);
+        auto commandIt = command.empty() ? commandToShaderType.end() : commandToShaderType.find(command);
+
+        // If a command was found
+        if (commandIt != commandToShaderType.end())
         {
-            if (line.find(vertexCommand) != std::string::npos)
+            currentShaderType = commandIt->second;
+
+            // Check for duplicate sections
+            if (openSection[currentShaderType])
             {
-                // Treat next lines as a vertex program
-                mode = VERTEX;
-                shaderStr[0] += '\n';
-                shaderStr[1] += '\n';
-                continue;
+                SN_ERROR("Compiling merged shader: section #" << command << " declared twice (line " << lineNumber << ")");
+                return false;
             }
-            else if (line.find(fragmentCommand) != std::string::npos)
-            {
-                // Treat next lines as a fragment program
-                mode = FRAGMENT;
-                shaderStr[0] += '\n';
-                shaderStr[1] += '\n';
-                continue;
-            }
+
+            openSection[currentShaderType] = true;
+
+            // Append newline in each sources to replace the command
+            for (u32 i = 0; i < SNR_ST_COUNT; ++i)
+                sources[i] += '\n';
+
+            continue;
         }
 
-        // Append code to the right shader, and append
-        // newlines in the other to keep line numbers in sync with the
-        // merged file
-        switch (mode)
+        // Append newline in each sources, except for the current section, in which the actual line is added.
+        // (newlines ensure that line numbers will be consistent when the shader will be compiled)
+        for (u32 i = 0; i < SNR_ST_COUNT; ++i)
         {
-        case VERTEX:
-            shaderStr[VERTEX] += line;
-            shaderStr[FRAGMENT] += '\n';
-            break;
-
-        case FRAGMENT:
-            shaderStr[VERTEX] += '\n';
-            shaderStr[FRAGMENT] += line;
-            break;
-
-        default:
-            shaderStr[VERTEX] += '\n';
-            shaderStr[FRAGMENT] += '\n';
-            break;
+            if (i == currentShaderType)
+                sources[i] += line;
+            else
+                sources[i] += '\n';
         }
+
+        ++lineNumber;
     }
 
-    ifs.close();
-
     // Load the shader
-    // TODO Optimize this
-    std::unordered_map<ShaderType, std::string> sources;
-    sources[SNR_ST_VERTEX] = shaderStr[VERTEX];
-    sources[SNR_ST_FRAGMENT] = shaderStr[VERTEX];
-    if (!shaderProgram.loadFromSourceCode(sources))
+    std::unordered_map<ShaderType, std::string> sourcesMap;
+    for (u32 i = 0; i < SNR_ST_COUNT; ++i)
     {
-        SN_ERROR("Reading merged shader file \"" << filePath << '"');
+        if (openSection[i])
+            sourcesMap[(ShaderType)i] = sources[i];
+    }
+    if (!shaderProgram.loadFromSourceCode(sourcesMap))
+    {
+        SN_ERROR("Compiling merged shader");
         return false;
     }
 

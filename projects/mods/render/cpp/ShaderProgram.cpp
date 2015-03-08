@@ -64,7 +64,7 @@ ShaderProgram::~ShaderProgram()
 bool ShaderProgram::canLoad(const AssetMetadata & meta) const
 {
     String ext = sn::getFileExtension(meta.path);
-    return ext == L".shader";
+    return ext == L".mshader";
     //return ext == L".vs" || ext == L".ps" || ext == L".gs" || ext == L".shader";
 }
 
@@ -92,9 +92,9 @@ void ShaderProgram::unload()
 }
 
 //------------------------------------------------------------------------------
-bool ShaderProgram::loadFromFile(const std::string & filePath)
+bool ShaderProgram::loadFromStream(std::ifstream & ifs)
 {
-    return ShaderLoader::loadFromFile(*this, filePath);
+    return ShaderLoader::loadMergedShaderFromStream(*this, ifs);
 }
 
 //------------------------------------------------------------------------------

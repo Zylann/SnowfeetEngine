@@ -52,7 +52,7 @@ public:
     bool canLoad(const AssetMetadata & meta) const override;
 
     // TODO loadFromStream()
-    bool loadFromFile(const std::string & filePath);
+    bool loadFromStream(std::ifstream & ifs) override;
     bool loadFromSourceCode(const std::unordered_map<ShaderType, std::string> & sources);
 
     // Deletes the program and its shaders.

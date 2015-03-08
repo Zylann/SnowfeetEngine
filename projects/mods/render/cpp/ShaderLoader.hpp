@@ -1,8 +1,6 @@
 #ifndef __HEADER_SN_RENDER_SHADERLOADER__
 #define __HEADER_SN_RENDER_SHADERLOADER__
 
-#include "ShaderLoader.hpp"
-
 namespace sn {
 namespace render {
 
@@ -11,8 +9,12 @@ class ShaderProgram;
 class ShaderLoader
 {
 public:
-    static bool loadFromFile(ShaderProgram & shaderProgram, const std::string & filePath);
-    static bool loadMergedShaderFromFile(ShaderProgram & shaderProgram, const std::string & filePath);
+    static bool loadMergedShaderFromStream(ShaderProgram & shaderProgram, std::ifstream & ifs);
+
+private:
+    static std::string extractPreprocessorCommand(const std::string & str);
+
+    ShaderLoader() {}
 };
 
 } // namespace render
