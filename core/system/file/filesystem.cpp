@@ -6,11 +6,13 @@ namespace sn
 bool getFilesRecursively(String topDirectory, std::vector<FileNode> & out_nodes)
 {
     std::vector<FileNode> nodes;
-    getFiles(topDirectory, nodes);
+    if (!getFiles(topDirectory, nodes))
+        return false;
 
     for (auto it = nodes.begin(); it != nodes.end(); ++it)
     {
-        const FileNode & node = *it;
+        FileNode & node = *it;
+        node.path = FilePath::join(topDirectory, node.path);
         if (node.isDirectory)
         {
             if (!getFilesRecursively(node.path, out_nodes))

@@ -43,7 +43,6 @@ bool getFiles(String topDirectory, std::vector<FileNode> & out_nodes)
 
     topDirectory = FilePath::platformize(topDirectory);
 
-    //content.dirPath = dirPath;
     String path = topDirectory + L"\\*.*";
     WIN32_FIND_DATAW findData;
     HANDLE l_searchHandle = FindFirstFileW(path.c_str(), &findData);
