@@ -29,6 +29,7 @@ public:
         const std::string & p_name,
         const std::string & p_baseName
     ) :
+        m_isAbstract(false),
         m_ID(0), // null ID, until the type gets registered
         m_name(p_name),
         m_baseName(p_baseName)
