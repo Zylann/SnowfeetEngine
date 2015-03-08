@@ -51,13 +51,13 @@ std::wstring SN_API getFileExtension(const std::wstring & str);
 std::wstring SN_API getFileFolder(const std::wstring & path);
 
 /// \brief Returns a substring without trailing whitespace.
-std::string trimLeft(std::string str);
+std::string SN_API trimLeft(std::string str);
 
 /// \brief Returns a substring without leading whitespace. 
-std::string trimRight(std::string str);
+std::string SN_API trimRight(std::string str);
 
 /// \brief Returns a substring without surrounding namespace.
-std::string trim(std::string str);
+std::string SN_API trim(std::string str);
 
 } // namespace sn
 
