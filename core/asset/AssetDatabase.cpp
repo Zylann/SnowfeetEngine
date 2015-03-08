@@ -205,6 +205,7 @@ void AssetDatabase::releaseAssets()
     {
         SN_WARNING(leakCount << " assets are still referenced after deletion from the database");
     }
+    m_assets.clear();
 }
 
 //------------------------------------------------------------------------------
