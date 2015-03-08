@@ -33,8 +33,6 @@ std::string SN_API toTimeString(f32 s);
 
 bool SN_API isPrintableChar(u8 c);
 
-std::string SN_API cropStr(std::string str, u8 c);
-
 // TODO Move file related functions to core/system/file
 std::string SN_API getFileNameWithoutExtension(std::string path);
 
@@ -51,6 +49,15 @@ std::wstring SN_API getFileExtension(const std::wstring & str);
 // If the path points to a folder, the parent folder is returned.
 // If the path ends with a '/' or a '\', the function just removes it.
 std::wstring SN_API getFileFolder(const std::wstring & path);
+
+/// \brief Returns a substring without trailing whitespace.
+std::string trimLeft(std::string str);
+
+/// \brief Returns a substring without leading whitespace. 
+std::string trimRight(std::string str);
+
+/// \brief Returns a substring without surrounding namespace.
+std::string trim(std::string str);
 
 } // namespace sn
 

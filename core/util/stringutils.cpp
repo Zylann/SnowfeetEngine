@@ -144,30 +144,6 @@ bool isPrintableChar(u8 c)
 }
 
 //------------------------------------------------------------------------------
-std::string cropStr(std::string str, u8 c)
-{
-    if(str.empty())
-        return str;
-
-    if(str.size() == 1)
-    {
-        if(str[0] == c)
-            return "";
-        return str;
-    }
-
-    u32 i = str.find(c);
-    if(i != std::string::npos)
-        str = str.substr(i + 1);
-
-    i = str.find(c);
-    if(i != std::string::npos)
-        str = str.substr(0, i);
-
-    return str;
-}
-
-//------------------------------------------------------------------------------
 std::string getFileNameWithoutExtension(std::string path)
 {
     path = path.substr(0, path.find_first_of("."));
@@ -253,6 +229,36 @@ std::wstring getFileFolder(const std::wstring & path)
     {
         return path.substr(0, sepIndex);
     }
+}
+
+//------------------------------------------------------------------------------
+std::string trimLeft(std::string str)
+{
+    u32 i = 0;
+    for (; i < str.size(); ++i)
+    {
+        if (!isspace(str[i]))
+            break;
+    }
+    return str.substr(i);
+}
+
+//------------------------------------------------------------------------------
+std::string trimRight(std::string str)
+{
+    u32 i = str.size()-1;
+    for (; i < str.size(); --i) // Note: --0 will be UINT_MAX
+    {
+        if (!isspace(str[i]))
+            break;
+    }
+    return str.substr(0, i+1); // Note: ++UINT_MAX will be 0
+}
+
+//------------------------------------------------------------------------------
+std::string trim(std::string str)
+{
+    return trimLeft(trimRight(str));
 }
 
 } // namespace sn
