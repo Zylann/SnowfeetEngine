@@ -30,6 +30,8 @@ class SN_API ScriptObject : public RefCounted, public Object
 {
 public:
     SN_SCRIPT_OBJECT(sn::ScriptObject, sn::Object)
+       
+    ScriptObject() : RefCounted() {}
 };
 
 } // namespace sn

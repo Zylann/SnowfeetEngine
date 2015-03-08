@@ -16,9 +16,11 @@ namespace sn
 class SharedState
 {
 public:
+    /// \brief Constructs a shared state with a reference count of 1
+    /// (for both the object and the SharedState itself)
 	SharedState() :
-		m_refCount(0),
-		m_objectRefCount(0)
+		m_refCount(1),
+		m_objectRefCount(1)
 	{}
 
 	//--------------------------------------------
@@ -120,7 +122,7 @@ protected:
     /// \brief Destructor not exposed because release() must be used instead
     virtual ~RefCounted()
     {
-        SN_ASSERT(getRefCount() == 0, "refCount is not zero in destructor");
+        //SN_ASSERT(getRefCount() == 0, "refCount is not zero in destructor");
     }
 
 private:
