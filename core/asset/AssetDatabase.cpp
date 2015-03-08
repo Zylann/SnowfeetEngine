@@ -51,6 +51,7 @@ void AssetDatabase::loadAssets(const ModuleInfo & modInfo)
     std::vector<FileNode> files;
     getFilesRecursively(FilePath::join(m_root, modInfo.directory), files);
     u32 count = 0;
+    // TODO Ignore special folders such as cpp/
     for (auto it = files.begin(); it != files.end(); ++it)
     {
         const FileNode & file = *it;
@@ -128,7 +129,7 @@ AssetLoadStatus AssetDatabase::loadAssetFromFile(const String & path, const std:
 
     // Check if not already loaded
     std::string assetName = getFileNameWithoutExtension(toString(path));
-    if (m_assets[moduleName][typeName][assetName] != nullptr)
+    if (getAsset(moduleName, typeName, assetName) != nullptr)
     {
         SN_ERROR("Asset " << toString(path) << " is already loaded "
             "under registry [" << moduleName << "][" << typeName << "][" << assetName << "]");
@@ -211,7 +212,18 @@ void AssetDatabase::releaseAssets()
 // Gets an asset. If it returns null, the asset may not have been loaded or is in progress.
 Asset * AssetDatabase::getAsset(const std::string & moduleName, const std::string & type, const std::string & name)
 {
-    return m_assets[moduleName][type][name];
+    auto it1 = m_assets.find(moduleName);
+    if (it1 != m_assets.end())
+    {
+        auto it2 = it1->second.find(type);
+        if (it2 != it1->second.end())
+        {
+            auto it3 = it2->second.find(name);
+            if (it3 != it2->second.end())
+                return it3->second;
+        }
+    }
+    return nullptr;
 }
 
 } // namespace sn
