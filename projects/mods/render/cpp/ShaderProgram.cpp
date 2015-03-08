@@ -71,6 +71,8 @@ bool ShaderProgram::canLoad(const AssetMetadata & meta) const
 //------------------------------------------------------------------------------
 void ShaderProgram::unload()
 {
+    // TODO FIXME OpenGL fails here because contextes are destroyed before assets to be released...
+    // Maybe services such as RenderManager should be destroyed after scene objects? Or handle services differently?
     if (m_programID)
     {
         for (auto it = m_shaders.begin(); it != m_shaders.end(); ++it)
