@@ -184,7 +184,7 @@ void AssetDatabase::releaseAssets()
     {
         for (auto it2 = it1->second.begin(); it2 != it1->second.end(); ++it2)
         {
-            for (auto it3 = it2->second.begin(); it2 != it1->second.end(); ++it2)
+            for (auto it3 = it2->second.begin(); it3 != it2->second.end(); ++it3)
             {
                 Asset * asset = it3->second;
 #ifdef SN_BUILD_DEBUG
@@ -195,9 +195,8 @@ void AssetDatabase::releaseAssets()
                 {
 #ifdef SN_BUILD_DEBUG
                     SN_WWARNING(L"Asset " << meta.path << L" is still referenced " << refcount << L" times");
-#else
-                    ++leakCount;
 #endif
+                    ++leakCount;
                 }
             }
         }
