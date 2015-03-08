@@ -101,6 +101,11 @@ bool ShaderProgram::loadFromFile(const std::string & filePath)
 bool ShaderProgram::loadFromSourceCode(const std::unordered_map<ShaderType, std::string> & sources)
 {
     // Check if none of the sources is empty
+    if (sources.empty())
+    {
+        SN_ERROR("ShaderProgram::loadFromSourceCode: source code is empty");
+        return false;
+    }
     for (auto it = sources.begin(); it != sources.end(); ++it)
     {
         if (it->second.empty())
@@ -124,7 +129,7 @@ bool ShaderProgram::loadFromSourceCode(const std::unordered_map<ShaderType, std:
             unload();
             return false;
         }
-        if (m_shaders.size() < static_cast<u32>(shaderType)) // enums are ints, not uints
+        if (static_cast<u32>(shaderType) >= m_shaders.size()) // Note: enums are ints, not uints
             m_shaders.resize(shaderType + 1, nullptr);
         m_shaders[shaderType] = new Shader(sID);
     }
