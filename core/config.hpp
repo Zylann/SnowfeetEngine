@@ -31,6 +31,22 @@
     #define SN_NOEXCEPT noexcept
 #endif
 
+//------------------------------------------------------------------------------
+#define SN_USE_MEMORY_MANAGER
+#ifdef SN_USE_MEMORY_MANAGER
+#include <core/system/memory/operators.hpp>
+#endif
+
+//#ifdef _MSC_VER
+//    #define _CRTDBG_MAP_ALLOC
+//
+//    #define DEBUG_NEW new(_NORMAL_BLOCK, __FILE__, __LINE__)
+//    #define new DEBUG_NEW
+//
+//    #include <stdlib.h>
+//    #include <crtdbg.h>
+//#endif
+
 #endif // __HEADER_SN_CONFIG__
 
 
