@@ -38,6 +38,7 @@ Application::Application() :
 //------------------------------------------------------------------------------
 Application::~Application()
 {
+    // TODO Unload modules in right order!
 	// Unload modules
     for (auto it = m_modules.begin(); it != m_modules.end(); ++it)
     {
@@ -170,13 +171,13 @@ int Application::executeEx()
     // Call destroy callbacks
     //callVoidCallback(CallbackName::DESTROY);
 
+    SN_LOG("Releasing assets...");
+    AssetDatabase::get().releaseAssets();
+
     m_scene->destroyChildren();
     if (m_scene->getRefCount() > 1)
         SN_ERROR("Scene is leaking " << (m_scene->getRefCount() - 1) << " times");
     m_scene->release();
-
-	SN_LOG("Releasing assets...");
-	AssetDatabase::get().releaseAssets();
 
     SystemGUI::get().destroyAllWindows();
 
