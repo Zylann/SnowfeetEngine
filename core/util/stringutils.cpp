@@ -146,8 +146,8 @@ bool isPrintableChar(u8 c)
 //------------------------------------------------------------------------------
 std::string getFileNameWithoutExtension(std::string path)
 {
-    path = path.substr(0, path.find_first_of("."));
     path = path.substr(path.find_last_of("/\\") + 1);
+    path = path.substr(0, path.find_first_of("."));
     return path;
 }
 
