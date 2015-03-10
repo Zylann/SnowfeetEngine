@@ -57,10 +57,10 @@ public:
     // Template version of getAsset, compiled in your native code.
     // It works only if you used the SN_ASSET macro of your asset class.
     template <class Asset_T>
-    Asset_T * getAsset(const std::string & moduleName, const String & name)
+    Asset_T * getAsset(const std::string & moduleName, const std::string & name)
     {
         // Note: use SN_ASSET in your asset class
-        IAsset * a = getAsset(moduleName, Asset_T::__sGetDatabaseTypeName(), name);
+        Asset * a = getAsset(moduleName, Asset_T::__sGetClassName(), name);
         if (a)
             return checked_cast<Asset_T*>(a);
         else
