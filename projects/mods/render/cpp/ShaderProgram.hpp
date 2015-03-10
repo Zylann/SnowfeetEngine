@@ -10,20 +10,10 @@ This file is part of the SnowfeetEngine project.
 #include <core/asset/Asset.hpp>
 #include <unordered_map>
 #include <GL/glew.h>
+#include "Vertex.hpp"
 
 namespace sn {
 namespace render {
-
-// for use in OpenGL3
-enum VertexAttribute
-{
-    SNR_ATTRIB_POSITION = 0,
-    SNR_ATTRIB_COLOR,
-    SNR_ATTRIB_TEXCOORD,
-    SNR_ATTRIB_NORMAL,
-    //...
-    SNR_ATTRIB_COUNT // Keep last
-};
 
 enum ShaderType
 {
@@ -34,7 +24,6 @@ enum ShaderType
     SNR_ST_COUNT // Keep last
 };
 
-std::string toString(VertexAttribute st);
 std::string toString(ShaderType st);
 
 class SN_API ShaderProgram : public Asset
