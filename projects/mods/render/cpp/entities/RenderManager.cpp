@@ -1,5 +1,6 @@
 #include <core/system/gui/SystemGUI.hpp>
 #include <core/scene/Scene.hpp>
+#include <core/asset/AssetDatabase.hpp> // TODO Remove?
 
 #include "RenderManager.hpp"
 #include "Drawable.hpp"
@@ -119,8 +120,19 @@ void RenderManager::render()
     mesh.addPosition(-0.5f, -0.5f);
     mesh.addPosition(0.f, 0.5f);
     mesh.addPosition(0.5f, -0.5f);
+    mesh.addColor(sn::Color(1, 0, 0));
+    mesh.addColor(sn::Color(0, 1, 0));
+    mesh.addColor(sn::Color(0, 0, 1));
+
+    AssetDatabase & assets = AssetDatabase::get();
+    ShaderProgram * sp = assets.getAsset<ShaderProgram>("render", "basic");
+    if (sp)
+    {
+        m_context->useProgram(sp);
+    }
 
     m_context->drawMesh(mesh);
+    m_context->useProgram(nullptr);
 
     // END TEST CODE
 

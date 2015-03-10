@@ -41,11 +41,20 @@ void Context::drawMesh(const Mesh & mesh)
     if (mesh.isEmpty())
         return;
 
+    // Positions
     glCheck(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, &mesh.getVertices()[0]));
     glCheck(glEnableVertexAttribArray(0));
 
+    // Colors
+    if (!mesh.getColors().empty())
+    {
+        glCheck(glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, &mesh.getColors()[0]));
+        glCheck(glEnableVertexAttribArray(1));
+    }
+
     glCheck(glDrawArrays(mesh.getInternalPrimitiveType(), 0, mesh.getVertices().size()));
 
+    glCheck(glDisableVertexAttribArray(1));
     glCheck(glDisableVertexAttribArray(0));
 }
 
