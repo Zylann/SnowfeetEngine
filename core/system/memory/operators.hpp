@@ -2,6 +2,7 @@
 #define __HEADER_SN_MEMORY_OPERATORS__
 
 #include <core/system/memory/MemoryManager.hpp>
+#include <core/types.hpp>
 
 //inline void* operator new(size_t size, const char* file, int line)
 //{
@@ -96,10 +97,10 @@ void _arrayDelete(T * ptr, const char * file, u32 line)
 } // namespace sn
 
 #define SN_NEW(_type) \
-	new(sn::MemoryManager::get().allocate(sizeof(_type), __FILE__, __LINE__, sn::SN_MAT_SINGLE)) _type
+    new(sn::MemoryManager::get().allocate(sizeof(_type), sn::SN_MAT_SINGLE, __FILE__, __LINE__)) _type
 
 #define SN_NEW_ARRAY(_type, _count) \
-	sn::_arrayNew(sn::MemoryManager::get().allocate(sizeof(_type)*_count + sizeof(size_t), __FILE__, __LINE__, sn::SN_MAT_ARRAY), _count)
+    sn::_arrayNew(sn::MemoryManager::get().allocate(sizeof(_type)*_count + sizeof(size_t), sn::SN_MAT_ARRAY, __FILE__, __LINE__), _count)
 
 #define SN_DELETE(_ptr) \
 	_singleDelete(_ptr, __FILE__, __LINE__);

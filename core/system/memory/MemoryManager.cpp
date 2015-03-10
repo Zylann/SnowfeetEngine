@@ -23,7 +23,7 @@ MemoryManager::~MemoryManager()
 {
 }
 
-void* MemoryManager::allocate(size_t size, const char * file, int line, MemoryAllocationType allocType)
+void* MemoryManager::allocate(size_t size, MemoryAllocationType allocType, const char * file, int line)
 {
     void * ptr = ::malloc(size);
     if (ptr == nullptr)
@@ -40,7 +40,7 @@ void* MemoryManager::allocate(size_t size, const char * file, int line, MemoryAl
     return ptr;
 }
 
-void MemoryManager::free(void* ptr, MemoryAllocationType allocType)
+void MemoryManager::free(void* ptr, MemoryAllocationType allocType, const char * file, int line)
 {
     auto it = m_allocations.find(ptr);
 

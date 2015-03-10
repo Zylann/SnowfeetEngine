@@ -37,8 +37,8 @@ class SN_API MemoryManager
 public:
     static MemoryManager & get();
 
-    void* allocate(size_t size, const char * file, int line, MemoryAllocationType allocType);
-    void free(void* ptr, MemoryAllocationType allocType);
+    void* allocate(size_t size, MemoryAllocationType allocType, const char * file, int line);
+    void free(void* ptr, MemoryAllocationType allocType, const char * file, int line);
     void nextDelete(const char * file, int line);
 
     void reportLeaks();

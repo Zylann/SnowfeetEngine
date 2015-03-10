@@ -22,9 +22,13 @@ int appMain(int argc, char * argv[])
     }
 
 #ifdef SN_BUILD_DEBUG
+
+    //MemoryManager::get().reportLeaks();
+
     // Maintains the console window open on exit
     std::cout << "I: Execution finished with code " << exitCode << ". Press a key to dismiss..." << std::endl;
     sn::pauseConsole();
+
 #endif
 
     return exitCode;
