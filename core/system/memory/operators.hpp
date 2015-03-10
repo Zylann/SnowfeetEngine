@@ -45,20 +45,67 @@
 namespace sn
 {
 
-}
-// Draft
+// TODO FIXME 'delete' calls triggered by 'new' exceptions must be handled!!
 
-//#define SN_NEW(_type, ...) \
-//    new(sn::MemoryManager::get().allocate(sizeof(_type), __FILE__, __LINE__, sn::SN_MAT_SINGLE)) _type(##__VA_ARGS__)
-//
-//#define SN_NEW_ARRAY(_type, _count) \
-//    new(sn::MemoryManager::get().allocate(sizeof(_type), __FILE__, __LINE__, sn::SN_MAT_ARRAY)) _type[_count]
-//
-//#define SN_DELETE(_ptr) \
-//    delete(sn::MemoryManager::get().free( _ptr
-//
-//#define SN_DELETE_ARRAY(_ptr) \
-//    delete[] _ptr
+template <typename T>
+void _singleDelete(T * ptr, const char * file, u32 line)
+{
+	if (ptr) // The standard states a delete on null is safe
+	{
+		// Call destructor
+		ptr->~T();
+
+		// Free memory
+		sn::MemoryManager::get().free(ptr, SN_MAT_SINGLE, file, line);
+	}
+}
+
+template <typename T>
+T * _arrayNew(T * ptr, u32 count, const char * file, u32 line)
+{
+	// Prepend the size of the array (extra memory should have been allocated before)
+	((size_t*)ptr)[0] = count;
+
+	// Move the pointer forward
+	ptr = (T*)((size_t*)ptr[1]);
+
+	// Call constructors
+	for (u32 i = 0; i < count; ++i)
+		new(&ptr[i]) T();
+
+	return ptr;
+}
+
+template <typename T>
+void _arrayDelete(T * ptr, const char * file, u32 line)
+{
+	if (ptr)
+	{
+		// Get size of the array
+		u32 count = ((size_t*)ptr)[-1];
+
+		// Call destructors
+		for (u32 i = 0; i < count; ++i)
+			ptr[i].~T();
+
+		// Free memory
+		sn::MemoryManager::get().free(&( (size_t*)ptr[-1] ), file, line);
+	}
+}
+
+} // namespace sn
+
+#define SN_NEW(_type) \
+	new(sn::MemoryManager::get().allocate(sizeof(_type), __FILE__, __LINE__, sn::SN_MAT_SINGLE)) _type
+
+#define SN_NEW_ARRAY(_type, _count) \
+	sn::_arrayNew(sn::MemoryManager::get().allocate(sizeof(_type)*_count + sizeof(size_t), __FILE__, __LINE__, sn::SN_MAT_ARRAY), _count)
+
+#define SN_DELETE(_ptr) \
+	_singleDelete(_ptr, __FILE__, __LINE__);
+
+#define SN_DELETE_ARRAY(_ptr) \
+	_arrayDelete(_ptr, __FILE__, __LINE__);
 
 #endif // __HEADER_SN_MEMORY_OPERATORS__
 
