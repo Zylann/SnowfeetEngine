@@ -29,6 +29,7 @@ Entity::~Entity()
 
 	// Unregister update callback
 	setUpdatable(false);
+    listenToSystemEvents(false);
 
     //SN_LOG("Entity " << getName() << " destroyed");
 }
