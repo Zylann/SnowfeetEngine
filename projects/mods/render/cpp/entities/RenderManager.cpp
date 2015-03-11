@@ -60,6 +60,23 @@ void RenderManager::onUpdate()
 }
 
 //------------------------------------------------------------------------------
+bool RenderManager::onSystemEvent(const sn::Event & event)
+{
+	switch (event.type)
+	{
+	case SN_EVENT_WINDOW_RESIZED:
+		// TODO change viewport resolution
+		break;
+
+	default:
+		break;
+	}
+
+	// The events are not consumed by default
+	return false;
+}
+
+//------------------------------------------------------------------------------
 // Helper
 template <typename T>
 T * checkTaggedType(const std::string & tag, Entity * e)

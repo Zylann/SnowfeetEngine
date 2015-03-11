@@ -22,6 +22,8 @@ public:
 
     void onReady() override;
     void onUpdate() override;
+
+	bool onSystemEvent(const sn::Event & event) override;
     
 private:
     void render();
