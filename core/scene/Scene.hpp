@@ -43,6 +43,9 @@ public:
     void registerTaggedEntity(Entity & e, const std::string & tag);
     void unregisterTaggedEntity(Entity & e, const std::string & tag);
 
+	void registerEventListener(Entity & e);
+	void unregisterEventListener(Entity & e);
+
     /// \brief Returns the first encountered entity having the given tag.
     /// \param tag: tag to search
     /// \return an entity with the tag, or nullptr if none have it
@@ -71,6 +74,7 @@ public:
 private:
     std::unordered_map<std::string, std::unordered_set<Entity*>> m_taggedEntities;
     std::map<s32, std::unordered_set<Entity*>> m_updatableEntities;
+	std::unordered_set<Entity*> m_eventListenerEntities;
     bool m_quitFlag;
 
 };

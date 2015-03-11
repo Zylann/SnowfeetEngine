@@ -10,6 +10,7 @@ This file is part of the SnowfeetEngine project.
 #include <core/types.hpp>
 #include <core/json/json_utils.hpp>
 #include <core/app/ScriptObject.hpp>
+#include <core/system/gui/Event.hpp>
 
 #include <vector>
 #include <string>
@@ -28,7 +29,8 @@ enum EntityFlags
     SN_EF_DESTROYED = 1,
     SN_EF_FIRST_UPDATE = 2,
     SN_EF_UPDATABLE = 3,
-    SN_EF_STICKY = 4
+    SN_EF_STICKY = 4,
+	SN_EF_SYSTEM_EVENT_LISTENER = 5
 };
 
 class Scene;
@@ -60,6 +62,7 @@ public:
     void setEnabled(bool e);
 
     void setUpdatable(bool enable=true, s16 order=0, s16 layer=0);
+	void listenToSystemEvents(bool enable=true);
 
     inline bool hasTag(const std::string & tag) const { return m_tags.find(tag) != m_tags.end(); }
     void addTag(const std::string & tag);
@@ -133,6 +136,9 @@ public:
 
     virtual void onFirstUpdate() {}
     virtual void onUpdate() {}
+
+	// Returns true if the event has been consumed, true otherwise
+	virtual bool onSystemEvent(const sn::Event & event) { return false; }
 
 protected:
     virtual ~Entity();

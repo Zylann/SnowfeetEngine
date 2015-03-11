@@ -63,6 +63,7 @@ void Entity::setEnabled(bool e)
 //------------------------------------------------------------------------------
 void Entity::setUpdatable(bool updatable, s16 order, s16 layer)
 {
+	// TODO FIXME Set the flag!!
     if (getFlag(SN_EF_UPDATABLE) ^ updatable)
     {
         Scene * scene = getScene();
@@ -81,6 +82,31 @@ void Entity::setUpdatable(bool updatable, s16 order, s16 layer)
     else
     {
         SN_WARNING("Entity::setUpdatable: no change made (entity " << toString() << ")");
+    }
+}
+
+//------------------------------------------------------------------------------
+void Entity::listenToSystemEvents(bool enable)
+{
+	// TODO FIXME Set the flag!!
+	if (getFlag(SN_EF_SYSTEM_EVENT_LISTENER) ^ enable)
+	{
+		Scene * scene = getScene();
+		if (scene)
+		{
+			if (enable)
+				scene->registerEventListener(*this);
+			else
+				scene->unregisterEventListener(*this);
+		}
+        else
+        {
+            SN_ERROR("Entity::listenToSystemEvents: scene not found from entity " << toString());
+        }
+	}
+    else
+    {
+        SN_WARNING("Entity::listenToSystemEvents: no change made (entity " << toString() << ")");
     }
 }
 

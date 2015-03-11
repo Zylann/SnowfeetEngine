@@ -19,7 +19,7 @@ void Scene::registerUpdatableEntity(Entity & e, s16 order, s16 layer)
     {
         if (it->second.find(&e) != it->second.end())
         {
-            SN_ERROR("Scene::registerUpdatableEntity: entity " << e.toString() << " already registered with order " << order << " and layer " << layer);
+            SN_ERROR("Scene::registerUpdatableEntity: entity " << e.toString() << " is already registered with order " << order << " and layer " << layer);
             return;
         }
     }
@@ -38,6 +38,29 @@ void Scene::unregisterUpdatableEntity(Entity & e)
 #ifdef SN_BUILD_DEBUG
     SN_WARNING("Scene::unregisterUpdatableEntity: entity " << e.toString() << " was not registered");
 #endif
+}
+
+//------------------------------------------------------------------------------
+void Scene::registerEventListener(Entity & e)
+{
+	auto it = m_eventListenerEntities.find(&e);
+	if (it == m_eventListenerEntities.end())
+	{
+		m_eventListenerEntities.insert(&e);
+	}
+	else
+	{
+		SN_ERROR("Scene::registerEventListener: entity " << e.toString() << " is already registered");
+	}
+}
+
+//------------------------------------------------------------------------------
+void Scene::unregisterEventListener(Entity & e)
+{
+	if (m_eventListenerEntities.erase(&e) == 0)
+	{
+	    SN_WARNING("Scene::unregisterEventListener: entity " << e.toString() << " was not registered");
+	}
 }
 
 //------------------------------------------------------------------------------
@@ -142,6 +165,14 @@ void Scene::onUpdate()
 bool Scene::onSystemEvent(const Event & ev)
 {
     // TODO EventDispatcher
+
+	auto listenersCopy = m_eventListenerEntities;
+	for (auto it = listenersCopy.begin(); it != listenersCopy.end(); ++it)
+	{
+		if ((*it)->onSystemEvent(ev))
+			return true; // Handled
+	}
+
     return false; // Not handled
 }
 
