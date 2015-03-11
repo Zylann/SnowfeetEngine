@@ -38,6 +38,7 @@ void RenderManager::onReady()
     // Register to update manager.
     // Arbitrary values. The layer is given quite high so gameplay should be updated before.
     setUpdatable(true, 0, 32000);
+    listenToSystemEvents();
 
     // Get or create window in which we'll render
     Window * win = SystemGUI::get().getWindowByID(0);
@@ -62,10 +63,13 @@ void RenderManager::onUpdate()
 //------------------------------------------------------------------------------
 bool RenderManager::onSystemEvent(const sn::Event & event)
 {
+    if (m_context == nullptr)
+        return false;
+
 	switch (event.type)
 	{
 	case SN_EVENT_WINDOW_RESIZED:
-		// TODO change viewport resolution
+        m_context->setViewport(0, 0, event.window.width, event.window.height);
 		break;
 
 	default:

@@ -73,6 +73,12 @@ void Context::useProgram(const ShaderProgram * shader)
     }
 }
 
+//------------------------------------------------------------------------------
+void Context::setViewport(u32 x, u32 y, u32 width, u32 height)
+{
+    glViewport(x, y, width, height);
+}
+
 } // namespace render
 } // namespace sn
 
