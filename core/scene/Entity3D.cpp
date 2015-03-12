@@ -50,27 +50,74 @@ void Entity3D::setScale(const Vector3f & newScale)
 
 Vector3f Entity3D::getGlobalPosition()
 {
-    // TODO
+	if (getParent() && getParent()->isInstanceOf<Entity3D>())
+	{
+		Entity3D & parent3D = *(Entity3D*)getParent();
+		return parent3D.getGlobalMatrix().transformPoint(m_position);
+	}
+	else
+	{
+		return m_position;
+	}
 }
 
 void Entity3D::setGlobalPosition(const Vector3f & newPos)
 {
-    // TODO
+	if (getParent() && getParent()->isInstanceOf<Entity3D>())
+	{
+		Entity3D & parent3D = *(Entity3D*)getParent();
+		Matrix4 inv;
+		if (parent3D.getGlobalMatrix().getInverse(inv))
+		{
+			m_position = inv.transformPoint(newPos);
+		}
+		else
+		{
+			m_position = newPos;
+		}
+	}
+	else
+	{
+		m_position = newPos;
+	}
 }
 
 Quaternion Entity3D::getGlobalRotation()
 {
-    // TODO
+	if (getParent() && getParent()->isInstanceOf<Entity3D>())
+	{
+		Entity3D & parent3D = *(Entity3D*)getParent();
+		return m_rotation * parent3D.getRotation();
+	}
+	else
+	{
+		return m_rotation;
+	}
 }
 
 void Entity3D::setGlobalRotation(const Quaternion & newRotation)
 {
-    // TODO
+	if (getParent() && getParent()->isInstanceOf<Entity3D>())
+	{
+		Entity3D & parent3D = *(Entity3D*)getParent();
+		m_rotation = newRotation * parent3D.getRotation().getInverse();
+	}
+	else
+	{
+		m_rotation = newRotation;
+	}
 }
 
 Vector3f Entity3D::getGlobalScale()
 {
-    // TODO
+	if (getParent() && getParent()->isInstanceOf<Entity3D>())
+	{
+		return m_scale * ((Entity3D*)getParent())->getGlobalScale();
+	}
+	else
+	{
+		return m_scale;
+	}
 }
 
 void Entity3D::setGlobalScale(const Vector3f & newScale)
