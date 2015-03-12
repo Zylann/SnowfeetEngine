@@ -143,6 +143,20 @@ public:
         m_z = 0;
     }
 
+	//----------------------
+	inline Quaternion getInverse()
+	{
+		return Quaternion(m_w, -m_x, -m_y, -m_z);
+	}
+
+	//----------------------
+	inline void invert()
+	{
+		m_x = -m_x;
+		m_y = -m_y;
+		m_z = -m_z;
+	}
+
     //----------------------
     inline Quaternion & Quaternion::normalize()
     {
