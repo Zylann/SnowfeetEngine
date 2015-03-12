@@ -7,6 +7,7 @@
 #include "object_types.hpp"
 
 #include "scene/Entity.hpp"
+#include "scene/Entity3D.hpp"
 #include "scene/Scene.hpp"
 
 #include "asset/Asset.hpp"
@@ -20,6 +21,7 @@ void registerObjectTypes(ObjectTypeDatabase & otb)
     otb.registerType<ScriptObject>();
 
     otb.registerType<Entity>();
+    otb.registerType<Entity3D>();
     otb.registerType<Scene>();
 
     otb.registerType<Asset>();
