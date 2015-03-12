@@ -70,6 +70,7 @@ void Entity::setUpdatable(bool updatable, s16 order, s16 layer)
         Scene * scene = getScene();
         if (scene)
         {
+			setFlag(SN_EF_UPDATABLE, updatable);
             if (updatable)
                 scene->registerUpdatableEntity(*this, order, layer);
             else
@@ -95,6 +96,7 @@ void Entity::listenToSystemEvents(bool enable)
 		Scene * scene = getScene();
 		if (scene)
 		{
+			setFlag(SN_EF_SYSTEM_EVENT_LISTENER, enable);
 			if (enable)
 				scene->registerEventListener(*this);
 			else
