@@ -74,6 +74,8 @@ public :
 
     bool getInverse(Matrix4 & out_result) const;
 
+	Vector3f transformPoint(const Vector3f & p) const;
+
     //-------------------------------------
     // Operators
     //-------------------------------------
