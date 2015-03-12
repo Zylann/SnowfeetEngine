@@ -21,6 +21,7 @@ public:
 
     void onReady() override;
 
+    void setMesh(Mesh * mesh);
     const Mesh * getMesh() const { return m_mesh.get(); }
 
     inline void setDrawOrder(s32 order) { m_drawOrder = order; }

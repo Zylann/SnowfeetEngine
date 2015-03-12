@@ -19,6 +19,12 @@ void Drawable::setMaterial(Material * material)
 }
 
 //------------------------------------------------------------------------------
+void Drawable::setMesh(Mesh * mesh)
+{
+    m_mesh.set(mesh);
+}
+
+//------------------------------------------------------------------------------
 Drawable::Drawable()
 {
     m_mesh.set(new Mesh());
