@@ -122,7 +122,15 @@ Vector3f Entity3D::getGlobalScale()
 
 void Entity3D::setGlobalScale(const Vector3f & newScale)
 {
-    // TODO
+    if (getParent() && getParent()->isInstanceOf<Entity3D>())
+    {
+        Vector3f parentScale = ((Entity3D*)getParent())->getGlobalScale();
+        setScale(newScale * parentScale);
+    }
+    else
+    {
+        return setScale(newScale);
+    }
 }
 
 const Matrix4 & Entity3D::getLocalMatrix() const
@@ -131,18 +139,30 @@ const Matrix4 & Entity3D::getLocalMatrix() const
     {
         // TODO
 
+        m_localMatrixNeedUpdate = false;
     }
 
+    return m_localMatrix;
 }
 
 const Matrix4 & Entity3D::getGlobalMatrix() const
 {
     if (m_globalMatrixNeedUpdate)
     {
-        // TODO
+        if (getParent() && getParent()->isInstanceOf<Entity3D>())
+        {
+            Entity3D * parent3D = (Entity3D*)getParent();
+            m_globalMatrix.setByProduct(parent3D->getGlobalMatrix(), getLocalMatrix());
+        }
+        else
+        {
+            m_globalMatrix = getLocalMatrix();
+        }
 
+        m_globalMatrixNeedUpdate = false;
     }
 
+    return m_globalMatrix;
 }
 
 void Entity3D::updateChildrenTransform()

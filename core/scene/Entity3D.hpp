@@ -54,9 +54,9 @@ public:
     virtual void unserializeState(JsonBox::Value & o) override;
 
 protected:
-    virtual void onPositionChanged() {}
-    virtual void onScaleChanged() {}
-    virtual void onRotationChanged() {}
+    virtual void onPositionChanged();
+    virtual void onScaleChanged();
+    virtual void onRotationChanged();
 
 private:
     void updateChildrenTransform();
@@ -66,11 +66,11 @@ private:
     Vector3f m_scale;
     Quaternion m_rotation;
 
-    Matrix4 m_localMatrix;
-    Matrix4 m_globalMatrix;
+    mutable Matrix4 m_localMatrix;
+    mutable Matrix4 m_globalMatrix;
 
-    bool m_localMatrixNeedUpdate;
-    bool m_globalMatrixNeedUpdate;
+    mutable bool m_localMatrixNeedUpdate;
+    mutable bool m_globalMatrixNeedUpdate;
 
 };
 
