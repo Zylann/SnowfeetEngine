@@ -137,7 +137,10 @@ const Matrix4 & Entity3D::getLocalMatrix() const
 {
     if (m_localMatrixNeedUpdate)
     {
-        // TODO
+        m_localMatrix.loadIdentity();
+        m_localMatrix.setRotation(m_rotation);
+        m_localMatrix.setTranslation(m_position);
+        m_localMatrix.scaleTransform(m_scale);
 
         m_localMatrixNeedUpdate = false;
     }
