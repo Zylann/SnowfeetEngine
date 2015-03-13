@@ -179,6 +179,44 @@ void Matrix4::loadRotation(const f32 t, const f32 x, const f32 y, const f32 z)
 }
 
 //------------------------------------------------------------------------------
+void Matrix4::setTranslation(const Vector3f & v)
+{
+    m_v[12] = v.x();
+    m_v[13] = v.y();
+    m_v[14] = v.z();
+}
+
+//------------------------------------------------------------------------------
+void Matrix4::setRotation(const Quaternion & q)
+{
+    // http://www.euclideanspace.com/maths/geometry/rotations/conversions/quaternionToMatrix/index.htm
+
+    //1 - 2 * qy2 - 2 * qz2 	2 * qx*qy - 2 * qz*qw 	2 * qx*qz + 2 * qy*qw
+    //2 * qx*qy + 2 * qz*qw 	1 - 2 * qx2 - 2 * qz2 	2 * qy*qz - 2 * qx*qw
+    //2 * qx*qz - 2 * qy*qw 	2 * qy*qz + 2 * qx*qw 	1 - 2 * qx2 - 2 * qy2
+
+    m_v[0 ] = 1.f - 2.f * q.getY()*q.getY() - 2.f * q.getZ()*q.getZ();
+    m_v[1 ] =       2.f * q.getX()*q.getY() - 2.f * q.getZ()*q.getW();
+    m_v[2 ] =       2.f * q.getX()*q.getZ() + 2.f * q.getY()*q.getW();
+
+    m_v[4 ] =       2.f * q.getX()*q.getY() + 2.f * q.getZ()*q.getW();
+    m_v[5 ] = 1.f - 2.f * q.getX()*q.getX() - 2.f * q.getZ()*q.getZ();
+    m_v[6 ] =       2.f * q.getY()*q.getZ() - 2.f * q.getX()*q.getW();
+
+    m_v[8 ] =       2.f * q.getX()*q.getZ() - 2.f * q.getY()*q.getW();
+    m_v[9 ] =       2.f * q.getY()*q.getZ() + 2.f * q.getX()*q.getW();
+    m_v[10] = 1.f - 2.f * q.getX()*q.getX() - 2.f * q.getY()*q.getY();
+}
+
+//------------------------------------------------------------------------------
+void Matrix4::scaleTransform(const Vector3f & s)
+{
+    m_v[0] *= s[0];
+    m_v[5] *= s[1];
+    m_v[10] *= s[2];
+}
+
+//------------------------------------------------------------------------------
 void Matrix4::setByProduct(const Matrix4 & a, const Matrix4 & b)
 {
     //  0   1   2   3

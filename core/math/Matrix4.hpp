@@ -8,6 +8,7 @@ This file is part of the SnowfeetEngine project.
 #define __HEADER_SN_MATRIX4__
 
 #include "Vector3.hpp"
+#include "Quaternion.hpp"
 
 namespace sn
 {
@@ -67,6 +68,11 @@ public :
     void setByProductAs3(const Matrix4 & a, const Matrix4 & b);
 
     void getTransposed(Matrix4 & out_result) const;
+
+    void setTranslation(const Vector3f & v);
+    void setRotation(const Quaternion & q);
+
+    void scaleTransform(const Vector3f & s);
 
     inline const f32 * values() const { return m_v; }
 
