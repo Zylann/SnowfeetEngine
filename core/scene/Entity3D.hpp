@@ -6,7 +6,7 @@
 namespace sn
 {
 
-class Entity3D : public Entity
+class SN_API Entity3D : public Entity
 {
 public:
     SN_ENTITY(sn::Entity3D, sn::Entity)
