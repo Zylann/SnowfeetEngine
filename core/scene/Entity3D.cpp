@@ -201,7 +201,7 @@ void Entity3D::serializeState(JsonBox::Value & o)
 {
     Entity::serializeState(o);
     sn::serialize(o["position"], m_position);
-    sn::serialize(o["rotation"], m_rotation]);
+    sn::serialize(o["rotation"], m_rotation);
     sn::serialize(o["scale"], m_scale);
 }
 
@@ -209,7 +209,7 @@ void Entity3D::unserializeState(JsonBox::Value & o)
 {
     Entity::unserializeState(o);
     sn::unserialize(o["position"], m_position);
-    sn::unserialize(o["rotation"], m_rotation]);
+    sn::unserialize(o["rotation"], m_rotation);
     sn::unserialize(o["scale"], m_scale);
 }
 
