@@ -46,6 +46,7 @@ inline void serialize(JsonBox::Value & o, f32 v) { o = v; }
 inline void serialize(JsonBox::Value & o, s32 v) { o = v; }
 inline void serialize(JsonBox::Value & o, u32 v) { o = (s32)v; }
 inline void serialize(JsonBox::Value & o, u8 v) { o = (s32)v; }
+inline void serialize(JsonBox::Value & o, bool v) { o = v; }
 inline void serialize(JsonBox::Value & o, const std::string & s) { o = s; }
 
 //------------------------------------------------------------------------------
@@ -53,6 +54,7 @@ inline void unserialize(const JsonBox::Value & o, f32 & v) { v = static_cast<f32
 inline void unserialize(const JsonBox::Value & o, s32 & v) { v = o.getInt(); }
 inline void unserialize(const JsonBox::Value & o, u32 & v) { v = static_cast<u32>(o.getInt()); }
 inline void unserialize(const JsonBox::Value & o, u8 & v) { v = static_cast<u32>(o.getInt()); }
+inline void unserialize(const JsonBox::Value & o, bool & v) { v = static_cast<u32>(o.getBoolean()); }
 inline void unserialize(const JsonBox::Value & o, std::string & s) { s = o.getString(); }
 
 //------------------------------------------------------------------------------

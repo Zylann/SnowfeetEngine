@@ -48,6 +48,13 @@ public:
 
     //void setVisibilityMask(u32 mask);
 
+    //-----------------------------------------
+    // Serialization
+    //-----------------------------------------
+
+    void serializeState(JsonBox::Value & o) override;
+    void unserializeState(JsonBox::Value & o) override;
+
 private:
 
     //std::bitset<32> m_cullingMask;

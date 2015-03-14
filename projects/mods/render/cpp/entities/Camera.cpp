@@ -75,6 +75,33 @@ const Matrix4 & Camera::getProjectionMatrix() const
     return m_projectionMatrix;
 }
 
+//------------------------------------------------------------------------------
+void Camera::serializeState(JsonBox::Value & o)
+{
+    Entity3D::serializeState(o);
+    sn::serialize(o["near"], m_near);
+    sn::serialize(o["far"], m_far);
+    sn::serialize(o["isOrtho"], m_isOrtho);
+    sn::serialize(o["aspectRatio"], m_aspectRatio);
+    sn::serialize(o["fov"], m_fov);
+    sn::serialize(o["orthoSize"], m_orthoSize);
+    sn::serialize(o["drawOrder"], m_drawOrder);
+}
+
+//------------------------------------------------------------------------------
+void Camera::unserializeState(JsonBox::Value & o)
+{
+    Entity3D::unserializeState(o);
+    sn::unserialize(o["near"], m_near);
+    sn::unserialize(o["far"], m_far);
+    sn::unserialize(o["isOrtho"], m_isOrtho);
+    sn::unserialize(o["aspectRatio"], m_aspectRatio);
+    sn::unserialize(o["fov"], m_fov);
+    sn::unserialize(o["orthoSize"], m_orthoSize);
+    sn::unserialize(o["drawOrder"], m_drawOrder);
+}
+
+
 } // namespace render
 } // namespace sn
 
