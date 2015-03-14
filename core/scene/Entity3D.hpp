@@ -47,6 +47,12 @@ public:
     const Matrix4 & getGlobalMatrix() const;
 
     //--------------------------------
+    // Helpers
+    //--------------------------------
+
+    void lookAt(const Vector3f & targetPosition);
+
+    //--------------------------------
     // Serialization
     //--------------------------------
 

@@ -197,6 +197,15 @@ void Entity3D::onRotationChanged()
     updateChildrenTransform();
 }
 
+void Entity3D::lookAt(const Vector3f & targetPosition)
+{
+    Vector3f v = targetPosition - getGlobalPosition();
+    Vector3f euler = getSphericalAngles(v);
+    Quaternion q;
+    q.setFromEuler(euler.x(), euler.y(), euler.z());
+    setRotation(q);
+}
+
 void Entity3D::serializeState(JsonBox::Value & o)
 {
     Entity::serializeState(o);
