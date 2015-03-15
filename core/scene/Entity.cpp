@@ -447,7 +447,7 @@ void Entity::unserializeState(JsonBox::Value & o)
 {
     m_name = o["name"].getString();
     setEnabled(o["enabled"].getBoolean());
-    sn::serialize(o, m_tags);
+    sn::unserialize(o, m_tags);
 
     // TODO FIXME Do this only when the scene changes to non-null
     Scene * scene = getScene();
