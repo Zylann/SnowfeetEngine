@@ -1,7 +1,8 @@
 ﻿#include <core/util/Log.hpp>
 #include <core/util/stringutils.hpp>
+
 #include "gl_check.hpp"
-#include "ShaderLoader.hpp"
+#include "loaders/mshader/ShaderLoader.hpp"
 #include "ShaderProgram.hpp"
 
 namespace sn {

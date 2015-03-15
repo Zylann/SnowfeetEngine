@@ -1,6 +1,9 @@
 #ifndef __HEADER_SN_RENDER_SHADERLOADER__
 #define __HEADER_SN_RENDER_SHADERLOADER__
 
+#include <string>
+#include <fstream>
+
 namespace sn {
 namespace render {
 

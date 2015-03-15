@@ -2,7 +2,7 @@
 #include <core/util/Log.hpp>
 
 #include "ShaderLoader.hpp"
-#include "ShaderProgram.hpp"
+#include "../../ShaderProgram.hpp"
 
 namespace sn {
 namespace render {
