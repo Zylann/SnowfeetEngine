@@ -106,7 +106,14 @@ bool PLYLoader::parseHeader()
 
         if (command == ply::format)
         {
-            ifs >> m_format;
+            std::string format;
+            std::string version;
+
+            ifs >> format;
+            ifs >> version;
+
+            m_format = format + ' ' + version;
+
             if (m_format != "ascii 1.0")
             {
                 SN_ERROR("PLY format not supported: " << m_format);
