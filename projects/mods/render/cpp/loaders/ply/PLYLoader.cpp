@@ -41,6 +41,24 @@ namespace ply
             return x / 255.f;
         }
     }
+
+    inline void nextLine(std::ifstream & ifs)
+    {
+        while (!ifs.eof())
+        {
+            char c = ifs.get();
+            if (c == '\n' || c == '\r')
+                break;
+        }
+        while (!ifs.eof())
+        {
+            char c = ifs.peek();
+            if (c == '\n' || c == '\r')
+                ifs.get();
+            else
+                break;
+        }
+    }
 }
 
 PLYLoader::PLYLoader(std::ifstream & ifs):
@@ -48,8 +66,8 @@ PLYLoader::PLYLoader(std::ifstream & ifs):
     r_ifs(ifs),
     r_mesh(nullptr)
 {
-    m_elementTypeToID["vertex"] = SNR_PLY_FACE;
-    m_elementTypeToID["face"] = SNR_PLY_VERTEX;
+    m_elementTypeToID["vertex"] = SNR_PLY_VERTEX;
+    m_elementTypeToID["face"] = SNR_PLY_FACE;
 
     m_dataTypeToID["char"] = SNR_PLY_CHAR;
     m_dataTypeToID["short"] = SNR_PLY_CHAR;
@@ -69,6 +87,7 @@ PLYLoader::PLYLoader(std::ifstream & ifs):
     m_fieldToID["red"] = SNR_PLY_RED;
     m_fieldToID["green"] = SNR_PLY_GREEN;
     m_fieldToID["blue"] = SNR_PLY_BLUE;
+    m_fieldToID["vertex_indices"] = SNR_PLY_VERTEX_INDICES;
 }
 
 bool PLYLoader::loadMesh(Mesh & out_mesh)
@@ -148,6 +167,7 @@ bool PLYLoader::parseHeader()
             }
 
             std::string typeStr;
+            ifs >> typeStr;
             if (typeStr == "list")
             {
                 ifs >> typeStr;
@@ -172,7 +192,6 @@ bool PLYLoader::parseHeader()
             }
             else // Scalar
             {
-                ifs >> typeStr;
                 auto dataTypeIt = m_dataTypeToID.find(typeStr);
                 if (dataTypeIt == m_dataTypeToID.end())
                 {
@@ -202,6 +221,7 @@ bool PLYLoader::parseHeader()
         else if (command == ply::comment)
         {
             // Ignore this line
+            ply::nextLine(ifs);
             continue;
         }
         else

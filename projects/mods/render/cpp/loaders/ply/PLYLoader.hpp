@@ -26,7 +26,8 @@ enum PLYField
     SNR_PLY_NZ,
     SNR_PLY_RED,
     SNR_PLY_GREEN,
-    SNR_PLY_BLUE
+    SNR_PLY_BLUE,
+    SNR_PLY_VERTEX_INDICES
 };
 
 enum PLYDataType
