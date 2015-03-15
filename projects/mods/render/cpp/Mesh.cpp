@@ -1,7 +1,36 @@
-﻿#include "Mesh.hpp"
+﻿#include <core/util/stringutils.hpp>
+#include "Mesh.hpp"
+#include "loaders/ply/PLYLoader.hpp"
 
 namespace sn {
 namespace render {
+
+//------------------------------------------------------------------------------
+std::string toString(PrimitiveType pt)
+{
+    switch (pt)
+    {
+    case SNR_PT_POINTS: return "Points"; break;
+    case SNR_PT_LINES: return "Lines"; break;
+    case SNR_PT_TRIANGLES: return "Lines"; break;
+    case SNR_PT_QUADS: return "Quads"; break;
+    default: return "PrimitiveType[" + std::to_string((s32)pt) + "]"; break;
+    }
+}
+
+//------------------------------------------------------------------------------
+bool Mesh::canLoad(const AssetMetadata & metadata) const
+{
+    String ext = sn::getFileExtension(metadata.path);
+    return ext == L".ply";
+}
+
+//------------------------------------------------------------------------------
+bool Mesh::loadFromStream(std::ifstream & ifs)
+{
+    PLYLoader loader(ifs);
+    return loader.loadMesh(*this);
+}
 
 //------------------------------------------------------------------------------
 void Mesh::clear()
@@ -113,11 +142,11 @@ void Mesh::recalculateIndexes()
         {
             u32 i = j * 4;
             m_indices[i] = i;
-            m_indices[i + 1] = i + 1;
-            m_indices[i + 2] = i + 2;
+            m_indices[i + 1] = i + 2;
+            m_indices[i + 2] = i + 1;
             m_indices[i + 3] = i;
-            m_indices[i + 4] = i + 2;
-            m_indices[i + 5] = i + 3;
+            m_indices[i + 4] = i + 3;
+            m_indices[i + 5] = i + 2;
         }
     }
 
@@ -128,15 +157,45 @@ void Mesh::recalculateIndexes()
 }
 
 //------------------------------------------------------------------------------
-std::string toString(PrimitiveType pt)
+void Mesh::setPositions(const Vector3f * positions, u32 count)
 {
-    switch (pt)
+    SN_ASSERT(positions != nullptr, "Invalid positions pointer");
+    m_vertices.resize(count);
+    memcpy(&m_vertices[0], positions, sizeof(Vector3f)*count);
+}
+
+//------------------------------------------------------------------------------
+void Mesh::setNormals(const Vector3f * normals, u32 count)
+{
+    SN_ASSERT(normals != nullptr, "Invalid normals pointer");
+    m_normals.resize(count);
+    memcpy(&m_normals[0], normals, sizeof(Vector3f)*count);
+}
+
+//------------------------------------------------------------------------------
+void Mesh::setColors(const Color * colors, u32 count)
+{
+    SN_ASSERT(colors != nullptr, "Invalid colors pointer");
+    m_colors.resize(count);
+    memcpy(&m_colors[0], colors, sizeof(Color)*count);
+}
+
+//------------------------------------------------------------------------------
+void Mesh::setQuadIndices(const u32 * indices, u32 count)
+{
+    SN_ASSERT(indices != nullptr, "Invalid indices pointer");
+    SN_ASSERT(count % 4 == 0, "Number of quad indices array is not a multiple of 4");
+    m_indices.resize(6 * (count / 4));
+    u32 j = 0;
+    for (u32 i = 0; i < count; i += 4)
     {
-    case SNR_PT_POINTS: return "Points"; break;
-    case SNR_PT_LINES: return "Lines"; break;
-    case SNR_PT_TRIANGLES: return "Lines"; break;
-    case SNR_PT_QUADS: return "Quads"; break;
-    default: return "PrimitiveType[" + std::to_string((s32)pt) + "]"; break;
+        m_indices[j    ] = indices[i    ];
+        m_indices[j + 1] = indices[i + 2];
+        m_indices[j + 2] = indices[i + 1];
+        m_indices[j + 3] = indices[i    ];
+        m_indices[j + 4] = indices[i + 3];
+        m_indices[j + 5] = indices[i + 2];
+        j += 6;
     }
 }
 

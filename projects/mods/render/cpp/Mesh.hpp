@@ -10,7 +10,7 @@ This file is part of the SnowfeetEngine project.
 #include <core/math/Vector2.hpp>
 #include <core/math/Vector3.hpp>
 #include <core/math/Color.hpp>
-#include <core/app/ScriptObject.hpp>
+#include <core/asset/Asset.hpp>
 #include <vector>
 #include <GL/glew.h>
 
@@ -28,15 +28,18 @@ enum PrimitiveType
     SNR_PT_QUADS          = 3
 };
 
-class Mesh : public ScriptObject
+class Mesh : public Asset
 {
 public:
-    SN_SCRIPT_OBJECT(sn::render::Mesh, sn::ScriptObject)
+    SN_ASSET(sn::render::Mesh)
 
     Mesh() :
         m_primitiveType(SNR_PT_TRIANGLES),
         m_vaoID(0)
     {}
+
+    bool canLoad(const AssetMetadata & metadata) const;
+    bool loadFromStream(std::ifstream & ifs);
 
     void clear();
     bool isEmpty() const;
@@ -50,6 +53,11 @@ public:
     void addTexCoord(f32 x, f32 y);
     void addNormal(f32 x, f32 y, f32 z);
     void addColor(const Color & c);
+
+    void setPositions(const Vector3f * positions, u32 count);
+    void setNormals(const Vector3f * normals, u32 count);
+    void setColors(const Color * colors, u32 count);
+    void setQuadIndices(const u32 * indices, u32 count);
 
     void recalculateIndexes();
 
