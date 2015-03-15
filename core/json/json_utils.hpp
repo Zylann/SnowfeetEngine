@@ -261,12 +261,28 @@ inline void unserialize(JsonBox::Value & o, Quaternion & q)
 {
     SN_ASSERT(o.isArray(), "Expected array to unserialize Quaternion");
 
-    q = Quaternion(
-        static_cast<f32>(o[(size_t)0].getDouble()),
-        static_cast<f32>(o[1].getDouble()),
-        static_cast<f32>(o[2].getDouble()),
-        static_cast<f32>(o[3].getDouble())
-    );
+    const JsonBox::Array & a = o.getArray();
+    if (a.size() == 4)
+    {
+        q = Quaternion(
+            static_cast<f32>( o[(size_t)0].getDouble() ),
+            static_cast<f32>( o[1].getDouble() ),
+            static_cast<f32>( o[2].getDouble() ),
+            static_cast<f32>( o[3].getDouble() )
+        );
+    }
+    else if (a.size() == 3)
+    {
+        q.setFromEuler(
+            static_cast<f32>( o[(size_t)0].getDouble() ),
+            static_cast<f32>( o[1].getDouble() ),
+            static_cast<f32>( o[2].getDouble() )
+        );
+    }
+    else
+    {
+        SN_ERROR("Expected array of size 3 or 4 to unserialize Quaternion");
+    }
 }
 
 } // namespace sn
