@@ -36,6 +36,22 @@ void Drawable::onReady()
     addTag(TAG);
 }
 
+//------------------------------------------------------------------------------
+void Drawable::serializeState(JsonBox::Value & o)
+{
+    Entity3D::serializeState(o);
+    sn::serialize(o["drawOrder"], m_drawOrder);
+    // TODO
+}
+
+//------------------------------------------------------------------------------
+void Drawable::unserializeState(JsonBox::Value & o)
+{
+    Entity3D::unserializeState(o);
+    sn::unserialize(o["drawOrder"], m_drawOrder);
+    // TODO
+}
+
 } // namespace render
 } // namespace sn
 

@@ -1,7 +1,7 @@
 #ifndef __HEADER_SN_RENDER_DRAWABLE__
 #define __HEADER_SN_RENDER_DRAWABLE__
 
-#include <core/scene/Entity.hpp>
+#include <core/scene/Entity3D.hpp>
 #include <core/util/SharedRef.hpp>
 //#include <mods/render/cpp/Mesh.hpp>
 #include "../Mesh.hpp"
@@ -10,10 +10,10 @@
 namespace sn {
 namespace render {
 
-class Drawable : public Entity
+class Drawable : public Entity3D
 {
 public:
-    SN_ENTITY(sn::render::Drawable, sn::Entity)
+    SN_ENTITY(sn::render::Drawable, sn::Entity3D)
 
     static const std::string TAG;
 
@@ -29,6 +29,9 @@ public:
 
     void setMaterial(Material * material);
     inline Material * getMaterial() const { return m_material.get(); }
+
+    virtual void serializeState(JsonBox::Value & o) override;
+    virtual void unserializeState(JsonBox::Value & o) override;
 
 private:
     ~Drawable();
