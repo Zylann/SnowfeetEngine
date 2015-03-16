@@ -23,7 +23,7 @@ public:
     //------------------------------------
 
     bool canLoad(const AssetMetadata & meta) const override;
-    // TODO loadFromStream()
+    bool loadFromStream(std::ifstream & ifs) override;
 
     //------------------------------------
     // Methods
