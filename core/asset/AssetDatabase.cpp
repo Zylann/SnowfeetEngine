@@ -53,14 +53,18 @@ void AssetDatabase::loadAssets(const ModuleInfo & modInfo)
 
     u32 indexedCount = 0;
     u32 loadedCount = 0;
+
+	std::vector<Asset*> moduleAssets;
     
     // First, index all the files we can load
     for (auto it = files.begin(); it != files.end(); ++it)
     {
         // TODO Ignore special folders such as cpp/
         const FileNode & file = *it;
-        if (preloadAsset(file.path, modInfo.name))
+		Asset * asset = preloadAsset(file.path, modInfo.name);
+        if (asset)
         {
+			moduleAssets.push_back(asset);
             ++indexedCount;
         }
     }
@@ -68,9 +72,9 @@ void AssetDatabase::loadAssets(const ModuleInfo & modInfo)
     SN_LOG("Indexed " << indexedCount << " assets from " << modInfo.name << " in " << clock.getElapsedTime().asSeconds() << " seconds");
 #endif
 
-    for (auto it = m_fileCache.begin(); it != m_fileCache.end(); ++it)
+    for (auto it = moduleAssets.begin(); it != moduleAssets.end(); ++it)
     {
-        Asset * asset = it->second;
+        Asset * asset = *it;
         loadAsset(asset);
     }
 #ifdef SN_BUILD_DEBUG
