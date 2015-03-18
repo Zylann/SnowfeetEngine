@@ -21,7 +21,8 @@ enum AssetLoadStatus
 {
     SN_ALS_LOADED = 0,
     SN_ALS_MISMATCH,
-    SN_ALS_ERROR
+    SN_ALS_OPEN_ERROR,
+    SN_ALS_READ_ERROR
 };
 
 /// \brief Contains all resources currently loaded by the application.
@@ -47,12 +48,17 @@ public:
     /// This function blocks until everything is loaded.
     void loadAssets(const ModuleInfo & modInfo);
 
-
     AssetLoadStatus loadAssetFromFile(const String & path, const std::string & moduleName);
     //bool releaseAsset(IAsset * asset);
 
     // Gets an asset. If it returns null, the asset may not have been loaded or is in progress.
     Asset * getAsset(const std::string & moduleName, const std::string & type, const std::string & name);
+
+    void releaseAssets();
+
+    //-----------------------------
+    // Helpers
+    //-----------------------------
 
     // Template version of getAsset, compiled in your native code.
     // It works only if you used the SN_ASSET macro of your asset class.
@@ -67,15 +73,25 @@ public:
             return nullptr;
     }
 
-    void releaseAssets();
+private:
+    // Tests if an asset file can be loaded, and if yes, returns its container object in an empty state,
+    // with associated metadata.
+    // If you don't need the container, you have to call release() on it.
+    // If the asset has already been preloaded, returns the asset directly.
+    Asset * preloadAsset(const String & path, const std::string & moduleName);
+
+    AssetLoadStatus loadAsset(Asset * asset);
 
 private:
 
     // Top directory where assets are located (usually the "projects" directory)
     String m_root;
 
+    // [path][asset]
+    std::unordered_map<String, Asset*> m_fileCache;
+
     // [moduleName][typeName][name] => Asset
-    std::unordered_map< std::string, std::unordered_map<std::string, std::unordered_map<std::string, Asset*> > > m_assets;
+    std::unordered_map< std::string, std::unordered_map< std::string, std::unordered_map<std::string, Asset*> > > m_assets;
 
 };
 

@@ -33,7 +33,8 @@ public:
 
     std::string type;
     std::string module;
-    String path;
+    String path; // File path
+    std::string name;
     AssetLoadingMode loadingMode;
     JsonBox::Value json;
 };

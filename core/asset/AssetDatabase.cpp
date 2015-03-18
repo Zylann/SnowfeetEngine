@@ -50,30 +50,51 @@ void AssetDatabase::loadAssets(const ModuleInfo & modInfo)
 #endif
     std::vector<FileNode> files;
     getFilesRecursively(FilePath::join(m_root, modInfo.directory), files);
-    u32 count = 0;
-    // TODO Ignore special folders such as cpp/
+
+    u32 indexedCount = 0;
+    u32 loadedCount = 0;
+    
+    // First, index all the files we can load
     for (auto it = files.begin(); it != files.end(); ++it)
     {
+        // TODO Ignore special folders such as cpp/
         const FileNode & file = *it;
-        if (loadAssetFromFile(file.path, modInfo.name) == SN_ALS_LOADED)
+        if (preloadAsset(file.path, modInfo.name))
         {
-            ++count;
+            ++indexedCount;
         }
     }
 #ifdef SN_BUILD_DEBUG
-    SN_LOG("Loaded " << count << " assets from " << modInfo.name << " in " << clock.getElapsedTime().asSeconds() << " seconds");
+    SN_LOG("Indexed " << indexedCount << " assets from " << modInfo.name << " in " << clock.getElapsedTime().asSeconds() << " seconds");
+#endif
+
+    for (auto it = m_fileCache.begin(); it != m_fileCache.end(); ++it)
+    {
+        Asset * asset = it->second;
+        loadAsset(asset);
+    }
+#ifdef SN_BUILD_DEBUG
+    SN_LOG("Loaded " << loadedCount << " assets from " << modInfo.name << " in " << clock.getElapsedTime().asSeconds() << " seconds");
 #endif
 }
 
 //------------------------------------------------------------------------------
-AssetLoadStatus AssetDatabase::loadAssetFromFile(const String & path, const std::string & moduleName)
+Asset * AssetDatabase::preloadAsset(const String & path, const std::string & moduleName)
 {
+    // Check if not already loaded
+    auto assetIt = m_fileCache.find(path);
+    if (assetIt != m_fileCache.end())
+    {
+        // Already loaded, return the asset
+        return assetIt->second;
+    }
+
     // Retrieve metadata
     AssetMetadata metadata;
     metadata.path = path;
     metadata.module = moduleName;
     metadata.loadFromFile(path); // Not fatal if the .meta file isn't found
-    
+
     // Find loader:
     // TODO [Optimize] the following is hammerish and sometimes conflictish. Find a better solution? I'm sure there is one.
 
@@ -89,67 +110,74 @@ AssetLoadStatus AssetDatabase::loadAssetFromFile(const String & path, const std:
         const ObjectType & t = *(it->second);
         if (t.is(assetType))
         {
-			if (!t.isAbstract())
-			{
-				Asset * candidateAsset = (Asset*)(t.instantiate());
-				if (candidateAsset->canLoad(metadata))
-				{
-					if (asset == nullptr)
-					{
-						asset = candidateAsset;
-					}
-					else
-					{
-						SN_WERROR(L"Cannot determine which asset loader to use for file '" << path << L"'.");
-						SN_ERROR("Candidates are: " << asset->getObjectType().getName() << ", " << candidateAsset->getObjectType().getName());
-						asset->release();
-						candidateAsset->release();
-						return SN_ALS_ERROR;
-					}
-				}
-				else
-				{
-					candidateAsset->release();
-				}
-			}
-			//else
-			//{
-			//	SN_DLOG("Ignored asset type " << t.toString() << " because it is abstract");
-			//}
+            if (!t.isAbstract())
+            {
+                Asset * candidateAsset = (Asset*)(t.instantiate());
+                if (candidateAsset->canLoad(metadata))
+                {
+                    if (asset == nullptr)
+                    {
+                        asset = candidateAsset;
+                    }
+                    else
+                    {
+                        SN_WERROR(L"Cannot determine which asset loader to use for file '" << path << L"'.");
+                        SN_ERROR("Candidates are: " << asset->getObjectType().getName() << ", " << candidateAsset->getObjectType().getName());
+                        asset->release();
+                        candidateAsset->release();
+                        return nullptr;
+                    }
+                }
+                else
+                {
+                    candidateAsset->release();
+                }
+            }
+            //else
+            //{
+            //	SN_DLOG("Ignored asset type " << t.toString() << " because it is abstract");
+            //}
         }
     }
 
-    if (asset == nullptr)
+    if (asset)
     {
-        // Cannot load this file type. The file will be ignored.
-        return SN_ALS_MISMATCH;
+        metadata.name = getFileNameWithoutExtension(toString(path));
+
+        // Assign metadata
+        asset->m_metadata = metadata;
+
+        // Store in file mapping
+        m_fileCache[metadata.path] = asset;
+
+        // Store in asset mapping
+        m_assets[metadata.module][asset->getObjectType().getName()][metadata.name] = asset;
+
+        SN_DLOG("Preloaded asset " << toString(path) << "...");
     }
 
+    // If nullptr, the asset wasn't loaded and couldn't be loaded
+    return asset;
+}
+
+//------------------------------------------------------------------------------
+AssetLoadStatus AssetDatabase::loadAsset(Asset * asset)
+{
+    SN_ASSERT(asset != nullptr, "Cannot receive nullptr");
+
+    const AssetMetadata & metadata = asset->getAssetMetadata();
     const std::string & typeName = asset->getObjectType().getName();
 
-    // Check if not already loaded
-    std::string assetName = getFileNameWithoutExtension(toString(path));
-    if (getAsset(moduleName, typeName, assetName) != nullptr)
-    {
-        SN_ERROR("Asset " << toString(path) << " is already loaded "
-            "under registry [" << moduleName << "][" << typeName << "][" << assetName << "]");
-        asset->release();
-        return SN_ALS_ERROR;
-    }
-
-    SN_DLOG("Loading asset " << toString(path) << "...");
+    SN_DLOG("Loading asset " << toString(metadata.path) << "...");
 
     // Open file stream
     std::ifstream ifs(metadata.path, std::ios::binary | std::ios::in);
     if (!ifs.good())
     {
         SN_ERROR("Cannot open file " << toString(metadata.path) << " for asset of type " << typeName);
-        asset->release();
-        return SN_ALS_ERROR;
+        //asset->release();
+        return SN_ALS_OPEN_ERROR;
     }
-
-    // Assign metadata
-    asset->m_metadata = metadata;
 
     // Load asset
     if (asset->loadFromStream(ifs))
@@ -157,16 +185,35 @@ AssetLoadStatus AssetDatabase::loadAssetFromFile(const String & path, const std:
         // Success
         ifs.close();
         // Store asset
-        m_assets[moduleName][typeName][assetName] = asset;
+        //m_assets[moduleName][typeName][assetName] = asset;
         return SN_ALS_LOADED;
     }
     else
     {
-        // Loading failure, shouldn't have happened
-        asset->release();
+        // Loading failure
+        //asset->release();
         SN_ERROR("An error occurred when loading asset " << toString(metadata.path) << " of type " << typeName);
-        return SN_ALS_ERROR;
+        return SN_ALS_READ_ERROR;
     }
+}
+
+//------------------------------------------------------------------------------
+AssetLoadStatus AssetDatabase::loadAssetFromFile(const String & path, const std::string & moduleName)
+{
+    Asset * asset = preloadAsset(path, moduleName);
+
+    const AssetMetadata & metadata = asset->getAssetMetadata();
+#ifdef SN_BUILD_DEBUG
+    SN_ASSERT(metadata.path == path, "Invalid state");
+#endif
+
+    if (asset == nullptr)
+    {
+        // Cannot load this file type. The file will be ignored.
+        return SN_ALS_MISMATCH;
+    }
+
+    return loadAsset(asset);
 }
 
 //------------------------------------------------------------------------------
@@ -206,6 +253,7 @@ void AssetDatabase::releaseAssets()
         SN_WARNING(leakCount << " assets are still referenced after deletion from the database");
     }
     m_assets.clear();
+    m_fileCache.clear();
 }
 
 //------------------------------------------------------------------------------
