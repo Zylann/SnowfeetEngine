@@ -16,6 +16,11 @@ project "ModRender"
 		"entities/*.cpp",
 		"sq_binding/*.hpp",
 		"sq_binding/*.cpp",
+		"loaders/ply/*.hpp",
+		"loaders/ply/*.cpp",
+		"loaders/mshader/*.hpp",
+		"loaders/mshader/*.cpp",
+		
 		-- TODO Move these to platform-specific filter
 		"win32/*.hpp",
 		"win32/*.cpp"
