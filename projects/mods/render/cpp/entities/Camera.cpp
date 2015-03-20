@@ -79,6 +79,7 @@ const Matrix4 & Camera::getProjectionMatrix() const
 void Camera::serializeState(JsonBox::Value & o)
 {
     Entity3D::serializeState(o);
+
     sn::serialize(o["near"], m_near);
     sn::serialize(o["far"], m_far);
     sn::serialize(o["isOrtho"], m_isOrtho);
@@ -92,6 +93,7 @@ void Camera::serializeState(JsonBox::Value & o)
 void Camera::unserializeState(JsonBox::Value & o)
 {
     Entity3D::unserializeState(o);
+
     sn::unserialize(o["near"], m_near);
     sn::unserialize(o["far"], m_far);
     sn::unserialize(o["isOrtho"], m_isOrtho);
@@ -99,6 +101,8 @@ void Camera::unserializeState(JsonBox::Value & o)
     sn::unserialize(o["fov"], m_fov);
     sn::unserialize(o["orthoSize"], m_orthoSize);
     sn::unserialize(o["drawOrder"], m_drawOrder);
+
+	m_projectionMatrixNeedUpdate = true;
 }
 
 
