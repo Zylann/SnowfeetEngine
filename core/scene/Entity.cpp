@@ -152,7 +152,7 @@ std::string Entity::toString() const
 {
     std::stringstream ss;
     if (m_name.empty())
-        ss << "[unnamed_entity]";
+        ss << "[unnamed_entity " << getObjectType().getName() << "]";
     else
         ss << m_name;
     return ss.str();
@@ -274,7 +274,7 @@ Entity * Entity::addChild(Entity * child)
     }
     if (containsChild(child))
     {
-        SN_ERROR("Entity::addChild: already contained in entity " << toString());
+        SN_ERROR("Entity::addChild: " << child->toString() << " already contained in entity " << toString());
         return nullptr;
     }
 #endif
@@ -292,7 +292,7 @@ u32 Entity::indexOfChild(const Entity * child) const
             break;
         ++i;
     }
-    return false;
+    return i;
 }
 
 //------------------------------------------------------------------------------
