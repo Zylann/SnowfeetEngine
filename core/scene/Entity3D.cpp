@@ -5,7 +5,8 @@ namespace sn
 
 Entity3D::Entity3D() : Entity(), 
     m_localMatrixNeedUpdate(true), 
-    m_globalMatrixNeedUpdate(true)
+    m_globalMatrixNeedUpdate(true),
+    m_scale(1,1,1)
 {
 }
 
