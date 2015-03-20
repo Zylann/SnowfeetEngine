@@ -42,6 +42,18 @@ bool loadFromFile(JsonBox::Value & document, const std::string & filePath, s32 c
 bool saveToFile(JsonBox::Value & document, const std::string & filePath);
 
 //------------------------------------------------------------------------------
+// Get any JSON number into a float, zero if not a number
+inline f32 unserializeFloat(JsonBox::Value & v)
+{
+    switch (v.getType())
+    {
+    case JsonBox::Value::INTEGER: return static_cast<f32>(v.getInt());
+    case JsonBox::Value::DOUBLE: return static_cast<f32>(v.getDouble());
+    default: return 0;
+    }
+}
+
+//------------------------------------------------------------------------------
 inline void serialize(JsonBox::Value & o, f32 v) { o = v; }
 inline void serialize(JsonBox::Value & o, s32 v) { o = v; }
 inline void serialize(JsonBox::Value & o, u32 v) { o = (s32)v; }
@@ -126,7 +138,7 @@ void unserialize(const JsonBox::Value & o, std::unordered_set<T> & v)
 template <typename T, unsigned int N>
 inline void serialize(JsonBox::Value & o, const Vector<T,N> & vec)
 {
-    for (size_t i = 1; i < N; ++i)
+    for (size_t i = 0; i < N; ++i)
         o[i] = vec[i];
 }
 
@@ -134,16 +146,16 @@ inline void serialize(JsonBox::Value & o, const Vector<T,N> & vec)
 template <unsigned int N>
 inline void unserialize(JsonBox::Value & o, Vector<f32,N> & vec)
 {
-    for (size_t i = 1; i < N; ++i)
-        vec[0] = static_cast<f32>(o[i].getDouble());
+    for (size_t i = 0; i < N; ++i)
+        vec[i] = unserializeFloat(o[i]);
 }
 
 //------------------------------------------------------------------------------
 template <unsigned int N>
 inline void unserialize(JsonBox::Value & o, Vector<s32,N> & vec)
 {
-    for (size_t i = 1; i < N; ++i)
-        vec[0] = o[i].getInt();
+    for (size_t i = 0; i < N; ++i)
+        vec[i] = o[i].getInt();
 }
 
 //------------------------------------------------------------------------------
