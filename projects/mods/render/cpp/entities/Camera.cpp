@@ -76,6 +76,12 @@ const Matrix4 & Camera::getProjectionMatrix() const
 }
 
 //------------------------------------------------------------------------------
+void Camera::onReady()
+{
+    addTag(TAG);
+}
+
+//------------------------------------------------------------------------------
 void Camera::serializeState(JsonBox::Value & o)
 {
     Entity3D::serializeState(o);
@@ -104,7 +110,6 @@ void Camera::unserializeState(JsonBox::Value & o)
 
 	m_projectionMatrixNeedUpdate = true;
 }
-
 
 } // namespace render
 } // namespace sn
