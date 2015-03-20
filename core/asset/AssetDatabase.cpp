@@ -69,7 +69,7 @@ void AssetDatabase::loadAssets(const ModuleInfo & modInfo)
         }
     }
 #ifdef SN_BUILD_DEBUG
-    SN_LOG("Indexed " << indexedCount << " assets from " << modInfo.name << " in " << clock.getElapsedTime().asSeconds() << " seconds");
+    SN_LOG("Indexed " << indexedCount << " assets from " << modInfo.name << " in " << clock.restart().asSeconds() << " seconds");
 #endif
 
     for (auto it = moduleAssets.begin(); it != moduleAssets.end(); ++it)
