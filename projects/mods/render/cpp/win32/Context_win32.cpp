@@ -73,7 +73,7 @@ bool ContextImpl::makeCurrent(bool isCurrent)
     if (isCurrent)
         return m_hrc && m_dc && wglMakeCurrent(m_dc, m_hrc);
     else
-        return wglMakeCurrent(nullptr, nullptr);
+        return !!wglMakeCurrent(nullptr, nullptr);
 }
 
 //------------------------------------------------------------------------------
