@@ -10,6 +10,7 @@ This file is part of the SnowfeetEngine project.
 #include "../Event.hpp"
 
 #include "Window_win32.hpp"
+#include "Keyboard_win32.hpp"
 
 namespace sn
 {
@@ -105,6 +106,24 @@ void WindowImpl::onEvent(UINT message, WPARAM wParam, LPARAM lParam)
         // The mouse has moved, if the cursor is in our window we must refresh the cursor
         if (LOWORD(lParam) == HTCLIENT)
             ::SetCursor(m_cursor);
+        break;
+
+    case WM_KEYDOWN:
+        e.type =              SN_EVENT_KEY_DOWN;
+        e.keyboard.keyCode =  win32::platformKeyCodeToGeneric(wParam, lParam);
+        e.keyboard.alt =      HIWORD(GetAsyncKeyState(VK_MENU)) != 0;
+        e.keyboard.control =  HIWORD(GetAsyncKeyState(VK_CONTROL)) != 0;
+        e.keyboard.shift =    HIWORD(GetAsyncKeyState(VK_SHIFT)) != 0;
+        manager.pushEvent(e);
+        break;
+
+    case WM_KEYUP:
+        e.type =              SN_EVENT_KEY_UP;
+        e.keyboard.keyCode =  win32::platformKeyCodeToGeneric(wParam, lParam);
+        e.keyboard.alt =      HIWORD(GetAsyncKeyState(VK_MENU)) != 0;
+        e.keyboard.control =  HIWORD(GetAsyncKeyState(VK_CONTROL)) != 0;
+        e.keyboard.shift =    HIWORD(GetAsyncKeyState(VK_SHIFT)) != 0;
+        manager.pushEvent(e);
         break;
 
     default:

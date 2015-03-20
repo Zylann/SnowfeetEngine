@@ -7,6 +7,8 @@ This file is part of the SnowfeetEngine project.
 #ifndef __HEADER_SN_KEYBOARD__
 #define __HEADER_SN_KEYBOARD__
 
+#include <core/export.hpp>
+
 namespace sn
 {
 
@@ -125,6 +127,10 @@ enum KeyCode
 
     SN_KEYCOUNT // keep last
 };
+
+// Platform-specific
+
+bool SN_API isKeyPressed(KeyCode key);
 
 } // namespace sn
 

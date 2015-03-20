@@ -29,6 +29,7 @@ public:
     void setCursor(CursorType type);
 
     static LRESULT CALLBACK windowProc(HWND handle, UINT message, WPARAM wParam, LPARAM lParam);
+    static KeyCode platformKeyCodeToGeneric(WPARAM key, LPARAM flags);
 
 private:
 
