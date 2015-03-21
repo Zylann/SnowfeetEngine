@@ -37,6 +37,10 @@ public:
         setName("Scene");
     }
 
+    //------------------------------------
+    // Registers
+    //------------------------------------
+
     void registerUpdatableEntity(Entity & e, s16 order, s16 layer);
     void unregisterUpdatableEntity(Entity & e);
 
@@ -56,10 +60,18 @@ public:
     /// \return list of all entities having the tags. Can be empty.
     std::vector<Entity*> getTaggedEntities(const std::string & tag);
 
+    //------------------------------------
+    // Entity overrides
+    //------------------------------------
+
     void setParent(Entity * newParent) override;
 
     void destroy() override;
     void destroyLater() override;
+
+    //------------------------------------
+    // Events
+    //------------------------------------
 
     void onUpdate() override;
 
@@ -67,6 +79,18 @@ public:
 
     inline void quit() { m_quitFlag = true; }
     inline bool getQuitFlag() const { return m_quitFlag; }
+
+    //------------------------------------
+    // Scene-specific
+    //------------------------------------
+
+    /// \brief Destroys all children entities, except sticky entities (services).
+    /// Use destroyChildren() if you want to destroy everything.
+    void destroyChildrenButServices();
+
+    //------------------------------------
+    // Serialization
+    //------------------------------------
 
     void loadFromFile(const std::string & filePath);
     void saveToFile(const std::string & filePath);

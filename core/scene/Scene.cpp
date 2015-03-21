@@ -177,6 +177,14 @@ bool Scene::onSystemEvent(const Event & ev)
 }
 
 //------------------------------------------------------------------------------
+void Scene::destroyChildrenButServices()
+{
+    destroyChildren([](const Entity & e){
+        return !e.getFlag(SN_EF_STICKY);
+    });
+}
+
+//------------------------------------------------------------------------------
 void Scene::loadFromFile(const std::string & filePath)
 {
     JsonBox::Value doc;

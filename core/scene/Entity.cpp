@@ -360,6 +360,29 @@ void Entity::destroyChildren()
 }
 
 //------------------------------------------------------------------------------
+void Entity::destroyChildren(std::function<bool(const Entity&)> f_mustBeDestroyed)
+{
+    auto children = m_children;
+    for (u32 i = 0; i < children.size(); ++i)
+    {
+        Entity * child = children[i];
+        if (f_mustBeDestroyed(*child))
+        {
+            child->destroy();
+
+            // Swap old child position with the last one
+            children[i] = children.back();
+
+            // Pop back (faster than calling erase(), as it would involve a lot of shifting)
+            children.pop_back();
+
+            --i; // Note: can underflow by one, but the for loop will ++i anyway
+        }
+    }
+    m_children = children;
+}
+
+//------------------------------------------------------------------------------
 void Entity::destroy()
 {
     if (!getFlag(SN_EF_DESTROYED))

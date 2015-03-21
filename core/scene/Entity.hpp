@@ -16,6 +16,7 @@ This file is part of the SnowfeetEngine project.
 #include <string>
 #include <bitset>
 #include <unordered_set>
+#include <functional>
 
 #define SN_ENTITY(_className, _baseName)                                   \
     SN_SCRIPT_OBJECT(_className, _baseName)
@@ -77,7 +78,13 @@ public:
     Scene * getScene() const;
 
     inline u32 getChildCount() const { return m_children.size(); }
+
+    /// \brief Gets a child by its index.
+    /// \warning These indexes only deserve the purpose of iterating.
+    /// They are only guaranteed to be constant as long as you don't add or remove children.
+    /// They shouldn't be used as stable references.
     inline Entity * getChildByIndex(u32 i) const { return m_children[i]; }
+
     Entity * getChildByName(const std::string & name) const;
     Entity * getChildByType(const std::string & name) const;
     Entity * addChild(Entity * child); // Don't use directly
@@ -110,7 +117,11 @@ public:
             return nullptr;
     }
 
+    /// \brief Destroys all children of this entity
     void destroyChildren();
+
+    /// \brief Destroys all children of this entity fulfilling a condition
+    void destroyChildren(std::function<bool(const Entity&)> f_mustBeDestroyed);
 
     /// \brief Same as release(), but notifies children and parent before calling release().
     virtual void destroy();

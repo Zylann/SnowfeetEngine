@@ -52,6 +52,11 @@ static SQInteger Entity_sqGetChildByName(HSQUIRRELVM v)
     return sq_throwerror(v, _SC("wrong number of parameters (expected 1)"));
 }
 
+static void Entity_destroyChildrenNoParam(Entity * e)
+{
+    e->destroyChildren();
+}
+
 void registerEntity(HSQUIRRELVM vm)
 {
     using namespace Sqrat;
@@ -64,7 +69,7 @@ void registerEntity(HSQUIRRELVM vm)
         .Func("hasTag", &Entity::hasTag)
         .Func("addTag", &Entity::addTag)
         .Func("removeTag", &Entity::removeTag)
-        .Func("destroyChildren", &Entity::destroyChildren)
+        .GlobalFunc("destroyChildren", &Entity_destroyChildrenNoParam)
         .Func("createChild", &Entity::createChildNoParams)
         .Func("setUpdatable", &Entity::setUpdatable)
         .SquirrelFunc("getChildByName", &Entity_sqGetChildByName)
