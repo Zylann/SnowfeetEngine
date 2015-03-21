@@ -70,6 +70,10 @@ void Matrix4::loadPerspectiveProjection(
         const f32 fov, const f32 ratio,
         const f32 near, const f32 far)
 {
+    //  0   1   2   3
+    //  4   5   6   7
+    //  8   9  10  11
+    // 12  13  14  15
     memset(m_v, 0, 16 * sizeof(f32)); // zeros
     m_v[5] = 1.f / tan(fov / 2.f); // f
     m_v[0] = m_v[5] / ratio;
