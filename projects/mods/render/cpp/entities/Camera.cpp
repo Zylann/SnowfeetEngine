@@ -54,19 +54,19 @@ const Matrix4 & Camera::getProjectionMatrix() const
     {
         if (m_isOrtho)
         {
-            m_projectionMatrix.loadPerspectiveProjection(
-                math::degToRad(m_fov), 
-                m_aspectRatio, 
-                m_near, m_far
+            m_projectionMatrix.loadOrtho2DProjection(
+                -m_orthoSize.x(),
+                m_orthoSize.x(),
+                m_orthoSize.y()*m_aspectRatio,
+                m_orthoSize.y()*m_aspectRatio
             );
         }
         else
         {
-            m_projectionMatrix.loadOrtho2DProjection(
-                -m_orthoSize.x(), 
-                m_orthoSize.x(), 
-                m_orthoSize.y()*m_aspectRatio, 
-                m_orthoSize.y()*m_aspectRatio
+            m_projectionMatrix.loadPerspectiveProjection(
+                math::degToRad(m_fov),
+                m_aspectRatio,
+                m_near, m_far
             );
         }
         m_projectionMatrixNeedUpdate = false;
