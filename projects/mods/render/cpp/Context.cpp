@@ -36,6 +36,12 @@ void Context::clearTarget()
 }
 
 //------------------------------------------------------------------------------
+void Context::clearColor(const Color color)
+{
+    glClearColor(color.r, color.g, color.b, color.a);
+}
+
+//------------------------------------------------------------------------------
 void Context::drawMesh(const Mesh & mesh)
 {
     if (mesh.isEmpty())
