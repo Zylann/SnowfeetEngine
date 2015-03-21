@@ -7,6 +7,16 @@
 namespace sn {
 namespace render {
 
+enum ClearMode
+{
+    SNR_CLEAR_NONE,
+    SNR_CLEAR_COLOR
+    //SNR_CLEAR_SKYBOX
+};
+
+void serialize(JsonBox::Value & o, ClearMode m);
+void unserialize(JsonBox::Value & o, ClearMode & m);
+
 class Camera : public Entity3D
 {
 public:
@@ -22,6 +32,7 @@ public:
         m_near(0.1f),
         m_far(100.f),
         m_drawOrder(0),
+        m_clearMode(SNR_CLEAR_NONE),
         m_projectionMatrixNeedUpdate(true)
     {}
 
@@ -35,11 +46,15 @@ public:
     inline f32 getNear() const { return m_near; }
     inline f32 getFar() const { return m_far; }
     inline f32 getAspectRatio() const { return m_aspectRatio; }
+    inline const Color & getClearColor() const { return m_clearColor; }
+    inline ClearMode getClearMode() const { return m_clearMode; }
 
     void setFov(f32 newFov);
     void setNear(f32 newNear);
     void setFar(f32 newFar);
     void setAspectRatio(f32 newAspectRatio);
+    void setClearColor(const Color & clearColor);
+    void setClearMode(ClearMode mode);
 
     const Matrix4 & getProjectionMatrix() const;
 
@@ -71,6 +86,9 @@ private:
     f32 m_far;
     f32 m_aspectRatio;
     s32 m_drawOrder;
+
+    Color m_clearColor;
+    ClearMode m_clearMode;
 
     mutable bool m_projectionMatrixNeedUpdate;
     mutable Matrix4 m_projectionMatrix;

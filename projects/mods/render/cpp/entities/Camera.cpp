@@ -6,6 +6,26 @@ namespace render {
 const std::string Camera::TAG = "Camera";
 
 //------------------------------------------------------------------------------
+void serialize(JsonBox::Value & o, ClearMode m)
+{
+    switch (m)
+    {
+    case SNR_CLEAR_COLOR: o = "none"; break;
+    default: o = "none"; break;
+    }
+}
+
+//------------------------------------------------------------------------------
+void unserialize(JsonBox::Value & o, ClearMode & m)
+{
+    std::string s = o.getString();
+    if (s == "color")
+        m = SNR_CLEAR_COLOR;
+    else
+        m = SNR_CLEAR_NONE;
+}
+
+//------------------------------------------------------------------------------
 void Camera::setOrtho(bool ortho)
 {
     m_isOrtho = ortho;
@@ -45,6 +65,18 @@ void Camera::setAspectRatio(f32 newAspectRatio)
 {
     m_aspectRatio = newAspectRatio;
     m_projectionMatrixNeedUpdate = true;
+}
+
+//------------------------------------------------------------------------------
+void Camera::setClearColor(const Color & clearColor)
+{
+    m_clearColor = clearColor;
+}
+
+//------------------------------------------------------------------------------
+void Camera::setClearMode(ClearMode mode)
+{
+    m_clearMode = mode;
 }
 
 //------------------------------------------------------------------------------
@@ -93,6 +125,8 @@ void Camera::serializeState(JsonBox::Value & o)
     sn::serialize(o["fov"], m_fov);
     sn::serialize(o["orthoSize"], m_orthoSize);
     sn::serialize(o["drawOrder"], m_drawOrder);
+    render::serialize(o["clearMode"], m_clearMode);
+    sn::serialize(o["clearColor"], m_clearColor);
 }
 
 //------------------------------------------------------------------------------
@@ -107,6 +141,8 @@ void Camera::unserializeState(JsonBox::Value & o)
     sn::unserialize(o["fov"], m_fov);
     sn::unserialize(o["orthoSize"], m_orthoSize);
     sn::unserialize(o["drawOrder"], m_drawOrder);
+    render::unserialize(o["clearMode"], m_clearMode);
+    sn::unserialize(o["clearColor"], m_clearColor);
 
 	m_projectionMatrixNeedUpdate = true;
 }

@@ -164,6 +164,18 @@ void RenderManager::render()
 //------------------------------------------------------------------------------
 void RenderManager::renderCamera(Camera & camera)
 {
+    // Clear
+    switch (camera.getClearMode())
+    {
+    case SNR_CLEAR_COLOR:
+        m_context->clearColor(camera.getClearColor());
+        break;
+
+    default:
+        // Don't clear
+        break;
+    }
+
     // Get drawables
     std::vector<Entity*> drawables = getScene()->getTaggedEntities(Drawable::TAG);
     std::vector<Drawable*> sortedDrawables;
