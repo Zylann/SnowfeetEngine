@@ -155,7 +155,7 @@ int Application::executeEx()
             update(deltas[i]);
         }
 
-        // TODO this doesn't makes sense without a render context, so put this in RenderManager?
+        // TODO Sleeping here doesn't makes sense without a render context, so put this in RenderManager?
         // Sleep until the next frame
         Time sleepTime = m_timeStepper.getMinDelta() - frameClock.getElapsedTime();
         if (sleepTime.asMilliseconds() > 0)
@@ -168,17 +168,24 @@ int Application::executeEx()
 
     SN_LOG("Exiting main loop");
 
-    // Call destroy callbacks
-    //callVoidCallback(CallbackName::DESTROY);
+    // Destroy all entities but services (which may be needed for releasing assets)
+    SN_LOG("Destroying entities...");
+    m_scene->destroyChildrenButServices();
 
+    // Release assets
     SN_LOG("Releasing assets...");
     AssetDatabase::get().releaseAssets();
 
+    // Destroy all remaining entities
+    SN_LOG("Destroying services...");
     m_scene->destroyChildren();
     if (m_scene->getRefCount() > 1)
         SN_ERROR("Scene is leaking " << (m_scene->getRefCount() - 1) << " times");
+
+    // Destroy scene itself
     m_scene->release();
 
+    // Close all windows
     SystemGUI::get().destroyAllWindows();
 
     // TODO uninitialize all scripts before modules get destroyed
