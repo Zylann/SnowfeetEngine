@@ -195,6 +195,9 @@ void RenderManager::renderCamera(Camera & camera)
         }
     );
 
+    const Matrix4 & viewMatrix = camera.getGlobalMatrix();
+    Matrix4 modelViewMatrix;
+
     // Draw them
     for (auto it = sortedDrawables.begin(); it != sortedDrawables.end(); ++it) 
     {
@@ -207,9 +210,11 @@ void RenderManager::renderCamera(Camera & camera)
             {
                 ShaderProgram * shader = material->getShader();
                 m_context->useProgram(material->getShader());
-                // TODO Check projection calculation? (the matrix shouldn't be transposed here)
+
+                modelViewMatrix.setByProduct(d.getGlobalMatrix(), viewMatrix);
+
                 shader->setParam("u_Projection", camera.getProjectionMatrix().values(), true);
-                shader->setParam("u_ModelView", d.getGlobalMatrix().values(), false);
+                shader->setParam("u_ModelView", modelViewMatrix.values(), false);
             }
 
             m_context->drawMesh(*mesh);
