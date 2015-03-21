@@ -289,6 +289,9 @@ SQInteger sqRefCountedReleaseHook(SQUserPointer ptr, SQInteger size)
     return 0;
 }
 
+/// \brief Prints the Squirrel stack in the console output
+void sqDebugStackDump(HSQUIRRELVM v);
+
 } // namespace Sqrat
 
 #endif // __HEADER_SN_SQ_BIND_TOOLS__
