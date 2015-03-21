@@ -184,13 +184,25 @@ void RenderManager::renderCamera(Camera & camera)
     );
 
     // Draw them
-    for (auto it = sortedDrawables.begin(); it != sortedDrawables.end(); ++it)
+    for (auto it = sortedDrawables.begin(); it != sortedDrawables.end(); ++it) 
     {
         const Drawable & d = **it;
         const Mesh * mesh = d.getMesh();
         if (mesh)
         {
+            const Material * material = d.getMaterial();
+            if (material && material->getShader())
+            {
+                ShaderProgram * shader = material->getShader();
+                m_context->useProgram(material->getShader());
+                // TODO Check projection calculation? (the matrix shouldn't be transposed here)
+                shader->setParam("u_Projection", camera.getProjectionMatrix().values(), true);
+                shader->setParam("u_ModelView", d.getGlobalMatrix().values(), false);
+            }
+
             m_context->drawMesh(*mesh);
+
+            m_context->useProgram(nullptr);
         }
     }
 
