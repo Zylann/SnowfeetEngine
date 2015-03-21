@@ -1,5 +1,6 @@
 #include "HeadTracker.hpp"
 #include <core/scene/Scene.hpp>
+#include <core/scene/Entity3D.hpp>
 
 #include <Kernel/OVR_Math.h>
 
@@ -77,7 +78,15 @@ void HeadTracker::onUpdate()
             OVR::Posef pose = trackingState.HeadPose.ThePose;
             f32 yaw, pitch, roll;
             pose.Rotation.GetEulerAngles<OVR::Axis_Y, OVR::Axis_X, OVR::Axis_Z>(&yaw, &pitch, &roll);
-            SN_LOG("yaw=" << yaw << ", pitch=" << pitch << ", roll=" << roll);
+
+            //SN_LOG("yaw=" << yaw << ", pitch=" << pitch << ", roll=" << roll);
+
+            Entity * targetEntity = getParent();
+            if (targetEntity && targetEntity->isInstanceOf<Entity3D>())
+            {
+                Entity3D & target3D = *(Entity3D*)targetEntity;
+                target3D.setRotation(Quaternion(pitch * math::RAD2DEG, yaw * math::RAD2DEG, roll * math::RAD2DEG));
+            }
         }
 
         ovrHmd_EndFrameTiming(m_hmd);
