@@ -207,10 +207,11 @@ inline void serialize(JsonBox::Value & o, const Color8 & color)
 //------------------------------------------------------------------------------
 inline void unserialize(JsonBox::Value & o, Color & color)
 {
-    color.r = static_cast<f32>(o[(size_t)0].getDouble());
-    color.g = static_cast<f32>(o[1].getDouble());
-    color.b = static_cast<f32>(o[2].getDouble());
-    color.a = static_cast<f32>(o[3].getDouble());
+    color.r = unserializeFloat(o[(size_t)0]);
+    color.g = unserializeFloat(o[1]);
+    color.b = unserializeFloat(o[2]);
+    if (o.getArray().size() == 4)
+        color.a = unserializeFloat(o[3]);
 }
 
 //------------------------------------------------------------------------------
