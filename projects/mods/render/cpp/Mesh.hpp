@@ -48,6 +48,7 @@ public:
     void setPrimitiveType(PrimitiveType pt);
 
     GLenum getInternalPrimitiveType() const;
+    u32 getInternalIndexedPrimitiveCount() const;
 
     void addPosition(f32 x, f32 y, f32 z=0);
     void addTexCoord(f32 x, f32 y);

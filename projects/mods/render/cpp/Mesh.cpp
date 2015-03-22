@@ -72,6 +72,27 @@ GLenum Mesh::getInternalPrimitiveType() const
 }
 
 //------------------------------------------------------------------------------
+u32 Mesh::getInternalIndexedPrimitiveCount() const
+{
+    switch (m_primitiveType)
+    {
+    case SNR_PT_POINTS:
+        return m_indices.size();
+
+    case SNR_PT_LINES:
+        return m_indices.size() / 2;
+
+    case SNR_PT_QUADS:
+    case SNR_PT_TRIANGLES:
+        return m_indices.size() / 3;
+
+    default:
+        SN_ASSERT(false, "Invalid state");
+        return 0;
+    }
+}
+
+//------------------------------------------------------------------------------
 void Mesh::addPosition(f32 x, f32 y, f32 z)
 {
     m_vertices.push_back(Vector3f(x, y, z));
@@ -189,12 +210,12 @@ void Mesh::setQuadIndices(const u32 * indices, u32 count)
     u32 j = 0;
     for (u32 i = 0; i < count; i += 4)
     {
-        m_indices[j    ] = indices[i    ];
-        m_indices[j + 1] = indices[i + 2];
+        m_indices[j    ] = indices[i + 2];
+        m_indices[j + 1] = indices[i + 3];
         m_indices[j + 2] = indices[i + 1];
-        m_indices[j + 3] = indices[i    ];
-        m_indices[j + 4] = indices[i + 3];
-        m_indices[j + 5] = indices[i + 2];
+        m_indices[j + 3] = indices[i + 3];
+        m_indices[j + 4] = indices[i    ];
+        m_indices[j + 5] = indices[i + 1];
         j += 6;
     }
 }
