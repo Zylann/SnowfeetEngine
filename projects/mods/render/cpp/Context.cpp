@@ -47,6 +47,9 @@ void Context::drawMesh(const Mesh & mesh)
     if (mesh.isEmpty())
         return;
 
+    // TODO this is immediate draw, data is sent everytime.
+    // We should support VBO too.
+
     // Positions
     glCheck(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, &mesh.getVertices()[0]));
     glCheck(glEnableVertexAttribArray(0));
@@ -58,9 +61,27 @@ void Context::drawMesh(const Mesh & mesh)
         glCheck(glEnableVertexAttribArray(1));
     }
 
-    glCheck(glDrawArrays(mesh.getInternalPrimitiveType(), 0, mesh.getVertices().size()));
+    if (mesh.getIndices().empty())
+    {
+        // Draw without indices
+        glCheck(glDrawArrays(
+            mesh.getInternalPrimitiveType(), 
+            0, mesh.getVertices().size()
+        ));
+    }
+    else
+    {
+        // Draw with indices
+        glCheck(glDrawElements(
+            mesh.getInternalPrimitiveType(), 
+            mesh.getIndices().size(),
+            GL_UNSIGNED_INT, 
+            &mesh.getIndices()[0]
+        ));
+    }
 
-    glCheck(glDisableVertexAttribArray(1));
+    if (!mesh.getColors().empty())
+        glCheck(glDisableVertexAttribArray(1));
     glCheck(glDisableVertexAttribArray(0));
 }
 
