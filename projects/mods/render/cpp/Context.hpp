@@ -33,6 +33,8 @@ public:
     void useProgram(const ShaderProgram * shader = nullptr);
 
     void clearTarget();
+    void clearColor(const Color color);
+
     void setViewport(u32 x, u32 y, u32 width, u32 height);
 
     void drawMesh(const Mesh & mesh);
