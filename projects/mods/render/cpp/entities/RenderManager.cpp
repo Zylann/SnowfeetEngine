@@ -182,15 +182,20 @@ void RenderManager::renderCamera(Camera & camera)
         if (mesh)
         {
             const Material * material = d.getMaterial();
-            if (material && material->getShader())
+            if (material)
             {
-                ShaderProgram * shader = material->getShader();
-                m_context->useProgram(material->getShader());
+                m_context->setDepthTest(material->isDepthTest());
 
-                modelViewMatrix.setByProduct(d.getGlobalMatrix(), viewMatrix);
+                if (material && material->getShader())
+                {
+                    ShaderProgram * shader = material->getShader();
+                    m_context->useProgram(material->getShader());
 
-                shader->setParam("u_Projection", camera.getProjectionMatrix().values(), true);
-                shader->setParam("u_ModelView", modelViewMatrix.values(), false);
+                    modelViewMatrix.setByProduct(d.getGlobalMatrix(), viewMatrix);
+
+                    shader->setParam("u_Projection", camera.getProjectionMatrix().values(), true);
+                    shader->setParam("u_ModelView", modelViewMatrix.values(), false);
+                }
             }
 
             m_context->drawMesh(*mesh);

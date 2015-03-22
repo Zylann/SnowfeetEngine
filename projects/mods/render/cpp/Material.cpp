@@ -38,6 +38,8 @@ bool Material::loadFromStream(std::ifstream & ifs)
         SN_ERROR("Material shader not found: '" << shaderName << "'");
         return false;
     }
+
+    sn::unserialize(doc["depthTest"], m_depthTest);
 }
 
 //------------------------------------------------------------------------------

@@ -32,13 +32,22 @@ Context::~Context()
 //------------------------------------------------------------------------------
 void Context::clearTarget()
 {
-    glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
 //------------------------------------------------------------------------------
 void Context::clearColor(const Color color)
 {
     glClearColor(color.r, color.g, color.b, color.a);
+}
+
+//------------------------------------------------------------------------------
+void Context::setDepthTest(bool enabled)
+{
+    if (enabled)
+        glEnable(GL_DEPTH_TEST);
+    else
+        glDisable(GL_DEPTH_TEST);
 }
 
 //------------------------------------------------------------------------------

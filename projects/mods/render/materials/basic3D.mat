@@ -1,4 +1,5 @@
 {
-	"shader":"basic3D"
+	"shader":"basic3D",
+	"depthTest":true
 }
 

@@ -35,6 +35,8 @@ public:
     void clearTarget();
     void clearColor(const Color color);
 
+    void setDepthTest(bool enabled);
+
     void setViewport(u32 x, u32 y, u32 width, u32 height);
 
     void drawMesh(const Mesh & mesh);

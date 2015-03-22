@@ -32,11 +32,16 @@ public:
     void setShader(ShaderProgram * shader);
     inline ShaderProgram * getShader() const { return m_shader.get(); }
 
+    // Depth buffer requirement
+    bool isDepthTest() const { return m_depthTest; }
+    void setDepthTest(bool zTest) { m_depthTest = zTest; }
+
 private:
     ~Material();
 
 private:
     SharedRef<ShaderProgram> m_shader;
+    bool m_depthTest;
 
 };
 
