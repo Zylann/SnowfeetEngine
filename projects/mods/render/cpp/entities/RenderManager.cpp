@@ -69,7 +69,7 @@ bool RenderManager::onSystemEvent(const sn::Event & event)
 	switch (event.type)
 	{
 	case SN_EVENT_WINDOW_RESIZED:
-        m_context->setViewport(0, 0, event.window.width, event.window.height);
+        onScreenResized(event.window.width, event.window.height);
 		break;
 
 	default:
@@ -81,6 +81,24 @@ bool RenderManager::onSystemEvent(const sn::Event & event)
 }
 
 //------------------------------------------------------------------------------
+void RenderManager::onScreenResized(u32 width, u32 height)
+{
+    m_context->setViewport(0, 0, width, height);
+
+    auto cameras = getScene()->getTaggedEntities(Camera::TAG);
+    for (auto it = cameras.begin(); it != cameras.end(); ++it)
+    {
+        Entity * e = *it;
+        if (e->isInstanceOf<Camera>())
+        {
+            ((Camera*)e)->onTargetResized(width, height);
+        }
+        else
+        {
+            SN_WARNING("Entity tagged Camera is not a Camera: " << e->toString());
+        }
+    }
+}
 // Helper
 template <typename T>
 T * checkTaggedType(const std::string & tag, Entity * e)

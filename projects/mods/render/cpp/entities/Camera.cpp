@@ -1,3 +1,4 @@
+#include <core/system/gui/SystemGUI.hpp>
 #include "Camera.hpp"
 
 namespace sn {
@@ -23,6 +24,26 @@ void unserialize(JsonBox::Value & o, ClearMode & m)
         m = SNR_CLEAR_COLOR;
     else
         m = SNR_CLEAR_NONE;
+}
+
+//------------------------------------------------------------------------------
+void serialize(JsonBox::Value & o, ScaleMode m)
+{
+    switch (m)
+    {
+    case SNR_SCALEMODE_ADAPTED: o = "adapted"; break;
+    default: o = "none"; break;
+    }
+}
+
+//------------------------------------------------------------------------------
+void unserialize(JsonBox::Value & o, ScaleMode & m)
+{
+    std::string s = o.getString();
+    if (s == "adapted")
+        m = SNR_SCALEMODE_ADAPTED;
+    else
+        m = SNR_SCALEMODE_NONE;
 }
 
 //------------------------------------------------------------------------------
@@ -74,6 +95,12 @@ void Camera::setClearColor(const Color & clearColor)
 }
 
 //------------------------------------------------------------------------------
+void Camera::setScaleMode(ScaleMode mode)
+{
+    m_scaleMode = mode;
+}
+
+//------------------------------------------------------------------------------
 void Camera::setClearMode(ClearMode mode)
 {
     m_clearMode = mode;
@@ -111,6 +138,27 @@ const Matrix4 & Camera::getProjectionMatrix() const
 void Camera::onReady()
 {
     addTag(TAG);
+
+    // TODO Abstract this!
+    Window * window = SystemGUI::get().getWindowByID(0);
+    if (window)
+    {
+        IntRect screenRect = window->getClientRect();
+        onTargetResized(screenRect.width(), screenRect.height());
+    }
+}
+
+//------------------------------------------------------------------------------
+void Camera::onTargetResized(u32 width, u32 height)
+{
+    if (m_scaleMode == SNR_SCALEMODE_ADAPTED)
+    {
+        if (height != 0)
+        {
+            Vector2f screenSize(width, height);
+            setAspectRatio(screenSize.x() / screenSize.y());
+        }
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -121,7 +169,7 @@ void Camera::serializeState(JsonBox::Value & o)
     sn::serialize(o["near"], m_near);
     sn::serialize(o["far"], m_far);
     sn::serialize(o["isOrtho"], m_isOrtho);
-    sn::serialize(o["aspectRatio"], m_aspectRatio);
+    render::serialize(o["scaleMode"], m_scaleMode);
     sn::serialize(o["fov"], m_fov);
     sn::serialize(o["orthoSize"], m_orthoSize);
     sn::serialize(o["drawOrder"], m_drawOrder);
@@ -137,7 +185,7 @@ void Camera::unserializeState(JsonBox::Value & o)
     sn::unserialize(o["near"], m_near);
     sn::unserialize(o["far"], m_far);
     sn::unserialize(o["isOrtho"], m_isOrtho);
-    sn::unserialize(o["aspectRatio"], m_aspectRatio);
+    render::unserialize(o["scaleMode"], m_scaleMode);
     sn::unserialize(o["fov"], m_fov);
     sn::unserialize(o["orthoSize"], m_orthoSize);
     sn::unserialize(o["drawOrder"], m_drawOrder);

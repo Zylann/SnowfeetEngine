@@ -17,6 +17,15 @@ enum ClearMode
 void serialize(JsonBox::Value & o, ClearMode m);
 void unserialize(JsonBox::Value & o, ClearMode & m);
 
+enum ScaleMode
+{
+    SNR_SCALEMODE_NONE,
+    SNR_SCALEMODE_ADAPTED
+};
+
+void serialize(JsonBox::Value & o, ScaleMode m);
+void unserialize(JsonBox::Value & o, ScaleMode & m);
+
 class Camera : public Entity3D
 {
 public:
@@ -32,6 +41,8 @@ public:
         m_near(0.1f),
         m_far(100.f),
         m_drawOrder(0),
+        m_aspectRatio(1),
+        m_scaleMode(SNR_SCALEMODE_ADAPTED),
         m_clearMode(SNR_CLEAR_NONE),
         m_projectionMatrixNeedUpdate(true)
     {}
@@ -48,6 +59,7 @@ public:
     inline f32 getAspectRatio() const { return m_aspectRatio; }
     inline const Color & getClearColor() const { return m_clearColor; }
     inline ClearMode getClearMode() const { return m_clearMode; }
+    inline ScaleMode getScaleMode() const { return m_scaleMode; }
 
     void setFov(f32 newFov);
     void setNear(f32 newNear);
@@ -55,6 +67,7 @@ public:
     void setAspectRatio(f32 newAspectRatio);
     void setClearColor(const Color & clearColor);
     void setClearMode(ClearMode mode);
+    void setScaleMode(ScaleMode mode);
 
     const Matrix4 & getProjectionMatrix() const;
 
@@ -69,6 +82,8 @@ public:
 
     void onReady() override;
 
+    void onTargetResized(u32 width, u32 height);
+
     //-----------------------------------------
     // Serialization
     //-----------------------------------------
@@ -77,15 +92,16 @@ public:
     void unserializeState(JsonBox::Value & o) override;
 
 private:
-
     //std::bitset<32> m_cullingMask;
     bool m_isOrtho;
     Vector2f m_orthoSize;
     f32 m_fov;
     f32 m_near;
     f32 m_far;
-    f32 m_aspectRatio;
     s32 m_drawOrder;
+
+    f32 m_aspectRatio;
+    ScaleMode m_scaleMode;
 
     Color m_clearColor;
     ClearMode m_clearMode;

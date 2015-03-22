@@ -29,6 +29,8 @@ private:
     void render();
     void renderCamera(Camera & camera);
 
+    void onScreenResized(u32 width, u32 height);
+
 private:
     Context * m_context;
 
