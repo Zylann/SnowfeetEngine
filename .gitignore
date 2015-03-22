@@ -27,6 +27,7 @@ AS_DEBUG/
 *.exp
 *.ilk
 *.filters
+*.ipch
 
 # Code::Blocks
 *.depend
