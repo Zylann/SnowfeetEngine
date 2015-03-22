@@ -22,7 +22,9 @@ RenderManager::RenderManager() : Entity(), m_context(nullptr)
 RenderManager::~RenderManager()
 {
     if (m_context)
+    {
         delete m_context;
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -99,6 +101,8 @@ void RenderManager::onScreenResized(u32 width, u32 height)
         }
     }
 }
+
+//------------------------------------------------------------------------------
 // Helper
 template <typename T>
 T * checkTaggedType(const std::string & tag, Entity * e)

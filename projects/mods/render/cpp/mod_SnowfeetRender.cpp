@@ -18,10 +18,12 @@ namespace render {
 
     void registerObjectTypes(ObjectTypeDatabase & otb)
     {
+        // Entities
         otb.registerType<RenderManager>();
         otb.registerType<Camera>();
         otb.registerType<Drawable>();
 
+        // Assets
         otb.registerType<Mesh>();
         otb.registerType<Material>();
         otb.registerType<ShaderProgram>();
