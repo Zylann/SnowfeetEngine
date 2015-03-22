@@ -11,8 +11,7 @@ with a completely new modular structure and integrated scripting.
 The engine is in its early stages of development, so lots of code is WIP,
 breaking changes may occur, and the main platform I develop on/for is win32 with Visual Studio 2013.
 However, the engine is aimed at being cross-platform (desktop or maybe mobile),
-so any platform-specific code can go in separate implementation files (no #ifdef of the death please).
-Thanks to Premake, it's easy to maintain project files for multiple platforms.
+so any platform-specific code can go in separate implementation files.
 
 Engine structure
 =================
@@ -30,9 +29,10 @@ Notes
 What the engine does now
 ------------------------
 
-Visually, not much. But many things are done under the hood:
-I focus on the core to work before starting modules such as graphics, sound and shiny stuff.
-I need a proper base to work on, so it's my main focus at the moment.
+![Screenshot](http://zylannprods.fr/snowfeet/engine/screenshots/2015_03_22_3D_beginning3.png)
+
+I'm just beginning 3D rendering, but lots of things remain to be done in the core,
+such as scripting, asset abstraction and other low-level stuff.
 
 
 Web export
@@ -49,8 +49,18 @@ Building your own binaries is the best way to fit your platform,
 if it is supported enough by the engine.
 
 
+This is not a library
+----------------------
+
+Althought there are exports and shared libraries, this project is not aimed at being a library.
+It's actually an "end-user" framework, based on simple libraries, just as actual applications.
+That's why headers and cpp files aren't separated and why everything is self-contained as much as possible
+(rather than dependencies supposedly setup in your build environnment).
+
+
 How to compile
 =============
+
 
 The whole engine is entirely provided as source code.
 
@@ -65,6 +75,11 @@ The premake build system is used to generate IDE solutions or makefiles.
 I choosed it because I know it better than Cmake, it is very small,
 and it uses a well-known language (Lua) rather than a custom cryptic one,
 which makes writing build scripts very easy.
+
+The way cross-platformness is acomplished here is by putting platform-specific
+code into clean, separate files rather than into #ifdef blocks (this becomes a hell when 
+you have to support lots of platforms).
+
 
 0) Get the engine from its Git repository, or download a zip file from Github
 
