@@ -17,14 +17,6 @@
 //      /___//__/       /__//__/
 //------------------------------------------------------------------------------
 
-// Note: for a modular engine, I could have choosen a name like AtomEngine,
-// PlanetEngine, LinkEngine or... aaah fuck, Snowfeet is good.
-// Want to know what is a Snowfeet?
-// It's a cat. A black cat with white paws and tail.
-// They are the last species of cats in the future.
-// They've become so rare they worth billions of credits, and...
-// Are you still reading this? Go on!
-
 /*
 Application.hpp
 Copyright (C) 2014-2015 Marc GILLERON
