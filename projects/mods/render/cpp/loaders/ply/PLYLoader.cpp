@@ -305,6 +305,12 @@ bool PLYLoader::parseVertices(const PLYElement & element)
         }
     }
 
+    // For test purpose
+    //for (auto it = colors.begin(); it != colors.end(); ++it)
+    //{
+    //    *it = Color(math::randf(), math::randf(), math::randf());
+    //}
+
     Mesh & out_mesh = *r_mesh;
     out_mesh.setPositions(&positions[0], positions.size());
     out_mesh.setNormals(&normals[0], normals.size());
@@ -334,23 +340,40 @@ bool PLYLoader::parseFaces(const PLYElement & element)
             {
                 u32 count = 0;
                 ifs >> count;
-                if (count != 4)
+                if (count == 4)
                 {
-                    // TODO Handle triangles
-                    SN_ERROR("PLY Faces indices are not quads");
-                    return false;
+                    u32 quadIndices[4];
+                    for (u32 n = 0; n < count; ++n)
+                    {
+                        ifs >> quadIndices[n];
+                    }
+                    // Make two triangles
+                    indices.push_back(quadIndices[2]);
+                    indices.push_back(quadIndices[3]);
+                    indices.push_back(quadIndices[1]);
+                    indices.push_back(quadIndices[3]);
+                    indices.push_back(quadIndices[0]);
+                    indices.push_back(quadIndices[1]);
                 }
-                for (u32 n = 0; n < count; ++n)
+                else if (count == 3)
                 {
-                    u32 index = 0;
-                    ifs >> index;
-                    indices.push_back(index);
+                    for (u32 n = 0; n < count; ++n)
+                    {
+                        u32 index = 0;
+                        ifs >> index;
+                        indices.push_back(index);
+                    }
+                }
+                else
+                {
+                    SN_ERROR("PLY Faces indices are not quads or triangles (count: " << count << ")");
+                    return false;
                 }
             }
         }
     }
 
-    r_mesh->setQuadIndices(&indices[0], indices.size());
+    r_mesh->setTriangleIndices(&indices[0], indices.size());
 
     return true;
 }

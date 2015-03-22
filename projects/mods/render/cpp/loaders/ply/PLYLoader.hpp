@@ -7,6 +7,11 @@
 #include <unordered_set>
 #include <unordered_map>
 
+// Disclaimer: this loader is only intented for very basic files, and sometimes might not work.
+// As SDL can load BMP images without SDL_Image, this mod can load one simple type
+// of model format without third-party library.
+// For more complex models, use the appropriate module.
+
 namespace sn {
 namespace render {
 
