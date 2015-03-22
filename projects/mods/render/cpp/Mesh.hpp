@@ -67,7 +67,7 @@ public:
     inline const std::vector<Vector2f> & getUV() const { return m_uv; }
     inline const std::vector<Vector3f> & getNormals() const { return m_normals; }
     inline const std::vector<Color> & getColors() const { return m_colors; }
-    inline const std::vector<s32> & getIndices() const { return m_indices; }
+    inline const std::vector<u32> & getIndices() const { return m_indices; }
 
 //private:
 //
@@ -84,7 +84,7 @@ private:
     std::vector<Vector2f> m_uv;
     std::vector<Vector3f> m_normals;
     std::vector<Color> m_colors;
-    std::vector<s32> m_indices;
+    std::vector<u32> m_indices;
 
     GLuint m_vaoID;
 
