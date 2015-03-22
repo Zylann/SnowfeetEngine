@@ -1,0 +1,8 @@
+{
+	"entities":[
+		{
+			"@type":"sn::oculus::HeadTracker"
+		}
+	]
+}
+
