@@ -220,6 +220,15 @@ void Mesh::setQuadIndices(const u32 * indices, u32 count)
     }
 }
 
+//------------------------------------------------------------------------------
+void Mesh::setTriangleIndices(const u32 * indices, u32 count)
+{
+    SN_ASSERT(indices != nullptr, "Invalid indices pointer");
+    SN_ASSERT(count % 3 == 0, "Number of triangle indices array is not a multiple of 3");
+    m_indices.resize(count);
+    memcpy(&m_indices[0], indices, count * sizeof(u32));
+}
+
 } // namespace render
 } // namespace sn
 
