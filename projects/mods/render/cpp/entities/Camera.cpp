@@ -10,7 +10,7 @@ void serialize(JsonBox::Value & o, ClearMode m)
 {
     switch (m)
     {
-    case SNR_CLEAR_COLOR: o = "none"; break;
+    case SNR_CLEAR_COLOR: o = "color"; break;
     default: o = "none"; break;
     }
 }
