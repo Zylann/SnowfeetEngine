@@ -207,17 +207,17 @@ void Entity3D::lookAt(const Vector3f & targetPosition)
     setRotation(q);
 }
 
-void Entity3D::serializeState(JsonBox::Value & o)
+void Entity3D::serializeState(JsonBox::Value & o, const SerializationContext & context)
 {
-    Entity::serializeState(o);
+    Entity::serializeState(o, context);
     sn::serialize(o["position"], m_position);
     sn::serialize(o["rotation"], m_rotation);
     sn::serialize(o["scale"], m_scale);
 }
 
-void Entity3D::unserializeState(JsonBox::Value & o)
+void Entity3D::unserializeState(JsonBox::Value & o, const SerializationContext & context)
 {
-    Entity::unserializeState(o);
+    Entity::unserializeState(o, context);
     sn::unserialize(o["position"], m_position);
     sn::unserialize(o["rotation"], m_rotation);
     sn::unserialize(o["scale"], m_scale);

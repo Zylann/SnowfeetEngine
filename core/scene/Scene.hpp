@@ -92,8 +92,8 @@ public:
     // Serialization
     //------------------------------------
 
-    void loadFromFile(const std::string & filePath);
-    void saveToFile(const std::string & filePath);
+    void loadFromFile(const std::string & filePath, const SerializationContext & context);
+    void saveToFile(const std::string & filePath, const SerializationContext & context);
 
 private:
     std::unordered_map<std::string, std::unordered_set<Entity*>> m_taggedEntities;

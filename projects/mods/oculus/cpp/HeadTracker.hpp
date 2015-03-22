@@ -19,6 +19,8 @@ public:
 
     void onReady() override;
 
+    // No special serialization needed at the moment
+
 protected:
     void onUpdate() override;
 

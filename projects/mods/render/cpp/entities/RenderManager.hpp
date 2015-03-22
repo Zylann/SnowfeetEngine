@@ -25,6 +25,8 @@ public:
 
 	bool onSystemEvent(const sn::Event & event) override;
     
+    // No special serialization needed at the moment
+
 private:
     void render();
     void renderCamera(Camera & camera);

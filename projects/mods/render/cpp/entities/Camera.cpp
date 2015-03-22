@@ -162,9 +162,9 @@ void Camera::onTargetResized(u32 width, u32 height)
 }
 
 //------------------------------------------------------------------------------
-void Camera::serializeState(JsonBox::Value & o)
+void Camera::serializeState(JsonBox::Value & o, const SerializationContext & context)
 {
-    Entity3D::serializeState(o);
+    Entity3D::serializeState(o, context);
 
     sn::serialize(o["near"], m_near);
     sn::serialize(o["far"], m_far);
@@ -178,9 +178,9 @@ void Camera::serializeState(JsonBox::Value & o)
 }
 
 //------------------------------------------------------------------------------
-void Camera::unserializeState(JsonBox::Value & o)
+void Camera::unserializeState(JsonBox::Value & o, const SerializationContext & context)
 {
-    Entity3D::unserializeState(o);
+    Entity3D::unserializeState(o, context);
 
     sn::unserialize(o["near"], m_near);
     sn::unserialize(o["far"], m_far);

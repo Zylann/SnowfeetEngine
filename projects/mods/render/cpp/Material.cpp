@@ -24,22 +24,10 @@ bool Material::loadFromStream(std::ifstream & ifs)
     JsonBox::Value doc;
     doc.loadFromStream(ifs);
     
-    std::string shaderName;
-    sn::unserialize(doc["shader"], shaderName);
-
-    ShaderProgram * shader = AssetDatabase::get().getAsset<ShaderProgram>(getAssetMetadata().module, shaderName);
-    if (shader)
-    {
-        setShader(shader);
-        return true;
-    }
-    else
-    {
-        SN_ERROR("Material shader not found: '" << shaderName << "'");
-        return false;
-    }
-
+    setShader(getAssetBySerializedLocation<ShaderProgram>(doc["shader"].getString(), getAssetMetadata().module, this));
     sn::unserialize(doc["depthTest"], m_depthTest);
+
+    return !m_shader.isNull();
 }
 
 //------------------------------------------------------------------------------

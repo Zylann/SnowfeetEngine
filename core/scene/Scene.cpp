@@ -185,7 +185,7 @@ void Scene::destroyChildrenButServices()
 }
 
 //------------------------------------------------------------------------------
-void Scene::loadFromFile(const std::string & filePath)
+void Scene::loadFromFile(const std::string & filePath, const SerializationContext & context)
 {
     JsonBox::Value doc;
     if (!sn::loadFromFile(doc, filePath, -1, true))
@@ -199,18 +199,18 @@ void Scene::loadFromFile(const std::string & filePath)
     {
         // Note: the returned child will be automatically added to the children list,
         // as soon as setParent() is called
-        Entity::unserialize(docEntities[i], this);
+        Entity::unserialize(docEntities[i], this, context);
     }
 }
 
 //------------------------------------------------------------------------------
-void Scene::saveToFile(const std::string & filePath)
+void Scene::saveToFile(const std::string & filePath, const SerializationContext & context)
 {
     JsonBox::Value doc;
     JsonBox::Value & docEntities = doc["entities"];
     for (u32 i = 0; i < getChildCount(); ++i)
     {
-        Entity::serialize(docEntities[i], *getChildByIndex(i));
+        Entity::serialize(docEntities[i], *getChildByIndex(i), context);
     }
 
     sn::saveToFile(doc, filePath);

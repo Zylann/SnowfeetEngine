@@ -408,24 +408,24 @@ void Entity::destroyLater()
 
 //------------------------------------------------------------------------------
 // Static
-void Entity::serialize(JsonBox::Value & o, Entity & e)
+void Entity::serialize(JsonBox::Value & o, Entity & e, const SerializationContext & context)
 {
     o[SN_JSON_TYPE_TAG] = Entity::__sGetClassName();
-    e.serializeState(o);
+    e.serializeState(o, context);
     if (e.getChildCount() != 0)
     {
         JsonBox::Value & a = o[SN_JSON_ENTITY_CHILDREN_TAG];
         for (u32 i = 0; i < e.getChildCount(); ++i)
         {
             Entity * child = e.getChildByIndex(i);
-            serialize(a[i], *child);
+            serialize(a[i], *child, context);
         }
     }
 }
 
 //------------------------------------------------------------------------------
 // Static
-Entity * Entity::unserialize(JsonBox::Value & o, Entity * parent)
+Entity * Entity::unserialize(JsonBox::Value & o, Entity * parent, const SerializationContext & context)
 {
     std::string typeName = o[SN_JSON_TYPE_TAG].getString();
     ObjectType * ot = ObjectTypeDatabase::get().getType(typeName);
@@ -435,14 +435,14 @@ Entity * Entity::unserialize(JsonBox::Value & o, Entity * parent)
         if (obj)
         {
             Entity * e((Entity*)obj);
-            e->unserializeState(o);
+            e->unserializeState(o, context);
             if (o[SN_JSON_ENTITY_CHILDREN_TAG].isArray())
             {
                 JsonBox::Value & a = o[SN_JSON_ENTITY_CHILDREN_TAG];
                 u32 len = a.getArray().size();
                 for (u32 i = 0; i < len; ++i)
                 {
-                    Entity::unserialize(a[i], e);
+                    Entity::unserialize(a[i], e, context);
                 }
             }
             e->setParent(parent);
@@ -458,15 +458,18 @@ Entity * Entity::unserialize(JsonBox::Value & o, Entity * parent)
 }
 
 //------------------------------------------------------------------------------
-void Entity::serializeState(JsonBox::Value & o)
+void Entity::serializeState(JsonBox::Value & o, const SerializationContext & context)
 {
     o["name"] = m_name;
     o["enabled"] = isEnabledSelf();
     sn::serialize(o, m_tags);
+
+    // TODO Serialize script
+
 }
 
 //------------------------------------------------------------------------------
-void Entity::unserializeState(JsonBox::Value & o)
+void Entity::unserializeState(JsonBox::Value & o, const SerializationContext & context)
 {
     m_name = o["name"].getString();
     setEnabled(o["enabled"].getBoolean());
@@ -478,6 +481,9 @@ void Entity::unserializeState(JsonBox::Value & o)
     {
         scene->registerTaggedEntity(*this, *it);
     }
+
+    // TODO Unserialize script
+
 }
 
 } // namespace sn

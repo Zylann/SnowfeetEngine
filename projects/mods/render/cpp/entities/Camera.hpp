@@ -88,8 +88,8 @@ public:
     // Serialization
     //-----------------------------------------
 
-    void serializeState(JsonBox::Value & o) override;
-    void unserializeState(JsonBox::Value & o) override;
+    void serializeState(JsonBox::Value & o, const SerializationContext & context) override;
+    void unserializeState(JsonBox::Value & o, const SerializationContext & context) override;
 
 private:
     //std::bitset<32> m_cullingMask;

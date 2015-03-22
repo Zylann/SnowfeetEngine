@@ -30,8 +30,8 @@ public:
     void setMaterial(Material * material);
     inline Material * getMaterial() const { return m_material.get(); }
 
-    virtual void serializeState(JsonBox::Value & o) override;
-    virtual void unserializeState(JsonBox::Value & o) override;
+    virtual void serializeState(JsonBox::Value & o, const SerializationContext & context) override;
+    virtual void unserializeState(JsonBox::Value & o, const SerializationContext & context) override;
 
 private:
     ~Drawable();

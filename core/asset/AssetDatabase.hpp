@@ -10,7 +10,9 @@ This file is part of the SnowfeetEngine project.
 #include <core/util/typecheck.hpp>
 #include <core/asset/Asset.hpp>
 #include <core/asset/AssetMetadata.hpp>
+#include <core/asset/SerializationContext.hpp>
 #include <core/app/ModuleInfo.hpp>
+
 #include <unordered_map>
 
 
@@ -51,8 +53,9 @@ public:
     AssetLoadStatus loadAssetFromFile(const String & path, const std::string & moduleName);
     //bool releaseAsset(IAsset * asset);
 
-    // Gets an asset. If it returns null, the asset may not have been loaded or is in progress.
+    // Gets an asset. If it returns null, the asset may not be loadable or has not been registered.
     Asset * getAsset(const std::string & moduleName, const std::string & type, const std::string & name);
+    Asset * getAsset(const AssetLocation & loc, const std::string & type);
 
     void releaseAssets();
 
@@ -71,6 +74,12 @@ public:
             return checked_cast<Asset_T*>(a);
         else
             return nullptr;
+    }
+
+    template <class Asset_T>
+    Asset_T * getAsset(const AssetLocation & location)
+    {
+        return getAsset<Asset_T>(location.module, location.name);
     }
 
 private:
@@ -94,6 +103,36 @@ private:
     std::unordered_map< std::string, std::unordered_map< std::string, std::unordered_map<std::string, Asset*> > > m_assets;
 
 };
+
+/// \brief Reads a serialized asset reference, looks it up into the database and returns it if found.
+///
+/// The algorithm searches the asset in the following modules:
+/// - The module where the serialization takes place
+/// - The module where the class of 'self' is defined
+/// - If still fails, returns nullptr.
+///
+/// \param type: type name of the asset
+/// \param locationString: string representing the location of the asset (see AssetLocation)
+/// \param contextModule: name of the module where the serialization is taking place
+/// \param self: object needing to store the asset (typically the caller)
+SN_API Asset * getAssetBySerializedLocation(
+    const std::string & type, 
+    const std::string & locationString, 
+    const std::string & contextModule,
+    Object * self
+);
+
+// Template version
+template <class Asset_T>
+Asset_T * getAssetBySerializedLocation(const std::string & locationString, const std::string & contextModule, Object * self)
+{
+    // Note: use SN_ASSET in your asset class
+    Asset * a = getAssetBySerializedLocation(Asset_T::__sGetClassName(), locationString, contextModule, self);
+    if (a)
+        return checked_cast<Asset_T*>(a);
+    else
+        return nullptr;
+}
 
 } // namespace sn
 

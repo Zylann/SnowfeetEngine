@@ -278,6 +278,48 @@ Asset * AssetDatabase::getAsset(const std::string & moduleName, const std::strin
     return nullptr;
 }
 
+//------------------------------------------------------------------------------
+Asset * AssetDatabase::getAsset(const AssetLocation & loc, const std::string & type)
+{
+    return getAsset(loc.module, type, loc.name);
+}
+
+//------------------------------------------------------------------------------
+Asset * getAssetBySerializedLocation(const std::string & type, const std::string & locationString, const std::string & contextModule, Object * self)
+{
+    AssetLocation location(locationString);
+    if (!location.isEmpty())
+    {
+        AssetDatabase & adb = AssetDatabase::get();
+
+        if (!location.module.empty())
+        {
+            // The module is specified, no need for lookup
+            return adb.getAsset(location, type);
+        }
+
+        // No module specified, begin lookup series
+
+        // Try to get the asset from the module the serialization is occurring into
+        location.module = contextModule;
+        Asset * asset = adb.getAsset(location, type);
+        if (asset)
+            return asset;
+
+        if (self)
+        {
+            // Try from the module where the class of 'self' is defined
+            location.module = self->getObjectType().getModuleName();
+            asset = adb.getAsset(location, type);
+            if (asset)
+                return asset;
+        }
+    }
+
+    // Asset not found
+    return nullptr;
+}
+
 } // namespace sn
 
 

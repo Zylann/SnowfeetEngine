@@ -11,6 +11,7 @@ This file is part of the SnowfeetEngine project.
 #include <core/json/json_utils.hpp>
 #include <core/app/ScriptObject.hpp>
 #include <core/system/gui/Event.hpp>
+#include <core/asset/SerializationContext.hpp>
 
 #include <vector>
 #include <string>
@@ -132,11 +133,11 @@ public:
     // Serialization
     //---------------------------------------------
 
-    static void serialize(JsonBox::Value & o, Entity & e);
-    static Entity * unserialize(JsonBox::Value & o, Entity * parent);
+    static void serialize(JsonBox::Value & o, Entity & e, const SerializationContext & context);
+    static Entity * unserialize(JsonBox::Value & o, Entity * parent, const SerializationContext & context);
 
-    virtual void serializeState(JsonBox::Value & o);
-    virtual void unserializeState(JsonBox::Value & o);
+    virtual void serializeState(JsonBox::Value & o, const SerializationContext & context);
+    virtual void unserializeState(JsonBox::Value & o, const SerializationContext & context);
 
     //---------------------------------------------
     // Integrated callbacks

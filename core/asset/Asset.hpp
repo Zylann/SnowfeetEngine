@@ -10,6 +10,7 @@ This file is part of the SnowfeetEngine project.
 #include <core/config.hpp>
 #include <core/app/ScriptObject.hpp>
 #include <core/asset/AssetMetadata.hpp>
+#include <core/asset/AssetLocation.hpp>
 
 // Put this macro into your asset classes just like SN_OBJECT.
 // Example: SN_ASSET(sn::render::ShaderProgram)
