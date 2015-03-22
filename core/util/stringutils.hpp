@@ -8,6 +8,7 @@ This file is part of the SnowfeetEngine project.
 #define __HEADER_SN_STRINGUTILS__
 
 #include <string>
+#include <vector>
 #include <core/types.hpp>
 
 namespace sn
@@ -56,8 +57,11 @@ std::string SN_API trimLeft(std::string str);
 /// \brief Returns a substring without leading whitespace. 
 std::string SN_API trimRight(std::string str);
 
-/// \brief Returns a substring without surrounding namespace.
+/// \brief Returns a substring without surrounding whitespace.
 std::string SN_API trim(std::string str);
+
+/// \brief Splits the given string at sep and returns the list without sep
+std::vector<std::string> SN_API split(const std::string & str, char sep);
 
 } // namespace sn
 

@@ -7,6 +7,7 @@
 #include <core/math/Vector3.hpp>
 #include <core/math/math.hpp>
 #include <core/space/NTree.hpp>
+#include <core/util/stringutils.hpp>
 #include <map>
 #include <set>
 
@@ -48,9 +49,30 @@ void testNTree()
     octree.add(nullptr, sn::FloatAABB(0, 0, 0, 1, 1, 1));
 }
 
+void printVector(const std::vector<std::string> & vec)
+{
+    for (auto it = vec.begin(); it != vec.end(); ++it)
+    {
+        SN_LOG("'" << *it << "'");
+    }
+}
+
+void test_split()
+{
+    printVector(sn::split("", '.')); SN_LOG("--------");
+    printVector(sn::split(".", '.')); SN_LOG("--------");
+    printVector(sn::split("..", '.')); SN_LOG("--------");
+    printVector(sn::split(".hello.", '.')); SN_LOG("--------");
+    printVector(sn::split("hello.world", '.')); SN_LOG("--------");
+    printVector(sn::split("hello.my.world", '.')); SN_LOG("--------");
+    printVector(sn::split("..hello.world", '.')); SN_LOG("--------");
+    printVector(sn::split("hello", '.')); SN_LOG("--------");
+}
+
 int main(int argc, char * argv[])
 {
-    test_reflection();
+    test_split();
+    //test_reflection();
     //testNTree();
     //testHashes();
     //return sn::appMain(argc, argv);

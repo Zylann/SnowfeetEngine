@@ -261,6 +261,32 @@ std::string trim(std::string str)
     return trimLeft(trimRight(str));
 }
 
+//------------------------------------------------------------------------------
+std::vector<std::string> split(const std::string & str, char sep)
+{
+    std::vector<std::string> strings;
+
+    if (str.empty())
+        return strings;
+
+    u32 i_begin = 0;
+    for (u32 i = 0; i < str.size(); ++i)
+    {
+        if (str[i] == sep)
+        {
+            strings.push_back(str.substr(i_begin, i - i_begin));
+            i_begin = i + 1; // +1 to skip the separator
+        }
+    }
+
+    if (i_begin < str.size())
+    {
+        strings.push_back(str.substr(i_begin));
+    }
+
+    return strings;
+}
+
 } // namespace sn
 
 
