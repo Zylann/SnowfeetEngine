@@ -28,7 +28,6 @@ public:
     static ObjectTypeDatabase & get();
 
     /// \brief Registers an object type that uses SN_OBJECT macro in its definition.
-    /// \param userData: optional type information (ObjectType will take the ownership on it!)
     /// \note it generates integer IDs from a counter, then as long as you call
     /// this function in the same order, these IDs will be the same even on different
     /// computers or platforms.

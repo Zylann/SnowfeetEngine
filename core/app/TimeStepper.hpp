@@ -44,7 +44,7 @@ public:
 
     /// \brief Sets the expected range for the time delta.
     /// \param minDelta: minimum time interval
-    /// \param minDelta: maximum time interval
+    /// \param maxDelta: maximum time interval
     inline void setDeltaRange(sn::Time minDelta, sn::Time maxDelta)
     {
         m_minDelta = minDelta;
@@ -75,14 +75,7 @@ public:
     /// \brief Call this function when a frame ends (after event, updates or rendering).
     void onEndFrame();
 
-    /// \brief Use this function to call a regular-time-delta step function (as your game logic update).
-    /// depending on the current delta time, the provided callback will be called once or several times
-    /// in order to get a fixed-time step logic.
-    /// \param stepFunc: update callback to call
-    /// \return number of times the given callback has been called
-    //u32 callSteps(void(*stepFunc)(sn::Time, void*), void* userdata);
-    //u32 callSteps(std::function<void(sn::Time)> stepFunc);
-
+    /// \brief Calculates and returns delta times to give on each iterative call to your realtime code.
     std::vector<sn::Time> getCallDeltas();
 
 private:
