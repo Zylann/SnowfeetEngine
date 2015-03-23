@@ -9,7 +9,7 @@ namespace render {
 class Texture : public Asset
 {
 public:
-    SN_ASSET(sn::render::Texture)
+    SN_SCRIPT_OBJECT(sn::render::Texture, sn::Asset)
 
     Texture();
 

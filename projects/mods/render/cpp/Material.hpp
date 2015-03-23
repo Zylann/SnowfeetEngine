@@ -11,7 +11,7 @@ namespace render {
 class Material : public Asset
 {
 public:
-    SN_ASSET(sn::render::Material)
+    SN_SCRIPT_OBJECT(sn::render::Material, sn::Asset)
 
     Material() :
         Asset(),

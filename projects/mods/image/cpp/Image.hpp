@@ -16,7 +16,7 @@ class SN_API Image : public Asset
 {
 public:
 
-    SN_ASSET(sn::Image)
+    SN_SCRIPT_OBJECT(sn::Image, sn::Asset)
     
     Image();
 

@@ -12,18 +12,14 @@ This file is part of the SnowfeetEngine project.
 #include <core/asset/AssetMetadata.hpp>
 #include <core/asset/AssetLocation.hpp>
 
-// Put this macro into your asset classes just like SN_OBJECT.
-// Example: SN_ASSET(sn::render::ShaderProgram)
-#define SN_ASSET(_className) \
-    SN_SCRIPT_OBJECT(_className, sn::Asset)
-
 namespace sn
 {
 
 class AssetDatabase;
 
 /// \brief Interface inherited by all asset classes.
-/// Modules are free to register their own types if they derive from IAssetType.
+/// It is a container which can have loaded or unloaded state, with additional metadata.
+/// Modules are free to register their own types if they derive from Asset.
 /// Note: If the object you want to turn into an asset is a class already, you have to wrap it.
 class SN_API Asset : public ScriptObject
 {

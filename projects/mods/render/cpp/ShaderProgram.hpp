@@ -29,8 +29,7 @@ std::string toString(ShaderType st);
 class SN_API ShaderProgram : public Asset
 {
 public:
-
-    SN_ASSET(sn::render::ShaderProgram)
+    SN_SCRIPT_OBJECT(sn::render::ShaderProgram, sn::Asset)
 
     // Constructs an empty program.
     ShaderProgram():

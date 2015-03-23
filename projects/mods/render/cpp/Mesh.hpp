@@ -31,7 +31,7 @@ enum PrimitiveType
 class Mesh : public Asset
 {
 public:
-    SN_ASSET(sn::render::Mesh)
+    SN_SCRIPT_OBJECT(sn::render::Mesh, sn::Asset)
 
     Mesh() :
         m_primitiveType(SNR_PT_TRIANGLES),
