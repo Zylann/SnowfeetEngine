@@ -109,7 +109,7 @@ int Application::executeEx()
     {
         // Load the scene
         String filePath = m_pathToProjects + L"/" + mainModuleInfo.directory + L"/" + mainModuleInfo.startupScene;
-        m_scene->loadFromFile(toString(filePath));
+        m_scene->loadFromFile(toString(filePath), SerializationContext(mainModuleInfo.name));
     }
 
     // Configure time stepper (at last, to minimize the "startup lag")
