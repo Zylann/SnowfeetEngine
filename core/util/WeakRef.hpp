@@ -13,7 +13,8 @@ class WeakRef
 {
 public:
 	WeakRef() :
-		m_ptr(nullptr)
+		m_ptr(nullptr),
+        m_sharedState(nullptr)
 	{}
 
 	WeakRef(RefCounted_T * ptr) :
@@ -25,7 +26,8 @@ public:
 
 	~WeakRef()
 	{
-		m_sharedState->release();
+        if (m_sharedState)
+    		m_sharedState->release();
 	}
 
 	//---------------------------------------------
