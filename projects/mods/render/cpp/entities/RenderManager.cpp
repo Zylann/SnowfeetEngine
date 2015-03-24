@@ -162,7 +162,15 @@ void RenderManager::render()
 //------------------------------------------------------------------------------
 void RenderManager::renderCamera(Camera & camera)
 {
-    // Clear
+    const RenderTexture * rt = camera.getRenderTarget();
+    // If the camera renders on a texture
+    if (rt)
+    {
+        // Bind the render texture
+        RenderTexture::bind(rt);
+    }
+
+    // Clear?
     switch (camera.getClearMode())
     {
     case SNR_CLEAR_COLOR:
@@ -226,6 +234,13 @@ void RenderManager::renderCamera(Camera & camera)
 
             m_context->useProgram(nullptr);
         }
+    }
+
+    // If we were rendering on a texture
+    if (rt)
+    {
+        // Go back to screen
+        RenderTexture::bind(0);
     }
 
 }

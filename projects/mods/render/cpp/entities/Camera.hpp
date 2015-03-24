@@ -3,6 +3,9 @@
 
 #include <core/scene/Entity3D.hpp>
 #include <core/math/Vector2.hpp>
+#include <core/util/WeakRef.hpp>
+
+#include "../RenderTexture.hpp"
 
 namespace sn {
 namespace render {
@@ -74,6 +77,9 @@ public:
     inline s32 getDrawOrder() const { return m_drawOrder; }
     inline void setDrawOrder(s32 order) { m_drawOrder = order; }
 
+    void setRenderTarget(RenderTarget * rt);
+    const RenderTexture * getRenderTarget() const { return r_renderTexture.get(); }
+
     //void setVisibilityMask(u32 mask);
 
     //-----------------------------------------
@@ -109,7 +115,7 @@ private:
     mutable bool m_projectionMatrixNeedUpdate;
     mutable Matrix4 m_projectionMatrix;
 
-    //Target m_target;
+    WeakRef<RenderTexture> r_renderTexture;
 
 };
 

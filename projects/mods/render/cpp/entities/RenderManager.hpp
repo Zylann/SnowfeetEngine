@@ -9,6 +9,7 @@ namespace render {
 
 class Camera;
 
+// TODO This should be a service (SN_EF_SERVICE?), not an entity with SN_EF_STICKY
 class RenderManager : public Entity
 {
 public:
