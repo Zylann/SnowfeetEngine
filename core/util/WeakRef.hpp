@@ -63,11 +63,11 @@ public:
 	// Operators
 	//---------------------------------------------
 
-	inline WeakRef & operator=(SharedRef & other)
-	{
-		set(other.m_ptr);
-		return *this;
-	}
+    inline WeakRef & operator=(WeakRef & other)
+    {
+        set(other.m_ptr);
+        return *this;
+    }
 
 private:
 	RefCounted_T * m_ptr;
