@@ -78,6 +78,7 @@ bool Texture::loadFromPixelsRGBA8(Vector2u size, const char * data)
     }
     else
     {
+        SN_ERROR("Couldn't create texture");
         return false;
     }
 }
@@ -90,6 +91,12 @@ bool Texture::loadFromPixelsRGBA8(Vector2u size, const char * data)
 void Texture::bind(Texture * tex)
 {
     glCheck(glBindTexture(GL_TEXTURE_2D, tex->m_textureID));
+}
+
+void Texture::setActive(u32 textureUnit, Texture * tex)
+{
+    glCheck(glActiveTexture(GL_TEXTURE0 + textureUnit));
+    Texture::bind(tex);
 }
 
 } // namespace render

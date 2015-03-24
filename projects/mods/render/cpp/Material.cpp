@@ -37,6 +37,36 @@ void Material::setShader(ShaderProgram * shader)
 	m_shader.set(shader);
 }
 
+//------------------------------------------------------------------------------
+void Material::setParam(const std::string & name, Texture * texture)
+{
+    m_textures[name].set(texture);
+}
+
+//------------------------------------------------------------------------------
+void Material::setParam(const std::string & name, RenderTexture * tex)
+{
+    setParam(name, tex ? tex->getTexture() : nullptr);
+}
+
+//------------------------------------------------------------------------------
+void Material::apply()
+{
+    if (m_shader.isNull())
+        return;
+
+    ShaderProgram & shader = *m_shader.get();
+
+    // Set textures
+    s32 textureUnit = 0;
+    for (auto it = m_textures.begin(); it != m_textures.end(); ++it)
+    {
+        Texture * tex = it->second.get();
+        Texture::setActive(textureUnit, tex);
+        shader.setParam(it->first, textureUnit);
+        ++textureUnit;
+    }
+}
 
 } // namespace render
 } // namespace sn

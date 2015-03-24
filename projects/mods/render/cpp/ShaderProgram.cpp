@@ -256,6 +256,12 @@ void ShaderProgram::setParam(const std::string & name, const f32 matrixValues[16
 }
 
 //------------------------------------------------------------------------------
+void ShaderProgram::setParam(const std::string & name, s32 i)
+{
+    glCheck(glUniform1i(getUniformLocation(name), i));
+}
+
+//------------------------------------------------------------------------------
 GLint ShaderProgram::getUniformLocation(const std::string & name)
 {
     GLint loc;

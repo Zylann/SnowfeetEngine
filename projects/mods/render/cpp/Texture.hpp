@@ -38,6 +38,7 @@ public:
     //Texture & operator=(const Texture & other);
 
     static void bind(Texture * tex);
+    static void setActive(u32 textureUnit, Texture * tex);
 
 private:
     ~Texture(); // use release();

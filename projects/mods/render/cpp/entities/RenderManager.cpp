@@ -203,7 +203,7 @@ void RenderManager::renderCamera(Camera & camera)
         const Mesh * mesh = d.getMesh();
         if (mesh)
         {
-            const Material * material = d.getMaterial();
+            Material * material = d.getMaterial();
             if (material)
             {
                 m_context->setDepthTest(material->isDepthTest());
@@ -217,6 +217,8 @@ void RenderManager::renderCamera(Camera & camera)
 
                     shader->setParam("u_Projection", camera.getProjectionMatrix().values(), true);
                     shader->setParam("u_ModelView", modelViewMatrix.values(), false);
+
+                    material->apply();
                 }
             }
 

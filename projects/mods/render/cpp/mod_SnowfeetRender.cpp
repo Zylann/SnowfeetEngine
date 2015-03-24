@@ -27,6 +27,8 @@ namespace render {
         otb.registerType<Mesh>();
         otb.registerType<Material>();
         otb.registerType<ShaderProgram>();
+        otb.registerType<Texture>();
+        otb.registerType<RenderTexture>();
     }
 
 } // namespace render

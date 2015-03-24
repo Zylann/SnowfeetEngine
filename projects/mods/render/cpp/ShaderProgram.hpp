@@ -10,7 +10,9 @@ This file is part of the SnowfeetEngine project.
 #include <core/asset/Asset.hpp>
 #include <unordered_map>
 #include <GL/glew.h>
+
 #include "Vertex.hpp"
+#include "Texture.hpp"
 
 namespace sn {
 namespace render {
@@ -61,6 +63,7 @@ public:
     void setParam(const std::string & name, f32 x, f32 y, f32 z);
     void setParam(const std::string & name, f32 x, f32 y, f32 z, f32 w);
     void setParam(const std::string & name, const f32 matrixValues[16], bool transpose=false);
+    void setParam(const std::string & name, s32 i);
 
 protected:
     // Destroys the program and its shaders.
