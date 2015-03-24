@@ -33,6 +33,7 @@ public:
     bool loadFromPixelsRGBA8(Vector2u size, const char * data);
 
     Vector2u getSize() const { return m_size; }
+    GLuint getInternalID() const { return m_textureID; }
 
     //Texture & operator=(const Texture & other);
 
