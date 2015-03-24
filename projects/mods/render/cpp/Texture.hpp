@@ -32,6 +32,8 @@ public:
     bool create(Vector2u size);
     bool loadFromPixelsRGBA8(Vector2u size, const char * data);
 
+    Vector2u getSize() const { return m_size; }
+
     //Texture & operator=(const Texture & other);
 
     static void bind(Texture * tex);
