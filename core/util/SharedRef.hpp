@@ -44,11 +44,13 @@ public:
 
 	inline void set(RefCounted_T * ptr)
 	{
-		if (m_ptr)
+        // Note: we need to addRef before releasing.
+        // (what if m_ptr == ptr and refCount == 1?)
+        if (ptr)
+            ptr->addRef();
+        if (m_ptr)
 			m_ptr->release();
 		m_ptr = ptr;
-		if (m_ptr)
-			m_ptr->addRef();
 	}
 
 	//-------------------------------------------

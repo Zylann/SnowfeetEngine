@@ -34,22 +34,27 @@ public:
 
 	void set(RefCounted_T * ptr)
 	{
-		if (m_ptr)
+        // Note: we need to addRef before releasing.
+        // (what if m_ptr == ptr and refCount == 1?)
+        if (ptr)
+            ptr->getSharedState()->addRef();
+
+        // Release old reference
+        if (m_ptr)
 			m_sharedState->release();
+
+        // Assign new pointer
 		m_ptr = ptr;
-		if (m_ptr)
-		{
-			m_sharedState = m_ptr->getSharedState();
-			m_sharedState->addRef();
-		}
-	}
+        if (m_ptr)
+            m_sharedState = ptr->getSharedState();
+    }
 
 	bool isNull()
 	{
 		return m_ptr == nullptr || m_sharedState->getObjectRefCount() == 0;
 	}
 
-	RefCounted_T * get()
+	RefCounted_T * get() const
 	{
 		return m_ptr;
 	}
