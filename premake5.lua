@@ -2,6 +2,8 @@
 -- Solution
 --------------------------------------------
 
+SnowfeetRoot = os.getcwd()
+
 solution "SnowfeetEngine"
 	platforms { "x32" }
 	--location "."
