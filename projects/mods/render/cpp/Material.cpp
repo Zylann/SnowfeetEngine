@@ -24,11 +24,47 @@ bool Material::canLoad(const AssetMetadata & meta) const
 //------------------------------------------------------------------------------
 bool Material::loadFromStream(std::ifstream & ifs)
 {
+    const AssetMetadata & meta = getAssetMetadata();
+
     JsonBox::Value doc;
     doc.loadFromStream(ifs);
     
-    setShader(getAssetBySerializedLocation<ShaderProgram>(doc["shader"].getString(), getAssetMetadata().module, this));
+    setShader(getAssetBySerializedLocation<ShaderProgram>(doc["shader"].getString(), meta.module, this));
     sn::unserialize(doc["depthTest"], m_depthTest);
+
+    JsonBox::Value params = doc["params"].getObject();
+    if (params.isObject())
+    {
+        auto o = params.getObject();
+        for (auto it = o.begin(); it != o.end(); ++it)
+        {
+            // {"@type":"texture|rendertexture", "value":"foobar"}
+            if (it->second.isObject())
+            {
+                auto a = it->second.getObject();
+                auto typeTag = a[SN_JSON_TYPE_TAG];
+                auto valueTag = a["value"];
+
+                if (!typeTag.isString() && !valueTag.isString())
+                {
+                    std::string stype = typeTag.getString();
+                    std::string loc = valueTag.getString();
+
+                    if (stype == "texture")
+                        setParam(it->first, getAssetBySerializedLocation<Texture>(loc, meta.module, this));
+                    else if (stype == "rendertexture")
+                        setParam(it->first, getAssetBySerializedLocation<RenderTexture>(loc, meta.module, this));
+                    else
+                        SN_ERROR("Unknown specified type: " << stype);
+                }
+            }
+            //else
+            //{
+            //    // ...
+            //}
+            // TODO Handle other param types
+        }
+    }
 
     return !m_shader.isNull();
 }
@@ -36,7 +72,7 @@ bool Material::loadFromStream(std::ifstream & ifs)
 //------------------------------------------------------------------------------
 void Material::setShader(ShaderProgram * shader)
 {
-    SN_ASSERT(shader != nullptr, "Material shader cannot be null");
+    SN_ASSERT(shader != nullptr, "Material shader cannot be null (" << sn::toString(getAssetMetadata().path) << ")");
 	m_shader.set(shader);
 }
 

@@ -49,7 +49,8 @@ bool Texture::create(Vector2u size)
 
 bool Texture::loadFromPixelsRGBA8(Vector2u size, const char * data)
 {
-    SN_ASSERT(size.x() > 0 && size.y() > 0 && data != nullptr, "Invalid pixel data");
+    // Note: data can be null in the case we don't want to initialize pixels
+    SN_ASSERT(size.x() > 0 && size.y() > 0, "Invalid pixel data");
 
     m_size = size;
 
