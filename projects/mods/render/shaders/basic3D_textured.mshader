@@ -1,0 +1,36 @@
+#msh_vertex
+#version 330
+
+layout (location = 0) in vec3 in_Position;
+layout (location = 1) in vec4 in_Color;
+layout (location = 2) in vec2 in_TexCoord;
+
+uniform mat4 u_Projection;
+uniform mat4 u_ModelView;
+
+smooth out vec4 v_Color;
+smooth out vec2 v_TexCoord;
+
+void main()
+{
+	gl_Position = u_Projection * u_ModelView * vec4(in_Position, 1.0);
+	v_Color = in_Color;
+	v_TexCoord = in_TexCoord;
+}
+
+#msh_fragment
+#version 330
+
+uniform sampler2D u_MainTexture;
+
+smooth in vec4 v_Color;
+smooth in vec2 v_TexCoord;
+
+out vec4 out_Color;
+
+void main()
+{
+	out_Color = texture2D(u_MainTexture, v_TexCoord);
+	//out_Color = vec4(1.0, 0.0, 0.0, 1.0);
+}
+
