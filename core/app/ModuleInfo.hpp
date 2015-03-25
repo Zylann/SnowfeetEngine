@@ -25,7 +25,8 @@ struct ModuleInfo
     String startupScene;
     std::vector<std::string> services; // class names of sticky entities to create on load
 
-    //! The order is important in this container !//
+	/// \brief List of names of shared libraries containing native bindings
+    /// \warning The order is important in this container.
     std::vector<String> bindings;
 };
 

@@ -115,6 +115,7 @@ bool Module::loadNativeBindings(ScriptManager & scriptEngine)
                 {
                     // Execute entry point
                     int retval = f({
+						&m_info,
                         scriptEngine.getVM(),
                         &(ObjectTypeDatabase::get())
                     });
@@ -169,6 +170,7 @@ void Module::unloadNativeBindings()
 
             // Execute exit point
             int unloadResult = f({
+				&m_info,
                 scriptEngine.getVM(),
                 &(ObjectTypeDatabase::get())
             });

@@ -40,22 +40,28 @@ bool ObjectType::is(const ObjectType & other, bool includeInheritance) const
     else if(includeInheritance)
     {
         // Search inheritance tree
-
-        ObjectTypeDatabase & odb = ObjectTypeDatabase::get();
-        const ObjectType * baseType = this;
-
-        while(!baseType->m_baseName.empty())
-        {
-            baseType = odb.getType(baseType->m_baseName);
-            if(baseType == nullptr)
-                return false;
-            if(baseType->m_ID == other.m_ID)
-                return true;
-        }
+		return derivesFrom(other);
     }
 
-    // Types differ
-    return false;
+	return false;
+}
+
+//------------------------------------------------------------------------------
+bool ObjectType::derivesFrom(const ObjectType & other) const
+{
+    ObjectTypeDatabase & odb = ObjectTypeDatabase::get();
+    const ObjectType * baseType = this;
+
+    while(!baseType->m_baseName.empty())
+    {
+        baseType = odb.getType(baseType->m_baseName);
+        if(baseType == nullptr)
+            return false;
+        if(baseType->m_ID == other.m_ID)
+            return true;
+    }
+
+	return false;
 }
 
 //------------------------------------------------------------------------------
@@ -96,6 +102,19 @@ std::string ObjectType::toString() const
 }
 
 //------------------------------------------------------------------------------
+void ObjectType::getChildrenTypes(std::vector<const ObjectType*> & out_children) const
+{
+	const ObjectTypeDatabase & odb = ObjectTypeDatabase::get();
+	auto allTypes = odb.getTypes();
+	for (auto it = allTypes.begin(); it != allTypes.end(); ++it)
+	{
+		const ObjectType & ot = *it->second;
+		if (ot.derivesFrom(*this))
+			out_children.push_back(this);
+	}
+}
+
+//------------------------------------------------------------------------------
 bool operator==(const ObjectType & a, const ObjectType & b)
 {
 	// TODO Compare modules too?
@@ -107,6 +126,7 @@ bool operator!=(const ObjectType & a, const ObjectType & b)
 {
     return a.getName() != b.getName();
 }
+
 
 } // namespace sn
 

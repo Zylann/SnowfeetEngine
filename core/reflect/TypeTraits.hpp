@@ -12,12 +12,18 @@ namespace sn
 
 class Object;
 
+// Issues with C++
+// 
 // - The standard typeid can differ across assemblies and executions,
 //   and hash codes can be the same for two types.
 // - Automatic template hacks don't work too, 
 //   because they would be implemented several times across assemblies,
 //   and ID collisions could occur as well.
+//
 // So at the moment, I think it's better to hardcode IDs for most known types...
+
+//------------------------------------------------------
+// Generic, unknown type. Should produce compilation errors if used.
 
 template <typename T>
 struct TypeTraits { };
@@ -41,7 +47,7 @@ template <> struct TypeTraits<f32> { static const u32 ID = 10; };
 template <> struct TypeTraits<f64> { static const u32 ID = 11; };
 
 //------------------------------------------------------
-// Standard
+// Standard library
 
 template <> struct TypeTraits<std::string> { static const u32 ID = 20; };
 
@@ -70,6 +76,7 @@ template <> struct TypeTraits<Object> { static const u32 ID = 50; };
 
 //------------------------------------------------------
 // Types with modifiers
+// TODO This doesn't supports multiple modifiers!
 
 template <typename T> struct TypeTraits<T*> { static const u32 ID = TypeTraits<T>::ID | 0x0001ffff; };
 template <typename T> struct TypeTraits<T&> { static const u32 ID = TypeTraits<T>::ID | 0x0002ffff; };

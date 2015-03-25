@@ -72,6 +72,8 @@ public:
     bool is(const std::string & typeName, bool includeInheritance=true) const;
     bool is(const ObjectType & other, bool includeInheritance=true) const;
 
+	bool derivesFrom(const ObjectType & other) const;
+
     /// \brief Creates a new instance of an object from its name.
     /// It does the same thing as "new MyObject()", where className = "MyObject".
     /// \return pointer to dynamically allocated object instance, or null if the object
@@ -83,6 +85,8 @@ public:
 	inline const std::string & getName() const { return m_name; }
 	inline const std::string & getBaseName() const { return m_baseName; }
 	inline const std::string & getModuleName() const { return m_moduleName; }
+
+	void getChildrenTypes(std::vector<const ObjectType*> & out_children) const;
 
     std::string toString() const;
 
