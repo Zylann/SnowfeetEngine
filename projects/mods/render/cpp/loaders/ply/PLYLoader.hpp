@@ -29,6 +29,8 @@ enum PLYField
     SNR_PLY_NX,
     SNR_PLY_NY,
     SNR_PLY_NZ,
+    SNR_PLY_S,
+    SNR_PLY_T,
     SNR_PLY_RED,
     SNR_PLY_GREEN,
     SNR_PLY_BLUE,

@@ -84,6 +84,8 @@ PLYLoader::PLYLoader(std::ifstream & ifs):
     m_fieldToID["nx"] = SNR_PLY_NX;
     m_fieldToID["ny"] = SNR_PLY_NY;
     m_fieldToID["nz"] = SNR_PLY_NZ;
+    m_fieldToID["s"] = SNR_PLY_S;
+    m_fieldToID["t"] = SNR_PLY_T;
     m_fieldToID["red"] = SNR_PLY_RED;
     m_fieldToID["green"] = SNR_PLY_GREEN;
     m_fieldToID["blue"] = SNR_PLY_BLUE;
@@ -274,13 +276,14 @@ bool PLYLoader::parseVertices(const PLYElement & element)
 
     std::vector<Vector3f> positions;
     std::vector<Vector3f> normals;
-    //std::vector<Vector2f> texCoords;
+    std::vector<Vector2f> texCoords;
     std::vector<Color> colors;
 
     for (u32 j = 0; j < element.count; ++j)
     {
         if (element.ownedFields.find(SNR_PLY_X) != element.ownedFields.end()) positions.push_back(Vector3f());
         if (element.ownedFields.find(SNR_PLY_NX) != element.ownedFields.end()) normals.push_back(Vector3f());
+        if (element.ownedFields.find(SNR_PLY_S) != element.ownedFields.end()) texCoords.push_back(Vector2f());
         if (element.ownedFields.find(SNR_PLY_RED) != element.ownedFields.end()) colors.push_back(Color());
 
         for (u32 i = 0; i < element.properties.size(); ++i)
@@ -295,6 +298,9 @@ bool PLYLoader::parseVertices(const PLYElement & element)
             case SNR_PLY_NX: ifs >> normals.back().x(); break;
             case SNR_PLY_NY: ifs >> normals.back().y(); break;
             case SNR_PLY_NZ: ifs >> normals.back().z(); break;
+
+            case SNR_PLY_S: ifs >> texCoords.back().x(); break;
+            case SNR_PLY_T: ifs >> texCoords.back().y(); break;
 
             case SNR_PLY_RED:    colors.back().r = ply::readColorField(ifs, property.type); break;
             case SNR_PLY_GREEN:  colors.back().g = ply::readColorField(ifs, property.type); break;
@@ -312,9 +318,18 @@ bool PLYLoader::parseVertices(const PLYElement & element)
     //}
 
     Mesh & out_mesh = *r_mesh;
-    out_mesh.setPositions(&positions[0], positions.size());
-    out_mesh.setNormals(&normals[0], normals.size());
-    out_mesh.setColors(&colors[0], colors.size());
+
+    if (!positions.empty()) 
+        out_mesh.setPositions(&positions[0], positions.size());
+
+    if (!normals.empty()) 
+        out_mesh.setNormals(&normals[0], normals.size());
+
+    if (!colors.empty()) 
+        out_mesh.setColors(&colors[0], colors.size());
+
+    if (!texCoords.empty()) 
+        out_mesh.setUV(&texCoords[0], texCoords.size());
 
     return true;
 }

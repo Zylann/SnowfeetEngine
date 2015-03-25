@@ -202,6 +202,14 @@ void Mesh::setColors(const Color * colors, u32 count)
 }
 
 //------------------------------------------------------------------------------
+void Mesh::setUV(const Vector2f * uv, u32 count)
+{
+    SN_ASSERT(uv != nullptr, "Invalid colors pointer");
+    m_uv.resize(count);
+    memcpy(&m_uv[0], uv, sizeof(Vector2f)*count);
+}
+
+//------------------------------------------------------------------------------
 void Mesh::setQuadIndices(const u32 * indices, u32 count)
 {
     SN_ASSERT(indices != nullptr, "Invalid indices pointer");

@@ -58,6 +58,7 @@ public:
     void setPositions(const Vector3f * positions, u32 count);
     void setNormals(const Vector3f * normals, u32 count);
     void setColors(const Color * colors, u32 count);
+    void setUV(const Vector2f * uv, u32 count);
 
     void setQuadIndices(const u32 * indices, u32 count);
     void setTriangleIndices(const u32 * indices, u32 count);

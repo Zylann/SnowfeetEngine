@@ -70,6 +70,13 @@ void Context::drawMesh(const Mesh & mesh)
         glCheck(glEnableVertexAttribArray(1));
     }
 
+    // UV
+    if (!mesh.getUV().empty())
+    {
+        glCheck(glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, &mesh.getUV()[0]));
+        glCheck(glEnableVertexAttribArray(2));
+    }
+
     if (mesh.getIndices().empty())
     {
         // Draw without indices
@@ -89,8 +96,12 @@ void Context::drawMesh(const Mesh & mesh)
         ));
     }
 
+    if (!mesh.getUV().empty())
+        glCheck(glDisableVertexAttribArray(2));
+
     if (!mesh.getColors().empty())
         glCheck(glDisableVertexAttribArray(1));
+
     glCheck(glDisableVertexAttribArray(0));
 }
 
