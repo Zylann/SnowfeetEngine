@@ -94,6 +94,16 @@ bool RenderTexture::create(Vector2u size)
 
 void RenderTexture::destroy()
 {
+    if (m_frameBufferID)
+    {
+        glCheck(glDeleteFramebuffers(1, &m_frameBufferID));
+        m_frameBufferID = 0;
+    }
+    if (m_depthBufferID)
+    {
+        glCheck(glDeleteRenderbuffers(1, &m_depthBufferID));
+        m_depthBufferID = 0;
+    }
     if (m_texture)
     {
         m_texture->release();
