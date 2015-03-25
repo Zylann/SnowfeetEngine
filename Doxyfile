@@ -768,7 +768,7 @@ WARN_LOGFILE           =
 # spaces.
 # Note: If this tag is empty the current directory is searched.
 
-INPUT                  = core
+INPUT                  = core projects/mods
 
 # This tag can be used to specify the character encoding of the source files
 # that doxygen parses. Internally doxygen uses the UTF-8 encoding. Doxygen uses
@@ -845,7 +845,11 @@ RECURSIVE              = YES
 # run.
 
 EXCLUDE                = core/squirrel/sqrat \
-                         core/squirrel/sqrat.h
+                         core/squirrel/sqrat.h \
+                         projects/mods/image/cpp/stbi \
+                         projects/mods/render/cpp/assimp \
+                         projects/mods/render/cpp/glew \
+                         projects/mods/oculus/external
 
 # The EXCLUDE_SYMLINKS tag can be used to select whether or not files or
 # directories that are symbolic links (a Unix file system feature) are excluded
@@ -2166,7 +2170,7 @@ HIDE_UNDOC_RELATIONS   = YES
 # set to NO
 # The default value is: NO.
 
-HAVE_DOT               = NO
+HAVE_DOT               = YES
 
 # The DOT_NUM_THREADS specifies the number of dot invocations doxygen is allowed
 # to run in parallel. When set to 0 doxygen will base this on the number of
