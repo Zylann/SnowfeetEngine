@@ -15,7 +15,10 @@ Material::~Material()
 bool Material::canLoad(const AssetMetadata & meta) const
 {
     String ext = sn::getFileExtension(meta.path);
-    return ext == L".mat";
+	// Note: on Windows, sometimes ".mat" is associated to an Microsoft Access database,
+	// and the file ends up being shown and acting as a SHORTCUT, due to odd registry changes.
+	// This is plain messy. I kindly hate the person who decided this behaviour.
+    return ext == L".mat" || ext == L".material";
 }
 
 //------------------------------------------------------------------------------
