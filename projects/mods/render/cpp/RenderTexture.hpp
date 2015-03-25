@@ -4,12 +4,12 @@
 #include <core/asset/Asset.hpp>
 
 #include "Texture.hpp"
-#include "RenderTarget.hpp"
+//#include "RenderTarget.hpp"
 
 namespace sn {
 namespace render {
 
-class RenderTexture : public RenderTarget, public Asset
+class RenderTexture : public Asset
 {
 public:
     SN_SCRIPT_OBJECT(sn::render::RenderTexture, sn::Asset)
@@ -27,7 +27,7 @@ public:
     // RenderTarget interface
     //---------------------------------------
 
-    Vector2u getSize() const override;
+	Vector2u getSize() const;// override;
 
     //---------------------------------------
     // RenderTexture interface

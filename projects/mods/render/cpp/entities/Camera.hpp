@@ -77,7 +77,7 @@ public:
     inline s32 getDrawOrder() const { return m_drawOrder; }
     inline void setDrawOrder(s32 order) { m_drawOrder = order; }
 
-    void setRenderTarget(RenderTarget * rt);
+    void setRenderTexture(RenderTexture * rt);
     const RenderTexture * getRenderTarget() const { return r_renderTexture.get(); }
 
     //void setVisibilityMask(u32 mask);
