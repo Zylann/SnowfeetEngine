@@ -133,7 +133,7 @@ Vector2u RenderTexture::getSize() const
 
 void RenderTexture::bind(const RenderTexture * rt)
 {
-    glCheck(glBindFramebuffer(GL_FRAMEBUFFER, rt->m_frameBufferID));
+    glCheck(glBindFramebuffer(GL_FRAMEBUFFER, rt ? rt->m_frameBufferID : 0));
 }
 
 } // namespace render
