@@ -1,3 +1,6 @@
+#include <core/util/stringutils.hpp>
+#include <core/json/json_utils.hpp>
+
 #include "RenderTexture.hpp"
 #include "gl_check.hpp"
 
@@ -20,14 +23,23 @@ RenderTexture::~RenderTexture()
 
 bool RenderTexture::canLoad(const AssetMetadata & meta) const
 {
-    // TODO
-    return false;
+	String ext = getFileExtension(meta.path);
+    return ext == L".rendertexture";
 }
 
 bool RenderTexture::loadFromStream(std::ifstream & ifs)
 {
-    // TODO
-    return false;
+	JsonBox::Value doc;
+    doc.loadFromStream(ifs);
+
+	Vector2i size;
+	sn::unserialize(doc["size"], size);
+	if (size.x() <= 0 && size.y() <= 0)
+		return false;
+
+	sn::unserialize(doc["hasDepth"], m_hasDepth);
+
+	return create(Vector2u(size.x(), size.y()));
 }
 
 bool RenderTexture::create(Vector2u size)
