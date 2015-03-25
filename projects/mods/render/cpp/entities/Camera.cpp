@@ -1,4 +1,6 @@
 #include <core/system/gui/SystemGUI.hpp>
+#include <core/asset/AssetDatabase.hpp>
+
 #include "Camera.hpp"
 
 namespace sn {
@@ -175,6 +177,11 @@ void Camera::serializeState(JsonBox::Value & o, const SerializationContext & con
     sn::serialize(o["drawOrder"], m_drawOrder);
     render::serialize(o["clearMode"], m_clearMode);
     sn::serialize(o["clearColor"], m_clearColor);
+
+    if (!r_renderTexture.isNull())
+    {
+        ;// TODO serialize target
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -191,6 +198,8 @@ void Camera::unserializeState(JsonBox::Value & o, const SerializationContext & c
     sn::unserialize(o["drawOrder"], m_drawOrder);
     render::unserialize(o["clearMode"], m_clearMode);
     sn::unserialize(o["clearColor"], m_clearColor);
+
+    r_renderTexture.set(getAssetBySerializedLocation<RenderTexture>(o["renderTexture"].getString(), context.getModule(), this));
 
 	m_projectionMatrixNeedUpdate = true;
 }
