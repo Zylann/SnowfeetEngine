@@ -238,13 +238,14 @@ void AssetDatabase::releaseAssets()
             for (auto it3 = it2->second.begin(); it3 != it2->second.end(); ++it3)
             {
                 Asset * asset = it3->second;
-#ifdef SN_BUILD_DEBUG
-                AssetMetadata meta = asset->getAssetMetadata();
-#endif
                 u32 refcount = asset->release();
                 if (refcount > 0)
                 {
 #ifdef SN_BUILD_DEBUG
+                    // Note: sometimes, false-positive leaks are detected, because sometimes,
+                    // assets reference others through strong refs. It should be okay, but
+                    // the warning message is not valid.
+                    AssetMetadata meta = asset->getAssetMetadata();
                     SN_WWARNING(L"Asset " << meta.path << L" is still referenced " << refcount << L" times");
 #endif
                     ++leakCount;
