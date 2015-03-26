@@ -51,7 +51,7 @@ public:
             m_sharedState = ptr->getSharedState();
     }
 
-	bool isNull()
+	bool isNull() const
 	{
 		return m_ptr == nullptr || m_sharedState->getObjectRefCount() == 0;
 	}
