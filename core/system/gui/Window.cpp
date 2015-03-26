@@ -64,6 +64,14 @@ bool Window::isOpen() const
     return m_handle != 0;
 }
 
+//------------------------------------------------------------------------------
+Vector2u Window::getClientSize() const
+{
+    IntRect clientRect = getClientRect();
+    return Vector2u(clientRect.width(), clientRect.height());
+}
+
+
 } // namespace sn
 
 

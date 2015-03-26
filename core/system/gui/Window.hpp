@@ -10,6 +10,7 @@ This file is part of the SnowfeetEngine project.
 #include <core/math/Rect.hpp>
 //#include <core/system/gui/Layout.hpp>
 #include <core/util/NonCopyable.hpp>
+#include <core/math/Vector2.hpp>
 
 #include <string>
 
@@ -93,6 +94,8 @@ public:
 
     void setClientRect(IntRect rect);
     IntRect getClientRect() const;
+
+    Vector2u getClientSize() const;
 
     //virtual bool isContainer() const { return false; }
 
