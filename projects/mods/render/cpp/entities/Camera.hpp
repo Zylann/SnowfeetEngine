@@ -47,6 +47,7 @@ public:
         m_aspectRatio(1),
         m_scaleMode(SNR_SCALEMODE_ADAPTED),
         m_clearMode(SNR_CLEAR_NONE),
+        m_viewport(0,0,1,1),
         m_projectionMatrixNeedUpdate(true)
     {}
 
@@ -63,6 +64,9 @@ public:
     inline const Color & getClearColor() const { return m_clearColor; }
     inline ClearMode getClearMode() const { return m_clearMode; }
     inline ScaleMode getScaleMode() const { return m_scaleMode; }
+    inline const FloatRect & getViewport() const { return m_viewport; }
+
+    IntRect getPixelViewport() const;
 
     void setFov(f32 newFov);
     void setNear(f32 newNear);
@@ -71,6 +75,7 @@ public:
     void setClearColor(const Color & clearColor);
     void setClearMode(ClearMode mode);
     void setScaleMode(ScaleMode mode);
+    void setViewport(FloatRect normalizedRect);
 
     const Matrix4 & getProjectionMatrix() const;
 
@@ -88,7 +93,7 @@ public:
 
     void onReady() override;
 
-    void onTargetResized(u32 width, u32 height);
+    //void onTargetResized(u32 width, u32 height);
 
     //-----------------------------------------
     // Serialization
@@ -96,6 +101,9 @@ public:
 
     void serializeState(JsonBox::Value & o, const SerializationContext & context) override;
     void unserializeState(JsonBox::Value & o, const SerializationContext & context) override;
+
+private:
+    void updateAspectRatio();
 
 private:
     //std::bitset<32> m_cullingMask;
@@ -111,6 +119,8 @@ private:
 
     Color m_clearColor;
     ClearMode m_clearMode;
+
+    FloatRect m_viewport;
 
     mutable bool m_projectionMatrixNeedUpdate;
     mutable Matrix4 m_projectionMatrix;

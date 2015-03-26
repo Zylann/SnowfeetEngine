@@ -109,6 +109,65 @@ void Camera::setClearMode(ClearMode mode)
 }
 
 //------------------------------------------------------------------------------
+void Camera::setRenderTexture(RenderTexture * rt)
+{
+    r_renderTexture.set(rt);
+    //if (rt)
+    //{
+    //    Vector2u size = rt->getSize();
+    //    onTargetResized(size.x(), size.y());
+    //}
+    updateAspectRatio();
+}
+
+//------------------------------------------------------------------------------
+void Camera::setViewport(FloatRect normalizedRect)
+{
+    m_viewport = normalizedRect;
+    updateAspectRatio();
+    //onTargetResized(rect.width(), rect.height());
+}
+
+//------------------------------------------------------------------------------
+void Camera::updateAspectRatio()
+{
+    if (m_scaleMode == SNR_SCALEMODE_ADAPTED)
+    {
+        IntRect viewport = getPixelViewport();
+        if (viewport.height() != 0)
+        {
+            setAspectRatio(static_cast<f32>(viewport.width()) / static_cast<f32>(viewport.height()));
+        }
+    }
+}
+
+//------------------------------------------------------------------------------
+IntRect Camera::getPixelViewport() const
+{
+    // Get target size
+    Vector2u targetSize;
+    if (!r_renderTexture.isNull())
+    {
+        targetSize = r_renderTexture.get()->getSize();
+    }
+    else
+    {
+        // TODO Fix this for multi windows!
+        Window * win = SystemGUI::get().getWindowByID(0);
+        if (win)
+            targetSize = win->getClientSize();
+    }
+
+    // Return pixel rect
+    return IntRect(
+        m_viewport.x() * targetSize.x(),
+        m_viewport.y() * targetSize.y(),
+        m_viewport.width() * targetSize.x(),
+        m_viewport.height() * targetSize.y()
+    );
+}
+
+//------------------------------------------------------------------------------
 const Matrix4 & Camera::getProjectionMatrix() const
 {
     if (m_projectionMatrixNeedUpdate)
@@ -140,27 +199,7 @@ const Matrix4 & Camera::getProjectionMatrix() const
 void Camera::onReady()
 {
     addTag(TAG);
-
-    // TODO Abstract this!
-    Window * window = SystemGUI::get().getWindowByID(0);
-    if (window)
-    {
-        IntRect screenRect = window->getClientRect();
-        onTargetResized(screenRect.width(), screenRect.height());
-    }
-}
-
-//------------------------------------------------------------------------------
-void Camera::onTargetResized(u32 width, u32 height)
-{
-    if (m_scaleMode == SNR_SCALEMODE_ADAPTED)
-    {
-        if (height != 0)
-        {
-            Vector2f screenSize(width, height);
-            setAspectRatio(screenSize.x() / screenSize.y());
-        }
-    }
+    updateAspectRatio();
 }
 
 //------------------------------------------------------------------------------
@@ -177,6 +216,7 @@ void Camera::serializeState(JsonBox::Value & o, const SerializationContext & con
     sn::serialize(o["drawOrder"], m_drawOrder);
     render::serialize(o["clearMode"], m_clearMode);
     sn::serialize(o["clearColor"], m_clearColor);
+    sn::serialize(o["viewport"], m_viewport);
 
     if (!r_renderTexture.isNull())
     {
@@ -199,7 +239,14 @@ void Camera::unserializeState(JsonBox::Value & o, const SerializationContext & c
     render::unserialize(o["clearMode"], m_clearMode);
     sn::unserialize(o["clearColor"], m_clearColor);
 
-    r_renderTexture.set(getAssetBySerializedLocation<RenderTexture>(o["renderTexture"].getString(), context.getModule(), this));
+    if (!o["viewport"].isNull())
+    {
+        FloatRect viewport;
+        sn::unserialize(o["viewport"], viewport);
+        setViewport(viewport);
+    }
+
+    setRenderTexture(getAssetBySerializedLocation<RenderTexture>(o["renderTexture"].getString(), context.getModule(), this));
 
 	m_projectionMatrixNeedUpdate = true;
 }

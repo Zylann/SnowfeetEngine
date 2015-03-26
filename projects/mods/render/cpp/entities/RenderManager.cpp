@@ -42,7 +42,7 @@ void RenderManager::onReady()
     setUpdatable(true, 0, 32000);
     listenToSystemEvents();
 
-    // Get or create window in which we'll render
+    // Get or create window in which we'll render the final image
     Window * win = SystemGUI::get().getWindowByID(0);
     if (win == nullptr)
         win = SystemGUI::get().createWindow();
@@ -52,6 +52,9 @@ void RenderManager::onReady()
     {
         m_context = new Context(*win);
         m_context->makeCurrent();
+
+        //IntRect rect = win->getClientRect();
+        //m_lastScreenSize = Vector2u(rect.width(), rect.height());
     }
 }
 
@@ -85,21 +88,25 @@ bool RenderManager::onSystemEvent(const sn::Event & event)
 //------------------------------------------------------------------------------
 void RenderManager::onScreenResized(u32 width, u32 height)
 {
-    m_context->setViewport(0, 0, width, height);
+    //m_lastScreenSize = Vector2u(width, height);
 
-    auto cameras = getScene()->getTaggedEntities(Camera::TAG);
-    for (auto it = cameras.begin(); it != cameras.end(); ++it)
-    {
-        Entity * e = *it;
-        if (e->isInstanceOf<Camera>())
-        {
-            ((Camera*)e)->onTargetResized(width, height);
-        }
-        else
-        {
-            SN_WARNING("Entity tagged Camera is not a Camera: " << e->toString());
-        }
-    }
+    //auto cameras = getScene()->getTaggedEntities(Camera::TAG);
+    //for (auto it = cameras.begin(); it != cameras.end(); ++it)
+    //{
+    //    Entity * e = *it;
+    //    if (e->isInstanceOf<Camera>())
+    //    {
+    //        Camera & cam = *(Camera*)e;
+    //        if (cam.getRenderTarget() == nullptr)
+    //        {
+    //            cam.onTargetResized(width, height);
+    //        }
+    //    }
+    //    else
+    //    {
+    //        SN_WARNING("Entity tagged Camera is not a Camera: " << e->toString());
+    //    }
+    //}
 }
 
 //------------------------------------------------------------------------------
@@ -170,6 +177,15 @@ void RenderManager::renderCamera(Camera & camera)
         RenderTexture::bind(rt);
     }
 
+    // Set viewport
+    IntRect viewport = camera.getPixelViewport();
+    m_context->setViewport(
+        viewport.x(),
+        viewport.y(),
+        viewport.width(),
+        viewport.height()
+    );
+
     // Clear?
     switch (camera.getClearMode())
     {
@@ -211,12 +227,13 @@ void RenderManager::renderCamera(Camera & camera)
         const Mesh * mesh = d.getMesh();
         if (mesh)
         {
+            // If the drawable has a material, apply it
             Material * material = d.getMaterial();
             if (material)
             {
                 m_context->setDepthTest(material->isDepthTest());
 
-                if (material && material->getShader())
+                if (material->getShader())
                 {
                     ShaderProgram * shader = material->getShader();
                     m_context->useProgram(material->getShader());
