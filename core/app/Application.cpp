@@ -283,6 +283,13 @@ Module * Application::loadModule(const String & path)
 
     std::list<ModuleInfo> modulesToLoad;
     Module::calculateDependencies(m_pathToProjects, path, modulesToLoad);
+    
+#ifdef SN_BUILD_DEBUG
+    for (auto it = modulesToLoad.begin(); it != modulesToLoad.end(); ++it)
+    {
+        SN_WDLOG(L"> " + it->modFilePath);
+    }
+#endif
 
     // Load main module and all its dependencies
     for (auto it = modulesToLoad.begin(); it != modulesToLoad.end(); ++it)
