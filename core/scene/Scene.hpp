@@ -10,6 +10,7 @@ This file is part of the SnowfeetEngine project.
 #include <core/scene/Entity.hpp>
 #include <core/util/RefCounted.hpp>
 #include <core/system/gui/Event.hpp>
+#include <core/system/time/Clock.hpp>
 #include <map>
 
 namespace sn
@@ -84,9 +85,14 @@ public:
     // Scene-specific
     //------------------------------------
 
+	void update(Time deltaTime);
+
     /// \brief Destroys all children entities, except sticky entities (services).
     /// Use destroyChildren() if you want to destroy everything.
     void destroyChildrenButServices();
+
+	Time getDeltaTime() const { return m_deltaTime; }
+	Time getTimeSinceStartup() const;
 
     //------------------------------------
     // Serialization
@@ -100,6 +106,8 @@ private:
     std::map<s32, std::unordered_set<Entity*>> m_updatableEntities;
 	std::unordered_set<Entity*> m_eventListenerEntities;
     bool m_quitFlag;
+	Time m_deltaTime;
+	Clock m_timeClock;
 
 };
 
