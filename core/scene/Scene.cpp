@@ -140,6 +140,13 @@ void Scene::destroyLater()
 }
 
 //------------------------------------------------------------------------------
+void Scene::update(Time deltaTime)
+{
+	m_deltaTime = deltaTime;
+	onUpdate();
+}
+
+//------------------------------------------------------------------------------
 void Scene::onUpdate()
 {
     auto sortedEntities = m_updatableEntities; // Iterate over a copy
@@ -182,6 +189,12 @@ void Scene::destroyChildrenButServices()
     destroyChildren([](const Entity & e){
         return !e.getFlag(SN_EF_STICKY);
     });
+}
+
+//------------------------------------------------------------------------------
+Time Scene::getTimeSinceStartup() const
+{
+	return m_timeClock.getElapsedTime();
 }
 
 //------------------------------------------------------------------------------

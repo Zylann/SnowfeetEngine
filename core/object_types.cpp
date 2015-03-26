@@ -9,6 +9,7 @@
 #include "scene/Entity.hpp"
 #include "scene/Entity3D.hpp"
 #include "scene/Scene.hpp"
+#include "scene/helpers/Rotate.hpp"
 
 #include "asset/Asset.hpp"
 
@@ -23,6 +24,7 @@ void registerObjectTypes(ObjectTypeDatabase & otb)
     otb.registerType<Entity>();
     otb.registerType<Entity3D>();
     otb.registerType<Scene>();
+    otb.registerType<Rotate>();
 
     otb.registerType<Asset>();
 

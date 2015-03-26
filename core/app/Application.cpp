@@ -208,7 +208,7 @@ void Application::update(Time delta)
 {
     if (m_scene)
     {
-        m_scene->onUpdate();
+        m_scene->update(delta);
         if (m_scene->getQuitFlag())
             m_runFlag = false;
     }
