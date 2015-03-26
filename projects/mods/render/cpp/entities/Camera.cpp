@@ -117,9 +117,9 @@ const Matrix4 & Camera::getProjectionMatrix() const
         {
             m_projectionMatrix.loadOrtho2DProjection(
                 -m_orthoSize.x(),
-                m_orthoSize.x(),
                 m_orthoSize.y()*m_aspectRatio,
-                m_orthoSize.y()*m_aspectRatio
+                m_orthoSize.x(),
+                -m_orthoSize.y()*m_aspectRatio
             );
         }
         else
