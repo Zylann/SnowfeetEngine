@@ -1,5 +1,5 @@
 {
-	"shader":"lens_distorsion",
+	"shader":"lens_distortion",
 	"params":{
 		"u_FillScale": 1.4,
 		"u_Aspect": 1.0,
