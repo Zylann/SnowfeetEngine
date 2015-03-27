@@ -24,6 +24,11 @@ public:
 		m_sharedState->addRef();
 	}
 
+    WeakRef(const WeakRef<RefCounted_T> & other)
+    {
+        set(other.m_ptr);
+    }
+
 	~WeakRef()
 	{
         if (m_sharedState)

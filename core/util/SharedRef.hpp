@@ -29,6 +29,13 @@ public:
 			m_ptr->addRef();
     }
 
+    SharedRef(const SharedRef<RefCounted_T> & other):
+        m_ptr(other.m_ptr)
+    {
+        if (m_ptr)
+            m_ptr->addRef();
+    }
+
     ~SharedRef()
     {
 		if (m_ptr)
