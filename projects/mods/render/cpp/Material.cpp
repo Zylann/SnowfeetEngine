@@ -74,7 +74,17 @@ bool Material::loadFromStream(std::ifstream & ifs)
                     f32 w = sn::unserializeFloat(v[3]);
                     setParam(it->first, x, y, z, w);
                 }
+                else if (a.size() == 2)
+                {
+                    f32 x = sn::unserializeFloat(v[(size_t)0]);
+                    f32 y = sn::unserializeFloat(v[1]);
+                    setParam(it->first, x, y);
+                }
                 // ...
+            }
+            else if (v.isDouble())
+            {
+                setParam(it->first, v.getDouble());
             }
             // TODO Handle other param types
         }
@@ -103,6 +113,18 @@ void Material::setParam(const std::string & name, RenderTexture * tex)
 }
 
 //------------------------------------------------------------------------------
+void Material::setParam(const std::string & name, f32 x)
+{
+    m_floats[name] = x;
+}
+
+//------------------------------------------------------------------------------
+void Material::setParam(const std::string & name, f32 x, f32 y)
+{
+    m_vec2[name] = Vector2f(x, y);
+}
+
+//------------------------------------------------------------------------------
 void Material::setParam(const std::string & name, f32 x, f32 y, f32 z, f32 w)
 {
     m_vec4[name] = Vector4f(x, y, z, w);
@@ -124,6 +146,19 @@ void Material::apply()
         Texture::setActive(textureUnit, tex);
         shader.setParam(it->first, textureUnit);
         ++textureUnit;
+    }
+
+    // Set float params
+    for (auto it = m_floats.begin(); it != m_floats.end(); ++it)
+    {
+        shader.setParam(it->first, it->second);
+    }
+
+    // Set vec2 params
+    for (auto it = m_vec2.begin(); it != m_vec2.end(); ++it)
+    {
+        Vector2f v = it->second;
+        shader.setParam(it->first, v[0], v[1]);
     }
 
     // Set vec4 params
