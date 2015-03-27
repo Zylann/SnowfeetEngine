@@ -38,6 +38,10 @@ void glCheckError(const char * file, unsigned int line)
 		error = "GL_OUT_OF_MEMORY";
 		break;
 
+    case GL_INVALID_VALUE:
+        error = "GL_INVALID_VALUE";
+        break;
+
 	default:
 		error = "Unknown error";
 		break;
