@@ -1,0 +1,115 @@
+#msh_vertex
+#version 330
+
+layout (location = 0) in vec3 in_Position;
+layout (location = 2) in vec2 in_TexCoord;
+
+smooth out vec2 v_TexCoord;
+
+void main()
+{
+	gl_Position = vec4(in_Position, 1.0);
+	v_TexCoord = in_TexCoord;
+}
+
+#msh_fragment
+#version 330
+
+uniform sampler2D u_MainTexture;
+uniform vec2 u_TexRange;
+uniform vec2 u_LensCenterOffset;
+uniform vec4 u_Distortion;
+uniform float u_Aspect;
+uniform float u_FillScale;
+
+smooth in vec2 v_TexCoord;
+
+smooth out vec4 out_Color;
+
+float distortionScale(vec2 offset)
+{
+	// Note that this performs piecewise multiplication,
+	// NOT a dot or cross product
+	vec2 offsetSquared = offset * offset;
+
+	float radiusSquared = offsetSquared.x + offsetSquared.y;
+
+	float distortionScale = u_Distortion[0]
+		+ u_Distortion[1] * radiusSquared
+		+ u_Distortion[2] * radiusSquared * radiusSquared
+		+ u_Distortion[3] * radiusSquared * radiusSquared * radiusSquared;
+
+	return distortionScale;
+}
+
+vec2 textureCoordsToDistortionOffsetCoords(vec2 texCoord)
+{
+	// Convert the texture coordinates from "0 to 1" to "-1 to 1"
+	vec2 result = texCoord * 2.0 - 1.0;
+
+	// Convert from using the center of the screen as the origin to
+	// using the lens center as the origin
+	result -= u_LensCenterOffset;
+
+	// Correct for the aspect ratio
+	result.y /= u_Aspect;
+
+	return result;
+}
+
+vec2 distortionOffsetCoordsToTextureCoords(vec2 offset)
+{
+	// Scale the distorted result so that we fill the desired amount of pixel real-estate
+	vec2 result = offset / u_FillScale;
+
+	// Correct for the aspect ratio
+	result.y *= u_Aspect;
+
+	// Convert from using the lens center as the origin to
+	// using the screen center as the origin
+	result += u_LensCenterOffset;
+
+	// Convert the texture coordinates from "-1 to 1" to "0 to 1"
+	result /= 2.0;
+	result += 0.5;
+
+	return result;
+}
+
+void main()
+{
+	// Grab the texture coordinate, which will be in the range 0-1 in both X and Y
+	vec2 offset = textureCoordsToDistortionOffsetCoords(v_TexCoord);
+
+	// Determine the amount of distortion based on the distance from the lens center
+	float scale = distortionScale(offset);
+
+	// Scale the offset coordinate by the distortion factor introduced by the Rift lens
+	vec2 distortedOffset = offset * scale;
+
+	// Now convert the data back into actual texture coordinates
+	vec2 actualTextureCoords = distortionOffsetCoordsToTextureCoords(distortedOffset);
+
+	// The actual texture data doesn't necessarily occupy the entire width and height
+	// of the texture, so we apply a scale that has been provided by the application
+	// to only access the parts of the texture that are valid
+	// actualTextureCoords *= u_TexRange;
+
+	// // Ensure that the distorted coordinates are not outside the range of the texture
+	vec2 clamped = clamp(actualTextureCoords, vec2(0, 0), vec2(1, 1));
+
+	if (!all(equal(clamped, actualTextureCoords)))
+	{
+		out_Color = vec4(0, 0, 0, 1);
+	}
+	else
+	{
+		out_Color = texture2D(u_MainTexture, actualTextureCoords);
+	}
+
+	//out_Color = texture2D(u_MainTexture, actualTextureCoords);
+	//out_Color = vec4(scale, scale, 0, 0);
+}
+
+
+
