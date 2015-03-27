@@ -157,9 +157,10 @@ void Mesh::recalculateIndexes()
     case SNR_PT_QUADS:
     {
         // Make triangles out of quad data
-        u32 count = (m_vertices.size() / 4) * 3;
-        m_indices.resize(count);
-        for (u32 j = 0; j < count; ++j)
+        u32 quadCount = m_vertices.size() / 4;
+        u32 indiceCount = quadCount * 6;
+        m_indices.resize(indiceCount);
+        for (u32 j = 0; j < quadCount; ++j)
         {
             u32 i = j * 4;
             m_indices[i] = i;
@@ -169,6 +170,7 @@ void Mesh::recalculateIndexes()
             m_indices[i + 4] = i + 3;
             m_indices[i + 5] = i + 2;
         }
+        break;
     }
 
     default:
