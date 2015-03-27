@@ -69,6 +69,7 @@ You will need the following to compile everything:
 - Premake5 (See bottom of this README)
 - Optionally, an IDE
 - Optionally, Git
+
 That's all, the project then should work out of the box.
 
 The premake build system is used to generate IDE solutions or makefiles.
@@ -76,33 +77,13 @@ I choosed it because I know it better than Cmake, it is very small,
 and it uses a well-known language (Lua) rather than a custom cryptic one,
 which makes writing build scripts very easy.
 
-The way cross-platformness is acomplished here is by putting platform-specific
-code into clean, separate files rather than into #ifdef blocks (this becomes a hell when 
-you have to support lots of platforms).
+All you have to do to obtain working project files is to run one of the
+scripts named "premake_xxx".
+For Windows, the one I mostly use is premake_vs2013_debug.bat.
 
-
-0) Get the engine from its Git repository, or download a zip file from Github
-
-1) Run one of the provided premake_** shell scripts, or write your own
-2) You should now see your project file at the root of the repo.
-
-Example with Visual Studio 2013:
-1) Run premake_vs2013_debug.bat
-2) SnowfeetEngine.sln appeared at the root, open it
-3) Build the solution
-
-you need to re-run step 1) only if you pulled a new version of the engine,
-or if you are unsure of you project files. Otherwise, you can add files
-manually to your IDE without any problem, when possible.
-
-Note for VS: don't create files from it, because they'll end up at the wrong place.
-drag and drop them instead.
-
-Note for Code::Blocks: premake5 can't generate workspaces yet, but it's coming ;) 
-
-To version your game separately from the engine's git repo, you can use multiple
-git repos feature or use another versionning system.
-The engine should otherwise support multiple project roots in the future.
+Another thing to keep in mind:
+Never manage files and build options from IDEs, because sometimes they end up in the wrong place.
+You should create them by hand and re-run premake to update project files. 
 
 For any question or issues, PM me.
 
