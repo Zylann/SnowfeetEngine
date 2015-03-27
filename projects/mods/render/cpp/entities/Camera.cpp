@@ -9,6 +9,16 @@ namespace render {
 const std::string Camera::TAG = "Camera";
 
 //------------------------------------------------------------------------------
+Camera::~Camera()
+{
+    for (u32 i = 0; i < EFFECT_BUFFERS_COUNT; ++i)
+    {
+        if (m_effectBuffers[i])
+            m_effectBuffers[i]->release();
+    }
+}
+
+//------------------------------------------------------------------------------
 void serialize(JsonBox::Value & o, ClearMode m)
 {
     switch (m)
@@ -160,10 +170,10 @@ IntRect Camera::getPixelViewport() const
 
     // Return pixel rect
     return IntRect(
-        m_viewport.x() * targetSize.x(),
-        m_viewport.y() * targetSize.y(),
-        m_viewport.width() * targetSize.x(),
-        m_viewport.height() * targetSize.y()
+        static_cast<s32>( m_viewport.x() * static_cast<f32>(targetSize.x()) ),
+        static_cast<s32>( m_viewport.y() * static_cast<f32>(targetSize.y()) ),
+        static_cast<s32>( m_viewport.width() * static_cast<f32>(targetSize.x()) ),
+        static_cast<s32>( m_viewport.height() * static_cast<f32>(targetSize.y()) )
     );
 }
 
@@ -200,6 +210,44 @@ void Camera::onReady()
 {
     addTag(TAG);
     updateAspectRatio();
+}
+
+//------------------------------------------------------------------------------
+void Camera::addEffect(Material * effectMaterial)
+{
+    updateEffectBuffers();
+    m_effects.push_back(SharedRef<Material>(effectMaterial));
+}
+
+//------------------------------------------------------------------------------
+void Camera::updateEffectBuffers()
+{
+    IntRect viewport = getPixelViewport();
+    Vector2u targetSize(viewport.width(), viewport.height());
+
+    // Delete buffers if the target size changed
+    if (m_effectBuffers[0] != nullptr)
+    {
+        RenderTexture & rt = *m_effectBuffers[0];
+        if (rt.getSize() != targetSize)
+        {
+            for (u32 i = 0; i < EFFECT_BUFFERS_COUNT; ++i)
+            {
+                m_effectBuffers[i]->release();
+            }
+        }
+    }
+
+    // Create buffers if they are not there
+    if (m_effectBuffers[0] == nullptr)
+    {
+        for (u32 i = 0; i < EFFECT_BUFFERS_COUNT; ++i)
+        {
+            RenderTexture * rt = new RenderTexture();
+            rt->create(Vector2u(viewport.width(), viewport.height()));
+            m_effectBuffers[i] = rt;
+        }
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -244,6 +292,32 @@ void Camera::unserializeState(JsonBox::Value & o, const SerializationContext & c
         FloatRect viewport;
         sn::unserialize(o["viewport"], viewport);
         setViewport(viewport);
+    }
+
+    auto & effects = o["effects"];
+    if (effects.isArray())
+    {
+        u32 count = effects.getArray().size();
+        for (u32 i = 0; i < count; ++i)
+        {
+            if (effects[i].isString())
+            {
+                Material * mat = getAssetBySerializedLocation<Material>(effects[i].getString(), context.getModule(), this);
+                if (mat != nullptr)
+                {
+                    addEffect(mat);
+                }
+                else
+                {
+                    SN_ERROR("Effect material not found: '" << effects[i].getString() << "'");
+                }
+            }
+            else
+            {
+                SN_ERROR("Effect material is not a string");
+                break;
+            }
+        }
     }
 
     setRenderTexture(getAssetBySerializedLocation<RenderTexture>(o["renderTexture"].getString(), context.getModule(), this));

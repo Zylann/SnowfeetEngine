@@ -126,6 +126,12 @@ void Context::setViewport(u32 x, u32 y, u32 width, u32 height)
     glViewport(x, y, width, height);
 }
 
+//------------------------------------------------------------------------------
+void Context::setViewport(const IntRect & rect)
+{
+    setViewport(rect.x(), rect.y(), rect.width(), rect.height());
+}
+
 } // namespace render
 } // namespace sn
 

@@ -38,6 +38,7 @@ public:
     void setDepthTest(bool enabled);
 
     void setViewport(u32 x, u32 y, u32 width, u32 height);
+    void setViewport(const IntRect & rect);
 
     void drawMesh(const Mesh & mesh);
 

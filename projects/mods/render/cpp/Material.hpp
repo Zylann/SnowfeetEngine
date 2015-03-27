@@ -3,6 +3,7 @@
 
 #include <core/asset/Asset.hpp>
 #include <core/util/SharedRef.hpp>
+#include <core/math/Vector4.hpp>
 
 #include "ShaderProgram.hpp"
 #include "RenderTexture.hpp"
@@ -40,6 +41,7 @@ public:
 
     void setParam(const std::string & name, Texture * tex);
     void setParam(const std::string & name, RenderTexture * tex);
+    void setParam(const std::string & name, f32 x, f32 y, f32 z, f32 w);
 
     void apply();
 
@@ -50,6 +52,7 @@ private:
     SharedRef<ShaderProgram> m_shader;
 
     std::unordered_map<std::string, SharedRef<Texture> > m_textures;
+    std::unordered_map<std::string, Vector4f> m_vec4;
 
     bool m_depthTest;
 

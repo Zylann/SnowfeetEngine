@@ -5,6 +5,7 @@
 #include <core/math/Vector2.hpp>
 #include <core/util/WeakRef.hpp>
 
+#include "../Material.hpp"
 #include "../RenderTexture.hpp"
 
 namespace sn {
@@ -49,7 +50,16 @@ public:
         m_clearMode(SNR_CLEAR_NONE),
         m_viewport(0,0,1,1),
         m_projectionMatrixNeedUpdate(true)
-    {}
+    {
+        // TODO Have a zeroMemory template function helper
+        memset(m_effectBuffers, 0, sizeof(RenderTexture*) * EFFECT_BUFFERS_COUNT);
+    }
+
+    ~Camera();
+
+    //-----------------------------------------
+    // Camera interface
+    //-----------------------------------------
 
     void setOrtho(bool ortho);
     inline bool isOrtho() const { return m_isOrtho; }
@@ -64,8 +74,12 @@ public:
     inline const Color & getClearColor() const { return m_clearColor; }
     inline ClearMode getClearMode() const { return m_clearMode; }
     inline ScaleMode getScaleMode() const { return m_scaleMode; }
+
+    /// \brief Gets the viewport's coordinates in normalized space (-1 to 1 horizontally and vertically).
     inline const FloatRect & getViewport() const { return m_viewport; }
 
+    /// \brief Gets the viewport's coordinates in pixels.
+    /// It corresponds to the actual rectangle where this camera will draw on the target (screen or framebuffer)
     IntRect getPixelViewport() const;
 
     void setFov(f32 newFov);
@@ -83,9 +97,15 @@ public:
     inline void setDrawOrder(s32 order) { m_drawOrder = order; }
 
     void setRenderTexture(RenderTexture * rt);
-    const RenderTexture * getRenderTarget() const { return r_renderTexture.get(); }
+    RenderTexture * getRenderTarget() const { return r_renderTexture.get(); }
 
     //void setVisibilityMask(u32 mask);
+
+    // TODO This is a temporary API, it might change in the future!
+    void addEffect(Material * effectMaterial);
+    u32 getEffectCount() const { return m_effects.size(); }
+    RenderTexture * getEffectBuffer(u32 i) const { return m_effectBuffers[i]; }
+    Material * getEffectMaterial(u32 i) const { return m_effects[i].get(); }
 
     //-----------------------------------------
     // Event handlers
@@ -104,6 +124,7 @@ public:
 
 private:
     void updateAspectRatio();
+    void updateEffectBuffers();
 
 private:
     //std::bitset<32> m_cullingMask;
@@ -126,6 +147,11 @@ private:
     mutable Matrix4 m_projectionMatrix;
 
     WeakRef<RenderTexture> r_renderTexture;
+
+    static const u32 EFFECT_BUFFERS_COUNT = 2;
+
+    std::vector< SharedRef<Material> > m_effects;
+    RenderTexture * m_effectBuffers[EFFECT_BUFFERS_COUNT];
 
 };
 

@@ -169,22 +169,25 @@ void RenderManager::render()
 //------------------------------------------------------------------------------
 void RenderManager::renderCamera(Camera & camera)
 {
-    const RenderTexture * rt = camera.getRenderTarget();
-    // If the camera renders on a texture
-    if (rt)
-    {
-        // Bind the render texture
-        RenderTexture::bind(rt);
-    }
-
-    // Set viewport
     IntRect viewport = camera.getPixelViewport();
-    m_context->setViewport(
-        viewport.x(),
-        viewport.y(),
-        viewport.width(),
-        viewport.height()
-    );
+
+    // If the camera has effects
+    if (camera.getEffectCount() > 0)
+    {
+        RenderTexture * rt = camera.getEffectBuffer(0);
+        // Bind its first effect framebuffer as target of scene rendering
+        RenderTexture::bind(rt);
+        // Use filled viewport
+        Vector2u size = rt->getSize();
+        m_context->setViewport(0, 0, size.x(), size.y());
+    }
+    else
+    {
+        // Or bind the target directly
+        RenderTexture::bind(camera.getRenderTarget());
+        // Set final viewport
+        m_context->setViewport(viewport);
+    }
 
     // Clear?
     switch (camera.getClearMode())
@@ -247,18 +250,82 @@ void RenderManager::renderCamera(Camera & camera)
                 }
             }
 
+            // Draw the mesh
             m_context->drawMesh(*mesh);
 
             m_context->useProgram(nullptr);
         }
     }
 
-    // If we were rendering on a texture
-    if (rt)
+    // If the camera has effects
+    if (camera.getEffectCount() > 0)
     {
-        // Go back to screen
-        RenderTexture::bind(0);
+        // Create the quad on which we'll render images
+
+        Mesh * quad = new Mesh();
+
+        quad->setPrimitiveType(SNR_PT_QUADS);
+
+        quad->addPosition(-1, -1, 0);
+        quad->addPosition( 1, -1, 0);
+        quad->addPosition( 1,  1, 0);
+        quad->addPosition(-1,  1, 0);
+
+        quad->addTexCoord(0, 0);
+        quad->addTexCoord(1, 0);
+        quad->addTexCoord(1, 1);
+        quad->addTexCoord(0, 1);
+
+        quad->recalculateIndexes();
+
+        RenderTexture * targetBuffer = camera.getEffectBuffer(0);
+        RenderTexture * sourceBuffer = camera.getEffectBuffer(1);
+
+        // Apply effects
+        for (u32 i = 0; i < camera.getEffectCount(); ++i)
+        {
+            // Swap source and target:
+            // Source becomes what we rendered before, target is where we'll draw with the added effect
+            std::swap(sourceBuffer, targetBuffer);
+
+            // If it's the last effect
+            if (i + 1 == camera.getEffectCount())
+            {
+                // Bind the final target
+                RenderTexture::bind(camera.getRenderTarget());
+                // With the final viewport
+                m_context->setViewport(viewport);
+            }
+            else
+            {
+                // Bind the next effect buffer
+                RenderTexture::bind(targetBuffer);
+            }
+
+            // Apply effect material
+            Material & material = *camera.getEffectMaterial(i);
+            if (material.getShader())
+            {
+                ShaderProgram * shader = material.getShader();
+                m_context->useProgram(shader);
+
+                // No projection, no modelview. Everything is [-1, 1].
+
+                material.setParam("u_MainTexture", sourceBuffer);
+                material.apply();
+            }
+
+            // Draw
+            m_context->drawMesh(*quad);
+
+            m_context->useProgram(nullptr);
+        }
+
+        quad->release();
     }
+
+    // Go back to screen
+    RenderTexture::bind(0);
 
 }
 
