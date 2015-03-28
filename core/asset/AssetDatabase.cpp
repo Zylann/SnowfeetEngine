@@ -30,16 +30,113 @@ AssetDatabase::AssetDatabase()
 }
 
 //------------------------------------------------------------------------------
-void AssetDatabase::setRoot(const String & root)
-{
-	SN_ASSERT(m_assets.empty(), "Cannot set root after assets have been loaded!");
-	m_root = root;
-}
-
-//------------------------------------------------------------------------------
 AssetDatabase::~AssetDatabase()
 {
     releaseAssets();
+    releaseLoaders();
+}
+
+//------------------------------------------------------------------------------
+void AssetDatabase::setRoot(const String & root)
+{
+    SN_ASSERT(m_assets.empty(), "Cannot set root after assets have been loaded!");
+    m_root = root;
+}
+
+//------------------------------------------------------------------------------
+void AssetDatabase::addLoadersFromModule(const std::string & moduleName)
+{
+    const ObjectTypeDatabase & otb = ObjectTypeDatabase::get();
+    const ObjectTypeMap & types = otb.getTypes();
+    const ObjectType & loaderType = AssetLoader::__sGetObjectType();
+
+    for (auto it = types.begin(); it != types.end(); ++it)
+    {
+        const ObjectType & ot = *(it->second);
+        if (ot.getModuleName() == moduleName && ot.derivesFrom(loaderType) && !ot.isAbstract())
+        {
+            AssetLoader * loader = checked_cast<AssetLoader*>(ot.instantiate());
+            addLoader(loader);
+        }
+    }
+}
+
+//------------------------------------------------------------------------------
+void AssetDatabase::addLoader(AssetLoader * loader)
+{
+    SN_ASSERT(loader != nullptr, "addLoader() received null pointer");
+    
+    const ObjectType & ot = loader->getObjectType();
+    auto & loaders = m_loaders[ot.getModuleName()];
+
+    const ObjectType & assetType = loader->getAssetType();
+    SN_ASSERT(loaders.find(assetType.getName()) == loaders.end(), "Loader registered twice for the same type!");
+    loaders.insert(std::make_pair(assetType.getName(), loader));
+}
+
+//------------------------------------------------------------------------------
+void AssetDatabase::releaseLoadersFromModule(const std::string & moduleName)
+{
+    auto modIt = m_loaders.find(moduleName);
+    if (modIt != m_loaders.end())
+    {
+        auto & loaders = modIt->second;
+        for (auto it = loaders.begin(); it != loaders.end(); ++it)
+        {
+            AssetLoader * loader = it->second;
+            SN_ASSERT(loader->getObjectType().getModuleName() == moduleName, "Invalid state");
+            delete loader;
+        }
+    }
+}
+
+//------------------------------------------------------------------------------
+void AssetDatabase::releaseLoaders()
+{
+    for (auto modIt = m_loaders.begin(); modIt != m_loaders.end(); ++modIt)
+    {
+        auto & loaders = modIt->second;
+        for (auto it = loaders.begin(); it != loaders.end(); ++it)
+        {
+            AssetLoader * loader = it->second;
+            delete loader;
+        }
+    }
+    m_loaders.clear();
+}
+
+//------------------------------------------------------------------------------
+const AssetLoader * AssetDatabase::findLoader(const AssetMetadata & meta) const
+{
+    for (auto modIt = m_loaders.begin(); modIt != m_loaders.end(); ++modIt)
+    {
+        auto & loaders = modIt->second;
+        for (auto it = loaders.begin(); it != loaders.end(); ++it)
+        {
+            AssetLoader & loader = *it->second;
+            if (loader.canLoad(meta))
+            {
+                return &loader;
+            }
+        }
+    }
+    return nullptr;
+}
+
+//------------------------------------------------------------------------------
+const AssetLoader * AssetDatabase::findLoader(const Asset & asset) const
+{
+    for (auto modIt = m_loaders.begin(); modIt != m_loaders.end(); ++modIt)
+    {
+        auto & loaders = modIt->second;
+        const ObjectType & ot = asset.getObjectType();
+        auto it = loaders.find(ot.getName());
+        if (it != loaders.end())
+        {
+            return it->second;
+        }
+    }
+    return nullptr;
 }
 
 //------------------------------------------------------------------------------
@@ -93,14 +190,54 @@ Asset * AssetDatabase::preloadAsset(const String & path, const std::string & mod
         return assetIt->second;
     }
 
+    Asset * asset = nullptr;
+
     // Retrieve metadata
     AssetMetadata metadata;
     metadata.path = path;
     metadata.module = moduleName;
     metadata.loadFromFile(path); // Not fatal if the .meta file isn't found
 
-    // Find loader:
-    // TODO [Optimize] the following is hammerish and sometimes conflictish. Find a better solution? I'm sure there is one.
+    // Find loader
+    const AssetLoader * loader = findLoader(metadata);
+
+    if (loader)
+    {
+        // Found a loader, the asset is preloaded
+        const ObjectType & ot = loader->getAssetType();
+        asset = checked_cast<Asset*>(ot.instantiate());
+    }
+    else
+    {
+        // No loader found, use old method
+        asset = legacy_createMatchingAssetType(metadata);
+    }
+
+    if (asset)
+    {
+        metadata.name = getFileNameWithoutExtension(toString(path));
+
+        // Assign metadata
+        asset->m_metadata = metadata;
+
+        // Store in file mapping
+        m_fileCache[metadata.path] = asset;
+
+        // Store in asset mapping
+        m_assets[metadata.module][asset->getObjectType().getName()][metadata.name] = asset;
+
+        SN_DLOG("Indexed asset " << toString(path) << "...");
+    }
+
+    // If nullptr, the asset cannot be loaded
+    return asset;
+}
+
+//------------------------------------------------------------------------------
+Asset * AssetDatabase::legacy_createMatchingAssetType(const AssetMetadata & meta) const
+{
+    // The following is hammerish and sometimes conflictish.
+    // That's why it is currently deprecated, loaders should be used instead.
 
     Asset * asset = nullptr;
 
@@ -112,12 +249,12 @@ Asset * AssetDatabase::preloadAsset(const String & path, const std::string & mod
     for (auto it = types.begin(); it != types.end(); ++it)
     {
         const ObjectType & t = *(it->second);
-        if (t.is(assetType))
+        if (t.derivesFrom(assetType))
         {
             if (!t.isAbstract())
             {
                 Asset * candidateAsset = (Asset*)(t.instantiate());
-                if (candidateAsset->canLoad(metadata))
+                if (candidateAsset->canLoad(meta))
                 {
                     if (asset == nullptr)
                     {
@@ -125,7 +262,7 @@ Asset * AssetDatabase::preloadAsset(const String & path, const std::string & mod
                     }
                     else
                     {
-                        SN_WERROR(L"Cannot determine which asset loader to use for file '" << path << L"'.");
+                        SN_WERROR(L"Cannot determine which asset loader to use for file '" << meta.path << L"'.");
                         SN_ERROR("Candidates are: " << asset->getObjectType().getName() << ", " << candidateAsset->getObjectType().getName());
                         asset->release();
                         candidateAsset->release();
@@ -144,23 +281,6 @@ Asset * AssetDatabase::preloadAsset(const String & path, const std::string & mod
         }
     }
 
-    if (asset)
-    {
-        metadata.name = getFileNameWithoutExtension(toString(path));
-
-        // Assign metadata
-        asset->m_metadata = metadata;
-
-        // Store in file mapping
-        m_fileCache[metadata.path] = asset;
-
-        // Store in asset mapping
-        m_assets[metadata.module][asset->getObjectType().getName()][metadata.name] = asset;
-
-        SN_DLOG("Preloaded asset " << toString(path) << "...");
-    }
-
-    // If nullptr, the asset wasn't loaded and couldn't be loaded
     return asset;
 }
 
@@ -183,13 +303,17 @@ AssetLoadStatus AssetDatabase::loadAsset(Asset * asset)
         return SN_ALS_OPEN_ERROR;
     }
 
-    // Load asset
-    if (asset->loadFromStream(ifs))
+    const AssetLoader * loader = findLoader(*asset);
+
+    if (loader)
     {
-        // Success
+        loader->load(ifs, *asset);
         ifs.close();
-        // Store asset
-        //m_assets[moduleName][typeName][assetName] = asset;
+        return SN_ALS_LOADED;
+    }
+    else if (asset->loadFromStream(ifs))
+    {
+        ifs.close();
         return SN_ALS_LOADED;
     }
     else
@@ -200,32 +324,6 @@ AssetLoadStatus AssetDatabase::loadAsset(Asset * asset)
         return SN_ALS_READ_ERROR;
     }
 }
-
-//------------------------------------------------------------------------------
-AssetLoadStatus AssetDatabase::loadAssetFromFile(const String & path, const std::string & moduleName)
-{
-    Asset * asset = preloadAsset(path, moduleName);
-
-    const AssetMetadata & metadata = asset->getAssetMetadata();
-#ifdef SN_BUILD_DEBUG
-    SN_ASSERT(metadata.path == path, "Invalid state");
-#endif
-
-    if (asset == nullptr)
-    {
-        // Cannot load this file type. The file will be ignored.
-        return SN_ALS_MISMATCH;
-    }
-
-    return loadAsset(asset);
-}
-
-//------------------------------------------------------------------------------
-//bool AssetDatabase::releaseAsset(IAsset * asset)
-//{
-//    // TODO AssetDatabase::releaseAsset
-//    return false;
-//}
 
 //------------------------------------------------------------------------------
 void AssetDatabase::releaseAssets()

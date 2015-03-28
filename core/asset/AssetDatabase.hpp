@@ -8,7 +8,7 @@ This file is part of the SnowfeetEngine project.
 #define __HEADER_SN_ASSETDATABASE__
 
 #include <core/util/typecheck.hpp>
-#include <core/asset/Asset.hpp>
+#include <core/asset/AssetLoader.hpp>
 #include <core/asset/AssetMetadata.hpp>
 #include <core/asset/SerializationContext.hpp>
 #include <core/app/ModuleInfo.hpp>
@@ -42,25 +42,36 @@ public:
     AssetDatabase();
     ~AssetDatabase();
 
+    /// \brief Gets the database singleton.
 	static AssetDatabase & get();
 
+    /// \brief Sets the main root that will be used for all assets to be loaded.
+    /// \warning: should be only assigned once at the moment.
 	void setRoot(const String & root);
+
+    /// \brief Registers all asset loader classes in the specified reflected module.
+    void addLoadersFromModule(const std::string & moduleName);
+
+    /// \brief Unregisters all asset loader classes from the specified reflected module.
+    void releaseLoadersFromModule(const std::string & moduleName = "");
+
+    /// \brief Unregisters all asset loaders.
+    void releaseLoaders();
 
     /// \brief Loads all assets contained in a given module directory.
     /// This function blocks until everything is loaded.
     void loadAssets(const ModuleInfo & modInfo);
 
-    AssetLoadStatus loadAssetFromFile(const String & path, const std::string & moduleName);
-    //bool releaseAsset(IAsset * asset);
-
     // Gets an asset. If it returns null, the asset may not be loadable or has not been registered.
     Asset * getAsset(const std::string & moduleName, const std::string & type, const std::string & name);
     Asset * getAsset(const AssetLocation & loc, const std::string & type);
 
+    /// \brief Releases all assets contained in the database.
+    /// \note Ownership is released. If you still strong-reference an asset somewhere else, it won't be destroyed!
     void releaseAssets();
 
     //-----------------------------
-    // Helpers
+    // Template helpers
     //-----------------------------
 
     // Template version of getAsset, compiled in your native code.
@@ -83,6 +94,14 @@ public:
     }
 
 private:
+    void addLoader(AssetLoader * loader);
+
+    const AssetLoader * findLoader(const AssetMetadata & meta) const;
+    const AssetLoader * findLoader(const Asset & asset) const;
+
+    /// \deprecated
+    Asset * legacy_createMatchingAssetType(const AssetMetadata & meta) const;
+
     // Tests if an asset file can be loaded, and if yes, returns its container object in an empty state,
     // with associated metadata.
     // If you don't need the container, you have to call release() on it.
@@ -93,17 +112,23 @@ private:
 
 private:
 
-    // Top directory where assets are located (usually the "projects" directory)
+    /// \brief Top directory where assets are located (usually the "projects" directory)
     String m_root;
 
-    // [path][asset]
+    /// \brief [loaderModule][assetTypeName] => loader
+    std::unordered_map<std::string, std::unordered_map<std::string, AssetLoader*> > m_loaders;
+
+    /// \brief [path] => asset
     std::unordered_map<String, Asset*> m_fileCache;
 
-    // [moduleName][typeName][name] => Asset
+    /// \brief [moduleName][typeName][name] => asset
+    /// \note The moduleName corresponds to the location of the asset, not its type.
     std::unordered_map< std::string, std::unordered_map< std::string, std::unordered_map<std::string, Asset*> > > m_assets;
 
 };
 
+
+//-----------------------------------------------------------------------------
 /// \brief Reads a serialized asset reference, looks it up into the database and returns it if found.
 ///
 /// The algorithm searches the asset in the following modules:

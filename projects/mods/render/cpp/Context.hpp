@@ -8,8 +8,9 @@ This file is part of the SnowfeetEngine project.
 #define __HEADER_SN_CONTEXT__
 
 #include <core/system/gui/Window.hpp>
+#include <core/asset/base/Mesh.hpp>
+
 #include "ShaderProgram.hpp"
-#include "Mesh.hpp"
 #include "ContextSettings.hpp"
 
 namespace sn {
@@ -54,6 +55,8 @@ private:
     Window * r_window;
     ContextSettings m_settings;
 };
+
+GLenum genericPrimitiveTypeToGL(MeshPrimitiveType pt);
 
 } // namespace render
 } // namespace sn

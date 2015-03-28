@@ -2,13 +2,14 @@
 
 #include "mod_SnowfeetRender.h"
 
-#include "Mesh.hpp"
 #include "Material.hpp"
 #include "ShaderProgram.hpp"
 
 #include "entities/RenderManager.hpp"
 #include "entities/Camera.hpp"
 #include "entities/Drawable.hpp"
+
+#include "loaders/BasicMeshLoader.hpp"
 
 #include "sq_binding/sq_render.hpp"
 
@@ -24,11 +25,13 @@ namespace render {
         otb.registerType<Drawable>();
 
         // Assets
-        otb.registerType<Mesh>();
         otb.registerType<Material>();
         otb.registerType<ShaderProgram>();
         otb.registerType<Texture>();
         otb.registerType<RenderTexture>();
+
+        // Loaders
+        otb.registerType<BasicMeshLoader>();
     }
 
 } // namespace render

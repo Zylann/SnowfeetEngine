@@ -1,7 +1,7 @@
 #ifndef __HEADER_SNR_PLY_LOADER__
 #define __HEADER_SNR_PLY_LOADER__
 
-#include "../../Mesh.hpp"
+#include <core/asset/base/Mesh.hpp>
 
 #include <fstream>
 #include <unordered_set>

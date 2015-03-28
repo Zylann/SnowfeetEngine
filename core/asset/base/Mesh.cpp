@@ -1,35 +1,31 @@
 ﻿#include <core/util/stringutils.hpp>
 #include "Mesh.hpp"
-#include "loaders/ply/PLYLoader.hpp"
 
 namespace sn {
-namespace render {
 
 //------------------------------------------------------------------------------
-std::string toString(PrimitiveType pt)
+std::string toString(MeshPrimitiveType pt)
 {
     switch (pt)
     {
-    case SNR_PT_POINTS: return "Points"; break;
-    case SNR_PT_LINES: return "Lines"; break;
-    case SNR_PT_TRIANGLES: return "Lines"; break;
-    case SNR_PT_QUADS: return "Quads"; break;
-    default: return "PrimitiveType[" + std::to_string((s32)pt) + "]"; break;
+    case SN_MESH_POINTS: return "Points"; break;
+    case SN_MESH_LINES: return "Lines"; break;
+    case SN_MESH_TRIANGLES: return "Lines"; break;
+    case SN_MESH_QUADS: return "Quads"; break;
+    default: return "MeshPrimitiveType[" + std::to_string((s32)pt) + "]"; break;
     }
 }
 
 //------------------------------------------------------------------------------
 bool Mesh::canLoad(const AssetMetadata & metadata) const
 {
-    String ext = sn::getFileExtension(metadata.path);
-    return ext == L".ply";
+    return false;
 }
 
 //------------------------------------------------------------------------------
 bool Mesh::loadFromStream(std::ifstream & ifs)
 {
-    PLYLoader loader(ifs);
-    return loader.loadMesh(*this);
+    return false;
 }
 
 //------------------------------------------------------------------------------
@@ -49,25 +45,20 @@ bool Mesh::isEmpty() const
 }
 
 //------------------------------------------------------------------------------
-void Mesh::setPrimitiveType(PrimitiveType pt)
+void Mesh::setPrimitiveType(MeshPrimitiveType pt)
 {
     m_primitiveType = pt;
 }
 
 //------------------------------------------------------------------------------
-GLenum Mesh::getInternalPrimitiveType() const
+MeshPrimitiveType Mesh::getInternalPrimitiveType() const
 {
     switch (m_primitiveType)
     {
-    case SNR_PT_POINTS: return GL_POINTS;
-    case SNR_PT_LINES: return GL_LINES;
-
-    case SNR_PT_TRIANGLES:
-    case SNR_PT_QUADS:
-        return GL_TRIANGLES;
-
+    case SN_MESH_QUADS:
+        return SN_MESH_TRIANGLES;
     default:
-        return GL_LINES;
+        return m_primitiveType;
     }
 }
 
@@ -76,14 +67,14 @@ u32 Mesh::getInternalIndexedPrimitiveCount() const
 {
     switch (m_primitiveType)
     {
-    case SNR_PT_POINTS:
+    case SN_MESH_POINTS:
         return m_indices.size();
 
-    case SNR_PT_LINES:
+    case SN_MESH_LINES:
         return m_indices.size() / 2;
 
-    case SNR_PT_QUADS:
-    case SNR_PT_TRIANGLES:
+    case SN_MESH_QUADS: // Emulated with triangles
+    case SN_MESH_TRIANGLES:
         return m_indices.size() / 3;
 
     default:
@@ -124,7 +115,7 @@ void Mesh::addColor(const Color & c)
 
 //------------------------------------------------------------------------------
 // Static
-//u32 Mesh::calculateIndicesCount(PrimitiveType primitive, u32 primitiveCount)
+//u32 Mesh::calculateIndicesCount(MeshPrimitiveType primitive, u32 primitiveCount)
 //{
 //    switch (primitive)
 //    {
@@ -144,9 +135,9 @@ void Mesh::recalculateIndexes()
 {
     switch (m_primitiveType)
     {
-    case SNR_PT_POINTS:
-    case SNR_PT_LINES:
-    case SNR_PT_TRIANGLES:
+    case SN_MESH_POINTS:
+    case SN_MESH_LINES:
+    case SN_MESH_TRIANGLES:
         m_indices.resize(m_vertices.size());
         for (u32 i = 0; i < m_indices.size(); ++i)
         {
@@ -154,7 +145,7 @@ void Mesh::recalculateIndexes()
         }
         break;
 
-    case SNR_PT_QUADS:
+    case SN_MESH_QUADS:
     {
         // Make triangles out of quad data
         u32 quadCount = m_vertices.size() / 4;
@@ -184,7 +175,8 @@ void Mesh::setPositions(const Vector3f * positions, u32 count)
 {
     SN_ASSERT(positions != nullptr, "Invalid positions pointer");
     m_vertices.resize(count);
-    memcpy(&m_vertices[0], positions, sizeof(Vector3f)*count);
+    if (count)
+        memcpy(&m_vertices[0], positions, sizeof(Vector3f)*count);
 }
 
 //------------------------------------------------------------------------------
@@ -192,7 +184,8 @@ void Mesh::setNormals(const Vector3f * normals, u32 count)
 {
     SN_ASSERT(normals != nullptr, "Invalid normals pointer");
     m_normals.resize(count);
-    memcpy(&m_normals[0], normals, sizeof(Vector3f)*count);
+    if (count)
+        memcpy(&m_normals[0], normals, sizeof(Vector3f)*count);
 }
 
 //------------------------------------------------------------------------------
@@ -200,7 +193,8 @@ void Mesh::setColors(const Color * colors, u32 count)
 {
     SN_ASSERT(colors != nullptr, "Invalid colors pointer");
     m_colors.resize(count);
-    memcpy(&m_colors[0], colors, sizeof(Color)*count);
+    if (count)
+        memcpy(&m_colors[0], colors, sizeof(Color)*count);
 }
 
 //------------------------------------------------------------------------------
@@ -208,7 +202,20 @@ void Mesh::setUV(const Vector2f * uv, u32 count)
 {
     SN_ASSERT(uv != nullptr, "Invalid colors pointer");
     m_uv.resize(count);
-    memcpy(&m_uv[0], uv, sizeof(Vector2f)*count);
+    if (count)
+        memcpy(&m_uv[0], uv, sizeof(Vector2f)*count);
+}
+
+//------------------------------------------------------------------------------
+void Mesh::setCustomFloats(u32 i, const f32 * fdata, u32 count)
+{
+    SN_ASSERT(fdata != nullptr, "Invalid custom floats pointer");
+    if (i >= m_customFloats.size())
+        m_customFloats.resize(i + 1);
+    auto & buffer = m_customFloats[i];
+    buffer.resize(count);
+    if (count)
+        memcpy(&buffer[0], fdata, sizeof(f32)*count);
 }
 
 //------------------------------------------------------------------------------
@@ -216,17 +223,20 @@ void Mesh::setQuadIndices(const u32 * indices, u32 count)
 {
     SN_ASSERT(indices != nullptr, "Invalid indices pointer");
     SN_ASSERT(count % 4 == 0, "Number of quad indices array is not a multiple of 4");
-    m_indices.resize(6 * (count / 4));
-    u32 j = 0;
-    for (u32 i = 0; i < count; i += 4)
+    if (count)
     {
-        m_indices[j    ] = indices[i + 2];
-        m_indices[j + 1] = indices[i + 3];
-        m_indices[j + 2] = indices[i + 1];
-        m_indices[j + 3] = indices[i + 3];
-        m_indices[j + 4] = indices[i    ];
-        m_indices[j + 5] = indices[i + 1];
-        j += 6;
+        m_indices.resize(6 * (count / 4));
+        u32 j = 0;
+        for (u32 i = 0; i < count; i += 4)
+        {
+            m_indices[j] = indices[i + 2];
+            m_indices[j + 1] = indices[i + 3];
+            m_indices[j + 2] = indices[i + 1];
+            m_indices[j + 3] = indices[i + 3];
+            m_indices[j + 4] = indices[i];
+            m_indices[j + 5] = indices[i + 1];
+            j += 6;
+        }
     }
 }
 
@@ -236,9 +246,9 @@ void Mesh::setTriangleIndices(const u32 * indices, u32 count)
     SN_ASSERT(indices != nullptr, "Invalid indices pointer");
     SN_ASSERT(count % 3 == 0, "Number of triangle indices array is not a multiple of 3");
     m_indices.resize(count);
-    memcpy(&m_indices[0], indices, count * sizeof(u32));
+    if (count)
+        memcpy(&m_indices[0], indices, count * sizeof(u32));
 }
 
-} // namespace render
 } // namespace sn
 

@@ -264,7 +264,7 @@ void RenderManager::renderCamera(Camera & camera)
 
         Mesh * quad = new Mesh();
 
-        quad->setPrimitiveType(SNR_PT_QUADS);
+        quad->setPrimitiveType(SN_MESH_QUADS);
 
         quad->addPosition(-1, -1, 0);
         quad->addPosition( 1, -1, 0);

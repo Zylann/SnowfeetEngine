@@ -3,8 +3,8 @@
 
 #include <core/scene/Entity3D.hpp>
 #include <core/util/SharedRef.hpp>
-//#include <mods/render/cpp/Mesh.hpp>
-#include "../Mesh.hpp"
+#include <core/asset/base/Mesh.hpp>
+
 #include "../Material.hpp"
 
 namespace sn {

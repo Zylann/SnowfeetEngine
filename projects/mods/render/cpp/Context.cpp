@@ -14,6 +14,20 @@ namespace render {
 //}
 
 //------------------------------------------------------------------------------
+GLenum genericPrimitiveTypeToGL(MeshPrimitiveType pt)
+{
+    switch (pt)
+    {
+    case SN_MESH_POINTS: return GL_POINTS;
+    case SN_MESH_LINES: return GL_LINES;
+    case SN_MESH_TRIANGLES: return GL_TRIANGLES;
+    default:
+        SN_WARNING("Invalid state");
+        return GL_LINES;
+    }
+}
+
+//------------------------------------------------------------------------------
 Context::Context(Window & owner, ContextSettings settings) :
     m_impl(nullptr),
     r_window(&owner),
@@ -70,6 +84,8 @@ void Context::drawMesh(const Mesh & mesh)
         glCheck(glEnableVertexAttribArray(1));
     }
 
+    GLenum primitiveType = genericPrimitiveTypeToGL(mesh.getInternalPrimitiveType());
+
     // UV
     if (!mesh.getUV().empty())
     {
@@ -81,7 +97,7 @@ void Context::drawMesh(const Mesh & mesh)
     {
         // Draw without indices
         glCheck(glDrawArrays(
-            mesh.getInternalPrimitiveType(), 
+            primitiveType,
             0, mesh.getVertices().size()
         ));
     }
@@ -89,7 +105,7 @@ void Context::drawMesh(const Mesh & mesh)
     {
         // Draw with indices
         glCheck(glDrawElements(
-            mesh.getInternalPrimitiveType(), 
+            primitiveType,
             mesh.getIndices().size(),
             GL_UNSIGNED_INT, 
             &mesh.getIndices()[0]

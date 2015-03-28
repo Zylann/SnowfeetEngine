@@ -10,6 +10,7 @@ This file is part of the SnowfeetEngine project.
 #include "Module.hpp"
 #include "Application.hpp"
 
+#include "../asset/AssetDatabase.hpp"
 #include "../util/stringutils.hpp"
 #include "../util/Exception.hpp"
 #include "../system/file/filesystem.hpp"
@@ -146,6 +147,9 @@ bool Module::loadNativeBindings(ScriptManager & scriptEngine)
         }
     }
 
+    // Register asset loaders
+    AssetDatabase::get().addLoadersFromModule(m_info.name);
+
     otb.endModule();
     return success;
 }
@@ -181,6 +185,9 @@ void Module::unloadNativeBindings()
             }
         }
     }
+
+    // Unload asset loaders
+    AssetDatabase::get().releaseLoadersFromModule(m_info.name);
 
     // Unload reflection if any
     ObjectTypeDatabase::get().unregisterModule(m_info.name);

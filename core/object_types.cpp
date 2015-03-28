@@ -12,21 +12,30 @@
 #include "scene/helpers/Rotate.hpp"
 
 #include "asset/Asset.hpp"
+#include "asset/AssetLoader.hpp"
+#include "asset/base/Mesh.hpp"
 
 namespace sn
 {
 
 void registerObjectTypes(ObjectTypeDatabase & otb)
 {
+    // Base
     otb.registerType<Object>();
     otb.registerType<ScriptObject>();
 
+    // Entities
     otb.registerType<Entity>();
     otb.registerType<Entity3D>();
     otb.registerType<Scene>();
     otb.registerType<Rotate>();
 
+    // Assets base
     otb.registerType<Asset>();
+    otb.registerType<AssetLoader>();
+
+    // Assets
+    otb.registerType<Mesh>();
 
 }
 
