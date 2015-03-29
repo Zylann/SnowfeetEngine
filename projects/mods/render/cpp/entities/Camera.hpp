@@ -4,6 +4,7 @@
 #include <core/scene/Entity3D.hpp>
 #include <core/math/Vector2.hpp>
 #include <core/util/WeakRef.hpp>
+#include <core/asset/base/Mesh.hpp>
 
 #include "../Material.hpp"
 #include "../RenderTexture.hpp"
