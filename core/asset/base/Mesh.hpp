@@ -10,6 +10,7 @@ This file is part of the SnowfeetEngine project.
 #include <core/math/Vector2.hpp>
 #include <core/math/Vector3.hpp>
 #include <core/math/Color.hpp>
+#include <core/math/Area.hpp>
 #include <core/asset/Asset.hpp>
 #include <vector>
 
@@ -63,6 +64,9 @@ public:
     void setTriangleIndices(const u32 * indices, u32 count);
 
     void recalculateIndexes();
+    void recalculateBounds();
+
+    FloatAABB getBounds();
 
     //static u32 calculateIndicesCount(MeshPrimitiveType primitive, u32 vertexCount);
 
@@ -98,6 +102,9 @@ private:
     std::vector< std::vector<f32> > m_customFloats;
 
     std::vector<u32> m_indices;
+
+    FloatAABB m_bounds;
+
 };
 
 std::string toString(MeshPrimitiveType pt);

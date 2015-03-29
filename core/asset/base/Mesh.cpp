@@ -1,7 +1,8 @@
 ﻿#include <core/util/stringutils.hpp>
 #include "Mesh.hpp"
 
-namespace sn {
+namespace sn
+{
 
 //------------------------------------------------------------------------------
 std::string toString(MeshPrimitiveType pt)
@@ -248,6 +249,41 @@ void Mesh::setTriangleIndices(const u32 * indices, u32 count)
     m_indices.resize(count);
     if (count)
         memcpy(&m_indices[0], indices, count * sizeof(u32));
+}
+
+//------------------------------------------------------------------------------
+void Mesh::recalculateBounds()
+{
+    if (!m_vertices.empty())
+    {
+        Vector3f min = m_vertices[0];
+        Vector3f max = min;
+
+        for (u32 i = 0; i < m_vertices.size(); ++i)
+        {
+            Vector3f v = m_vertices[i];
+            for (u32 i = 0; i < 3; ++i)
+            {
+                if (v[i] < min[i])
+                    min[i] = v[i];
+                if (v[i] > max[i])
+                    max[i] = v[i];
+            }
+        }
+
+        m_bounds = FloatAABB::fromMinMax(min.x(), min.y(), min.z(), max.x(), max.y(), max.z());
+    }
+    else
+    {
+        m_bounds.origin() = Vector3f(0, 0, 0);
+        m_bounds.size() = Vector3f(0, 0, 0);
+    }
+}
+
+//------------------------------------------------------------------------------
+FloatAABB Mesh::getBounds()
+{
+    return m_bounds;
 }
 
 } // namespace sn
