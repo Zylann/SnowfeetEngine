@@ -18,18 +18,6 @@ std::string toString(MeshPrimitiveType pt)
 }
 
 //------------------------------------------------------------------------------
-bool Mesh::canLoad(const AssetMetadata & metadata) const
-{
-    return false;
-}
-
-//------------------------------------------------------------------------------
-bool Mesh::loadFromStream(std::ifstream & ifs)
-{
-    return false;
-}
-
-//------------------------------------------------------------------------------
 void Mesh::clear()
 {
     m_vertices.clear();

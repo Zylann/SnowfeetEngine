@@ -37,9 +37,6 @@ public:
         m_primitiveType(SN_MESH_TRIANGLES)
     {}
 
-    bool canLoad(const AssetMetadata & metadata) const;
-    bool loadFromStream(std::ifstream & ifs);
-
     void clear();
     bool isEmpty() const;
 
