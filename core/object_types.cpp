@@ -14,6 +14,7 @@
 #include "asset/Asset.hpp"
 #include "asset/AssetLoader.hpp"
 #include "asset/base/Mesh.hpp"
+#include "asset/base/Material.hpp"
 
 namespace sn
 {
@@ -33,9 +34,8 @@ void registerObjectTypes(ObjectTypeDatabase & otb)
     // Assets base
     otb.registerType<Asset>();
     otb.registerType<AssetLoader>();
-
-    // Assets
     otb.registerType<Mesh>();
+    otb.registerType<Material>();
 
 }
 

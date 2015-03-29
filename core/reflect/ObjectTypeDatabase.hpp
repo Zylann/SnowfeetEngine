@@ -19,6 +19,7 @@ typedef std::unordered_map<std::string, ObjectType*> ObjectTypeMap;
 
 /// \brief Singleton class that allows the creation of objects from their name or ID.
 /// It can be used for native serialization and basic reflection.
+/// Type information is generally read-only.
 /// \warning Not thread-safe yet.
 class SN_API ObjectTypeDatabase
 {

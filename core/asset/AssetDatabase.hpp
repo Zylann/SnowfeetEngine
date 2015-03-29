@@ -63,8 +63,8 @@ public:
     void loadAssets(const ModuleInfo & modInfo);
 
     // Gets an asset. If it returns null, the asset may not be loadable or has not been registered.
-    Asset * getAsset(const std::string & moduleName, const std::string & type, const std::string & name);
-    Asset * getAsset(const AssetLocation & loc, const std::string & type);
+    Asset * getAsset(const std::string & moduleName, const ObjectType & type, const std::string & name);
+    Asset * getAsset(const AssetLocation & loc, const std::string & typeName);
 
     /// \brief Releases all assets contained in the database.
     /// \note Ownership is released. If you still strong-reference an asset somewhere else, it won't be destroyed!
@@ -80,7 +80,7 @@ public:
     Asset_T * getAsset(const std::string & moduleName, const std::string & name)
     {
         // Note: use SN_ASSET in your asset class
-        Asset * a = getAsset(moduleName, Asset_T::__sGetClassName(), name);
+        Asset * a = getAsset(moduleName, Asset_T::__sGetObjectType(), name);
         if (a)
             return checked_cast<Asset_T*>(a);
         else
@@ -112,16 +112,19 @@ private:
 
 private:
 
+    // Note: "baseTypeName" and "instanceTypeName" should not be mixed up here.
+    // See AssetLoader for explanation.
+
     /// \brief Top directory where assets are located (usually the "projects" directory)
     String m_root;
 
-    /// \brief [loaderModule][assetTypeName] => loader
+    /// \brief [loaderModule][assetInstanceTypeName] => loader
     std::unordered_map<std::string, std::unordered_map<std::string, AssetLoader*> > m_loaders;
 
     /// \brief [path] => asset
     std::unordered_map<String, Asset*> m_fileCache;
 
-    /// \brief [moduleName][typeName][name] => asset
+    /// \brief [moduleName][baseTypeName][name] => asset
     /// \note The moduleName corresponds to the location of the asset, not its type.
     std::unordered_map< std::string, std::unordered_map< std::string, std::unordered_map<std::string, Asset*> > > m_assets;
 

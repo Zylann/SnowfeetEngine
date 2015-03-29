@@ -8,7 +8,7 @@
 namespace sn {
 namespace render {
 
-const ObjectType & BasicMeshLoader::getAssetType() const
+const ObjectType & BasicMeshLoader::getBaseAssetType() const
 {
     return Mesh::__sGetObjectType();
 }

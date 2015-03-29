@@ -115,6 +115,12 @@ void ObjectType::getChildrenTypes(std::vector<const ObjectType*> & out_children)
 }
 
 //------------------------------------------------------------------------------
+const ObjectType * ObjectType::getBase() const
+{
+    return ObjectTypeDatabase::get().getType(m_baseName);
+}
+
+//------------------------------------------------------------------------------
 bool operator==(const ObjectType & a, const ObjectType & b)
 {
 	// TODO Compare modules too?

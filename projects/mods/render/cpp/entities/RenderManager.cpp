@@ -312,7 +312,7 @@ void RenderManager::renderCamera(Camera & camera)
 
                 // No projection, no modelview. Everything is [-1, 1].
 
-                material.setParam("u_MainTexture", sourceBuffer);
+                material.setTexture("u_MainTexture", sourceBuffer);
                 material.apply();
             }
 

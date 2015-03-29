@@ -10,6 +10,7 @@
 #include "entities/Drawable.hpp"
 
 #include "loaders/BasicMeshLoader.hpp"
+#include "loaders/MaterialLoader.hpp"
 
 #include "sq_binding/sq_render.hpp"
 
@@ -32,6 +33,7 @@ namespace render {
 
         // Loaders
         otb.registerType<BasicMeshLoader>();
+        otb.registerType<MaterialLoader>();
     }
 
 } // namespace render

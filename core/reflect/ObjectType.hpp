@@ -86,6 +86,10 @@ public:
 	inline const std::string & getBaseName() const { return m_baseName; }
 	inline const std::string & getModuleName() const { return m_moduleName; }
 
+    /// \brief Gets the base type of this one.
+    /// \return Base type, or nullptr if there is none.
+    const ObjectType * getBase() const;
+
 	void getChildrenTypes(std::vector<const ObjectType*> & out_children) const;
 
     std::string toString() const;

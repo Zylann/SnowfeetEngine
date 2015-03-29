@@ -65,12 +65,13 @@ void AssetDatabase::addLoadersFromModule(const std::string & moduleName)
 void AssetDatabase::addLoader(AssetLoader * loader)
 {
     SN_ASSERT(loader != nullptr, "addLoader() received null pointer");
-    
+    SN_ASSERT(loader->getAssetInstanceType().is(loader->getBaseAssetType(), true), "AssetLoader asset types are not compatible!");
+
     const ObjectType & ot = loader->getObjectType();
     auto & loaders = m_loaders[ot.getModuleName()];
 
-    const ObjectType & assetType = loader->getAssetType();
-    SN_ASSERT(loaders.find(assetType.getName()) == loaders.end(), "Loader registered twice for the same type!");
+    const ObjectType & assetType = loader->getAssetInstanceType();
+    SN_ASSERT(loaders.find(assetType.getName()) == loaders.end(), "Loader registered twice for the same base type!");
     loaders.insert(std::make_pair(assetType.getName(), loader));
 }
 
@@ -129,12 +130,15 @@ const AssetLoader * AssetDatabase::findLoader(const Asset & asset) const
     for (auto modIt = m_loaders.begin(); modIt != m_loaders.end(); ++modIt)
     {
         auto & loaders = modIt->second;
-        const ObjectType & ot = asset.getObjectType();
-        auto it = loaders.find(ot.getName());
+
+        const ObjectType & assetType = asset.getObjectType();
+
+        auto it = loaders.find(assetType.getName());
         if (it != loaders.end())
         {
             return it->second;
         }
+
     }
     return nullptr;
 }
@@ -204,7 +208,7 @@ Asset * AssetDatabase::preloadAsset(const String & path, const std::string & mod
     if (loader)
     {
         // Found a loader, the asset is preloaded
-        const ObjectType & ot = loader->getAssetType();
+        const ObjectType & ot = loader->getAssetInstanceType();
         asset = checked_cast<Asset*>(ot.instantiate());
     }
     else
@@ -223,8 +227,9 @@ Asset * AssetDatabase::preloadAsset(const String & path, const std::string & mod
         // Store in file mapping
         m_fileCache[metadata.path] = asset;
 
-        // Store in asset mapping
-        m_assets[metadata.module][asset->getObjectType().getName()][metadata.name] = asset;
+        // Store in asset mapping using the ObjectType specified by the loader
+        const ObjectType & baseObjectType = loader ? loader->getBaseAssetType() : asset->getObjectType();
+        m_assets[metadata.module][baseObjectType.getName()][metadata.name] = asset;
 
         SN_DLOG("Indexed asset " << toString(path) << "...");
     }
@@ -361,26 +366,52 @@ void AssetDatabase::releaseAssets()
 
 //------------------------------------------------------------------------------
 // Gets an asset. If it returns null, the asset may not have been loaded or is in progress.
-Asset * AssetDatabase::getAsset(const std::string & moduleName, const std::string & type, const std::string & name)
+Asset * AssetDatabase::getAsset(const std::string & moduleName, const ObjectType & type, const std::string & name)
 {
     auto it1 = m_assets.find(moduleName);
     if (it1 != m_assets.end())
     {
-        auto it2 = it1->second.find(type);
-        if (it2 != it1->second.end())
+        // Search the specified type
+        auto it2 = it1->second.find(type.getName());
+
+        // If not found, search for base types
+        const ObjectType * searchType = &type;
+        while (it2 == it1->second.end())
         {
-            auto it3 = it2->second.find(name);
-            if (it3 != it2->second.end())
-                return it3->second;
+            searchType = searchType->getBase();
+            if (searchType)
+            {
+                it2 = it1->second.find(searchType->getName());
+            }
+            else
+            {
+                // No more base types and nothing found
+                return nullptr;
+                // TODO Stop at Asset?
+            }
+        }
+
+        // Find the asset by name in the container
+        auto it3 = it2->second.find(name);
+        if (it3 != it2->second.end())
+        {
+            // Found
+            return it3->second;
         }
     }
+
+    // Not found
     return nullptr;
 }
 
 //------------------------------------------------------------------------------
-Asset * AssetDatabase::getAsset(const AssetLocation & loc, const std::string & type)
+Asset * AssetDatabase::getAsset(const AssetLocation & loc, const std::string & typeName)
 {
-    return getAsset(loc.module, type, loc.name);
+    const ObjectType * ot = ObjectTypeDatabase::get().getType(typeName);
+    if (ot)
+        return getAsset(loc.module, *ot, loc.name);
+    else
+        return nullptr;
 }
 
 //------------------------------------------------------------------------------
