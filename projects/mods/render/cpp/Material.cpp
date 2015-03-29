@@ -66,19 +66,26 @@ bool Material::loadFromStream(std::ifstream & ifs)
             else if (v.isArray())
             {
                 auto & a = it->second.getArray();
-                if (a.size() == 4)
+                if (a.size() == 2)
+                {
+                    f32 x = sn::unserializeFloat(v[(size_t)0]);
+                    f32 y = sn::unserializeFloat(v[1]);
+                    setParam(it->first, x, y);
+                }
+                else if (a.size() == 3)
+                {
+                    f32 x = sn::unserializeFloat(v[(size_t)0]);
+                    f32 y = sn::unserializeFloat(v[1]);
+                    f32 z = sn::unserializeFloat(v[2]);
+                    setParam(it->first, x, y, z);
+                }
+                else if (a.size() == 4)
                 {
                     f32 x = sn::unserializeFloat(v[(size_t)0]);
                     f32 y = sn::unserializeFloat(v[1]);
                     f32 z = sn::unserializeFloat(v[2]);
                     f32 w = sn::unserializeFloat(v[3]);
                     setParam(it->first, x, y, z, w);
-                }
-                else if (a.size() == 2)
-                {
-                    f32 x = sn::unserializeFloat(v[(size_t)0]);
-                    f32 y = sn::unserializeFloat(v[1]);
-                    setParam(it->first, x, y);
                 }
                 // ...
             }
@@ -122,6 +129,12 @@ void Material::setParam(const std::string & name, f32 x)
 void Material::setParam(const std::string & name, f32 x, f32 y)
 {
     m_vec2[name] = Vector2f(x, y);
+}
+
+//------------------------------------------------------------------------------
+void Material::setParam(const std::string & name, f32 x, f32 y, f32 z)
+{
+    m_vec3[name] = Vector3f(x, y, z);
 }
 
 //------------------------------------------------------------------------------

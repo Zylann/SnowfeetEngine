@@ -44,6 +44,7 @@ public:
     void setParam(const std::string & name, RenderTexture * tex);
     void setParam(const std::string & name, f32 x);
     void setParam(const std::string & name, f32 x, f32 y);
+    void setParam(const std::string & name, f32 x, f32 y, f32 z);
     void setParam(const std::string & name, f32 x, f32 y, f32 z, f32 w);
 
     void apply();
@@ -57,6 +58,7 @@ private:
     std::unordered_map<std::string, SharedRef<Texture> > m_textures;
     std::unordered_map<std::string, f32> m_floats;
     std::unordered_map<std::string, Vector2f> m_vec2;
+    std::unordered_map<std::string, Vector3f> m_vec3;
     std::unordered_map<std::string, Vector4f> m_vec4;
 
     bool m_depthTest;
