@@ -38,6 +38,16 @@ public:
 
     static const std::string TAG;
 
+    struct Effect
+    {
+        /// \brief Material used to post-process the image
+        SharedRef<Material> material;
+
+        /// \brief Optional mesh used to distort the image
+        /// \note Initially added to support Oculus Rift mesh-based distortion
+        SharedRef<Mesh> mesh;
+    };
+
     Camera():
         Entity3D(),
         m_isOrtho(false),
@@ -102,10 +112,10 @@ public:
     //void setVisibilityMask(u32 mask);
 
     // TODO This is a temporary API, it might change in the future!
-    void addEffect(Material * effectMaterial);
+    void addEffect(Material * effectMaterial, Mesh * mesh=nullptr);
     u32 getEffectCount() const { return m_effects.size(); }
     RenderTexture * getEffectBuffer(u32 i) const { return m_effectBuffers[i]; }
-    Material * getEffectMaterial(u32 i) const { return m_effects[i].get(); }
+    const Effect & getEffect(u32 i) const { return m_effects[i]; }
 
     //-----------------------------------------
     // Event handlers
@@ -150,7 +160,7 @@ private:
 
     static const u32 EFFECT_BUFFERS_COUNT = 2;
 
-    std::vector< SharedRef<Material> > m_effects;
+    std::vector<Effect> m_effects;
     RenderTexture * m_effectBuffers[EFFECT_BUFFERS_COUNT];
 
 };

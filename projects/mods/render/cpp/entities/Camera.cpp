@@ -213,10 +213,13 @@ void Camera::onReady()
 }
 
 //------------------------------------------------------------------------------
-void Camera::addEffect(Material * effectMaterial)
+void Camera::addEffect(Material * effectMaterial, Mesh * mesh)
 {
     updateEffectBuffers();
-    m_effects.push_back(SharedRef<Material>(effectMaterial));
+    m_effects.push_back(Effect());
+    Effect & effect = m_effects.back();
+    effect.material.set(effectMaterial);
+    effect.mesh.set(mesh);
 }
 
 //------------------------------------------------------------------------------
@@ -310,6 +313,16 @@ void Camera::unserializeState(JsonBox::Value & o, const SerializationContext & c
                 else
                 {
                     SN_ERROR("Effect material not found: '" << effects[i].getString() << "'");
+                }
+            }
+            else if (effects[i].isObject())
+            {
+                JsonBox::Value & o = effects[i];
+                Material * mat = getAssetBySerializedLocation<Material>(o["material"].getString(), context.getModule(), this);
+                Mesh * mesh = getAssetBySerializedLocation<Mesh>(o["mesh"].getString(), context.getModule(), this);
+                if (mat)
+                {
+                    addEffect(mat, mesh);
                 }
             }
             else

@@ -260,7 +260,7 @@ void RenderManager::renderCamera(Camera & camera)
     // If the camera has effects
     if (camera.getEffectCount() > 0)
     {
-        // Create the quad on which we'll render images
+        // Create the default quad on which we'll render images
 
         Mesh * quad = new Mesh();
 
@@ -303,7 +303,8 @@ void RenderManager::renderCamera(Camera & camera)
             }
 
             // Apply effect material
-            Material & material = *camera.getEffectMaterial(i);
+            const Camera::Effect & effect = camera.getEffect(i);
+            Material & material = *effect.material.get();
             if (material.getShader())
             {
                 ShaderProgram * shader = material.getShader();
@@ -315,8 +316,12 @@ void RenderManager::renderCamera(Camera & camera)
                 material.apply();
             }
 
+            Mesh * effectMesh = effect.mesh.get();
+            if (effectMesh == nullptr)
+                effectMesh = quad;
+
             // Draw
-            m_context->drawMesh(*quad);
+            m_context->drawMesh(*effectMesh);
 
             m_context->useProgram(nullptr);
         }
