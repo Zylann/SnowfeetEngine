@@ -43,6 +43,17 @@ void HeadTracker::onReady()
     {
         ovrHmd_ConfigureTracking(m_hmd, ovrTrackingCap_Orientation | ovrTrackingCap_MagYawCorrection | ovrTrackingCap_Position, 0);
         setUpdatable(true);
+
+        // Get eye distortion meshes
+
+        Mesh * leftEyeDistortion = new Mesh();
+        Mesh * rightEyeDistortion = new Mesh();
+
+        makeDistortionMesh(*leftEyeDistortion, 0);
+        makeDistortionMesh(*leftEyeDistortion, 1);
+
+        m_eyeDistortionMeshes[0].set(leftEyeDistortion);
+        m_eyeDistortionMeshes[1].set(rightEyeDistortion);
     }
     else
     {
@@ -57,6 +68,12 @@ void HeadTracker::onReady()
     }
 
     m_isFirstUpdate = true;
+}
+
+const Mesh * HeadTracker::getEyeDistortionMesh(u32 eyeIndex)
+{
+    SN_ASSERT(eyeIndex == 0 || eyeIndex == 1, "Invalid eye index");
+    return m_eyeDistortionMeshes[eyeIndex].get();
 }
 
 void HeadTracker::onUpdate()
@@ -92,6 +109,57 @@ void HeadTracker::onUpdate()
         ovrHmd_EndFrameTiming(m_hmd);
         ovrHmd_BeginFrameTiming(m_hmd, 0);
     }
+}
+
+void HeadTracker::makeDistortionMesh(Mesh & out_mesh, u32 agnosticEyeType)
+{
+    ovrEyeType eye = (agnosticEyeType == 1 ? ovrEye_Right : ovrEye_Left);
+    ovrEyeRenderDesc eyeDesc = ovrHmd_GetRenderDesc(m_hmd, eye, m_hmd->DefaultEyeFov[eye]);
+
+    ovrDistortionMesh meshData;
+    float overrideEyeOffset = 0.f;
+
+    ovrHmd_CreateDistortionMesh(m_hmd, eye, eyeDesc.Fov, ovrDistortionCap_Chromatic | ovrDistortionCap_TimeWarp, &meshData);
+
+    // Note: we cannot use direct pointers here because data types have not the same size,
+    // And are not layout in arrays but in structures
+
+    std::vector<u32> indices(meshData.IndexCount);
+    std::vector<Vector3f> positions(meshData.VertexCount);
+    std::vector<f32> timeWarpFactor(meshData.VertexCount);
+    std::vector<f32> vignetteFactor(meshData.VertexCount);
+    std::vector<Vector2f> tanEyeAnglesR(meshData.VertexCount);
+    std::vector<Vector2f> tanEyeAnglesG(meshData.VertexCount);
+    std::vector<Vector2f> tanEyeAnglesB(meshData.VertexCount);
+
+    for (u32 i = 0; i < indices.size(); ++i)
+    {
+        indices[i] = meshData.pIndexData[i];
+    }
+
+    for (u32 i = 0; i < meshData.VertexCount; ++i)
+    {
+        const ovrDistortionVertex & v = meshData.pVertexData[i];
+
+        positions[i] = Vector3f(v.ScreenPosNDC.x, v.ScreenPosNDC.y, 0);
+        timeWarpFactor[i] = v.TimeWarpFactor;
+        vignetteFactor[i] = v.VignetteFactor;
+        tanEyeAnglesR[i] = Vector2f(v.TanEyeAnglesR.x, v.TanEyeAnglesR.y);
+        tanEyeAnglesG[i] = Vector2f(v.TanEyeAnglesG.x, v.TanEyeAnglesG.y);
+        tanEyeAnglesB[i] = Vector2f(v.TanEyeAnglesB.x, v.TanEyeAnglesB.y);
+    }
+
+    ovrHmd_DestroyDistortionMesh(&meshData);
+
+    out_mesh.clear();
+    out_mesh.setPositions(&positions[0], positions.size());
+    out_mesh.setCustomFloats(0, &timeWarpFactor[0], timeWarpFactor.size());
+    out_mesh.setCustomFloats(1, &timeWarpFactor[0], timeWarpFactor.size());
+    //out_mesh.setCustomVec2Buffer(0, &tanEyeAnglesR[0], tanEyeAnglesR.size());
+    //out_mesh.setCustomVec2Buffer(1, &tanEyeAnglesG[0], tanEyeAnglesG.size());
+    //out_mesh.setCustomVec2Buffer(2, &tanEyeAnglesB[0], tanEyeAnglesB.size());
+    out_mesh.setTriangleIndices(&indices[0], indices.size());
+
 }
 
 } // namespace oculus
