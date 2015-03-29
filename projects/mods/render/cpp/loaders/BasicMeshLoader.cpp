@@ -23,7 +23,9 @@ bool BasicMeshLoader::load(std::ifstream & ifs, Asset & asset) const
 {
     Mesh * mesh = checked_cast<Mesh*>(&asset);
     PLYLoader loader(ifs);
-    return loader.loadMesh(*mesh);
+    bool success = loader.loadMesh(*mesh);
+    mesh->recalculateBounds();
+    return success;
 }
 
 } // namespace render
