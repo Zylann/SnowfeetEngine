@@ -73,6 +73,8 @@ void Context::drawMesh(const Mesh & mesh)
     // TODO this is immediate draw, data is sent everytime.
     // We should support VBO too.
 
+    // TODO Refactor Mesh data description so we can avoid lots of copy/paste and hardcodings
+
     // Positions
     glCheck(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, &mesh.getVertices()[0]));
     glCheck(glEnableVertexAttribArray(0));
@@ -111,6 +113,24 @@ void Context::drawMesh(const Mesh & mesh)
         }
     }
 
+    std::vector<u32> vec2BufferIDs;
+    auto & vec2Buffers = mesh.getCustomVec2Buffers();
+    if (!vec2Buffers.empty())
+    {
+        u32 vec2BufferIDStart = 10;
+        for (u32 i = 0; i < vec2Buffers.size(); ++i)
+        {
+            auto & vec2Buffer = vec2Buffers[i];
+            if (!vec2Buffer.empty())
+            {
+                u32 id = vec2BufferIDStart + i;
+                glCheck(glVertexAttribPointer(id, 2, GL_FLOAT, GL_FALSE, 0, &vec2Buffer[0]));
+                glCheck(glEnableVertexAttribArray(id));
+                vec2BufferIDs.push_back(id);
+            }
+        }
+    }
+
     if (mesh.getIndices().empty())
     {
         // Draw without indices
@@ -129,6 +149,9 @@ void Context::drawMesh(const Mesh & mesh)
             &mesh.getIndices()[0]
         ));
     }
+
+    for (auto it = vec2BufferIDs.begin(); it != vec2BufferIDs.end(); ++it)
+        glCheck(glDisableVertexAttribArray(*it));
 
     for (auto it = floatBufferIDs.begin(); it != floatBufferIDs.end(); ++it)
         glCheck(glDisableVertexAttribArray(*it));
