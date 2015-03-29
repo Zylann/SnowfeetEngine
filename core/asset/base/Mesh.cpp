@@ -208,6 +208,18 @@ void Mesh::setCustomFloats(u32 i, const f32 * fdata, u32 count)
 }
 
 //------------------------------------------------------------------------------
+void Mesh::setCustomVec2Buffer(u32 i, const Vector2f * values, u32 count)
+{
+    SN_ASSERT(values != nullptr, "Invalid custom vec2 buffer pointer");
+    if (i >= m_customVec2Buffers.size())
+        m_customVec2Buffers.resize(i + 1);
+    auto & buffer = m_customVec2Buffers[i];
+    buffer.resize(count);
+    if (count)
+        memcpy(&buffer[0], values, sizeof(Vector2f)*count);
+}
+
+//------------------------------------------------------------------------------
 void Mesh::setQuadIndices(const u32 * indices, u32 count)
 {
     SN_ASSERT(indices != nullptr, "Invalid indices pointer");

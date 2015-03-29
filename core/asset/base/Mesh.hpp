@@ -56,6 +56,7 @@ public:
     void setColors(const Color * colors, u32 count);
     void setUV(const Vector2f * uv, u32 count);
     void setCustomFloats(u32 i, const f32 * fdata, u32 count);
+    void setCustomVec2Buffer(u32 i, const Vector2f * values, u32 count);
 
     void setQuadIndices(const u32 * indices, u32 count);
     void setTriangleIndices(const u32 * indices, u32 count);
@@ -74,6 +75,7 @@ public:
     inline const std::vector<u32> & getIndices() const { return m_indices; }
 
     inline const std::vector< std::vector<f32> > & getCustomFloats() const { return m_customFloats; }
+    inline const std::vector< std::vector<Vector2f> > & getCustomVec2Buffers() const { return m_customVec2Buffers; }
 
 //private:
 //
@@ -97,6 +99,7 @@ private:
     std::vector<Color> m_colors;
 
     std::vector< std::vector<f32> > m_customFloats;
+    std::vector< std::vector<Vector2f> > m_customVec2Buffers;
 
     std::vector<u32> m_indices;
 
