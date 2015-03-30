@@ -175,6 +175,7 @@ int Application::executeEx()
     // Release assets
     SN_LOG("Releasing assets...");
     AssetDatabase::get().releaseAssets();
+    AssetDatabase::get().releaseLoaders();
 
     // Destroy all remaining entities
     SN_LOG("Destroying services...");
