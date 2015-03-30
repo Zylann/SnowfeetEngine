@@ -6,6 +6,7 @@
 
 #include <core/scene/Entity.hpp>
 #include <core/asset/base/Mesh.hpp>
+#include <core/asset/base/Material.hpp>
 #include <core/util/SharedRef.hpp>
 
 namespace sn {
@@ -37,6 +38,9 @@ private:
     ovrFrameTiming m_frameTiming;
     bool m_isFirstUpdate;
     SharedRef<Mesh> m_eyeDistortionMeshes[2];
+    SharedRef<Material> m_eyeMaterials[2];
+    ovrEyeRenderDesc m_eyeDesc[2];
+    f32 m_lastYaw;
 
 };
 
