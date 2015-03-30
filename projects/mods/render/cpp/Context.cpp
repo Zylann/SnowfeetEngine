@@ -95,6 +95,13 @@ void Context::drawMesh(const Mesh & mesh)
         glCheck(glEnableVertexAttribArray(2));
     }
 
+    // Normals
+    if (!mesh.getNormals().empty())
+    {
+        glCheck(glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 0, &mesh.getNormals()[0]));
+        glCheck(glEnableVertexAttribArray(3));
+    }
+
     std::vector<u32> floatBufferIDs;
     auto & floatBuffers = mesh.getCustomFloats();
     if (!floatBuffers.empty())
@@ -145,7 +152,7 @@ void Context::drawMesh(const Mesh & mesh)
         glCheck(glDrawElements(
             primitiveType,
             mesh.getIndices().size(),
-            GL_UNSIGNED_INT, 
+            GL_UNSIGNED_INT,
             &mesh.getIndices()[0]
         ));
     }
@@ -155,6 +162,9 @@ void Context::drawMesh(const Mesh & mesh)
 
     for (auto it = floatBufferIDs.begin(); it != floatBufferIDs.end(); ++it)
         glCheck(glDisableVertexAttribArray(*it));
+
+    if (!mesh.getNormals().empty())
+        glCheck(glDisableVertexAttribArray(3));
 
     if (!mesh.getUV().empty())
         glCheck(glDisableVertexAttribArray(2));
