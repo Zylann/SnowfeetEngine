@@ -42,7 +42,7 @@ bool ScriptInstance::create(const std::string & name)
         // Get table
         if (SQ_FAILED(sq_get(vm, -1)))
         {
-            sq_pop(vm, -1); // Pop root table
+            sq_pop(vm, 1); // Pop root table
             SN_ERROR("Squirrel class not found: '" << name << "'");
             return false;
         }
@@ -55,7 +55,7 @@ bool ScriptInstance::create(const std::string & name)
     // Get the class
     if (SQ_FAILED(sq_get(vm, -2))) // -2 because it's like we do roottable."className"
     {
-        sq_pop(vm, -1);
+        sq_pop(vm, 1);
         SN_ERROR("Squirrel class not found: '" << name << "'");
         return false;
     }
@@ -64,7 +64,7 @@ bool ScriptInstance::create(const std::string & name)
     sq_pushroottable(vm); // this
     if (SQ_FAILED(sq_call(vm, 1, SQTrue, SQTrue)))
     {
-        sq_pop(vm, -1);
+        sq_pop(vm, 1);
         SN_ERROR("Squirrel class instantiation raised an error");
         return false;
     }
@@ -73,9 +73,10 @@ bool ScriptInstance::create(const std::string & name)
     sq_getstackobj(vm, -1, &m_sqObject);
     sq_addref(vm, &m_sqObject);
 
-    sqDebugStackDump(vm);
+    // Pops instance, class and roottable
+    sq_pop(vm, 3);
 
-    return false;
+    return true;
 }
 
 bool ScriptInstance::isNull() const
