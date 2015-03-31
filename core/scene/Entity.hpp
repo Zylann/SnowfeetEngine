@@ -11,6 +11,7 @@ This file is part of the SnowfeetEngine project.
 #include <core/json/json_utils.hpp>
 #include <core/app/ScriptObject.hpp>
 #include <core/system/gui/Event.hpp>
+#include <core/scene/ScriptInstance.hpp>
 #include <core/asset/SerializationContext.hpp>
 
 #include <vector>
@@ -166,6 +167,8 @@ private:
     Entity * r_parent; // Not owned by the entity
     mutable Scene * r_scene; // Not owned by the entity
     std::unordered_set<std::string> m_tags;
+    ScriptInstance m_script;
+
 };
 
 } // namespace sn

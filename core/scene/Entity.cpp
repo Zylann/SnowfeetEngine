@@ -482,6 +482,16 @@ void Entity::unserializeState(JsonBox::Value & o, const SerializationContext & c
         scene->registerTaggedEntity(*this, *it);
     }
 
+    auto & scripts = o["scripts"];
+    if (scripts.isArray())
+    {
+        std::string classPath = scripts[(size_t)0].getString();
+        if (!classPath.empty())
+        {
+            m_script.create(classPath);
+        }
+    }
+
     // TODO Unserialize script
 
 }
