@@ -107,13 +107,38 @@ bool ScriptInstance::hasMethod(const std::string & name)
     return false;
 }
 
-bool ScriptInstance::callMethod(
-    const std::string & name,
-    std::vector<Variant> * args,
-    std::vector<Variant> * returnValues)
+bool ScriptInstance::callMethod(const std::string & methodName)
 {
-    // TODO
-    return false;
+    if (isNull())
+        return false;
+
+    auto vm = getVM();
+
+    sq_pushobject(vm, m_sqObject);
+    sq_pushstring(vm, methodName.c_str(), methodName.size());
+
+    // Get the method
+    if (SQ_FAILED(sq_get(vm, -2)))
+    {
+        sq_pop(vm, -1);
+        return false;
+    }
+
+    // Push this
+    sq_pushobject(vm, m_sqObject);
+
+    // Call the method
+    if (SQ_FAILED(sq_call(vm, 1, SQFalse, SQTrue)))
+    {
+        sq_pop(vm, -1);
+        SN_ERROR("Squirrel error on method call");
+        return false;
+    }
+
+    // Pop the function and the roottable
+    sq_pop(vm, 2);
+
+    return true;
 }
 
 } // namespace sn

@@ -25,11 +25,7 @@ public:
 
     bool hasMethod(const std::string & name);
 
-    bool callMethod(
-        const std::string & name,
-        std::vector<Variant> * args = nullptr,
-        std::vector<Variant> * returnValues = nullptr
-    );
+    bool callMethod(const std::string & methodName);
 
 private:
     HSQUIRRELVM getVM() const;
