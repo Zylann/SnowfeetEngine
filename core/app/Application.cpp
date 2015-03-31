@@ -164,6 +164,15 @@ int Application::executeEx()
         }
 
         m_timeStepper.onEndFrame();
+
+#ifdef SN_BUILD_DEBUG
+        // Quit if no window allow us to do so... (useful to debug app close at the moment, might be removed in server apps)
+        if (SystemGUI::get().getWindowCount() == 0)
+        {
+            SN_DLOG("[DEBUG] No window open, let's quit...");
+            m_runFlag = false;
+        }
+#endif
     }
 
     SN_LOG("Exiting main loop");
