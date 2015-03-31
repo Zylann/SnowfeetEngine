@@ -9,11 +9,17 @@ This file is part of the SnowfeetEngine project.
 #include "../util/stringutils.hpp"
 #include "../util/Exception.hpp"
 #include "../scene/sq_binding/sq_scene.hpp"
-
 //#include "../math/as_binding/as_math.hpp"
 //#include "../system/console/as_binding/as_console.hpp"
 
 #include <stdarg.h>
+#include <stdio.h>
+
+//#ifdef SQUNICODE 
+//#define scvsprintf vwsprintf 
+//#else 
+//#define scvsprintf vsprintf 
+//#endif 
 
 namespace sn
 {
@@ -60,22 +66,30 @@ namespace sn
 //    sn::Log::get().print(SN_LTM_ERROR, msg);
 //}
 
+//------------------------------------------------------------------------------
 void sqPrintfunc(HSQUIRRELVM v, const SQChar *s, ...)
 {
-	va_list vl;
-	va_start(vl, s);
-    SN_LOG(s);
-	//scvprintf(stdout, s, vl);
-	va_end(vl);
+    char buffer[2048];
+    va_list vl;
+    va_start(vl, s);
+    vsprintf(buffer, s, vl);
+    //printf(s, vl);
+    //scvprintf(s, vl);
+    va_end(vl);
+    SN_LOG(buffer);
 }
 
+//------------------------------------------------------------------------------
 void sqErrorfunc(HSQUIRRELVM v, const SQChar *s, ...)
 {
-	va_list vl;
+    char buffer[2048];
+    va_list vl;
 	va_start(vl, s);
-    SN_LOG(s);
-	//scvprintf(stderr, s, vl);
+    vsprintf(buffer, s, vl);
+    //printf(s, vl);
+	//scvprintf(s, vl);
 	va_end(vl);
+    SN_ERROR(buffer);
 }
 
 //==============================================================================
