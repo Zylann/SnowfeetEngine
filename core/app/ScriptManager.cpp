@@ -9,8 +9,6 @@ This file is part of the SnowfeetEngine project.
 #include "../util/stringutils.hpp"
 #include "../util/Exception.hpp"
 #include "../scene/sq_binding/sq_scene.hpp"
-//#include "../math/as_binding/as_math.hpp"
-//#include "../system/console/as_binding/as_console.hpp"
 
 #include <stdarg.h>
 #include <stdio.h>
@@ -23,48 +21,6 @@ This file is part of the SnowfeetEngine project.
 
 namespace sn
 {
-
-//------------------------------------------------------------------------------
-//void asCheck(int returnCode)
-//{
-//    SN_ASSERT(returnCode >= 0, "An internal AngelScript error occurred. Code: " << returnCode);
-//}
-
-//------------------------------------------------------------------------------
-// Implement a simple message callback function
-//void asMessageCallback(const asSMessageInfo *msg, void *param)
-//{
-//    std::stringstream ss;
-//    ss << msg->section << ": (" << msg->row << ", " << msg->col << "): " << msg->message;
-//    std::string s = ss.str();
-//
-//    switch (msg->type)
-//    {
-//    case asMSGTYPE_ERROR:
-//        SN_ERROR(s);
-//        break;
-//
-//    case asMSGTYPE_WARNING:
-//        SN_WARNING(s);
-//        break;
-//
-//    case asMSGTYPE_INFORMATION:
-//        SN_LOG(s);
-//        break;
-//    }
-//}
-
-//------------------------------------------------------------------------------
-//void asPrint(std::string & msg)
-//{
-//    sn::Log::get().print(SN_LTM_DEBUG, msg);
-//}
-
-//------------------------------------------------------------------------------
-//void asPrintError(std::string & msg)
-//{
-//    sn::Log::get().print(SN_LTM_ERROR, msg);
-//}
 
 //------------------------------------------------------------------------------
 void sqPrintfunc(HSQUIRRELVM v, const SQChar *s, ...)
