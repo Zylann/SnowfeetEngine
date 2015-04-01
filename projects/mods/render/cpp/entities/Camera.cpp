@@ -280,20 +280,20 @@ void Camera::unserializeState(JsonBox::Value & o, const SerializationContext & c
 {
     Entity3D::unserializeState(o, context);
 
-    sn::unserialize(o["near"], m_near);
-    sn::unserialize(o["far"], m_far);
-    sn::unserialize(o["isOrtho"], m_isOrtho);
+    sn::unserialize(o["near"], m_near, 0.1f);
+    sn::unserialize(o["far"], m_far, 100.f);
+    sn::unserialize(o["isOrtho"], m_isOrtho, false);
     render::unserialize(o["scaleMode"], m_scaleMode);
-    sn::unserialize(o["fov"], m_fov);
-    sn::unserialize(o["orthoSize"], m_orthoSize);
+    sn::unserialize(o["fov"], m_fov, 70.f);
+    sn::unserialize(o["orthoSize"], m_orthoSize, Vector2f(16,9));
     sn::unserialize(o["drawOrder"], m_drawOrder);
     render::unserialize(o["clearMode"], m_clearMode);
-    sn::unserialize(o["clearColor"], m_clearColor);
+    sn::unserialize(o["clearColor"], m_clearColor, Color());
 
     if (!o["viewport"].isNull())
     {
         FloatRect viewport;
-        sn::unserialize(o["viewport"], viewport);
+        sn::unserialize(o["viewport"], viewport, FloatRect(0,0,1,1));
         setViewport(viewport);
     }
 
