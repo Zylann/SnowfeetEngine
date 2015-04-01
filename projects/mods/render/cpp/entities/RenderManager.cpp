@@ -1,6 +1,7 @@
 #include <core/system/gui/SystemGUI.hpp>
 #include <core/scene/Scene.hpp>
 #include <core/asset/AssetDatabase.hpp> // TODO Remove?
+#include <core/scene/VRHeadset.hpp>
 
 #include "RenderManager.hpp"
 #include "Drawable.hpp"
@@ -260,8 +261,10 @@ void RenderManager::renderCamera(Camera & camera)
     // If the camera has effects
     if (camera.getEffectCount() > 0)
     {
-        // Create the default quad on which we'll render images
+        // TODO Don't leave this here, it should be automated (target textures resizing)
+        camera.updateEffectBuffers();
 
+        // Create the default quad on which we'll render images
         Mesh * quad = new Mesh();
 
         quad->setPrimitiveType(SN_MESH_QUADS);
@@ -302,6 +305,8 @@ void RenderManager::renderCamera(Camera & camera)
                 RenderTexture::bind(targetBuffer);
             }
 
+            m_context->clearColor(sn::Color(0, 0, 0));
+
             // Apply effect material
             const Camera::Effect & effect = camera.getEffect(i);
             Material & material = *effect.material.get();
@@ -310,9 +315,26 @@ void RenderManager::renderCamera(Camera & camera)
                 ShaderProgram * shader = material.getShader();
                 m_context->useProgram(shader);
 
+                material.setTexture("u_MainTexture", sourceBuffer);
+
+                // TODO This code is temporary. A better approach is needed.
+                // VR Support callback
+                if (camera.getParent())
+                {
+                    auto * vr = camera.getParent()->getChild<VRHeadset>();
+                    if (vr && (camera.hasTag(vr->getEyeTag(0)) || camera.hasTag(vr->getEyeTag(1))))
+                    {
+                        vr->onRenderEye(&camera, &material, sourceBuffer->getSize(), viewport);
+                    }
+                }
+
                 // No projection, no modelview. Everything is [-1, 1].
 
-                material.setTexture("u_MainTexture", sourceBuffer);
+                //Vector2u sourceSize = sourceBuffer->getSize();
+
+                //shader->setParam("u_MainTextureSize", sourceSize.x(), sourceSize.y());
+                //shader->setParam("u_TargetViewport", viewport.x(), viewport.y(), viewport.width(), viewport.height());
+
                 material.apply();
             }
 

@@ -133,9 +133,10 @@ public:
     void serializeState(JsonBox::Value & o, const SerializationContext & context) override;
     void unserializeState(JsonBox::Value & o, const SerializationContext & context) override;
 
+    // TODO Don't leave this public, it should be automated (for target textures resizing)
+    void updateEffectBuffers();
 private:
     void updateAspectRatio();
-    void updateEffectBuffers();
 
 private:
     //std::bitset<32> m_cullingMask;

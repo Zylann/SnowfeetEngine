@@ -4,7 +4,7 @@
 #include <OVR.h>
 #include <OVR_CAPI.h>
 
-#include <core/scene/Entity.hpp>
+#include <core/scene/VRHeadset.hpp>
 #include <core/asset/base/Mesh.hpp>
 #include <core/asset/base/Material.hpp>
 #include <core/util/SharedRef.hpp>
@@ -12,16 +12,24 @@
 namespace sn {
 namespace oculus {
 
-class HeadTracker : public sn::Entity
+// TODO Rename Rift
+class HeadTracker : public sn::VRHeadset
 {
 public:
-    SN_ENTITY(sn::oculus::HeadTracker, sn::Entity)
+    SN_ENTITY(sn::oculus::HeadTracker, sn::VRHeadset)
 
     HeadTracker();
 
     void onReady() override;
 
     const Mesh * getEyeDistortionMesh(u32 eyeIndex);
+
+    virtual void onRenderEye(
+        Entity * sender, 
+        Material * effectMaterial, 
+        Vector2u sourceSize, 
+        IntRect targetViewport
+    ) override;
 
     // No special serialization needed at the moment
 

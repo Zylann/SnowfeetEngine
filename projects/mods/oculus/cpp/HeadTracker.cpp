@@ -26,12 +26,13 @@ namespace OVR
 namespace sn {
 namespace oculus {
 
-
 HeadTracker::HeadTracker():
     m_hmd(nullptr),
     m_isFirstUpdate(true),
     m_lastYaw(0)
 {
+    m_eyeTags[0] = "VR_LeftEye";
+    m_eyeTags[1] = "VR_RightEye";
 }
 
 HeadTracker::~HeadTracker()
@@ -119,6 +120,64 @@ const Mesh * HeadTracker::getEyeDistortionMesh(u32 eyeIndex)
     return m_eyeDistortionMeshes[eyeIndex].get();
 }
 
+void HeadTracker::onRenderEye(Entity * sender, Material * effectMaterial, Vector2u sourceSize, IntRect targetViewport)
+{
+    Material * material = effectMaterial;
+    if (material)
+    {
+        ovrTrackingState trackingState = ovrHmd_GetTrackingState(m_hmd, m_frameTiming.ScanoutMidpointSeconds);
+        if (trackingState.StatusFlags & (ovrStatus_OrientationTracked | ovrStatus_PositionTracked))
+        {
+            // Get head pose
+            OVR::Posef pose = trackingState.HeadPose.ThePose;
+            f32 yaw, pitch, roll;
+            pose.Rotation.GetEulerAngles<OVR::Axis_Y, OVR::Axis_X, OVR::Axis_Z>(&yaw, &pitch, &roll);
+
+            // Get eye poses
+            ovrPosef temp_EyeRenderPose[2];
+            ovrVector3f useHmdToEyeViewOffset[2] = {
+                m_eyeDesc[0].HmdToEyeViewOffset,
+                m_eyeDesc[1].HmdToEyeViewOffset
+            };
+            ovrHmd_GetEyePoses(m_hmd, 0, useHmdToEyeViewOffset, temp_EyeRenderPose, NULL);
+
+            // Get current eye index
+            u32 eyeIndex = 0;
+            if (effectMaterial == m_eyeMaterials[1].get())
+                eyeIndex = 1;
+
+            ovrEyeType eye = (eyeIndex == 1 ? ovrEye_Right : ovrEye_Left);
+            const ovrEyeRenderDesc & eyeDesc = m_eyeDesc[eyeIndex];
+
+            // Update UV parameters
+            ovrSizei rtSize = { targetViewport.width(), targetViewport.height() };
+            ovrRecti camViewport = { 0, 0, targetViewport.width(), targetViewport.width() };
+            //ovrRecti camViewport = { 0, 0, targetViewport.width(), targetViewport.height() };
+            ovrVector2f UVScaleOffset[2];
+            ovrHmd_GetRenderScaleAndOffset(eyeDesc.Fov, rtSize, camViewport, UVScaleOffset);
+            material->setParam("u_EyeToSourceUVScale", UVScaleOffset[0].x, UVScaleOffset[0].y);
+            material->setParam("u_EyeToSourceUVOffset", UVScaleOffset[1].x, UVScaleOffset[1].y);
+
+            // Update timewarp parameters
+
+            ovrPosef eyePose = temp_EyeRenderPose[eyeIndex];
+
+            ovrMatrix4f timeWarpMatrices[2];
+            OVR::Quatf extraYawSinceRender = OVR::Quatf(OVR::Vector3f(0, 1, 0), yaw - m_lastYaw);
+            ovrHmd_GetEyeTimewarpMatrices(m_hmd, eye, eyePose, timeWarpMatrices);// , debugTimeAdjuster);
+
+            // Due to be absorbed by a future SDK update
+            OVR::UtilFoldExtraYawIntoTimewarpMatrix((OVR::Matrix4f *)&timeWarpMatrices[0], eyePose.Orientation, extraYawSinceRender);
+            OVR::UtilFoldExtraYawIntoTimewarpMatrix((OVR::Matrix4f *)&timeWarpMatrices[1], eyePose.Orientation, extraYawSinceRender);
+
+            timeWarpMatrices[0] = ((OVR::Matrix4f)timeWarpMatrices[0]).Transposed();
+            timeWarpMatrices[1] = ((OVR::Matrix4f)timeWarpMatrices[1]).Transposed();
+            material->setParam("u_EyeRotationStart", (f32*)&timeWarpMatrices[0]);
+            material->setParam("u_EyeRotationEnd", (f32*)&timeWarpMatrices[1]);
+        }
+    }
+}
+
 // TODO Use a callback from a rendering module instead of onUpdate
 void HeadTracker::onUpdate()
 {
@@ -142,60 +201,18 @@ void HeadTracker::onUpdate()
             pose.Rotation.GetEulerAngles<OVR::Axis_Y, OVR::Axis_X, OVR::Axis_Z>(&yaw, &pitch, &roll);
             //SN_LOG("yaw=" << yaw << ", pitch=" << pitch << ", roll=" << roll);
 
+            // TODO FIXME Rotation issues
+            // - Pitch is inverted
+            // - Roll becomes pitch when looking left or right
+            // - Rotation is fucked up when looking at the poles
+
             // Update parent's position
             Entity * targetEntity = getParent();
             if (targetEntity && targetEntity->isInstanceOf<Entity3D>())
             {
                 Entity3D & target3D = *(Entity3D*)targetEntity;
-                target3D.setRotation(Quaternion(pitch * math::RAD2DEG, yaw * math::RAD2DEG, roll * math::RAD2DEG));
-            }
-
-            // Get eye poses
-            ovrPosef temp_EyeRenderPose[2];
-            ovrVector3f useHmdToEyeViewOffset[2] = { 
-                m_eyeDesc[0].HmdToEyeViewOffset,
-                m_eyeDesc[1].HmdToEyeViewOffset 
-            };
-            ovrHmd_GetEyePoses(m_hmd, 0, useHmdToEyeViewOffset, temp_EyeRenderPose, NULL);
-
-            // Update eye materials
-            for (u32 eyeIndex = 0; eyeIndex < 2; ++eyeIndex)
-            {
-                Material * material = m_eyeMaterials[eyeIndex].get();
-                if (material)
-                {
-                    ovrEyeType eye = (eyeIndex == 1 ? ovrEye_Right : ovrEye_Left);
-                    const ovrEyeRenderDesc & eyeDesc = m_eyeDesc[eyeIndex];
-
-                    // UVs
-
-                    ovrSizei rtSize = { 400, 481 };
-                    ovrRecti camViewport = { 0, 0, rtSize.w, rtSize.h };
-
-                    ovrVector2f UVScaleOffset[2];
-                    ovrHmd_GetRenderScaleAndOffset(eyeDesc.Fov, rtSize, camViewport, UVScaleOffset);
-                    //SN_LOG(UVScaleOffset[0].x << ", " << UVScaleOffset[0].y << " | " << UVScaleOffset[1].x << ", " << UVScaleOffset[1].y);
-
-                    material->setParam("u_EyeToSourceUVScale", UVScaleOffset[0].x, UVScaleOffset[0].y);
-                    material->setParam("u_EyeToSourceUVOffset", UVScaleOffset[1].x, UVScaleOffset[1].y);
-
-                    // Timewarp
-
-                    ovrPosef eyePose = temp_EyeRenderPose[eyeIndex];
-
-                    ovrMatrix4f timeWarpMatrices[2];
-                    OVR::Quatf extraYawSinceRender = OVR::Quatf(OVR::Vector3f(0, 1, 0), yaw - m_lastYaw);
-                    ovrHmd_GetEyeTimewarpMatrices(m_hmd, eye, eyePose, timeWarpMatrices);// , debugTimeAdjuster);
-
-                    // Due to be absorbed by a future SDK update
-                    OVR::UtilFoldExtraYawIntoTimewarpMatrix((OVR::Matrix4f *)&timeWarpMatrices[0], eyePose.Orientation, extraYawSinceRender);
-                    OVR::UtilFoldExtraYawIntoTimewarpMatrix((OVR::Matrix4f *)&timeWarpMatrices[1], eyePose.Orientation, extraYawSinceRender);
-
-                    timeWarpMatrices[0] = ((OVR::Matrix4f)timeWarpMatrices[0]).Transposed();
-                    timeWarpMatrices[1] = ((OVR::Matrix4f)timeWarpMatrices[1]).Transposed();
-                    material->setParam("u_EyeRotationStart", (f32*)&timeWarpMatrices[0]);
-                    material->setParam("u_EyeRotationEnd", (f32*)&timeWarpMatrices[1]);
-                }
+                //target3D.setRotation(Quaternion(pitch * math::RAD2DEG, yaw * math::RAD2DEG, roll * math::RAD2DEG));
+                target3D.setRotation(Quaternion(pose.Rotation.w, pose.Rotation.x, pose.Rotation.y, pose.Rotation.z));
             }
 
             // Memorize last head/eye variables
