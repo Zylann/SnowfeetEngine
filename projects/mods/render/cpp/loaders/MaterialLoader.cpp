@@ -77,24 +77,21 @@ bool MaterialLoader::load(std::ifstream & ifs, Asset & asset) const
                 auto & a = it->second.getArray();
                 if (a.size() == 2)
                 {
-                    f32 x = sn::unserializeFloat(v[(size_t)0]);
-                    f32 y = sn::unserializeFloat(v[1]);
-                    mat.setParam(it->first, x, y);
+                    Vector2f p;
+                    sn::unserialize(v, p);
+                    mat.setParam(it->first, p.x(), p.y());
                 }
                 else if (a.size() == 3)
                 {
-                    f32 x = sn::unserializeFloat(v[(size_t)0]);
-                    f32 y = sn::unserializeFloat(v[1]);
-                    f32 z = sn::unserializeFloat(v[2]);
-                    mat.setParam(it->first, x, y, z);
+                    Vector3f p;
+                    sn::unserialize(v, p);
+                    mat.setParam(it->first, p.x(), p.y(), p.z());
                 }
                 else if (a.size() == 4)
                 {
-                    f32 x = sn::unserializeFloat(v[(size_t)0]);
-                    f32 y = sn::unserializeFloat(v[1]);
-                    f32 z = sn::unserializeFloat(v[2]);
-                    f32 w = sn::unserializeFloat(v[3]);
-                    mat.setParam(it->first, x, y, z, w);
+                    Vector4f p;
+                    sn::unserialize(v, p);
+                    mat.setParam(it->first, p.x(), p.y(), p.z(), p.w());
                 }
                 // ...
             }
