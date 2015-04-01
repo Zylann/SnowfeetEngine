@@ -218,9 +218,9 @@ void Entity3D::serializeState(JsonBox::Value & o, const SerializationContext & c
 void Entity3D::unserializeState(JsonBox::Value & o, const SerializationContext & context)
 {
     Entity::unserializeState(o, context);
-    sn::unserialize(o["position"], m_position);
-    sn::unserialize(o["rotation"], m_rotation);
-    sn::unserialize(o["scale"], m_scale);
+    sn::unserialize(o["position"], m_position, Vector3f());
+    sn::unserialize(o["rotation"], m_rotation, Quaternion());
+    sn::unserialize(o["scale"], m_scale, Vector3f(1,1,1));
 }
 
 } // namespace sn

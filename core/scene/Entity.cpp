@@ -462,7 +462,7 @@ void Entity::serializeState(JsonBox::Value & o, const SerializationContext & con
 {
     o["name"] = m_name;
     o["enabled"] = isEnabledSelf();
-    sn::serialize(o, m_tags);
+    sn::serialize(o["tags"], m_tags);
 
     // TODO Serialize script
 
@@ -473,7 +473,7 @@ void Entity::unserializeState(JsonBox::Value & o, const SerializationContext & c
 {
     m_name = o["name"].getString();
     setEnabled(o["enabled"].getBoolean());
-    sn::unserialize(o, m_tags);
+    sn::unserialize(o["tags"], m_tags);
 
     // TODO FIXME Do this only when the scene changes to non-null
     Scene * scene = getScene();
