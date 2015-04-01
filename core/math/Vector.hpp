@@ -88,7 +88,7 @@ public:
     {
         for (u32 i = 0; i < N; ++i)
         {
-            if (m_v[i] != m_v[i])
+            if (m_v[i] != other.m_v[i])
                 return false;
         }
         return true;
