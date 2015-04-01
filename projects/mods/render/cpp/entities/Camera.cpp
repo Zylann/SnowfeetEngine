@@ -165,7 +165,9 @@ IntRect Camera::getPixelViewport() const
         // TODO Fix this for multi windows!
         Window * win = SystemGUI::get().getWindowByID(0);
         if (win)
+        {
             targetSize = win->getClientSize();
+        }
     }
 
     // Return pixel rect
@@ -237,6 +239,7 @@ void Camera::updateEffectBuffers()
             for (u32 i = 0; i < EFFECT_BUFFERS_COUNT; ++i)
             {
                 m_effectBuffers[i]->release();
+                m_effectBuffers[i] = nullptr;
             }
         }
     }
