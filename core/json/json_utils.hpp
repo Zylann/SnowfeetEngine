@@ -43,7 +43,7 @@ bool saveToFile(JsonBox::Value & document, const std::string & filePath);
 
 //------------------------------------------------------------------------------
 // Get any JSON number into a float, zero if not a number
-inline f32 unserializeFloat(JsonBox::Value & v)
+inline f32 unserializeAsFloat(const JsonBox::Value & v)
 {
     switch (v.getType())
     {
@@ -62,7 +62,7 @@ inline void serialize(JsonBox::Value & o, bool v) { o = v; }
 inline void serialize(JsonBox::Value & o, const std::string & s) { o = s; }
 
 //------------------------------------------------------------------------------
-inline void unserialize(const JsonBox::Value & o, f32 & v) { v = static_cast<f32>(o.getDouble()); }
+inline void unserialize(const JsonBox::Value & o, f32 & v) { v = unserializeAsFloat(o); } //{ v = static_cast<f32>(o.getDouble()); }
 inline void unserialize(const JsonBox::Value & o, s32 & v) { v = o.getInt(); }
 inline void unserialize(const JsonBox::Value & o, u32 & v) { v = static_cast<u32>(o.getInt()); }
 inline void unserialize(const JsonBox::Value & o, u8 & v) { v = static_cast<u32>(o.getInt()); }
@@ -113,7 +113,8 @@ template <typename T>
 void unserialize(const JsonBox::Value & o, std::vector<T> & v)
 {
     const JsonBox::Array & a = o.getArray();
-    v.resize(a.size());
+    if (v.size() < a.size())
+        v.resize(a.size());
     for(u32 i = 0; i < a.size(); ++i)
     {
         const JsonBox::Value & jv = a[i];
@@ -147,7 +148,7 @@ template <unsigned int N>
 inline void unserialize(JsonBox::Value & o, Vector<f32,N> & vec)
 {
     for (size_t i = 0; i < N; ++i)
-        vec[i] = unserializeFloat(o[i]);
+        unserialize(o[i], vec[i]);
 }
 
 //------------------------------------------------------------------------------
@@ -207,11 +208,11 @@ inline void serialize(JsonBox::Value & o, const Color8 & color)
 //------------------------------------------------------------------------------
 inline void unserialize(JsonBox::Value & o, Color & color)
 {
-    color.r = unserializeFloat(o[(size_t)0]);
-    color.g = unserializeFloat(o[1]);
-    color.b = unserializeFloat(o[2]);
+    unserialize(o[(size_t)0], color.r);
+    unserialize(o[1], color.g);
+    unserialize(o[2], color.b);
     if (o.getArray().size() == 4)
-        color.a = unserializeFloat(o[3]);
+        unserialize(o[3], color.a);
 }
 
 //------------------------------------------------------------------------------
@@ -296,6 +297,16 @@ inline void unserialize(JsonBox::Value & o, Quaternion & q)
     {
         SN_ERROR("Expected array of size 3 or 4 to unserialize Quaternion");
     }
+}
+
+//------------------------------------------------------------------------------
+template <typename T>
+inline void unserialize(JsonBox::Value & o, T & v, const T & defaultValue)
+{
+    if (o.isNull())
+        v = defaultValue;
+    else
+        unserialize(o, v);
 }
 
 } // namespace sn
