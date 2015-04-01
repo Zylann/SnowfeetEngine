@@ -178,6 +178,13 @@ void Entity::setParent(Entity * newParent)
             if (newParent->isInstanceOf<Scene>() && r_scene == nullptr)
             {
                 r_scene = static_cast<Scene*>(newParent);
+
+                // TODO have a setScene() function performing all registration stuff
+                for (auto it = m_tags.begin(); it != m_tags.end(); ++it)
+                {
+                    r_scene->registerTaggedEntity(*this, *it);
+                }
+
                 propagateOnReady();
             }
         }
@@ -474,13 +481,6 @@ void Entity::unserializeState(JsonBox::Value & o, const SerializationContext & c
     m_name = o["name"].getString();
     setEnabled(o["enabled"].getBoolean());
     sn::unserialize(o["tags"], m_tags);
-
-    // TODO FIXME Do this only when the scene changes to non-null
-    Scene * scene = getScene();
-    for (auto it = m_tags.begin(); it != m_tags.end(); ++it)
-    {
-        scene->registerTaggedEntity(*this, *it);
-    }
 
     auto & scripts = o["scripts"];
     if (scripts.isArray())
