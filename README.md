@@ -74,8 +74,7 @@ That's all, the project then should work out of the box.
 
 The premake build system is used to generate IDE solutions or makefiles.
 I choosed it because I know it better than Cmake, it is very small,
-and it uses a well-known language (Lua) rather than a custom cryptic one,
-which makes writing build scripts very easy.
+and it uses a well-known language (Lua), which makes writing build scripts very easy.
 
 All you have to do to obtain working project files is to run one of the
 scripts named "premake_xxx".
