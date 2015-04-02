@@ -287,11 +287,9 @@ inline void unserialize(JsonBox::Value & o, Quaternion & q)
     }
     else if (a.size() == 3)
     {
-        q.setFromEuler(
-            static_cast<f32>( o[(size_t)0].getDouble() ),
-            static_cast<f32>( o[1].getDouble() ),
-            static_cast<f32>( o[2].getDouble() )
-        );
+        Vector3f euler;
+        sn::unserialize(o, euler);
+        q.setFromEuler(euler.x(), euler.y(), euler.z());
     }
     else
     {
