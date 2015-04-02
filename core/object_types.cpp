@@ -11,6 +11,7 @@
 #include "scene/Scene.hpp"
 #include "scene/VRHeadset.hpp"
 #include "scene/helpers/Rotate.hpp"
+#include "scene/helpers/KeyboardMove.hpp"
 
 #include "asset/Asset.hpp"
 #include "asset/AssetLoader.hpp"
@@ -30,8 +31,9 @@ void registerObjectTypes(ObjectTypeDatabase & otb)
     otb.registerType<Entity>();
     otb.registerType<Entity3D>();
     otb.registerType<Scene>();
-    otb.registerType<Rotate>();
     otb.registerType<VRHeadset>();
+    otb.registerType<Rotate>();
+    otb.registerType<KeyboardMove>();
 
     // Assets base
     otb.registerType<Asset>();
