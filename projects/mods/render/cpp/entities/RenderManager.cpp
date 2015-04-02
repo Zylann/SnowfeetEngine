@@ -242,8 +242,10 @@ void RenderManager::renderCamera(Camera & camera)
                     ShaderProgram * shader = material->getShader();
                     m_context->useProgram(material->getShader());
 
+                    modelViewMatrix.loadIdentity();
                     modelViewMatrix.setByProduct(d.getGlobalMatrix(), viewMatrix);
 
+                    // Note: Matrix4 is row-major
                     shader->setParam("u_Projection", camera.getProjectionMatrix().values(), true);
                     shader->setParam("u_ModelView", modelViewMatrix.values(), false);
 
