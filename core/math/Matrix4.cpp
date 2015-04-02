@@ -415,9 +415,9 @@ bool Matrix4::getInverse(Matrix4 & out_result) const
 Vector3f Matrix4::transformPoint(const Vector3f & p) const
 {
 	return Vector3f(
-		m_v[0] * p[0] + m_v[4] * p[1] + m_v[8] * p[2],
-		m_v[1] * p[0] + m_v[5] * p[1] + m_v[9] * p[2],
-		m_v[2] * p[0] + m_v[6] * p[1] + m_v[10] * p[2]
+		m_v[0] * p[0] + m_v[4] * p[1] + m_v[8] * p[2] + m_v[12],
+        m_v[1] * p[0] + m_v[5] * p[1] + m_v[9] * p[2] + m_v[13],
+        m_v[2] * p[0] + m_v[6] * p[1] + m_v[10] * p[2] + m_v[14]
 	);
 }
 
