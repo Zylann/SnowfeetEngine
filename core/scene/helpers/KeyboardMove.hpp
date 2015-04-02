@@ -1,7 +1,7 @@
 #ifndef __HEADER_SN_KEYBOARDMOVE__
 #define __HEADER_SN_KEYBOARDMOVE__
 
-#include <core/scene/Entity.hpp>>
+#include <core/scene/Entity.hpp>
 
 namespace sn
 {
