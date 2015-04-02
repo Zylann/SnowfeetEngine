@@ -70,16 +70,16 @@ void Entity3D::setGlobalPosition(const Vector3f & newPos)
 		Matrix4 inv;
 		if (parent3D.getGlobalMatrix().getInverse(inv))
 		{
-			m_position = inv.transformPoint(newPos);
+			setPosition(inv.transformPoint(newPos));
 		}
 		else
 		{
-			m_position = newPos;
+			setPosition(newPos);
 		}
 	}
 	else
 	{
-		m_position = newPos;
+		setPosition(newPos);
 	}
 }
 
@@ -101,11 +101,11 @@ void Entity3D::setGlobalRotation(const Quaternion & newRotation)
 	if (getParent() && getParent()->isInstanceOf<Entity3D>())
 	{
 		Entity3D & parent3D = *(Entity3D*)getParent();
-		m_rotation = newRotation * parent3D.getRotation().getInverse();
+		setRotation(newRotation * parent3D.getRotation().getInverse());
 	}
 	else
 	{
-		m_rotation = newRotation;
+		setRotation(newRotation);
 	}
 }
 

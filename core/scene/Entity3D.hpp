@@ -68,6 +68,7 @@ private:
     void updateChildrenTransform();
 
 private:
+    // Local
     Vector3f m_position;
     Vector3f m_scale;
     Quaternion m_rotation;
