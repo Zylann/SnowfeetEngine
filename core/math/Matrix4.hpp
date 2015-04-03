@@ -15,6 +15,7 @@ namespace sn
 
 /// \brief A 4x4 float matrix.
 /// Values are stored in row-major layout.
+/// Translations are stored in the last row.
 class SN_API Matrix4
 {
 public :

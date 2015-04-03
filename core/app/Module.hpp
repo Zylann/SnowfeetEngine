@@ -43,6 +43,8 @@ public:
     bool compileScripts();
     void createServices(Scene & scene);
 
+    /// \brief Calculates the dependency list of the given module.
+    /// The list is ordered by module loading.
     static void calculateDependencies(
         const String & pathToProjects,
         const String & modPath, 
