@@ -17,26 +17,26 @@ public:
     // Local
     //--------------------------------
 
-    Vector3f getPosition();
+    Vector3f getPosition() const;
     void setPosition(const Vector3f & newPos);
 
-    Quaternion getRotation();
+    Quaternion getRotation() const;
     void setRotation(const Quaternion & newRotation);
 
-    Vector3f getScale();
+    Vector3f getScale() const;
     void setScale(const Vector3f & newScale);
 
     //--------------------------------
     // Global
     //--------------------------------
 
-    Vector3f getGlobalPosition();
+    Vector3f getGlobalPosition() const;
     void setGlobalPosition(const Vector3f & newPos);
 
-    Quaternion getGlobalRotation();
+    Quaternion getGlobalRotation() const;
     void setGlobalRotation(const Quaternion & newRotation);
 
-    Vector3f getGlobalScale();
+    Vector3f getGlobalScale() const;
     void setGlobalScale(const Vector3f & newScale);
 
     //--------------------------------

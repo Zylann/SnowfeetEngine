@@ -10,7 +10,7 @@ Entity3D::Entity3D() : Entity(),
 {
 }
 
-Vector3f Entity3D::getPosition()
+Vector3f Entity3D::getPosition() const
 {
     return m_position;
 }
@@ -23,7 +23,7 @@ void Entity3D::setPosition(const Vector3f & newPos)
     onPositionChanged();
 }
 
-Quaternion Entity3D::getRotation()
+Quaternion Entity3D::getRotation() const
 {
     return m_rotation;
 }
@@ -36,7 +36,7 @@ void Entity3D::setRotation(const Quaternion & newRotation)
     onRotationChanged();
 }
 
-Vector3f Entity3D::getScale()
+Vector3f Entity3D::getScale() const
 {
     return m_scale;
 }
@@ -49,7 +49,7 @@ void Entity3D::setScale(const Vector3f & newScale)
     onScaleChanged();
 }
 
-Vector3f Entity3D::getGlobalPosition()
+Vector3f Entity3D::getGlobalPosition() const
 {
 	if (getParent() && getParent()->isInstanceOf<Entity3D>())
 	{
@@ -83,7 +83,7 @@ void Entity3D::setGlobalPosition(const Vector3f & newPos)
 	}
 }
 
-Quaternion Entity3D::getGlobalRotation()
+Quaternion Entity3D::getGlobalRotation() const
 {
 	if (getParent() && getParent()->isInstanceOf<Entity3D>())
 	{
@@ -109,7 +109,7 @@ void Entity3D::setGlobalRotation(const Quaternion & newRotation)
 	}
 }
 
-Vector3f Entity3D::getGlobalScale()
+Vector3f Entity3D::getGlobalScale() const
 {
 	if (getParent() && getParent()->isInstanceOf<Entity3D>())
 	{
