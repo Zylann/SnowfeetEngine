@@ -230,6 +230,12 @@ void Camera::updateEffectBuffers()
     IntRect viewport = getPixelViewport();
     Vector2u targetSize(viewport.width(), viewport.height());
 
+    if (targetSize.x() == 0 || targetSize.y() == 0)
+    {
+        SN_WARNING("Camera::updateEffectBuffers: targetSize is " << sn::toString(targetSize));
+        return;
+    }
+
     // Delete buffers if the target size changed
     if (m_effectBuffers[0] != nullptr)
     {
