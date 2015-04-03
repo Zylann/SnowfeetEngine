@@ -35,6 +35,14 @@ public:
         memcpy(m_v, other.m_v, N * sizeof(T));
     }
 
+    // Conversion
+    template <typename U>
+    Vector(const Vector<U, N> & other)
+    {
+        for (u32 i = 0; i < N; ++i)
+            m_v[i] = static_cast<T>(other[i]);
+    }
+
     explicit Vector(const T * values)
     {
         memcpy(m_v, values, N * sizeof(T));
