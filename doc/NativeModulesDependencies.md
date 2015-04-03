@@ -1,7 +1,7 @@
 Native module dependencies
 ============================
 
-THIS IS AN OlD, DEPRECATED DOCUMENT.
+THIS IS AN OLD, DEPRECATED DOCUMENT.
 I keep it in the repo because the explained design could contain ideas
 useable in the future, if supporting this feature is really needed.
 
