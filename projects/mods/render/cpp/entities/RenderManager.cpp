@@ -221,7 +221,7 @@ void RenderManager::renderCamera(Camera & camera)
         }
     );
 
-    const Matrix4 & viewMatrix = camera.getGlobalMatrix();
+    Matrix4 viewMatrix = camera.getViewMatrix();
     Matrix4 modelViewMatrix;
 
     // Draw them

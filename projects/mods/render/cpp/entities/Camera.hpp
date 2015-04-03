@@ -103,6 +103,7 @@ public:
     void setViewport(FloatRect normalizedRect);
 
     const Matrix4 & getProjectionMatrix() const;
+    Matrix4 getViewMatrix() const;
 
     inline s32 getDrawOrder() const { return m_drawOrder; }
     inline void setDrawOrder(s32 order) { m_drawOrder = order; }

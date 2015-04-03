@@ -208,6 +208,25 @@ const Matrix4 & Camera::getProjectionMatrix() const
 }
 
 //------------------------------------------------------------------------------
+Matrix4 Camera::getViewMatrix() const
+{
+    // TODO Optimize getViewMatrix()
+
+    const Matrix4 & cameraMatrix = getGlobalMatrix();
+    
+    //Vector3f right(cameraMatrix(0, 0), cameraMatrix(1, 0), cameraMatrix(2, 0));
+    Vector3f up(cameraMatrix(0, 1), cameraMatrix(1, 1), cameraMatrix(2, 1));
+    Vector3f forward(cameraMatrix(0, 2), cameraMatrix(1, 2), cameraMatrix(2, 2));
+
+    Vector3f cameraPosition = getGlobalPosition();
+
+    Matrix4 viewMatrix;
+    viewMatrix.loadLookAt(cameraPosition, cameraPosition + forward, up);
+
+    return viewMatrix;
+}
+
+//------------------------------------------------------------------------------
 void Camera::onReady()
 {
     addTag(TAG);
