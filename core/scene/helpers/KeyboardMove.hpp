@@ -25,6 +25,7 @@ private:
 private:
     f32 m_speed;
     Vector3f m_motor;
+    Vector3f m_angularMotor;
 
 };
 

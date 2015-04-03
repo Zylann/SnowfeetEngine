@@ -33,6 +33,7 @@ bool KeyboardMove::onSystemEvent(const Event & event)
 void KeyboardMove::onKey(KeyCode key, bool isDown)
 {
     float v = isDown ? 1.f : 0.f;
+    float a = v * 30.f;
 
     switch (key)
     {
@@ -66,6 +67,30 @@ void KeyboardMove::onKey(KeyCode key, bool isDown)
         m_motor.y() = -v;
         break;
 
+    case SN_KEY_PAD4:
+        m_angularMotor.y() = -a;
+        break;
+
+    case SN_KEY_PAD6:
+        m_angularMotor.y() = a;
+        break;
+
+    case SN_KEY_PAD8:
+        m_angularMotor.x() = -a;
+        break;
+
+    case SN_KEY_PAD2:
+        m_angularMotor.x() = a;
+        break;
+
+    case SN_KEY_PAD7:
+        m_angularMotor.z() = a;
+        break;
+
+    case SN_KEY_PAD9:
+        m_angularMotor.z() = -a;
+        break;
+
     default:
         break;
     }
@@ -78,6 +103,8 @@ void KeyboardMove::onUpdate()
         Entity3D & parent = *(Entity3D*)getParent();
         Time dt = getScene()->getDeltaTime();
         parent.setGlobalPosition(parent.getPosition() + m_motor * m_speed * dt.asSeconds());
+        Quaternion q(m_angularMotor * dt.asSeconds());
+        parent.setGlobalRotation(parent.getRotation() * q);
     }
 }
 
