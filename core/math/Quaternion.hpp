@@ -303,6 +303,11 @@ private:
 
 };
 
+inline std::string toString(const Quaternion & q)
+{
+    return sn::toString(q.getEulerAngles());
+}
+
 } // namespace sn
 
 #endif // __HEADER_SN_QUATERNION__
