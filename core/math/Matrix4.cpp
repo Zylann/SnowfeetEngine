@@ -75,11 +75,21 @@ void Matrix4::loadPerspectiveProjection(
     //  8   9  10  11
     // 12  13  14  15
     memset(m_v, 0, 16 * sizeof(f32)); // zeros
-    m_v[5] = 1.f / tan(fov / 2.f); // f
+#if 0
+    // Left-handed
+    m_v[5] = 1.f / tan(fov * 0.5f);
     m_v[0] = m_v[5] / ratio;
     m_v[10] = (near + far) / (near - far);
     m_v[11] = (2.f*near*far) / (near - far);
     m_v[14] = -1;
+#else
+    // Right-handed
+    m_v[5] = 1.f / tan(fov * 0.5f);
+    m_v[0] = m_v[5] / ratio;
+    m_v[10] = (near + far) / (far - near);
+    m_v[11] = -(2.f*near*far) / (far - near);
+    m_v[14] = 1;
+#endif
 }
 
 //------------------------------------------------------------------------------
@@ -107,6 +117,8 @@ void Matrix4::loadLookAt(
         const Vector3f & target,
         const Vector3f & up)
 {
+    // Left-handed
+
     Vector3f zaxis = target - eye;
     zaxis.normalize();
 
@@ -140,9 +152,9 @@ void Matrix4::loadLookAt(
 void Matrix4::loadTranslation(const f32 vx, const f32 vy, const f32 vz)
 {
     loadIdentity();
-    m_v[3] = vx;
-    m_v[7] = vy;
-    m_v[11] = vz;
+    m_v[12] = vx;
+    m_v[13] = vy;
+    m_v[14] = vz;
 }
 
 //------------------------------------------------------------------------------
