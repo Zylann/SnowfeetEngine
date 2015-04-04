@@ -32,7 +32,7 @@ bool KeyboardMove::onSystemEvent(const Event & event)
 
 void KeyboardMove::onKey(KeyCode key, bool isDown)
 {
-    float v = isDown ? 1.f : 0.f;
+    float v = (isDown ? 1.f : 0.f);
     float a = v * 30.f;
 
     switch (key)
@@ -100,11 +100,17 @@ void KeyboardMove::onUpdate()
 {
     if (getParent() && getParent()->isInstanceOf<Entity3D>())
     {
-        Entity3D & parent = *(Entity3D*)getParent();
         Time dt = getScene()->getDeltaTime();
-        parent.setGlobalPosition(parent.getPosition() + m_motor * m_speed * dt.asSeconds());
-        Quaternion q(m_angularMotor * dt.asSeconds());
-        parent.setGlobalRotation(parent.getRotation() * q);
+        Entity3D & parent = *(Entity3D*)getParent();
+
+        parent.setPosition(parent.getPosition() + m_motor * m_speed * dt.asSeconds());
+
+        Quaternion deltaRot(m_angularMotor * dt.asSeconds());
+        parent.setRotation( (parent.getRotation() * deltaRot).normalize() );
+
+        //SN_LOG("Pos: " << sn::toString(parent.getGlobalPosition()));// << ", up: " << sn::toString(up));
+        //SN_LOG("Forward: " << sn::toString(parent.getForwardVector()));// << ", up: " << sn::toString(up));
+        //SN_LOG("rotation: " << sn::toString(parent.getGlobalRotation()));
     }
 }
 
