@@ -174,10 +174,10 @@ public:
         SN_STATIC_ASSERT(N >= 3);
         return maxX() >= px
             && maxY() >= py
-            && maxZ() >= py
+            && maxZ() >= pz
             && minX() <= px + ps
-            && minY() <= px + ps
-            && minZ() <= py + ps;
+            && minY() <= py + ps
+            && minZ() <= pz + ps;
     }
 
     //-----------------------------
