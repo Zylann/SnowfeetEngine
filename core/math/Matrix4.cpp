@@ -11,6 +11,9 @@ This file is part of the SnowfeetEngine project.
 namespace sn
 {
 
+// Coordinates systems / left-handed / right-handed
+// http://viz.aset.psu.edu/gho/sem_notes/3d_fundamentals/html/3d_coordinates.html
+
 //------------------------------------------------------------------------------
 const f32 g_identity[16] =
 {
@@ -76,19 +79,19 @@ void Matrix4::loadPerspectiveProjection(
     // 12  13  14  15
     memset(m_v, 0, 16 * sizeof(f32)); // zeros
 #if 0
-    // Left-handed
-    m_v[5] = 1.f / tan(fov * 0.5f);
-    m_v[0] = m_v[5] / ratio;
-    m_v[10] = (near + far) / (near - far);
-    m_v[11] = (2.f*near*far) / (near - far);
-    m_v[14] = -1;
-#else
     // Right-handed
     m_v[5] = 1.f / tan(fov * 0.5f);
     m_v[0] = m_v[5] / ratio;
+    m_v[10] = (near + far) / (near - far);
+    m_v[11] = -1;
+    m_v[14] = (2.f*near*far) / (near - far);
+#else
+    // Left-handed
+    m_v[5] = 1.f / tan(fov * 0.5f);
+    m_v[0] = m_v[5] / ratio;
     m_v[10] = (near + far) / (far - near);
-    m_v[11] = -(2.f*near*far) / (far - near);
-    m_v[14] = 1;
+    m_v[11] = 1;
+    m_v[14] = -(2.f*near*far) / (far - near);
 #endif
 }
 
