@@ -47,16 +47,21 @@ public:
     Application();
     ~Application();
 
+    /// \brief Gets the singleton
 	static Application & get();
+
+    /// \brief Executes the application. Cannot be called twice on the same Application.
+    /// \note This is already done if you use the appmain() function.
     int execute(CommandLine commandLine);
 
-    // Gets the absolute path to the projects folder
+    /// \brief Gets the absolute path to the projects folder
     inline String getPathToProjects() const { return m_pathToProjects; }
 
+    /// \brief Gets the main script manager
     inline ScriptManager & getScriptManager() { return m_scriptEngine; }
 
-    // Sets the running flag to false in order to exit the application
-    // at the end of the current update.
+    /// \brief Sets the running flag to false in order to exit the application
+    /// at the end of the current update.
     void quit();
 
 
@@ -64,14 +69,20 @@ public:
 
 private:
 
+    /// \brief Prints a quick how-to use for launching the application from a command line
     void printCommandLineUsage();
-    bool parseCommandLine(CommandLine commandLine);
-    Module * Application::loadModule(const String & path);
-    int executeEx();
-    //void compileScripts();
 
+    /// \brief Parses the given command line object and configures the application accordingly
+    bool parseCommandLine(CommandLine commandLine);
+
+    /// \brief Loads a module from its path within one of the roots known by the engine.
+    Module * loadModule(const String & path);
+
+    /// \brief Executes the application without catching any exception (no try/catch)
+    int executeEx();
+
+    /// \brief Updates the main thread for a specified amount of time (main loop)
     void update(Time delta);
-    //void callVoidCallback(const std::string & cbName);
 
 private:
     static Application * g_applicationInstance;
@@ -81,20 +92,26 @@ private:
     // Attributes
     //------------------------------------
 
+    // TODO Rename m_scriptManager
+    /// \brief Main script manager.
     ScriptManager m_scriptEngine;
 
-    // Top-level scene
+    /// \brief Top-level main scene
     Scene * m_scene;
 
+    /// \brief Path (relative to the root) to the main module to be executed
     String m_pathToMainMod;
+
+    /// \brief Main root directory for all paths used in the engine
     String m_pathToProjects;
 
     // TODO Maybe we don't need this in the core, only graphics or physics simulation really need stable frequency.
     TimeStepper m_timeStepper;
 
-    // [directory] => Module
+    /// \brief [directory] => Module
     std::map<String, Module*> m_modules;
 
+    /// \brief The main loop will run as long as this flag is true
     bool m_runFlag;
 
 };
