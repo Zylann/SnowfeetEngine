@@ -331,6 +331,26 @@ void Matrix4::getTransposed(Matrix4 & out_result) const
 }
 
 //------------------------------------------------------------------------------
+void Matrix4::transpose()
+{
+    std::swap(m_v[1], m_v[4]);
+    std::swap(m_v[2], m_v[8]);
+    std::swap(m_v[3], m_v[12]);
+
+    std::swap(m_v[4], m_v[1]);
+    std::swap(m_v[6], m_v[9]);
+    std::swap(m_v[7], m_v[13]);
+
+    std::swap(m_v[8], m_v[2]);
+    std::swap(m_v[9], m_v[6]);
+    std::swap(m_v[11], m_v[14]);
+
+    std::swap(m_v[12], m_v[3]);
+    std::swap(m_v[13], m_v[7]);
+    std::swap(m_v[14], m_v[11]);
+}
+
+//------------------------------------------------------------------------------
 f32 Matrix4::getD() const
 {
     const Matrix4 & m = *this;

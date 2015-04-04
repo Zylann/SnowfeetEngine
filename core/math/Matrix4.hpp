@@ -70,6 +70,7 @@ public :
     void setByProductAs3(const Matrix4 & a, const Matrix4 & b);
 
     void getTransposed(Matrix4 & out_result) const;
+    void transpose();
 
     void setTranslation(const Vector3f & v);
     void setRotation(const Quaternion & q);
