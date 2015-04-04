@@ -63,7 +63,7 @@ public :
     void loadScale(const f32 sx, const f32 sy, const f32 sz);
 
     // Sets the matrix to the result of the product of the given matrices
-    void setByProduct(const Matrix4 & a, const Matrix4 & b);
+    void setByProduct(const Matrix4 & in_a, const Matrix4 & in_b);
 
     // Sets the matrix to the result of the product of the given matrices,
     // as if they were 3x3.
