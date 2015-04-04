@@ -243,9 +243,10 @@ void RenderManager::renderCamera(Camera & camera)
                     m_context->useProgram(material->getShader());
 
                     modelViewMatrix.loadIdentity();
-                    modelViewMatrix.setByProduct(viewMatrix, d.getGlobalMatrix());
+                    const Matrix4 & modelMatrix = d.getGlobalMatrix();
+                    modelViewMatrix.setByProduct(viewMatrix, modelMatrix);
 
-                    // Note: Matrix4 is row-major
+                    // Note: Matrix4 is row-major with translation in the last row
                     shader->setParam("u_Projection", camera.getProjectionMatrix().values(), false);
                     shader->setParam("u_ModelView", modelViewMatrix.values(), false);
 

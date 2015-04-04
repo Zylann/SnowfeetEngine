@@ -52,6 +52,10 @@ public:
 
     void lookAt(const Vector3f & targetPosition);
 
+    Vector3f getRightVector() const;
+    Vector3f getUpVector() const;
+    Vector3f getForwardVector() const;
+
     //--------------------------------
     // Serialization
     //--------------------------------

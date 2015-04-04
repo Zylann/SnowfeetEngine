@@ -71,14 +71,12 @@ public:
     //----------------------
     inline Quaternion operator+(const Quaternion& other) const
     {
-        Quaternion res;
-
-        res.m_w = (other.m_w * m_w) - (other.m_x * m_x) - (other.m_y * m_y) - (other.m_z * m_z);
-        res.m_x = (other.m_w * m_x) + (other.m_x * m_w) + (other.m_y * m_z) - (other.m_z * m_y);
-        res.m_y = (other.m_w * m_y) + (other.m_y * m_w) + (other.m_z * m_x) - (other.m_x * m_z);
-        res.m_z = (other.m_w * m_z) + (other.m_z * m_w) + (other.m_x * m_y) - (other.m_y * m_x);
-
-        return res;
+        return Quaternion(
+            m_w + other.m_w,
+            m_x + other.m_x,
+            m_y + other.m_y,
+            m_z + other.m_z
+        );
     }
 
     //----------------------
@@ -90,17 +88,26 @@ public:
     //----------------------
     inline Quaternion operator*(const Quaternion & other) const
     {
-        //r0*q0 - r1*q1 - r2*q2 + r3*q3
-        //r0*q1 + r1*q0 - r2*q3 + r3*q2
-        //r0*q2 + r1*q3 + r2*q0 - r3*q1
-        //r0*q3 - r1*q2 + r2*q1 + r3*q0
+        Quaternion res;
 
-        return Quaternion(
-            m_w * other.m_w - m_x * other.m_x - m_y * other.m_y - m_z * other.m_z,
-            m_w * other.m_x + m_x * other.m_w - m_y * other.m_z + m_z * other.m_y,
-            m_w * other.m_y + m_x * other.m_z + m_y * other.m_w + m_z * other.m_x,
-            m_w * other.m_z - m_x * other.m_y + m_y * other.m_x + m_z * other.m_w
-        );
+        const Quaternion & lhs = *this;
+        const Quaternion & rhs = other;
+
+        // Irrlicht
+
+        //res.m_w = (other.m_w * m_w) - (other.m_x * m_x) - (other.m_y * m_y) - (other.m_z * m_z);
+        //res.m_x = (other.m_w * m_x) + (other.m_x * m_w) + (other.m_y * m_z) - (other.m_z * m_y);
+        //res.m_y = (other.m_w * m_y) + (other.m_y * m_w) + (other.m_z * m_x) - (other.m_x * m_z);
+        //res.m_z = (other.m_w * m_z) + (other.m_z * m_w) + (other.m_x * m_y) - (other.m_y * m_x);
+
+        // http://www.cprogramming.com/tutorial/3d/quaternions.html
+
+        res.m_w = (lhs.m_w * rhs.m_w) - (lhs.m_x * rhs.m_x) - (lhs.m_y * rhs.m_y) - (lhs.m_z * rhs.m_z);
+        res.m_x = (lhs.m_w * rhs.m_x) + (lhs.m_x * rhs.m_w) + (lhs.m_y * rhs.m_z) - (lhs.m_z * rhs.m_y);
+        res.m_y = (lhs.m_w * rhs.m_y) - (lhs.m_x * rhs.m_z) + (lhs.m_y * rhs.m_w) + (lhs.m_z * rhs.m_x);
+        res.m_z = (lhs.m_w * rhs.m_z) + (lhs.m_x * rhs.m_y) - (lhs.m_y * rhs.m_x) + (lhs.m_z * rhs.m_w);
+
+        return res;
     }
 
     //----------------------

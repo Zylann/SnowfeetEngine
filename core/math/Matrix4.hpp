@@ -27,7 +27,7 @@ public :
     void set(const Matrix4 & other);
     void set(const f32 values[16]);
 
-    inline u32 getCellIndex(u32 row, u32 col) const { return col | (row << 2); }
+    inline u32 getCellIndex(u32 row, u32 col) const { return col | (row * 4); }
 
     inline f32 Matrix4::getCell(u32 row, u32 col) const { return m_v[getCellIndex(row, col)]; }
     inline void Matrix4::setCell(u32 row, u32 col, f32 v) { m_v[getCellIndex(row, col)] = v; }
@@ -71,6 +71,7 @@ public :
 
     void getTransposed(Matrix4 & out_result) const;
     void transpose();
+    void transposeRotation();
 
     void setTranslation(const Vector3f & v);
     void setRotation(const Quaternion & q);
@@ -97,10 +98,10 @@ private :
 
     inline f32 operator[](s32 i) const { return m_v[i]; }
 
-    //  0   1   2   3
-    //  4   5   6   7
-    //  8   9  10  11
-    // 12  13  14  15
+    //  0   1   2   3 | i(x, y, z) right
+    //  4   5   6   7 | j(x, y, z) up
+    //  8   9  10  11 | k(x, y, z) front
+    // 12  13  14  15 | t(x, y, z) offset
     f32 m_v[16];
 };
 

@@ -17,10 +17,13 @@ Vector3f Entity3D::getPosition() const
 
 void Entity3D::setPosition(const Vector3f & newPos)
 {
-    m_position = newPos;
-    m_localMatrixNeedUpdate = true;
-    m_globalMatrixNeedUpdate = true;
-    onPositionChanged();
+    if (m_position != newPos)
+    {
+        m_position = newPos;
+        m_localMatrixNeedUpdate = true;
+        m_globalMatrixNeedUpdate = true;
+        onPositionChanged();
+    }
 }
 
 Quaternion Entity3D::getRotation() const
@@ -30,10 +33,13 @@ Quaternion Entity3D::getRotation() const
 
 void Entity3D::setRotation(const Quaternion & newRotation)
 {
-    m_rotation = newRotation;
-    m_localMatrixNeedUpdate = true;
-    m_globalMatrixNeedUpdate = true;
-    onRotationChanged();
+    if (m_rotation != newRotation)
+    {
+        m_rotation = newRotation;
+        m_localMatrixNeedUpdate = true;
+        m_globalMatrixNeedUpdate = true;
+        onRotationChanged();
+    }
 }
 
 Vector3f Entity3D::getScale() const
@@ -43,10 +49,13 @@ Vector3f Entity3D::getScale() const
 
 void Entity3D::setScale(const Vector3f & newScale)
 {
-    m_scale = newScale;
-    m_localMatrixNeedUpdate = true;
-    m_globalMatrixNeedUpdate = true;
-    onScaleChanged();
+    if (m_scale != newScale)
+    {
+        m_scale = newScale;
+        m_localMatrixNeedUpdate = true;
+        m_globalMatrixNeedUpdate = true;
+        onScaleChanged();
+    }
 }
 
 Vector3f Entity3D::getGlobalPosition() const
@@ -205,6 +214,25 @@ void Entity3D::lookAt(const Vector3f & targetPosition)
     Quaternion q;
     q.setFromEuler(euler.x(), euler.y(), euler.z());
     setRotation(q);
+}
+
+Vector3f Entity3D::getRightVector() const
+{
+    const Matrix4 & m = getGlobalMatrix();
+    // Note: remember the getter is m(row, column)
+    return Vector3f(m(0, 0), m(0, 1), m(0, 2));
+}
+
+Vector3f Entity3D::getUpVector() const
+{
+    const Matrix4 & m = getGlobalMatrix();
+    return Vector3f(m(1, 0), m(1, 1), m(1, 2));
+}
+
+Vector3f Entity3D::getForwardVector() const
+{
+    const Matrix4 & m = getGlobalMatrix();
+    return Vector3f(m(2, 0), m(2, 1), m(2, 2));
 }
 
 void Entity3D::serializeState(JsonBox::Value & o, const SerializationContext & context)
