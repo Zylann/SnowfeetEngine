@@ -6,6 +6,7 @@
 namespace sn
 {
 
+/// \brief Entity having a position, rotation and scale in 3D.
 class SN_API Entity3D : public Entity
 {
 public:
@@ -43,17 +44,26 @@ public:
     // Matrices
     //--------------------------------
 
+    /// \brief Gets the transformation matrix of this entity relative to its parent
     const Matrix4 & getLocalMatrix() const;
+
+    /// \brief Gets the transformation matrix of this entity relative to the world
     const Matrix4 & getGlobalMatrix() const;
 
     //--------------------------------
     // Helpers
     //--------------------------------
 
+    /// \brief Rotates the entity so its Z axis points the target position
     void lookAt(const Vector3f & targetPosition);
 
+    /// \brief Gets the unit right vector of this entity in world space
     Vector3f getRightVector() const;
+
+    /// \brief Gets the unit up vector of this entity in world space
     Vector3f getUpVector() const;
+
+    /// \brief Gets the unit forward vector of this entity in world space
     Vector3f getForwardVector() const;
 
     //--------------------------------
@@ -72,9 +82,12 @@ private:
     void updateChildrenTransform();
 
 private:
-    // Local
+
+    /// \brief Position relative to the parent
     Vector3f m_position;
+    /// \brief Scale relative to the parent
     Vector3f m_scale;
+    /// \brief Rotation relative to the parent
     Quaternion m_rotation;
 
     mutable Matrix4 m_localMatrix;
