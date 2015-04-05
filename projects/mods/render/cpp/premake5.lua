@@ -17,6 +17,8 @@ project "ModRender"
 		"entities/*.cpp",
 		"sq_binding/*.hpp",
 		"sq_binding/*.cpp",
+		"loaders/*.hpp",
+		"loaders/*.cpp",
 		"loaders/ply/*.hpp",
 		"loaders/ply/*.cpp",
 		"loaders/mshader/*.hpp",
