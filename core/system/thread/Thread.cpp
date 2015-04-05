@@ -10,15 +10,18 @@ namespace sn
 {
 
 //------------------------------------------------------------------------------
-Thread::Thread(void(*func)()):
-    r_func(func)
+Thread::Thread(FuncType func):
+    m_func(func)
 {
 }
 
 //------------------------------------------------------------------------------
 void Thread::run()
 {
-    (*r_func)();
+    if (m_func)
+    {
+        m_func();
+    }
 }
 
 } // namespace sn

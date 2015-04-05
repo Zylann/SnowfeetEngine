@@ -9,6 +9,7 @@ This file is part of the SnowfeetEngine project.
 
 #include <core/util/NonCopyable.hpp>
 #include <core/system/time/Time.hpp>
+#include <functional>
 
 namespace sn
 {
@@ -18,7 +19,9 @@ class ThreadImpl;
 class SN_API Thread : NonCopyable
 {
 public:
-    Thread(void(*func)());
+    typedef std::function<void()> FuncType;
+
+    Thread(FuncType func);
     ~Thread();
 
     void start();
@@ -32,7 +35,7 @@ private:
 
     void run();
 
-    void (*r_func)();
+    FuncType m_func;
     ThreadImpl * m_impl;
 };
 
