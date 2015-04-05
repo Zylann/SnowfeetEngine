@@ -1,0 +1,10 @@
+{
+	"shader":"basic3D_light",
+	"depthTest":true,
+	"params":{
+		"u_LightColor":[1.0, 1.0, 1.0],
+		"u_LightAmbientIntensity":0.3,
+		"u_LightDirection":[1.0, 1.0, 0.0]
+	}
+}
+

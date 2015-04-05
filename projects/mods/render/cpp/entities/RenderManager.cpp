@@ -223,6 +223,7 @@ void RenderManager::renderCamera(Camera & camera)
 
     Matrix4 viewMatrix = camera.getViewMatrix();
     Matrix4 modelViewMatrix;
+    Matrix4 normalMatrix;
 
     // Draw them
     for (auto it = sortedDrawables.begin(); it != sortedDrawables.end(); ++it) 
@@ -246,9 +247,13 @@ void RenderManager::renderCamera(Camera & camera)
                     const Matrix4 & modelMatrix = d.getGlobalMatrix();
                     modelViewMatrix.setByProduct(viewMatrix, modelMatrix);
 
+                    normalMatrix.loadIdentity();
+                    // TODO
+
                     // Note: Matrix4 is row-major with translation in the last row
                     shader->setParam("u_Projection", camera.getProjectionMatrix().values(), false);
                     shader->setParam("u_ModelView", modelViewMatrix.values(), false);
+                    shader->setParam("u_NormalMatrix", normalMatrix.values(), false);
 
                     material->apply();
                 }

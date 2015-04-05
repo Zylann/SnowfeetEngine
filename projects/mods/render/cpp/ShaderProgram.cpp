@@ -225,6 +225,9 @@ bool ShaderProgram::loadShaderFromSourceCode(GLuint & outShaderID, ShaderType ty
     return true; // Fine !
 }
 
+// TODO FIXME When the shader has not compiled, params setting should do nothing.
+// because the compile error is already shown to the user
+
 //------------------------------------------------------------------------------
 void ShaderProgram::setParam(const std::string & name, f32 value)
 {
