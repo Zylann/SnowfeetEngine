@@ -1,4 +1,4 @@
-#include "test_reflection.hpp"
+#include "tests.hpp"
 
 #include <core/reflect/Object.hpp>
 
