@@ -27,7 +27,7 @@ public:
             NULL, // _Security
             0, // _StackSize
             &ThreadImpl::threadFunc, // Function to execute
-            this, // _ArgList: we send the Thread as userdata, see threadFunc below
+            owner, // _ArgList: we send the Thread as userdata, see threadFunc below
             0, // _InitFlag
             &m_id // (out) win32 thread ID
         ));
@@ -35,6 +35,10 @@ public:
         if (m_handle == NULL)
         {
             SN_ERROR("Failed to create thread");
+        }
+        else
+        {
+            SN_LOG("Creating thread " << m_id);
         }
     }
 
