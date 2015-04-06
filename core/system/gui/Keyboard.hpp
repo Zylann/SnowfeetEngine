@@ -130,6 +130,8 @@ enum KeyCode
 
 // Platform-specific
 
+/// \brief Tests if a keyboard key is currently pressed (global input)
+/// \param key: code of the key to test
 bool SN_API isKeyPressed(KeyCode key);
 
 } // namespace sn

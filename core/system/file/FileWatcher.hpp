@@ -21,8 +21,8 @@ public:
     {
         FILE_ADDED,
         FILE_MODIFIED,
-        FILE_MOVED,
-        FILE_DELETED,
+        FILE_REMOVED,
+        FILE_RENAMED,
         FILE_UNKNOWN_CHANGE
     };
 

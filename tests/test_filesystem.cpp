@@ -3,6 +3,7 @@
 #include <core/util/Log.hpp>
 #include <core/system/file/FileWatcher.hpp>
 #include <core/system/thread/Thread.hpp>
+#include <core/system/gui/Keyboard.hpp>
 
 void test_fileWatcher()
 {
@@ -40,7 +41,11 @@ void test_fileWatcher()
         FileWatcher::Event ev;
         while (watcher.popEvent(ev))
         {
-            SN_LOG("File change");
+            SN_LOG("File change " << ev.type << " at " << ev.path);
+        }
+
+        if (isKeyPressed(SN_KEY_ESCAPE))
+        {
             continueWatching = false;
         }
 
