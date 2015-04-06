@@ -9,5 +9,14 @@ This file is part of the SnowfeetEngine project.
 namespace sn
 {
 
+SharedLib::SharedLib():
+    m_impl(nullptr)
+{}
+
+SharedLib::~SharedLib()
+{
+    unload();
+}
+
 } // namespace sn
 
