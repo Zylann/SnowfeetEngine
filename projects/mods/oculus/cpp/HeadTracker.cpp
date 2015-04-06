@@ -26,6 +26,13 @@ namespace OVR
 namespace sn {
 namespace oculus {
 
+/// \brief Gets euler angles from an OVR rotation applying the engine's graphic conventions
+void getEulerAnglesFromOVR(OVR::Quat<float> & q, Vector3f & euler)
+{
+    q.GetEulerAngles<OVR::Axis_X, OVR::Axis_Y, OVR::Axis_Z, OVR::Rotate_CCW, OVR::Handed_L>(&euler.x(), &euler.y(), &euler.z());
+}
+
+
 HeadTracker::HeadTracker():
     m_hmd(nullptr),
     m_isFirstUpdate(true),
@@ -130,8 +137,9 @@ void HeadTracker::onRenderEye(Entity * sender, Material * effectMaterial, Vector
         {
             // Get head pose
             OVR::Posef pose = trackingState.HeadPose.ThePose;
-            f32 yaw, pitch, roll;
-            pose.Rotation.GetEulerAngles<OVR::Axis_Y, OVR::Axis_X, OVR::Axis_Z>(&yaw, &pitch, &roll);
+            Vector3f euler;
+            getEulerAnglesFromOVR(pose.Rotation, euler);
+            //pose.Rotation.GetEulerAngles<OVR::Axis_Y, OVR::Axis_X, OVR::Axis_Z>(&yaw, &pitch, &roll);
 
             // Get eye poses
             ovrPosef temp_EyeRenderPose[2];
@@ -163,7 +171,7 @@ void HeadTracker::onRenderEye(Entity * sender, Material * effectMaterial, Vector
             ovrPosef eyePose = temp_EyeRenderPose[eyeIndex];
 
             ovrMatrix4f timeWarpMatrices[2];
-            OVR::Quatf extraYawSinceRender = OVR::Quatf(OVR::Vector3f(0, 1, 0), yaw - m_lastYaw);
+            OVR::Quatf extraYawSinceRender = OVR::Quatf(OVR::Vector3f(0, 1, 0), euler.y() - m_lastYaw);
             ovrHmd_GetEyeTimewarpMatrices(m_hmd, eye, eyePose, timeWarpMatrices);// , debugTimeAdjuster);
 
             // Due to be absorbed by a future SDK update
@@ -197,26 +205,25 @@ void HeadTracker::onUpdate()
         {
             // Get head pose
             OVR::Posef pose = trackingState.HeadPose.ThePose;
-            f32 yaw, pitch, roll;
-            pose.Rotation.GetEulerAngles<OVR::Axis_Y, OVR::Axis_X, OVR::Axis_Z>(&yaw, &pitch, &roll);
-            //SN_LOG("yaw=" << yaw << ", pitch=" << pitch << ", roll=" << roll);
-
-            // TODO FIXME Rotation issues
-            // - Pitch is inverted
-            // - Roll becomes pitch when looking left or right
-            // - Rotation is fucked up when looking at the poles
 
             // Update parent's position
             Entity * targetEntity = getParent();
             if (targetEntity && targetEntity->isInstanceOf<Entity3D>())
             {
                 Entity3D & target3D = *(Entity3D*)targetEntity;
-                //target3D.setRotation(Quaternion(pitch * math::RAD2DEG, yaw * math::RAD2DEG, roll * math::RAD2DEG));
-                target3D.setRotation(Quaternion(pose.Rotation.w, pose.Rotation.x, pose.Rotation.y, pose.Rotation.z));
+                OVR::Quat<float> q = pose.Rotation;
+                //q.Invert();
+                //target3D.setRotation(Quaternion(euler * math::RAD2DEG));
+                target3D.setRotation(Quaternion(q.w, -q.x, -q.y, q.z));
+                //SN_LOG("target: " << target3D.getName() << ", position: " << sn::toString(target3D.getGlobalPosition()) << ", rotation: " << sn::toString(target3D.getGlobalRotation()));
+                //Vector3f r = target3D.getRotation().getEulerAngles();
+                //SN_LOG("OVR: (" << (pitch*math::RAD2DEG) << ", " << (yaw*math::RAD2DEG) << ", " << (roll*math::RAD2DEG) << ") / SN: " << sn::toString(r));
             }
 
             // Memorize last head/eye variables
-            m_lastYaw = yaw;
+            Vector3f euler;
+            getEulerAnglesFromOVR(pose.Rotation, euler);
+            m_lastYaw = euler.y();
         }
 
         ovrHmd_EndFrameTiming(m_hmd);

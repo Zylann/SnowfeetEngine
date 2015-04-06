@@ -40,9 +40,14 @@ void main()
 {
 	mat4 lerpedEyeRot = lerpMatrix(u_EyeRotationStart, u_EyeRotationEnd, in_TimewarpLerpFactor);
 	
-	v_TexCoord0 = TimewarpTexCoord(in_TexCoord0, lerpedEyeRot);
-	v_TexCoord1 = TimewarpTexCoord(in_TexCoord1, lerpedEyeRot);
-	v_TexCoord2 = TimewarpTexCoord(in_TexCoord2, lerpedEyeRot);
+	// Invert Y texCoord axis
+	vec2 tc0 = vec2(in_TexCoord0.x, 1.0 - in_TexCoord0.y);
+	vec2 tc1 = vec2(in_TexCoord1.x, 1.0 - in_TexCoord1.y);
+	vec2 tc2 = vec2(in_TexCoord2.x, 1.0 - in_TexCoord2.y);
+
+	v_TexCoord0 = TimewarpTexCoord(tc0, lerpedEyeRot);
+	v_TexCoord1 = TimewarpTexCoord(tc1, lerpedEyeRot);
+	v_TexCoord2 = TimewarpTexCoord(tc2, lerpedEyeRot);
 
 	gl_Position = vec4(in_Position.xy, 0.5, 1.0);
 	v_Vignette = in_Vignette; // For vignette fade
@@ -85,7 +90,13 @@ void main()
 	// 	out_Color = vec4(1.0, 0.0, 0.0, 1.0);
 	// }
 	
+	// No vignette
 	//out_Color = vec4(r,g,b, 1.0);
+
+	// Only the red channel
+	//out_Color = vec4(r,r,r, 1.0);
+
+	// Show texcoords
 	//out_Color = vec4(v_TexCoord0, 0.0, 1.0);
 }
 
