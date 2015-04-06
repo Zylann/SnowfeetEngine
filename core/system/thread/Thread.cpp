@@ -11,7 +11,8 @@ namespace sn
 
 //------------------------------------------------------------------------------
 Thread::Thread(FuncType func):
-    m_func(func)
+    m_func(func),
+    m_impl(nullptr)
 {
 }
 
