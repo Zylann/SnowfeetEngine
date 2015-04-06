@@ -27,6 +27,7 @@ public:
 
     /// \brief Converts a path to the current platform's format
     static String platformize(String str);
+    static std::string platformize(std::string str);
 
     /// \brief Converts a path to the engine's convention
     static String normalize(String str);

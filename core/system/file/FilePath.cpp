@@ -37,6 +37,16 @@ String FilePath::platformize(String str)
     return str;
 }
 
+std::string FilePath::platformize(std::string str)
+{
+    for (auto it = str.begin(); it != str.end(); ++it)
+    {
+        if (*it == OTHER_SEPARATOR)
+            *it = PLATFORM_SEPARATOR;
+    }
+    return str;
+}
+
 String FilePath::normalize(String str)
 {
     for (auto it = str.begin(); it != str.end(); ++it)
