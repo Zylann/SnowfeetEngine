@@ -29,10 +29,11 @@ Notes
 What the engine does now
 ------------------------
 
-![Screenshot](http://zylannprods.fr/snowfeet/engine/screenshots/2015_03_22_3D_beginning3.png)
+![Screenshot](http://zylannprods.fr/snowfeet/engine/screenshots/2015_04_06_2031_oculus6_lights_black.png)
+Testing Oculus Rift client-mode display
 
-I'm just beginning 3D rendering, but lots of things remain to be done in the core,
-such as scripting, asset abstraction and other low-level stuff.
+The current focus is basic rendering, scripting and assets management.
+Things like texture and shaders live-edition are in the works too :)
 
 
 Web export
