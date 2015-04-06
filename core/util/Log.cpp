@@ -24,8 +24,30 @@ Log & Log::get()
 }
 
 //------------------------------------------------------------------------------
+void Log::setFileOutputFlags(u32 flags)
+{
+    Lock lock(m_mutex);
+    m_fileOutputFlags = flags;
+}
+
+//------------------------------------------------------------------------------
+void Log::setConsoleOutputFlags(u32 flags)
+{
+    Lock lock(m_mutex);
+    m_consoleOutputFlags = flags;
+}
+
+//------------------------------------------------------------------------------
+void Log::closeFile()
+{
+    Lock lock(m_mutex);
+    m_file.close();
+}
+
+//------------------------------------------------------------------------------
 bool Log::openFile(const std::string & fpath)
 {
+    Lock lock(m_mutex);
     m_file.open(fpath.c_str());
     if(!m_file.good())
     {
@@ -48,6 +70,8 @@ void Log::print(LogTypeMask logType, std::string msg)
     case SN_LTM_MORE:     prefix = " | "; break;
     default:              prefix = "D: "; break; // SN_LTM_DEBUG
     }
+
+    Lock lock(m_mutex);
 
     // TODO Log: add timestamp
 

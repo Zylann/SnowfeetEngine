@@ -9,6 +9,7 @@ This file is part of the SnowfeetEngine project.
 
 #include <core/types.hpp>
 #include <core/util/NonCopyable.hpp>
+#include <core/system/thread/Lock.hpp>
 #include <iostream>
 #include <cassert>
 #include <fstream>
@@ -76,8 +77,8 @@ enum SN_API LogTypeMask
     SN_LTM_NONE = 0
 };
 
-// TODO make the Log thread-safe (and threaded?)
-/// \brief Simple stream wrapper providing file and/or console output
+/// \brief Simple stream wrapper providing file and/or console output.
+/// This class can be used from multiple threads.
 class SN_API Log : public NonCopyable
 {
 public:
@@ -85,8 +86,38 @@ public:
     /// \brief Gets global Log singleton
     static Log & get();
 
-private:
+public:
 
+    /// \brief Sets which types of messages must be written to the file output.
+    /// \param flags: bitmask where set flags activate a type of output.
+    /// \see Log::MessageTypeMask
+    void setFileOutputFlags(u32 flags);
+
+    /// \brief Sets which types of messages must be written to the console output.
+    /// \param flags: bitmask where set flags activate a type of output.
+    /// \see Log::MessageTypeMask
+    inline void setConsoleOutputFlags(u32 flags);
+
+    /// \brief Sets which file will be used to output log messages.
+    /// \param fpath: path to the file to open
+    /// \return true if the file was successuflly open, false otherwise
+    bool openFile(const std::string & fpath);
+
+    /// \brief Closes the file used to output log messages.
+    /// \note This also disables outputting messages to a file unless openFile() gets called again.
+    void closeFile();
+
+    /// \brief Pushes a message to the log system.
+    /// \param logType: nature of the message
+    /// \param msg: message string
+    void print(LogTypeMask logType, std::string msg);
+
+    /// \brief Pushes a message to the log system.
+    /// \param logType: nature of the message
+    /// \param msg: message string (wide characters)
+    void wprint(LogTypeMask logType, std::wstring msg);
+
+private:
     Log() :
         m_messageType(SN_LTM_INFO),
         m_fileOutputFlags(SN_LTM_ALL),
@@ -96,39 +127,6 @@ private:
         m_consoleOutputFlags(SN_LTM_WARNING | SN_LTM_ERROR)
 #endif
     {}
-
-public:
-
-    /// \brief Sets which types of messages must be written to the file output.
-    /// \param flags: bitmask where set flags activate a type of output.
-    /// \see Log::MessageTypeMask
-    inline void setFileOutputFlags(u32 flags)
-    {
-        m_fileOutputFlags = flags;
-    }
-
-    /// \brief Sets which types of messages must be written to the console output.
-    /// \param flags: bitmask where set flags activate a type of output.
-    /// \see Log::MessageTypeMask
-    inline void setConsoleOutputFlags(u32 flags)
-    {
-        m_consoleOutputFlags = flags;
-    }
-
-    /// \brief Sets which file will be used to output log messages.
-    /// \param fpath: path to the file to open
-    /// \return true if the file was successuflly open, false otherwise
-    bool openFile(const std::string & fpath);
-
-    /// \brief Closes the file used to output log messages.
-    /// \note This also disables outputting messages to a file unless openFile() gets called again.
-    inline void closeFile()
-    {
-        m_file.close();
-    }
-
-    void print(LogTypeMask logType, std::string msg);
-    void wprint(LogTypeMask logType, std::wstring msg);
 
 private:
 
@@ -143,6 +141,9 @@ private:
 
     /// \brief Bitmask storing which messages to output to the console.
     u8 m_consoleOutputFlags;
+
+    /// \brief Synchronization mutex to be able to use the logger from multiple threads
+    Mutex m_mutex;
 
 };
 
