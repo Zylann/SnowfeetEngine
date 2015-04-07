@@ -40,10 +40,10 @@ bool CommandLine::addFromFile(const std::string & filePath)
         ifs.seekg(0, std::ios::end);
         std::streamoff len = ifs.tellg();
         ifs.seekg(0, std::ios::beg);
-        char * buffer = new char[static_cast<u32>(len)];
+        char * buffer = new char[static_cast<u32>(len + 1)];
         ifs.read(buffer, len);
         ifs.close();
-        buffer[len - 1] = '\0';
+        buffer[len] = '\0';
         std::string str(buffer);
         delete[] buffer;
         addFromString(str);
