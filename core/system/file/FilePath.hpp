@@ -22,8 +22,11 @@ public:
     // Note: the following functions allow working with strings.
     // In the future, FilePath may be usable as an instance too.
 
+    // TODO Use UTF8 everywhere!
+
     /// \brief Combines two normalized paths and ensures they are well separated with the appropriate symbol
     static String join(const String & str1, const String & str2, char separator=UNIFIED_SEPARATOR);
+    static std::string join(const std::string & str1, const std::string & str2, char separator=UNIFIED_SEPARATOR);
 
     /// \brief Converts a path to the current platform's format
     static String platformize(String str);
@@ -31,6 +34,7 @@ public:
 
     /// \brief Converts a path to the engine's convention
     static String normalize(String str);
+    static std::string normalize(std::string str);
 
     static bool isSeparator(char c) { return c == PLATFORM_SEPARATOR || c == OTHER_SEPARATOR; }
 

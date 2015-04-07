@@ -1,4 +1,5 @@
 #include "FileWatcher.hpp"
+#include "FilePath.hpp"
 
 // http://stackoverflow.com/questions/931093/how-do-i-make-my-program-watch-for-file-modification-in-c
 
@@ -21,8 +22,8 @@ void FileWatcher::setPath(const std::string & path)
 {
     m_watchedPath = path;
 
-    // If a session is already running
-    if (m_impl)
+    // If a session is already running or if watching is enabled
+    if (m_impl || m_enabled)
     {
         // Re-create the session
         create();
@@ -32,10 +33,17 @@ void FileWatcher::setPath(const std::string & path)
 void FileWatcher::setEnabled(bool e)
 {
     m_enabled = e;
-    if (m_enabled)
+    if (m_enabled && !m_watchedPath.empty())
         create();
     else
         destroy();
+}
+
+void FileWatcher::setRecursive(bool r)
+{
+    m_isRecursive = r;
+    if (m_impl)
+        create();
 }
 
 bool FileWatcher::popEvent(Event & event)
@@ -55,6 +63,8 @@ bool FileWatcher::popEvent(Event & event)
 
 void FileWatcher::pushEvent(Event event)
 {
+    event.path = FilePath::normalize(event.path);
+    event.newPath = FilePath::normalize(event.newPath);
     Lock lock(m_eventsMutex);
     m_events.push(event);
 }

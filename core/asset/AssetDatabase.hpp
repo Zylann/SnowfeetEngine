@@ -12,6 +12,7 @@ This file is part of the SnowfeetEngine project.
 #include <core/asset/AssetMetadata.hpp>
 #include <core/asset/SerializationContext.hpp>
 #include <core/app/ModuleInfo.hpp>
+#include <core/system/file/FileWatcher.hpp>
 
 #include <unordered_map>
 
@@ -71,6 +72,14 @@ public:
     void releaseAssets();
 
     //-----------------------------
+    // Live edition
+    //-----------------------------
+
+    void setTrackFileChanges(bool enabled);
+    bool isTrackingFileChanges() const;
+    void updateFileChanges();
+
+    //-----------------------------
     // Template helpers
     //-----------------------------
 
@@ -109,6 +118,7 @@ private:
     Asset * preloadAsset(const String & path, const std::string & moduleName);
 
     AssetLoadStatus loadAsset(Asset * asset);
+    AssetLoadStatus loadIndexedAssetByPath(const std::string & path);
 
 private:
 
@@ -127,6 +137,8 @@ private:
     /// \brief [moduleName][baseTypeName][name] => asset
     /// \note The moduleName corresponds to the location of the asset, not its type.
     std::unordered_map< std::string, std::unordered_map< std::string, std::unordered_map<std::string, Asset*> > > m_assets;
+
+    FileWatcher m_rootWatcher;
 
 };
 

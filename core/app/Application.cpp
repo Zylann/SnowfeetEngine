@@ -146,6 +146,8 @@ int Application::executeEx()
             }
         }
 
+        AssetDatabase::get().updateFileChanges();
+
         std::vector<Time> deltas = m_timeStepper.getCallDeltas();
         for (u32 i = 0; i < deltas.size() && m_runFlag; ++i)
         {
@@ -183,6 +185,7 @@ int Application::executeEx()
 
     // Release assets
     SN_LOG("Releasing assets...");
+    AssetDatabase::get().setTrackFileChanges(false); // To ensure the watcher thread is closed
     AssetDatabase::get().releaseAssets();
     AssetDatabase::get().releaseLoaders();
 
@@ -236,7 +239,7 @@ bool Application::parseCommandLine(CommandLine commandLine)
 
     u32 argc = commandLine.getArgCount();
 
-    if (argc == 1)
+    if (argc <= 1)
     {
         commandLine.addFromFile("commandline.txt");
         argc = commandLine.getArgCount();
@@ -244,7 +247,8 @@ bool Application::parseCommandLine(CommandLine commandLine)
 
     SN_WLOG("Command line: " << commandLine.toWideString());
 
-    if (argc == 5)
+    // path + -p + value + -x + value = 5 args minimum
+    if (argc >= 5)
     {
         m_pathToProjects = L"projects";
 
@@ -258,6 +262,10 @@ bool Application::parseCommandLine(CommandLine commandLine)
             else if (arg == L"-x")
             {
                 m_pathToMainMod = commandLine.getArg(++i);
+            }
+            else if (argc == 6 && arg == L"--trackfiles")
+            {
+                AssetDatabase::get().setTrackFileChanges(true);
             }
             else
             {

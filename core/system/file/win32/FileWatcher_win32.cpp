@@ -46,7 +46,7 @@ FileWatcherImpl::FileWatcherImpl(FileWatcher & owner):
     m_continueWatching(true)
 {
     m_watcherThread = new Thread([this](){
-        startWatching(r_owner.getPath().c_str(), r_owner.isRecursive());
+        startWatching(r_owner.getPath(), r_owner.isRecursive());
     });
     m_watcherThread->start();
 }
@@ -67,7 +67,7 @@ bool FileWatcherImpl::isActive() const
 
 void FileWatcherImpl::startWatching(std::string pathStr, bool recursive)
 {
-    SN_LOG("FileWatcher thread begin " << pathStr);
+    SN_LOG("FileWatcher thread begin at '" << pathStr << "'");
 
     // Convert input path into the win32 format
     pathStr = FilePath::platformize(pathStr);

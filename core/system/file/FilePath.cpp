@@ -1,4 +1,5 @@
 #include "FilePath.hpp"
+#include <core/util/stringutils.hpp>
 
 namespace sn
 {
@@ -27,6 +28,12 @@ String FilePath::join(const String & str1, const String & str2, char separator)
     }
 }
 
+std::string FilePath::join(const std::string & str1, const std::string & str2, char separator)
+{
+    String res = join(toWideString(str1), toWideString(str2), separator);
+    return toString(res);
+}
+
 String FilePath::platformize(String str)
 {
     for (auto it = str.begin(); it != str.end(); ++it)
@@ -48,6 +55,16 @@ std::string FilePath::platformize(std::string str)
 }
 
 String FilePath::normalize(String str)
+{
+    for (auto it = str.begin(); it != str.end(); ++it)
+    {
+        if (*it == PLATFORM_SEPARATOR)
+            *it = UNIFIED_SEPARATOR;
+    }
+    return str;
+}
+
+std::string FilePath::normalize(std::string str)
 {
     for (auto it = str.begin(); it != str.end(); ++it)
     {

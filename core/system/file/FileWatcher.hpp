@@ -4,6 +4,7 @@
 #include <string>
 #include <queue>
 #include <core/system/thread/Lock.hpp>
+#include <core/util/NonCopyable.hpp>
 
 namespace sn
 {
@@ -13,7 +14,7 @@ class FileWatcherImpl;
 /// \brief Wraps filesystem notifications under a specified path.
 /// It can detect file changes under the path like addition, deletion or modification.
 /// Events are asynchronous and can be retrieved through a queue.
-class SN_API FileWatcher
+class SN_API FileWatcher : public NonCopyable
 {
 public:
 
@@ -56,7 +57,7 @@ public:
     const std::string & getPath() const { return m_watchedPath; }
 
     /// \brief Enables or disables watching.
-    /// \warning You should set a path before setting this to true, otherwise you'll get no results.
+    /// \note If no path is set yet, you'll get no results until you set one.
     void setEnabled(bool e);
 
     /// \brief Tells if the watcher is active or not

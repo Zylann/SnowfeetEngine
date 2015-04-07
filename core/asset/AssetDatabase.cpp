@@ -41,6 +41,7 @@ void AssetDatabase::setRoot(const String & root)
 {
     SN_ASSERT(m_assets.empty(), "Cannot set root after assets have been loaded!");
     m_root = root;
+    m_rootWatcher.setPath(sn::toString(m_root));
 }
 
 //------------------------------------------------------------------------------
@@ -331,6 +332,20 @@ AssetLoadStatus AssetDatabase::loadAsset(Asset * asset)
 }
 
 //------------------------------------------------------------------------------
+AssetLoadStatus AssetDatabase::loadIndexedAssetByPath(const std::string & path)
+{
+    auto it = m_fileCache.find(toWideString(path));
+    if (it != m_fileCache.end())
+    {
+        return loadAsset(it->second);
+    }
+    else
+    {
+        return SN_ALS_MISMATCH;
+    }
+}
+
+//------------------------------------------------------------------------------
 void AssetDatabase::releaseAssets()
 {
     u32 leakCount = 0;
@@ -448,6 +463,45 @@ Asset * getAssetBySerializedLocation(const std::string & type, const std::string
 
     // Asset not found
     return nullptr;
+}
+
+//------------------------------------------------------------------------------
+void AssetDatabase::setTrackFileChanges(bool enabled)
+{
+    //m_rootWatcher.setPath(sn::toString(m_root));
+    if (enabled)
+        m_rootWatcher.setRecursive(true);
+    m_rootWatcher.setEnabled(enabled);
+}
+
+//------------------------------------------------------------------------------
+bool AssetDatabase::isTrackingFileChanges() const
+{
+    return m_rootWatcher.isEnabled();
+}
+
+//------------------------------------------------------------------------------
+void AssetDatabase::updateFileChanges()
+{
+    if (m_rootWatcher.isEnabled())
+    {
+        // TODO What if an asset saves itself upon reloading? Infinite loop?
+        FileWatcher::Event event;
+        while (m_rootWatcher.popEvent(event))
+        {
+            switch (event.type)
+            {
+            case FileWatcher::FILE_MODIFIED:
+                // TODO win32: two events are received when the asset is saved (CTRL+S). Need to filter the second one!
+                SN_DLOG("Received file change: " << event.path);
+                loadIndexedAssetByPath(FilePath::join(toString(m_root), event.path));
+                break;
+
+            default:
+                break;
+            }
+        }
+    }
 }
 
 } // namespace sn
