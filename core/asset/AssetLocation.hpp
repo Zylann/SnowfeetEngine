@@ -6,6 +6,9 @@
 namespace sn
 {
 
+/// \brief Represents the namespaced virtual location of an asset.
+/// This location is used in applications rather than filesystem paths,
+/// unless the 'name' is computed as a path itself.
 struct AssetLocation
 {
     static const char NAMESPACE_SEPARATOR;
