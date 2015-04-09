@@ -224,7 +224,7 @@ void FileWatcherImpl::startWatching(std::string pathStr, bool recursive)
                 break;
 
             default:
-                SN_LOG("Default error.");
+                SN_ERROR("Unknown file notification (" << pNotification->Action << ')');
                 break;
             }
 
