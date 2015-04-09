@@ -27,6 +27,7 @@ AssetDatabase & AssetDatabase::get()
 //------------------------------------------------------------------------------
 AssetDatabase::AssetDatabase()
 {
+    m_rootWatcher.setFilterDuplicateEvents(true);
 }
 
 //------------------------------------------------------------------------------

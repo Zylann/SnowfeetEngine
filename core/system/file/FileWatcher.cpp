@@ -11,6 +11,7 @@ FileWatcher::FileWatcher():
     m_isRecursive(false),
     m_impl(nullptr)
 {
+    m_duplicateEventTimeThreshold = Time::milliseconds(10);
 }
 
 FileWatcher::~FileWatcher()
@@ -66,6 +67,13 @@ void FileWatcher::pushEvent(Event event)
     event.path = FilePath::normalize(event.path);
     event.newPath = FilePath::normalize(event.newPath);
     Lock lock(m_eventsMutex);
+    if (m_filterDuplicateEvents
+        && !m_events.empty()
+        && m_lastEventTime.restart() >= m_duplicateEventTimeThreshold
+        && m_events.back() == event)
+    {
+        return;
+    }
     m_events.push(event);
 }
 
@@ -82,6 +90,16 @@ void FileWatcher::destroy()
         destroyImpl();
         m_impl = nullptr;
     }
+}
+
+void FileWatcher::setFilterDuplicateEvents(bool enable)
+{
+    m_filterDuplicateEvents = enable;
+}
+
+void FileWatcher::setDuplicateEventsFilterTimeThreshold(Time threshold)
+{
+    m_duplicateEventTimeThreshold = threshold;
 }
 
 } // namespace sn

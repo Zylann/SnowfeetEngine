@@ -4,6 +4,7 @@
 #include <string>
 #include <queue>
 #include <core/system/thread/Lock.hpp>
+#include <core/system/time/Clock.hpp>
 #include <core/util/NonCopyable.hpp>
 
 namespace sn
@@ -42,6 +43,14 @@ public:
             type(FILE_UNKNOWN_CHANGE),
             isDirectory(false)
         {}
+
+        bool operator==(const Event & other)
+        {
+            return type == other.type
+                && path == other.path
+                && newPath == other.newPath
+                && isDirectory == isDirectory;
+        }
     };
 
     /// \brief Just creates an inactive, uninitialized FileWatcher.
@@ -77,6 +86,9 @@ public:
     /// \warning This method is reserved for internal use.
     void pushEvent(Event event);
 
+    void setFilterDuplicateEvents(bool enable);
+    void setDuplicateEventsFilterTimeThreshold(Time threshold);
+
 private:
     void create();
     void destroy();
@@ -88,10 +100,13 @@ private:
 private:
     bool m_enabled;
     bool m_isRecursive;
+    bool m_filterDuplicateEvents;
+    Time m_duplicateEventTimeThreshold;
     std::string m_watchedPath;
     std::queue<Event> m_events;
     Mutex m_eventsMutex;
     FileWatcherImpl * m_impl;
+    Clock m_lastEventTime;
 
 };
 
