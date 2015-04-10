@@ -70,7 +70,7 @@ void Matrix4::loadIdentity()
 
 //------------------------------------------------------------------------------
 void Matrix4::loadPerspectiveProjection(
-        const f32 fov, const f32 ratio,
+        const f32 fovY, const f32 ratio,
         const f32 near, const f32 far)
 {
     //  0   1   2   3
@@ -80,19 +80,39 @@ void Matrix4::loadPerspectiveProjection(
     memset(m_v, 0, 16 * sizeof(f32)); // zeros
 #if 0
     // Right-handed
-    m_v[5] = 1.f / tan(fov * 0.5f);
+    m_v[5] = 1.f / tan(fovY * 0.5f);
     m_v[0] = m_v[5] / ratio;
     m_v[10] = (near + far) / (near - far);
     m_v[11] = -1;
     m_v[14] = (2.f*near*far) / (near - far);
 #else
     // Left-handed
-    m_v[5] = 1.f / tan(fov * 0.5f);
+    m_v[5] = 1.f / tan(fovY * 0.5f);
     m_v[0] = m_v[5] / ratio;
     m_v[10] = (near + far) / (far - near);
-    m_v[11] = 1;
-    m_v[14] = -(2.f*near*far) / (far - near);
+    m_v[11] = 1.f;
+    m_v[14] = -2.f * near * far / (far - near);
 #endif
+}
+
+//------------------------------------------------------------------------------
+void Matrix4::loadPerspectiveProjection(Fov fov, f32 near, f32 far)
+{
+    m_v[0] = 2.f / (fov.tanRight + fov.tanLeft);
+    m_v[5] = 2.f / (fov.tanUp + fov.tanDown);
+    m_v[8] = (fov.tanLeft - fov.tanRight) / (fov.tanRight + fov.tanLeft);
+    m_v[9] = (fov.tanUp - fov.tanDown) / (fov.tanUp + fov.tanDown);
+    m_v[10] = (near + far) / (far - near);
+    m_v[11] = 1.f;
+    m_v[14] = -2.f * near * far / (far - near);
+
+    //m_v[0] = 2 * near / (right - left);
+    //m_v[5] = 2 * near / (top - bottom);
+    //m_v[8] = (right + left) / (right - left);
+    //m_v[9] = (top + bottom) / (top - bottom);
+    //m_v[10] = -(far + near) / (far - near);
+    //m_v[11] = -1;
+    //m_v[14] = -2.f * near * far / (far - near);
 }
 
 //------------------------------------------------------------------------------

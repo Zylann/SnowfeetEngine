@@ -9,6 +9,7 @@ This file is part of the SnowfeetEngine project.
 
 #include "Vector3.hpp"
 #include "Quaternion.hpp"
+#include "Fov.hpp"
 
 namespace sn
 {
@@ -40,6 +41,8 @@ public :
         const f32 fov, const f32 ratio,
         const f32 near, const f32 far
     );
+
+    void loadPerspectiveProjection(Fov fov, f32 near, f32 far);
 
     void loadOrtho2DProjection(
         const f32 left, const f32 top,
