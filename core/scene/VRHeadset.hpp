@@ -3,6 +3,8 @@
 
 #include <core/scene/Entity.hpp>
 #include <core/math/Rect.hpp>
+#include <core/math/Matrix4.hpp>
+#include <core/math/Fov.hpp>
 #include <core/asset/base/Material.hpp>
 
 namespace sn
@@ -17,14 +19,24 @@ class SN_API VRHeadset : public Entity
 public:
     SN_ENTITY(sn::VRHeadset, sn::Entity)
 
-    // Called just before an eye camera renders an effect. This lets the material to be modified if needed.
+    /// \brief An eye's description, abstracted from device-specific information.
+    struct AbstractEyeDescription
+    {
+        /// \brief The tag a camera should have to be considered as an eye
+        std::string tag;
+        /// \brief Field of view of the eye
+        Fov fov;
+    };
+
+    /// \brief Called just before an eye camera renders an effect. This lets the material to be modified if needed.
     virtual void onRenderEye(Entity * sender, Material * effectMaterial, Vector2u sourceSize, IntRect targetViewport) = 0;
 
-    // Gets the tag a camera should have to be considered as an eye
-    const std::string & getEyeTag(u32 eyeIndex) { return m_eyeTags[eyeIndex]; }
+    /// \brief Gets an eye's description
+    /// \param eyeIndex: index of the eye. 0 = left, 1 = right.
+    const AbstractEyeDescription & getAbstractEyeDescription(u32 eyeIndex) { return m_abstractEyes[eyeIndex]; }
 
 protected:
-    std::string m_eyeTags[2];
+    AbstractEyeDescription m_abstractEyes[2];
 
 };
 

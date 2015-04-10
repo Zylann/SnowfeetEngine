@@ -38,8 +38,8 @@ HeadTracker::HeadTracker():
     m_isFirstUpdate(true),
     m_lastYaw(0)
 {
-    m_eyeTags[0] = "VR_LeftEye";
-    m_eyeTags[1] = "VR_RightEye";
+    m_abstractEyes[0].tag = "VR_LeftEye";
+    m_abstractEyes[1].tag = "VR_RightEye";
 }
 
 HeadTracker::~HeadTracker()
@@ -75,6 +75,11 @@ void HeadTracker::onReady()
         // Initialize eye descriptions
         m_eyeDesc[0] = ovrHmd_GetRenderDesc(m_hmd, ovrEye_Left, m_hmd->DefaultEyeFov[0]);
         m_eyeDesc[1] = ovrHmd_GetRenderDesc(m_hmd, ovrEye_Right, m_hmd->DefaultEyeFov[1]);
+        for (u32 i = 0; i < 2; ++i)
+        {
+            const ovrFovPort & ovrFov = m_eyeDesc[i].Fov;
+            m_abstractEyes[i].fov = Fov(ovrFov.LeftTan, ovrFov.RightTan, ovrFov.UpTan, ovrFov.DownTan);
+        }
 
         // Make eye distortion meshes
 
@@ -158,8 +163,8 @@ void HeadTracker::onRenderEye(Entity * sender, Material * effectMaterial, Vector
             const ovrEyeRenderDesc & eyeDesc = m_eyeDesc[eyeIndex];
 
             // Update UV parameters
-            ovrSizei rtSize = { targetViewport.width(), targetViewport.height() };
-            ovrRecti camViewport = { 0, 0, targetViewport.width(), targetViewport.width() };
+            ovrSizei rtSize = { sourceSize.x(), sourceSize.y() };
+            ovrRecti camViewport = { 0, 0, targetViewport.width(), targetViewport.height() };
             //ovrRecti camViewport = { 0, 0, targetViewport.width(), targetViewport.height() };
             ovrVector2f UVScaleOffset[2];
             ovrHmd_GetRenderScaleAndOffset(eyeDesc.Fov, rtSize, camViewport, UVScaleOffset);
@@ -212,12 +217,8 @@ void HeadTracker::onUpdate()
             {
                 Entity3D & target3D = *(Entity3D*)targetEntity;
                 OVR::Quat<float> q = pose.Rotation;
-                //q.Invert();
-                //target3D.setRotation(Quaternion(euler * math::RAD2DEG));
+                // Note: Y and X axes need to be inverted to match the coordinate system
                 target3D.setRotation(Quaternion(q.w, -q.x, -q.y, q.z));
-                //SN_LOG("target: " << target3D.getName() << ", position: " << sn::toString(target3D.getGlobalPosition()) << ", rotation: " << sn::toString(target3D.getGlobalRotation()));
-                //Vector3f r = target3D.getRotation().getEulerAngles();
-                //SN_LOG("OVR: (" << (pitch*math::RAD2DEG) << ", " << (yaw*math::RAD2DEG) << ", " << (roll*math::RAD2DEG) << ") / SN: " << sn::toString(r));
             }
 
             // Memorize last head/eye variables

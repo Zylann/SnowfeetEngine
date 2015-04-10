@@ -172,9 +172,29 @@ void RenderManager::renderCamera(Camera & camera)
 {
     IntRect viewport = camera.getPixelViewport();
 
-    // If the camera has effects
-    if (camera.getEffectCount() > 0)
+    bool bypassEffects = false;
+    if (camera.getRenderTarget() == nullptr)
     {
+        bypassEffects = sn::isKeyPressed(SN_KEY_F6);
+    }
+
+    VRHeadset * vr = nullptr;
+    if (camera.getParent())
+    {
+        vr = camera.getParent()->getChild<VRHeadset>();
+        if (!(camera.hasTag(vr->getAbstractEyeDescription(0).tag) || 
+              camera.hasTag(vr->getAbstractEyeDescription(1).tag)))
+        {
+            vr = nullptr;
+        }
+    }
+
+    // If the camera has effects
+    if (camera.getEffectCount() > 0 && !bypassEffects)
+    {
+        // TODO Don't leave this here, it should be automated (target textures resizing)
+        camera.updateEffectBuffers();
+
         RenderTexture * rt = camera.getEffectBuffer(0);
         // Bind its first effect framebuffer as target of scene rendering
         RenderTexture::bind(rt);
@@ -195,6 +215,7 @@ void RenderManager::renderCamera(Camera & camera)
     {
     case SNR_CLEAR_COLOR:
         m_context->clearColor(camera.getClearColor());
+        m_context->clearTarget();
         break;
 
     default:
@@ -221,9 +242,26 @@ void RenderManager::renderCamera(Camera & camera)
         }
     );
 
+    Matrix4 projectionMatrix = camera.getProjectionMatrix();
     Matrix4 viewMatrix = camera.getViewMatrix();
     Matrix4 modelViewMatrix;
     Matrix4 normalMatrix;
+
+    // TODO Refactor temporary code
+    // This is a temporary workaround to setup a FOV specified by 4 angles,
+    // because current Cameras and Matrix4 are not VR-ready
+    if (vr)
+    {
+        for (u32 i = 0; i < 2; ++i)
+        {
+            const VRHeadset::AbstractEyeDescription & eyeDesc = vr->getAbstractEyeDescription(i);
+            if (camera.hasTag(eyeDesc.tag))
+            {
+                projectionMatrix.loadPerspectiveProjection(eyeDesc.fov, camera.getNear(), camera.getFar());
+                break;
+            }
+        }
+    }
 
     // Draw them
     for (auto it = sortedDrawables.begin(); it != sortedDrawables.end(); ++it) 
@@ -251,7 +289,7 @@ void RenderManager::renderCamera(Camera & camera)
                     // TODO
 
                     // Note: Matrix4 is row-major with translation in the last row
-                    shader->setParam("u_Projection", camera.getProjectionMatrix().values(), false);
+                    shader->setParam("u_Projection", projectionMatrix.values(), false);
                     shader->setParam("u_ModelView", modelViewMatrix.values(), false);
                     shader->setParam("u_NormalMatrix", normalMatrix.values(), false);
 
@@ -267,11 +305,8 @@ void RenderManager::renderCamera(Camera & camera)
     }
 
     // If the camera has effects
-    if (camera.getEffectCount() > 0)
+    if (camera.getEffectCount() > 0 && !bypassEffects)
     {
-        // TODO Don't leave this here, it should be automated (target textures resizing)
-        camera.updateEffectBuffers();
-
         // Create the default quad on which we'll render images
         Mesh * quad = new Mesh();
 
@@ -313,8 +348,6 @@ void RenderManager::renderCamera(Camera & camera)
                 RenderTexture::bind(targetBuffer);
             }
 
-            m_context->clearColor(sn::Color(0, 0, 0));
-
             // Apply effect material
             const Camera::Effect & effect = camera.getEffect(i);
             Material & material = *effect.material.get();
@@ -322,18 +355,15 @@ void RenderManager::renderCamera(Camera & camera)
             {
                 ShaderProgram * shader = material.getShader();
                 m_context->useProgram(shader);
+                m_context->setDepthTest(true);
 
                 material.setTexture("u_MainTexture", sourceBuffer);
 
                 // TODO This code is temporary. A better approach is needed.
                 // VR Support callback
-                if (camera.getParent())
+                if (vr)
                 {
-                    auto * vr = camera.getParent()->getChild<VRHeadset>();
-                    if (vr && (camera.hasTag(vr->getEyeTag(0)) || camera.hasTag(vr->getEyeTag(1))))
-                    {
-                        vr->onRenderEye(&camera, &material, sourceBuffer->getSize(), viewport);
-                    }
+                    vr->onRenderEye(&camera, &material, sourceBuffer->getSize(), viewport);
                 }
 
                 // No projection, no modelview. Everything is [-1, 1].

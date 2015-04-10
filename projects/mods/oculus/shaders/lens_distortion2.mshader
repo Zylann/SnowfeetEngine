@@ -40,14 +40,20 @@ void main()
 {
 	mat4 lerpedEyeRot = lerpMatrix(u_EyeRotationStart, u_EyeRotationEnd, in_TimewarpLerpFactor);
 	
-	// Invert Y texCoord axis
-	vec2 tc0 = vec2(in_TexCoord0.x, 1.0 - in_TexCoord0.y);
-	vec2 tc1 = vec2(in_TexCoord1.x, 1.0 - in_TexCoord1.y);
-	vec2 tc2 = vec2(in_TexCoord2.x, 1.0 - in_TexCoord2.y);
+	vec2 tc0 = in_TexCoord0;
+	vec2 tc1 = in_TexCoord1;
+	vec2 tc2 = in_TexCoord2;
 
+	// v_TexCoord0 = tc0 * u_EyeToSourceUVScale + u_EyeToSourceUVOffset;
+	// v_TexCoord1 = tc1 * u_EyeToSourceUVScale + u_EyeToSourceUVOffset;
+	// v_TexCoord2 = tc2 * u_EyeToSourceUVScale + u_EyeToSourceUVOffset;
 	v_TexCoord0 = TimewarpTexCoord(tc0, lerpedEyeRot);
 	v_TexCoord1 = TimewarpTexCoord(tc1, lerpedEyeRot);
 	v_TexCoord2 = TimewarpTexCoord(tc2, lerpedEyeRot);
+
+	v_TexCoord0.y = 1.0 - v_TexCoord0.y;
+	v_TexCoord1.y = 1.0 - v_TexCoord1.y;
+	v_TexCoord2.y = 1.0 - v_TexCoord2.y;
 
 	gl_Position = vec4(in_Position.xy, 0.5, 1.0);
 	v_Vignette = in_Vignette; // For vignette fade

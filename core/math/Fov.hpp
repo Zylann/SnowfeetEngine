@@ -18,6 +18,14 @@ struct Fov
     /// \brief Tangent of the angle between the bottom edge of the view and the forward vector
     f32 tanDown;
 
+    /// \brief Creates a default Fov with 90 degrees of horizontal and vertical field
+    Fov() :
+        tanLeft(1),
+        tanRight(1),
+        tanUp(1),
+        tanDown(1)
+    {}
+
     /// \brief Creates a Fov from raw tangent values
     Fov(f32 _tanLeft, f32 _tanRight, f32 _tanUp, f32 _tanDown) :
         tanLeft(_tanLeft),
