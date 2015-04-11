@@ -32,6 +32,7 @@ void getEulerAnglesFromOVR(OVR::Quat<float> & q, Vector3f & euler)
     q.GetEulerAngles<OVR::Axis_X, OVR::Axis_Y, OVR::Axis_Z, OVR::Rotate_CCW, OVR::Handed_L>(&euler.x(), &euler.y(), &euler.z());
 }
 
+//------------------------------------------------------------------------------
 HeadTracker::HeadTracker():
     m_ovrHmd(nullptr),
     m_lastYaw(0),
@@ -41,6 +42,7 @@ HeadTracker::HeadTracker():
     m_abstractEyes[1].tag = "VR_RightEye";
 }
 
+//------------------------------------------------------------------------------
 HeadTracker::~HeadTracker()
 {
     if (m_ovrHmd)
@@ -50,6 +52,7 @@ HeadTracker::~HeadTracker()
     ovr_Shutdown();
 }
 
+//------------------------------------------------------------------------------
 void HeadTracker::onReady()
 {
     // TODO FIXME There is a strange bug when ovr_Initialize is called with neither runtime nor headset plugged in.
@@ -139,6 +142,7 @@ void HeadTracker::onReady()
     m_isFirstUpdate = true;
 }
 
+//------------------------------------------------------------------------------
 Vector2u HeadTracker::getPreferredFramebufferSize(EyeIndex eyeIndex)
 {
     if (m_ovrHmd)
@@ -154,6 +158,7 @@ Vector2u HeadTracker::getPreferredFramebufferSize(EyeIndex eyeIndex)
     }
 }
 
+//------------------------------------------------------------------------------
 void HeadTracker::onRenderEye(Entity * sender, VRHeadset::EyeIndex abstractEyeIndex, Material * effectMaterial, Vector2u sourceSize, IntRect targetViewport)
 {
     Material * material = effectMaterial;
@@ -209,6 +214,7 @@ void HeadTracker::onRenderEye(Entity * sender, VRHeadset::EyeIndex abstractEyeIn
     }
 }
 
+//------------------------------------------------------------------------------
 // TODO Use a callback from a rendering module instead of onUpdate
 void HeadTracker::onUpdate()
 {
@@ -250,6 +256,7 @@ void HeadTracker::onUpdate()
     }
 }
 
+//------------------------------------------------------------------------------
 void HeadTracker::makeDistortionMesh(Mesh & out_mesh, u32 agnosticEyeType)
 {
     ovrEyeType eye = (agnosticEyeType == 1 ? ovrEye_Right : ovrEye_Left);
