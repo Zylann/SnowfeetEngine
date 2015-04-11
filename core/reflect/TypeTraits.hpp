@@ -22,6 +22,7 @@ class Object;
 //
 // So at the moment, I think it's better to hardcode IDs for most known types...
 
+/// \cond INTERNAL
 //------------------------------------------------------
 // Generic, unknown type. Should produce compilation errors if used.
 
@@ -80,6 +81,9 @@ template <> struct TypeTraits<Object> { static const u32 ID = 50; };
 
 template <typename T> struct TypeTraits<T*> { static const u32 ID = TypeTraits<T>::ID | 0x0001ffff; };
 template <typename T> struct TypeTraits<T&> { static const u32 ID = TypeTraits<T>::ID | 0x0002ffff; };
+
+//------------------------------------------------------
+/// \endcond INTERNAL
 
 //------------------------------------------------------
 template <typename T>

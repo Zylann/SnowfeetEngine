@@ -13,6 +13,8 @@ This file is part of the SnowfeetEngine project.
 namespace sn
 {
 
+/// \cond INTERNAL
+
 class SharedLibImpl
 {
 public:
@@ -25,6 +27,8 @@ public:
 private:
     HINSTANCE m_handle;
 };
+
+/// \endcond
 
 } // namespace sn
 

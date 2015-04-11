@@ -7,6 +7,8 @@
 namespace sn {
 namespace render {
 
+/// \cond INTERNAL
+
 class ContextImpl
 {
 public:
@@ -27,6 +29,8 @@ private:
     HGLRC m_hrc;
     HDC m_dc;
 };
+
+/// \endcond
 
 } // namespace render
 } // namespace sn

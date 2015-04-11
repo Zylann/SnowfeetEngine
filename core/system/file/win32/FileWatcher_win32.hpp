@@ -9,6 +9,8 @@
 namespace sn
 {
 
+/// \cond INTERNAL
+
 /// \brief Represents a watching session over a defined path.
 /// Must be re-created to change.
 class FileWatcherImpl
@@ -29,6 +31,8 @@ private:
     bool m_continueWatching;
     bool m_isActive;
 };
+
+/// \endcond
 
 } // namespace sn
 

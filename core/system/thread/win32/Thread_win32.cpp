@@ -15,6 +15,7 @@ namespace sn
 {
 
 //------------------------------------------------------------------------------
+/// \cond INTERNAL
 class ThreadImpl
 {
 public:
@@ -82,6 +83,7 @@ private:
     HANDLE m_handle;
     u32 m_id; // Win32 identifier
 };
+/// \endcond
 
 //==============================================================================
 // Thread

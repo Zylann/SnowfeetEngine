@@ -18,6 +18,8 @@ enum CursorType
     SN_CURSOR_DEFAULT
 };
 
+/// \cond INTERNAL
+
 class WindowImpl
 {
 public:
@@ -36,6 +38,8 @@ private:
     Window & r_window;
     HCURSOR m_cursor; // Which cursor must be displayed over the window
 };
+
+/// \endcond
 
 } // namespace sn
 

@@ -11,6 +11,7 @@ namespace sn
 {
 
 //------------------------------------------------------------------------------
+/// \cond INTERNAL
 class MutexImpl
 {
 public:
@@ -39,6 +40,7 @@ private:
 
     CRITICAL_SECTION m_criticalSection;
 };
+/// \endcond
 
 //==============================================================================
 // Mutex
