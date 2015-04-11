@@ -135,7 +135,7 @@ public:
     void unserializeState(JsonBox::Value & o, const SerializationContext & context) override;
 
     // TODO Don't leave this public, it should be automated (for target textures resizing)
-    void updateEffectBuffers();
+    void updateEffectBuffers(const Vector2u * overrideResolution = nullptr);
 private:
     void updateAspectRatio();
 

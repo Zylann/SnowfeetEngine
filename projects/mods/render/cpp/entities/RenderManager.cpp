@@ -179,21 +179,40 @@ void RenderManager::renderCamera(Camera & camera)
     }
 
     VRHeadset * vr = nullptr;
+    VRHeadset::EyeIndex vrEyeIndex = VRHeadset::EYE_LEFT;
     if (camera.getParent())
     {
         vr = camera.getParent()->getChild<VRHeadset>();
-        if (!(camera.hasTag(vr->getAbstractEyeDescription(VRHeadset::EYE_LEFT).tag) || 
-              camera.hasTag(vr->getAbstractEyeDescription(VRHeadset::EYE_RIGHT).tag)))
+        if (vr)
         {
-            vr = nullptr;
+            if (camera.hasTag(vr->getAbstractEyeDescription(VRHeadset::EYE_LEFT).tag))
+            {
+                vrEyeIndex = VRHeadset::EYE_LEFT;
+            }
+            else if (camera.hasTag(vr->getAbstractEyeDescription(VRHeadset::EYE_RIGHT).tag))
+            {
+                vrEyeIndex = VRHeadset::EYE_RIGHT;
+            }
+            else
+            {
+                vr = nullptr;
+            }
         }
     }
 
     // If the camera has effects
     if (camera.getEffectCount() > 0 && !bypassEffects)
     {
-        // TODO Don't leave this here, it should be automated (target textures resizing)
-        camera.updateEffectBuffers();
+        // TODO Don't leave this here, it should be automated (render target resizing)
+        if (vr)
+        {
+            Vector2u fbSize = vr->getPreferredFramebufferSize(vrEyeIndex);
+            camera.updateEffectBuffers(&fbSize);
+        }
+        else
+        {
+            camera.updateEffectBuffers();
+        }
 
         RenderTexture * rt = camera.getEffectBuffer(0);
         // Bind its first effect framebuffer as target of scene rendering
@@ -250,19 +269,10 @@ void RenderManager::renderCamera(Camera & camera)
     // TODO Refactor temporary code
     // This is a temporary workaround to setup a FOV specified by 4 angles,
     // because current Cameras and Matrix4 are not VR-ready
-    VRHeadset::EyeIndex vrEyeIndex = VRHeadset::EYE_LEFT;
     if (vr)
     {
-        for (u32 i = 0; i < 2; ++i)
-        {
-            const VRHeadset::EyeDescription & eyeDesc = vr->getAbstractEyeDescription((VRHeadset::EyeIndex)i);
-            if (camera.hasTag(eyeDesc.tag))
-            {
-                projectionMatrix.loadPerspectiveProjection(eyeDesc.fov, camera.getNear(), camera.getFar());
-                vrEyeIndex = (VRHeadset::EyeIndex)i;
-                break;
-            }
-        }
+        const VRHeadset::EyeDescription & eyeDesc = vr->getAbstractEyeDescription(vrEyeIndex);
+        projectionMatrix.loadPerspectiveProjection(eyeDesc.fov, camera.getNear(), camera.getFar());
     }
 
     // Draw them
@@ -288,7 +298,7 @@ void RenderManager::renderCamera(Camera & camera)
                     modelViewMatrix.setByProduct(viewMatrix, modelMatrix);
 
                     normalMatrix.loadIdentity();
-                    // TODO
+                    // TODO setup normalMatrix
 
                     // Note: Matrix4 is row-major with translation in the last row
                     shader->setParam("u_Projection", projectionMatrix.values(), false);

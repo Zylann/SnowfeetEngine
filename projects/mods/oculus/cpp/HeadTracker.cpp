@@ -32,7 +32,6 @@ void getEulerAnglesFromOVR(OVR::Quat<float> & q, Vector3f & euler)
     q.GetEulerAngles<OVR::Axis_X, OVR::Axis_Y, OVR::Axis_Z, OVR::Rotate_CCW, OVR::Handed_L>(&euler.x(), &euler.y(), &euler.z());
 }
 
-
 HeadTracker::HeadTracker():
     m_ovrHmd(nullptr),
     m_lastYaw(0),
@@ -77,8 +76,22 @@ void HeadTracker::onReady()
         m_ovrEyeDesc[1] = ovrHmd_GetRenderDesc(m_ovrHmd, ovrEye_Right, m_ovrHmd->DefaultEyeFov[1]);
         for (u32 i = 0; i < 2; ++i)
         {
-            const ovrFovPort & ovrFov = m_ovrEyeDesc[i].Fov;
-            m_abstractEyes[i].fov = Fov(ovrFov.LeftTan, ovrFov.RightTan, ovrFov.UpTan, ovrFov.DownTan);
+            const ovrEyeRenderDesc & ovrEyeDesc = m_ovrEyeDesc[i];
+            VRHeadset::EyeDescription & eyeDesc = m_abstractEyes[i];
+
+            eyeDesc.fov = Fov(
+                ovrEyeDesc.Fov.LeftTan, 
+                ovrEyeDesc.Fov.RightTan, 
+                ovrEyeDesc.Fov.UpTan, 
+                ovrEyeDesc.Fov.DownTan
+            );
+
+            eyeDesc.viewport = IntRect::fromPositionSize(
+                ovrEyeDesc.DistortedViewport.Pos.x,
+                ovrEyeDesc.DistortedViewport.Pos.y,
+                ovrEyeDesc.DistortedViewport.Size.w,
+                ovrEyeDesc.DistortedViewport.Size.h
+            );
         }
 
         // Make eye distortion meshes
@@ -126,6 +139,21 @@ void HeadTracker::onReady()
     m_isFirstUpdate = true;
 }
 
+Vector2u HeadTracker::getPreferredFramebufferSize(EyeIndex eyeIndex)
+{
+    if (m_ovrHmd)
+    {
+        ovrEyeType eyeType = (ovrEyeType)eyeIndex;
+        ovrSizei ovrSize = ovrHmd_GetFovTextureSize(m_ovrHmd, eyeType, m_ovrEyeDesc[eyeType].Fov, 1.0);
+        return Vector2u(ovrSize.w, ovrSize.h);
+    }
+    else
+    {
+        // HMD not initialized
+        return Vector2u(0, 0);
+    }
+}
+
 void HeadTracker::onRenderEye(Entity * sender, VRHeadset::EyeIndex abstractEyeIndex, Material * effectMaterial, Vector2u sourceSize, IntRect targetViewport)
 {
     Material * material = effectMaterial;
@@ -154,7 +182,7 @@ void HeadTracker::onRenderEye(Entity * sender, VRHeadset::EyeIndex abstractEyeIn
 
             // Update UV parameters
             ovrSizei rtSize = { sourceSize.x(), sourceSize.y() };
-            ovrRecti camViewport = { 0, 0, targetViewport.width(), targetViewport.height() };
+            ovrRecti camViewport = { 0, 0, sourceSize.x(), sourceSize.y() };
             //ovrRecti camViewport = { 0, 0, targetViewport.width(), targetViewport.height() };
             ovrVector2f UVScaleOffset[2];
             ovrHmd_GetRenderScaleAndOffset(eyeDesc.Fov, rtSize, camViewport, UVScaleOffset);

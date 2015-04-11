@@ -238,9 +238,16 @@ void Camera::addEffect(Material * effectMaterial, Mesh * mesh)
 }
 
 //------------------------------------------------------------------------------
-void Camera::updateEffectBuffers()
+void Camera::updateEffectBuffers(const Vector2u * overrideResolution)
 {
     IntRect viewport = getPixelViewport();
+
+    if (overrideResolution)
+    {
+        viewport.width() = overrideResolution->x();
+        viewport.height() = overrideResolution->y();
+    }
+
     Vector2u targetSize(viewport.width(), viewport.height());
 
     if (targetSize.x() == 0 || targetSize.y() == 0)

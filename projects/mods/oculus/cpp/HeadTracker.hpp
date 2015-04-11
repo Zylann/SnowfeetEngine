@@ -22,13 +22,15 @@ public:
 
     void onReady() override;
 
-    virtual void onRenderEye(
+    void onRenderEye(
         Entity * sender, 
         VRHeadset::EyeIndex abstractEyeIndex,
         Material * effectMaterial, 
         Vector2u sourceSize, 
         IntRect targetViewport
     ) override;
+
+    Vector2u getPreferredFramebufferSize(EyeIndex eye) override;
 
     // No special serialization needed at the moment
 
