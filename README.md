@@ -29,11 +29,22 @@ Notes
 What the engine does now
 ------------------------
 
-![Screenshot](http://zylannprods.fr/snowfeet/engine/screenshots/2015_04_06_2031_oculus6_lights_black.png)
-Testing Oculus Rift client-mode display
+![Screenshot](http://zylannprods.fr/snowfeet/engine/screenshots/2015_04_11_0041_oculus7_bunny3_w800.png)
+Testing Oculus Rift display with engine-rendered distortion
 
 The current focus is basic rendering, scripting and assets management.
 Things like texture and shaders live-edition are in the works too :)
+
+
+Features
+--------
+
+- Oculus Rift support
+- OpenGL 3.3 rendering
+- Hot-reloading of assets
+- Entity hierarchy
+- Dynamic module system
+- Scenes described with JSON
 
 
 Web export
