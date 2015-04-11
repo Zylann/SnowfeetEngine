@@ -103,11 +103,33 @@ void KeyboardMove::onUpdate()
         Time dt = getScene()->getDeltaTime();
         Entity3D & parent = *(Entity3D*)getParent();
 
-        parent.setPosition(parent.getPosition() + m_motor * m_speed * dt.asSeconds());
+        Quaternion parentRotation = parent.getRotation();
+
+        Vector3f motor = parentRotation * m_motor;
+
+        parent.setPosition(parent.getPosition() + motor * m_speed * dt.asSeconds());
 
         Quaternion deltaRot(m_angularMotor * dt.asSeconds());
-        parent.setRotation( (parent.getRotation() * deltaRot).normalize() );
+        parent.setRotation( (parentRotation * deltaRot).normalize() );
 
+        // Change interpupillar distance when using VR
+        //f32 eyeDelta = 0;
+        //if (isKeyPressed(SN_KEY_PAD1))
+        //    eyeDelta = -1.f * dt.asSeconds();
+        //else if (isKeyPressed(SN_KEY_PAD3))
+        //    eyeDelta = 1.f * dt.asSeconds();
+        //for (u32 i = 0; i < parent.getChildCount(); ++i)
+        //{
+        //    Entity * child = parent.getChildByIndex(i);
+        //    if (child->isInstanceOf<Entity3D>())
+        //    {
+        //        Entity3D & child3D = *(Entity3D*)child;
+        //        if (child3D.hasTag("VR_LeftEye"))
+        //            child3D.setPosition(child3D.getPosition() + Vector3f(-eyeDelta, 0, 0));
+        //        else if (child3D.hasTag("VR_RightEye"))
+        //            child3D.setPosition(child3D.getPosition() + Vector3f(eyeDelta, 0, 0));
+        //    }
+        //}
         //SN_LOG("Pos: " << sn::toString(parent.getGlobalPosition()));// << ", up: " << sn::toString(up));
         //SN_LOG("Forward: " << sn::toString(parent.getForwardVector()));// << ", up: " << sn::toString(up));
         //SN_LOG("rotation: " << sn::toString(parent.getGlobalRotation()));
