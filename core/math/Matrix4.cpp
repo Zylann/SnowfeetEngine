@@ -305,7 +305,7 @@ void Matrix4::setByProduct(const Matrix4 & in_a, const Matrix4 & in_b)
 }
 
 //------------------------------------------------------------------------------
-void Matrix4::setByProductAs3(const Matrix4 & a, const Matrix4 & b)
+void Matrix4::setByProduct3x3(const Matrix4 & a, const Matrix4 & b)
 {
     //  0   1   2
     //  4   5   6
@@ -377,7 +377,7 @@ void Matrix4::transpose()
 }
 
 //------------------------------------------------------------------------------
-void Matrix4::transposeRotation()
+void Matrix4::transpose3x3()
 {
     std::swap(m_v[1], m_v[4]);
     std::swap(m_v[2], m_v[8]);

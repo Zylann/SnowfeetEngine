@@ -70,11 +70,11 @@ public :
 
     // Sets the matrix to the result of the product of the given matrices,
     // as if they were 3x3.
-    void setByProductAs3(const Matrix4 & a, const Matrix4 & b);
+    void setByProduct3x3(const Matrix4 & a, const Matrix4 & b);
 
     void getTransposed(Matrix4 & out_result) const;
     void transpose();
-    void transposeRotation();
+    void transpose3x3();
 
     void setTranslation(const Vector3f & v);
     void setRotation(const Quaternion & q);
