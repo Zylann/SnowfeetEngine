@@ -298,7 +298,7 @@ void RenderManager::renderCamera(Camera & camera)
                     modelViewMatrix.setByProduct(viewMatrix, modelMatrix);
 
                     normalMatrix.loadIdentity();
-                    // TODO setup normalMatrix
+                    normalMatrix.setRotation(d.getGlobalRotation());
 
                     // Note: Matrix4 is row-major with translation in the last row
                     shader->setParam("u_Projection", projectionMatrix.values(), false);
