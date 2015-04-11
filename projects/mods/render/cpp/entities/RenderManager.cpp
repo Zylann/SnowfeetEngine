@@ -182,8 +182,8 @@ void RenderManager::renderCamera(Camera & camera)
     if (camera.getParent())
     {
         vr = camera.getParent()->getChild<VRHeadset>();
-        if (!(camera.hasTag(vr->getAbstractEyeDescription(0).tag) || 
-              camera.hasTag(vr->getAbstractEyeDescription(1).tag)))
+        if (!(camera.hasTag(vr->getAbstractEyeDescription(VRHeadset::EYE_LEFT).tag) || 
+              camera.hasTag(vr->getAbstractEyeDescription(VRHeadset::EYE_RIGHT).tag)))
         {
             vr = nullptr;
         }
@@ -250,14 +250,16 @@ void RenderManager::renderCamera(Camera & camera)
     // TODO Refactor temporary code
     // This is a temporary workaround to setup a FOV specified by 4 angles,
     // because current Cameras and Matrix4 are not VR-ready
+    VRHeadset::EyeIndex vrEyeIndex = VRHeadset::EYE_LEFT;
     if (vr)
     {
         for (u32 i = 0; i < 2; ++i)
         {
-            const VRHeadset::AbstractEyeDescription & eyeDesc = vr->getAbstractEyeDescription(i);
+            const VRHeadset::EyeDescription & eyeDesc = vr->getAbstractEyeDescription((VRHeadset::EyeIndex)i);
             if (camera.hasTag(eyeDesc.tag))
             {
                 projectionMatrix.loadPerspectiveProjection(eyeDesc.fov, camera.getNear(), camera.getFar());
+                vrEyeIndex = (VRHeadset::EyeIndex)i;
                 break;
             }
         }
@@ -363,7 +365,7 @@ void RenderManager::renderCamera(Camera & camera)
                 // VR Support callback
                 if (vr)
                 {
-                    vr->onRenderEye(&camera, &material, sourceBuffer->getSize(), viewport);
+                    vr->onRenderEye(&camera, vrEyeIndex, &material, sourceBuffer->getSize(), viewport);
                 }
 
                 // No projection, no modelview. Everything is [-1, 1].

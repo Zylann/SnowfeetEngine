@@ -12,7 +12,7 @@
 namespace sn {
 namespace oculus {
 
-// TODO Rename Rift
+// TODO Rename RiftController
 class HeadTracker : public sn::VRHeadset
 {
 public:
@@ -22,10 +22,9 @@ public:
 
     void onReady() override;
 
-    const Mesh * getEyeDistortionMesh(u32 eyeIndex);
-
     virtual void onRenderEye(
         Entity * sender, 
+        VRHeadset::EyeIndex abstractEyeIndex,
         Material * effectMaterial, 
         Vector2u sourceSize, 
         IntRect targetViewport
@@ -42,13 +41,11 @@ private:
     void makeDistortionMesh(Mesh & out_mesh, u32 agnosticEyeType);
 
 private:
-    ovrHmd m_hmd;
-    ovrFrameTiming m_frameTiming;
-    bool m_isFirstUpdate;
-    SharedRef<Mesh> m_eyeDistortionMeshes[2];
-    SharedRef<Material> m_eyeMaterials[2];
-    ovrEyeRenderDesc m_eyeDesc[2];
+    ovrHmd m_ovrHmd;
+    ovrFrameTiming m_ovrFrameTiming;
+    ovrEyeRenderDesc m_ovrEyeDesc[2];
     f32 m_lastYaw;
+    bool m_isFirstUpdate;
 
 };
 

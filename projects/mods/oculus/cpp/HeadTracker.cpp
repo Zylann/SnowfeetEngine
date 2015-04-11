@@ -34,9 +34,9 @@ void getEulerAnglesFromOVR(OVR::Quat<float> & q, Vector3f & euler)
 
 
 HeadTracker::HeadTracker():
-    m_hmd(nullptr),
-    m_isFirstUpdate(true),
-    m_lastYaw(0)
+    m_ovrHmd(nullptr),
+    m_lastYaw(0),
+    m_isFirstUpdate(true)
 {
     m_abstractEyes[0].tag = "VR_LeftEye";
     m_abstractEyes[1].tag = "VR_RightEye";
@@ -44,9 +44,9 @@ HeadTracker::HeadTracker():
 
 HeadTracker::~HeadTracker()
 {
-    if (m_hmd)
+    if (m_ovrHmd)
     {
-        ovrHmd_Destroy(m_hmd);
+        ovrHmd_Destroy(m_ovrHmd);
     }
     ovr_Shutdown();
 }
@@ -64,20 +64,20 @@ void HeadTracker::onReady()
     }
     else
     {
-        m_hmd = ovrHmd_Create(0);
+        m_ovrHmd = ovrHmd_Create(0);
     }
 
-    if (m_hmd)
+    if (m_ovrHmd)
     {
-        ovrHmd_ConfigureTracking(m_hmd, ovrTrackingCap_Orientation | ovrTrackingCap_MagYawCorrection | ovrTrackingCap_Position, 0);
+        ovrHmd_ConfigureTracking(m_ovrHmd, ovrTrackingCap_Orientation | ovrTrackingCap_MagYawCorrection | ovrTrackingCap_Position, 0);
         setUpdatable(true);
 
         // Initialize eye descriptions
-        m_eyeDesc[0] = ovrHmd_GetRenderDesc(m_hmd, ovrEye_Left, m_hmd->DefaultEyeFov[0]);
-        m_eyeDesc[1] = ovrHmd_GetRenderDesc(m_hmd, ovrEye_Right, m_hmd->DefaultEyeFov[1]);
+        m_ovrEyeDesc[0] = ovrHmd_GetRenderDesc(m_ovrHmd, ovrEye_Left, m_ovrHmd->DefaultEyeFov[0]);
+        m_ovrEyeDesc[1] = ovrHmd_GetRenderDesc(m_ovrHmd, ovrEye_Right, m_ovrHmd->DefaultEyeFov[1]);
         for (u32 i = 0; i < 2; ++i)
         {
-            const ovrFovPort & ovrFov = m_eyeDesc[i].Fov;
+            const ovrFovPort & ovrFov = m_ovrEyeDesc[i].Fov;
             m_abstractEyes[i].fov = Fov(ovrFov.LeftTan, ovrFov.RightTan, ovrFov.UpTan, ovrFov.DownTan);
         }
 
@@ -96,20 +96,20 @@ void HeadTracker::onReady()
         auto & database = AssetDatabase::get();
         std::string modName = getObjectType().getModuleName();
 
-        m_eyeDistortionMeshes[0].set(database.getAsset<Mesh>(modName, "left_eye"));
-        m_eyeDistortionMeshes[1].set(database.getAsset<Mesh>(modName, "right_eye"));
+        m_abstractEyes[0].distortionMesh.set(database.getAsset<Mesh>(modName, "left_eye"));
+        m_abstractEyes[1].distortionMesh.set(database.getAsset<Mesh>(modName, "right_eye"));
 
         for (u32 i = 0; i < 2; ++i)
         {
-            Mesh * mesh = m_eyeDistortionMeshes[i].get();
+            Mesh * mesh = m_abstractEyes[i].distortionMesh.get();
             if (mesh)
             {
                 makeDistortionMesh(*mesh, i);
             }
         }
 
-        m_eyeMaterials[0].set(database.getAsset<Material>(modName, "left_eye_mat"));
-        m_eyeMaterials[1].set(database.getAsset<Material>(modName, "right_eye_mat"));
+        m_abstractEyes[0].effectMaterial.set(database.getAsset<Material>(modName, "left_eye_mat"));
+        m_abstractEyes[1].effectMaterial.set(database.getAsset<Material>(modName, "right_eye_mat"));
     }
     else
     {
@@ -117,7 +117,7 @@ void HeadTracker::onReady()
         getScene()->quit();
     }
 
-    const char* err = ovrHmd_GetLastError(m_hmd);
+    const char* err = ovrHmd_GetLastError(m_ovrHmd);
     if (err)
     {
         SN_ERROR(err);
@@ -126,18 +126,12 @@ void HeadTracker::onReady()
     m_isFirstUpdate = true;
 }
 
-const Mesh * HeadTracker::getEyeDistortionMesh(u32 eyeIndex)
-{
-    SN_ASSERT(eyeIndex == 0 || eyeIndex == 1, "Invalid eye index");
-    return m_eyeDistortionMeshes[eyeIndex].get();
-}
-
-void HeadTracker::onRenderEye(Entity * sender, Material * effectMaterial, Vector2u sourceSize, IntRect targetViewport)
+void HeadTracker::onRenderEye(Entity * sender, VRHeadset::EyeIndex abstractEyeIndex, Material * effectMaterial, Vector2u sourceSize, IntRect targetViewport)
 {
     Material * material = effectMaterial;
     if (material)
     {
-        ovrTrackingState trackingState = ovrHmd_GetTrackingState(m_hmd, m_frameTiming.ScanoutMidpointSeconds);
+        ovrTrackingState trackingState = ovrHmd_GetTrackingState(m_ovrHmd, m_ovrFrameTiming.ScanoutMidpointSeconds);
         if (trackingState.StatusFlags & (ovrStatus_OrientationTracked | ovrStatus_PositionTracked))
         {
             // Get head pose
@@ -149,18 +143,14 @@ void HeadTracker::onRenderEye(Entity * sender, Material * effectMaterial, Vector
             // Get eye poses
             ovrPosef temp_EyeRenderPose[2];
             ovrVector3f useHmdToEyeViewOffset[2] = {
-                m_eyeDesc[0].HmdToEyeViewOffset,
-                m_eyeDesc[1].HmdToEyeViewOffset
+                m_ovrEyeDesc[0].HmdToEyeViewOffset,
+                m_ovrEyeDesc[1].HmdToEyeViewOffset
             };
-            ovrHmd_GetEyePoses(m_hmd, 0, useHmdToEyeViewOffset, temp_EyeRenderPose, NULL);
+            ovrHmd_GetEyePoses(m_ovrHmd, 0, useHmdToEyeViewOffset, temp_EyeRenderPose, NULL);
 
             // Get current eye index
-            u32 eyeIndex = 0;
-            if (effectMaterial == m_eyeMaterials[1].get())
-                eyeIndex = 1;
-
-            ovrEyeType eye = (eyeIndex == 1 ? ovrEye_Right : ovrEye_Left);
-            const ovrEyeRenderDesc & eyeDesc = m_eyeDesc[eyeIndex];
+            ovrEyeType eye = (abstractEyeIndex == VRHeadset::EYE_RIGHT ? ovrEye_Right : ovrEye_Left);
+            const ovrEyeRenderDesc & eyeDesc = m_ovrEyeDesc[eye];
 
             // Update UV parameters
             ovrSizei rtSize = { sourceSize.x(), sourceSize.y() };
@@ -173,11 +163,11 @@ void HeadTracker::onRenderEye(Entity * sender, Material * effectMaterial, Vector
 
             // Update timewarp parameters
 
-            ovrPosef eyePose = temp_EyeRenderPose[eyeIndex];
+            ovrPosef eyePose = temp_EyeRenderPose[eye];
 
             ovrMatrix4f timeWarpMatrices[2];
             OVR::Quatf extraYawSinceRender = OVR::Quatf(OVR::Vector3f(0, 1, 0), euler.y() - m_lastYaw);
-            ovrHmd_GetEyeTimewarpMatrices(m_hmd, eye, eyePose, timeWarpMatrices);// , debugTimeAdjuster);
+            ovrHmd_GetEyeTimewarpMatrices(m_ovrHmd, eye, eyePose, timeWarpMatrices);// , debugTimeAdjuster);
 
             // Due to be absorbed by a future SDK update
             OVR::UtilFoldExtraYawIntoTimewarpMatrix((OVR::Matrix4f *)&timeWarpMatrices[0], eyePose.Orientation, extraYawSinceRender);
@@ -200,12 +190,12 @@ void HeadTracker::onUpdate()
     {
         // We're inside the main loop already so we'll assume that the frame begins after our update and ends at the end of it.
         // TODO onBeforeRender() and onAfterRender() callbacks for each VR cameras
-        m_frameTiming = ovrHmd_BeginFrameTiming(m_hmd, 0);
+        m_ovrFrameTiming = ovrHmd_BeginFrameTiming(m_ovrHmd, 0);
         m_isFirstUpdate = false;
     }
     else
     {
-        ovrTrackingState trackingState = ovrHmd_GetTrackingState(m_hmd, m_frameTiming.ScanoutMidpointSeconds);
+        ovrTrackingState trackingState = ovrHmd_GetTrackingState(m_ovrHmd, m_ovrFrameTiming.ScanoutMidpointSeconds);
         if (trackingState.StatusFlags & (ovrStatus_OrientationTracked | ovrStatus_PositionTracked))
         {
             // Get head pose
@@ -227,20 +217,20 @@ void HeadTracker::onUpdate()
             m_lastYaw = euler.y();
         }
 
-        ovrHmd_EndFrameTiming(m_hmd);
-        ovrHmd_BeginFrameTiming(m_hmd, 0);
+        ovrHmd_EndFrameTiming(m_ovrHmd);
+        ovrHmd_BeginFrameTiming(m_ovrHmd, 0);
     }
 }
 
 void HeadTracker::makeDistortionMesh(Mesh & out_mesh, u32 agnosticEyeType)
 {
     ovrEyeType eye = (agnosticEyeType == 1 ? ovrEye_Right : ovrEye_Left);
-    const ovrEyeRenderDesc & eyeDesc = m_eyeDesc[agnosticEyeType];
+    const ovrEyeRenderDesc & eyeDesc = m_ovrEyeDesc[agnosticEyeType];
 
     ovrDistortionMesh meshData;
     float overrideEyeOffset = 0.f;
 
-    ovrHmd_CreateDistortionMesh(m_hmd, eye, eyeDesc.Fov, ovrDistortionCap_Chromatic | ovrDistortionCap_TimeWarp, &meshData);
+    ovrHmd_CreateDistortionMesh(m_ovrHmd, eye, eyeDesc.Fov, ovrDistortionCap_Chromatic | ovrDistortionCap_TimeWarp, &meshData);
 
     // Note: we cannot use direct pointers here because data types have not the same size,
     // And are not layout in arrays but in structures
@@ -258,7 +248,7 @@ void HeadTracker::makeDistortionMesh(Mesh & out_mesh, u32 agnosticEyeType)
         indices[i] = meshData.pIndexData[i];
     }
 
-    f32 offsetX = agnosticEyeType == 0 ? 1 : -1;
+    f32 offsetX = agnosticEyeType == 0 ? 1.f : -1.f;
     for (u32 i = 0; i < meshData.VertexCount; ++i)
     {
         const ovrDistortionVertex & v = meshData.pVertexData[i];
