@@ -108,6 +108,9 @@ bool ShaderProgram::loadFromSourceCode(const std::unordered_map<ShaderType, std:
     // Deletes the old program if it was already loaded
     unload();
 
+    // Reset uniforms because they might change if the shader is reloading
+    m_uniforms.clear();
+
     // Create shaders
     GLuint sID;
     for (auto it = sources.begin(); it != sources.end(); ++it)
