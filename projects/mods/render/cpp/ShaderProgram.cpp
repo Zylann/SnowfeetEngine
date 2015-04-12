@@ -265,6 +265,12 @@ void ShaderProgram::setParam(const std::string & name, s32 i)
 }
 
 //------------------------------------------------------------------------------
+bool ShaderProgram::hasParameter(const std::string & name)
+{
+    return getUniformLocation(name) != -1;
+}
+
+//------------------------------------------------------------------------------
 GLint ShaderProgram::getUniformLocation(const std::string & name)
 {
     GLint loc;

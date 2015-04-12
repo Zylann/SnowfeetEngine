@@ -65,6 +65,8 @@ public:
     void setParam(const std::string & name, const f32 matrixValues[16], bool transpose=false);
     void setParam(const std::string & name, s32 i);
 
+    bool hasParameter(const std::string & name);
+
 protected:
     // Destroys the program and its shaders.
     ~ShaderProgram();
