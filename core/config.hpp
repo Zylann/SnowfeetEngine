@@ -21,6 +21,17 @@
 //#define SN_STATIC
 
 //------------------------------------------------------------------------------
+// Compiler
+
+#ifdef _WIN32
+    #ifdef _MSC_VER
+        // Visual C++: disable warning about very long type names.
+        // It happens frequently when template containers are nested.
+        #pragma warning(disable : 4503)
+    #endif
+#endif
+
+//------------------------------------------------------------------------------
 #include <core/export.hpp>
 
 //------------------------------------------------------------------------------
