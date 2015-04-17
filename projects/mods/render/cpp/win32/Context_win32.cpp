@@ -25,20 +25,36 @@ namespace render {
 // https://www.opengl.org/discussion_boards/showthread.php/173031-Easy-OpenGL-context-creation
 
 //------------------------------------------------------------------------------
-ContextImpl::ContextImpl(Context & context) :
+ContextImpl::ContextImpl(Context & context, ContextSettings & settings, ContextImpl * sharedContext) :
 	r_context(context),
     m_hrc(nullptr),
-    m_dc(nullptr)
+    m_dc(nullptr),
+    m_ownHwnd(nullptr)
 {
-	const Window & win = *r_context.getWindow();
-	HWND hwnd = (HWND)win.getHandle();
+    // Get the HWND from either the passed window or an internal one
+    HWND hwnd = nullptr;
+	const Window * win = r_context.getWindow();
+    if (win)
+    {
+        // A window was given, go with it
+    	hwnd = (HWND)win->getHandle();
+    }
+    else
+    {
+        // No window was given...
+        // On Windows, we still have to create a dummy window to get a valid DC
+        m_ownHwnd = ::CreateWindow("STATIC", "", WS_POPUP | WS_DISABLED, 0, 0, 1, 1, NULL, NULL, GetModuleHandle(NULL), NULL);
+        ShowWindow(m_ownHwnd, SW_HIDE);
+        hwnd = m_ownHwnd;
+    }
+
 	m_dc = GetDC(hwnd);
 
 	if (m_dc)
 	{
-		ContextSettings settings = r_context.getSettings();
-		createContext(nullptr, settings);
-		if (settings != r_context.getSettings())
+        ContextSettings initialSettings = settings;
+		createContext(sharedContext ? sharedContext->m_hrc : nullptr, settings, hwnd);
+		if (settings != initialSettings)
 		{
 			SN_WARNING("ContextSettings have been changed for compatibility.");
 			SN_LOG("Requested: " << r_context.getSettings().toString());
@@ -58,12 +74,18 @@ ContextImpl::~ContextImpl()
         wglDeleteContext(m_hrc);
     }
 
-    // Destroy the device context
+    // Release the device context
     if (m_dc)
     {
         // TODO Allow to create a context without a window
-        HWND hwnd = (HWND)(r_context.getWindow()->getHandle());
+        HWND hwnd = m_ownHwnd ? m_ownHwnd : (HWND)(r_context.getWindow()->getHandle());
         ReleaseDC(hwnd, m_dc);
+    }
+
+    // Destroy the owned window if any
+    if (m_ownHwnd)
+    {
+        ::DestroyWindow(m_ownHwnd);
     }
 }
 
@@ -77,15 +99,13 @@ bool ContextImpl::makeCurrent(bool isCurrent)
 }
 
 //------------------------------------------------------------------------------
-void ContextImpl::createContext(HGLRC sharedContext, ContextSettings & settings)
+// Static
+bool ContextImpl::setPixelFormat(HWND hwnd, ContextSettings & settings)
 {
-	ensureGLExtensions();
+    ensureGLExtensions();
 
-    //SN_ASSERT(sharedContext != nullptr, "A minimal context is needed to create an OpenGL context");
-
-	HWND hwnd = (HWND)r_context.getWindow()->getHandle();
     HDC hdc = GetDC(hwnd);
-    HGLRC hrc = nullptr;
+    //HGLRC hrc = nullptr;
 
 	u32 bitsPerPixel = 32;
 
@@ -177,7 +197,7 @@ void ContextImpl::createContext(HGLRC sharedContext, ContextSettings & settings)
         {
             SN_ERROR("Failed to find a suitable pixel format for device context -- cannot create OpenGL context");
 			ReleaseDC(hwnd, hdc);
-			return;
+			return false;
         }
     }
 
@@ -193,8 +213,17 @@ void ContextImpl::createContext(HGLRC sharedContext, ContextSettings & settings)
     if (!SetPixelFormat(hdc, bestFormat, &actualFormat))
     {
         SN_ERROR("Failed to set pixel format for device context -- cannot create OpenGL context");
-        return;
+        return false;
     }
+
+    return true;
+}
+
+//------------------------------------------------------------------------------
+void ContextImpl::createContext(HGLRC sharedContext, ContextSettings & settings, HWND hwnd)
+{
+    if (!setPixelFormat(hwnd, settings))
+        return;
 
     // Get the context to share display lists with
     //HGLRC sharedContext = shared ? shared->m_context : NULL;
@@ -261,20 +290,20 @@ void ContextImpl::createContext(HGLRC sharedContext, ContextSettings & settings)
 }
 
 //------------------------------------------------------------------------------
-void ContextImpl::swapBuffers()
-{
-    if (m_dc)
-        SwapBuffers(m_dc);
-}
+//void ContextImpl::swapBuffers()
+//{
+//    if (m_dc)
+//        SwapBuffers(m_dc);
+//}
 
 //==============================================================================
 // Context
 //==============================================================================
 
 //------------------------------------------------------------------------------
-void Context::initImpl()
+void Context::initImpl(Context * sharedContext)
 {
-    m_impl = new ContextImpl(*this);
+    m_impl = new ContextImpl(*this, m_settings, sharedContext ? sharedContext->m_impl : nullptr);
 }
 
 //------------------------------------------------------------------------------
@@ -291,10 +320,10 @@ bool Context::makeCurrent(bool isCurrent)
 }
 
 //------------------------------------------------------------------------------
-void Context::swapBuffers()
-{
-    m_impl->swapBuffers();
-}
+//void Context::swapBuffers()
+//{
+//    m_impl->swapBuffers();
+//}
 
 } // namespace render
 } // namespace sn

@@ -13,7 +13,7 @@ namespace render {
 const char * RenderManager::TAG = "RenderManager";
 
 //------------------------------------------------------------------------------
-RenderManager::RenderManager() : Entity(), m_context(nullptr)
+RenderManager::RenderManager() : Entity(), m_mainContext(nullptr)
 {
     // This entity is always present across scenes
     setFlag(SN_EF_STICKY, true);
@@ -22,16 +22,25 @@ RenderManager::RenderManager() : Entity(), m_context(nullptr)
 //------------------------------------------------------------------------------
 RenderManager::~RenderManager()
 {
-    if (m_context)
+    // Release screens
+    for (auto it = m_screens.begin(); it != m_screens.end(); ++it)
     {
-        delete m_context;
+        delete it->second;
+    }
+    m_screens.clear();
+
+    // Release main context
+    if (m_mainContext)
+    {
+        delete m_mainContext;
+        m_mainContext = nullptr;
     }
 }
 
 //------------------------------------------------------------------------------
 void RenderManager::onReady()
 {
-    SN_ASSERT(m_context == nullptr, "Invalid state, m_context is not null");
+    SN_ASSERT(m_mainContext == nullptr, "Invalid state, m_context is not null");
 
     // TODO If two renderManager are created, just use another window ID and it might work
     SN_ASSERT(getScene()->getTaggedEntity(TAG) == nullptr, "Two RenderManagers is not supported at the moment");
@@ -43,20 +52,70 @@ void RenderManager::onReady()
     setUpdatable(true, 0, 32000);
     listenToSystemEvents();
 
-    // Get or create window in which we'll render the final image
-    Window * win = SystemGUI::get().getWindowByID(0);
-    if (win == nullptr)
-        win = SystemGUI::get().createWindow();
+    // Create the rendering context that will be shared across render screens
+    ContextSettings contextSettings;
+    contextSettings.majorVersion = 3;
+    contextSettings.minorVersion = 3;
+    m_mainContext = new Context(contextSettings);
+    m_mainContext->makeCurrent();
 
-    // Create rendering context
-    if (win)
+    // TODO This must depend on RenderManager service parameters
+    // Create default screen
+    addScreen(0);
+}
+
+//------------------------------------------------------------------------------
+RenderScreen * RenderManager::addScreen(u32 windowID)
+{
+    auto it = m_screens.find(windowID);
+    if (it == m_screens.end())
     {
-        m_context = new Context(*win);
-        m_context->makeCurrent();
+        // Get or create window in which we'll render the final image
+        Window * window = SystemGUI::get().getWindowByID(windowID);
+        if (window == nullptr)
+        {
+            window = SystemGUI::get().createWindow();
+            windowID = SystemGUI::get().getWindowID(window);
+        }
 
-        //IntRect rect = win->getClientRect();
-        //m_lastScreenSize = Vector2u(rect.width(), rect.height());
+        RenderScreen * screen = new RenderScreen(*window);
+        //ContextSettings contextSettings;
+        //contextSettings.majorVersion = 3;
+        //contextSettings.minorVersion = 3;
+        //screen.context = new Context(contextSettings, window, m_mainContext);
+        m_screens[windowID] = screen;
+        return screen;
     }
+    else
+    {
+        SN_ERROR("Render screen already exist for window " << windowID);
+        return nullptr;
+    }
+}
+
+//------------------------------------------------------------------------------
+void RenderManager::removeScreen(u32 windowID, bool showError)
+{
+    auto it = m_screens.find(windowID);
+    if (it != m_screens.end())
+    {
+        delete it->second;
+        m_screens.erase(it);
+    }
+    else if (showError)
+    {
+        SN_ERROR("Render screen not found for window " << windowID);
+    }
+}
+
+//------------------------------------------------------------------------------
+RenderScreen * RenderManager::getScreen(u32 windowID)
+{
+    auto it = m_screens.find(windowID);
+    if (it != m_screens.end())
+        return it->second;
+    else
+        return nullptr;
 }
 
 //------------------------------------------------------------------------------
@@ -69,7 +128,7 @@ void RenderManager::onUpdate()
 //------------------------------------------------------------------------------
 bool RenderManager::onSystemEvent(const sn::Event & event)
 {
-    if (m_context == nullptr)
+    if (m_mainContext == nullptr)
         return false;
 
 	switch (event.type)
@@ -77,6 +136,10 @@ bool RenderManager::onSystemEvent(const sn::Event & event)
 	case SN_EVENT_WINDOW_RESIZED:
         onScreenResized(event.window.width, event.window.height);
 		break;
+
+    case SN_EVENT_WINDOW_ASKED_CLOSE:
+        onWindowClosed(event.windowID);
+        break;
 
 	default:
 		break;
@@ -111,6 +174,12 @@ void RenderManager::onScreenResized(u32 width, u32 height)
 }
 
 //------------------------------------------------------------------------------
+void RenderManager::onWindowClosed(u32 windowID)
+{
+    removeScreen(windowID, false);
+}
+
+//------------------------------------------------------------------------------
 // Helper
 template <typename T>
 T * checkTaggedType(const std::string & tag, Entity * e)
@@ -130,11 +199,8 @@ T * checkTaggedType(const std::string & tag, Entity * e)
 //------------------------------------------------------------------------------
 void RenderManager::render()
 {
-    if (m_context == nullptr)
+    if (m_mainContext == nullptr)
         return; // Can't render
-
-    // Erase screen
-    m_context->clearTarget();
 
     Scene * scene = getScene();
 
@@ -163,21 +229,29 @@ void RenderManager::render()
         renderCamera(**it);
     }
 
-    // Display rendered surface
-    m_context->swapBuffers();
+    // Display rendered surfaces
+    for (auto it = m_screens.begin(); it != m_screens.end(); ++it)
+    {
+        RenderScreen & screen = *it->second;
+        screen.swapBuffers();
+    }
 }
 
 //------------------------------------------------------------------------------
 void RenderManager::renderCamera(Camera & camera)
 {
-    IntRect viewport = camera.getPixelViewport();
+    // Note: at the moment, only render with a single main context
 
-    bool bypassEffects = false;
-    if (camera.getRenderTarget() == nullptr)
-    {
-        bypassEffects = sn::isKeyPressed(SN_KEY_F6);
-    }
+    // Get context of the target window, or the main shared context if we render offscreen
+    Context * context = m_mainContext;
+    RenderScreen * screen = camera.getRenderTarget() == nullptr ? getScreen(camera.getTargetWindowID()) : nullptr;
+    if (screen)
+        RenderScreen::setCurrent(screen, context);
+    else
+        context->makeCurrent();
 
+    // Get VR
+    // TODO VR shouldn't be searched on each render
     VRHeadset * vr = nullptr;
     VRHeadset::EyeIndex vrEyeIndex = VRHeadset::EYE_LEFT;
     if (camera.getParent())
@@ -200,9 +274,23 @@ void RenderManager::renderCamera(Camera & camera)
         }
     }
 
+#ifdef SN_BUILD_DEBUG
+    // Press a key to disable camera effects
+    bool bypassEffects = false;
+    if (camera.getRenderTarget() == nullptr)
+    {
+        bypassEffects = sn::isKeyPressed(SN_KEY_F6);
+    }
+#else
+    const bool bypassEffects = false;
+#endif
+
+    IntRect viewport = camera.getPixelViewport();
+
     // If the camera has effects
     if (camera.getEffectCount() > 0 && !bypassEffects)
     {
+        // Update the resolution of framebuffers
         // TODO Don't leave this here, it should be automated (render target resizing)
         if (vr)
         {
@@ -219,22 +307,22 @@ void RenderManager::renderCamera(Camera & camera)
         RenderTexture::bind(rt);
         // Use filled viewport
         Vector2u size = rt->getSize();
-        m_context->setViewport(0, 0, size.x(), size.y());
+        context->setViewport(0, 0, size.x(), size.y());
     }
     else
     {
         // Or bind the target directly
         RenderTexture::bind(camera.getRenderTarget());
         // Set final viewport
-        m_context->setViewport(viewport);
+        context->setViewport(viewport);
     }
 
     // Clear?
     switch (camera.getClearMode())
     {
     case SNR_CLEAR_COLOR:
-        m_context->clearColor(camera.getClearColor());
-        m_context->clearTarget();
+        context->clearColor(camera.getClearColor());
+        context->clearTarget();
         break;
 
     default:
@@ -286,12 +374,12 @@ void RenderManager::renderCamera(Camera & camera)
             Material * material = d.getMaterial();
             if (material)
             {
-                m_context->setDepthTest(material->isDepthTest());
+                context->setDepthTest(material->isDepthTest());
 
                 if (material->getShader())
                 {
                     ShaderProgram * shader = material->getShader();
-                    m_context->useProgram(material->getShader());
+                    context->useProgram(material->getShader());
 
                     modelViewMatrix.loadIdentity();
                     const Matrix4 & modelMatrix = d.getGlobalMatrix();
@@ -310,9 +398,9 @@ void RenderManager::renderCamera(Camera & camera)
             }
 
             // Draw the mesh
-            m_context->drawMesh(*mesh);
+            context->drawMesh(*mesh);
 
-            m_context->useProgram(nullptr);
+            context->useProgram(nullptr);
         }
     }
 
@@ -349,10 +437,10 @@ void RenderManager::renderCamera(Camera & camera)
             // If it's the last effect
             if (i + 1 == camera.getEffectCount())
             {
-                // Bind the final target
+                // Bind the final target (which is the screen)
                 RenderTexture::bind(camera.getRenderTarget());
                 // With the final viewport
-                m_context->setViewport(viewport);
+                context->setViewport(viewport);
             }
             else
             {
@@ -366,8 +454,8 @@ void RenderManager::renderCamera(Camera & camera)
             if (material.getShader())
             {
                 ShaderProgram * shader = material.getShader();
-                m_context->useProgram(shader);
-                m_context->setDepthTest(true);
+                context->useProgram(shader);
+                context->setDepthTest(true);
 
                 material.setTexture("u_MainTexture", sourceBuffer);
 
@@ -393,9 +481,9 @@ void RenderManager::renderCamera(Camera & camera)
                 effectMesh = quad;
 
             // Draw
-            m_context->drawMesh(*effectMesh);
+            context->drawMesh(*effectMesh);
 
-            m_context->useProgram(nullptr);
+            context->useProgram(nullptr);
         }
 
         quad->release();
