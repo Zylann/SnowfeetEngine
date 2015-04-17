@@ -72,7 +72,7 @@ void WindowImpl::onEvent(UINT message, WPARAM wParam, LPARAM lParam)
         break;
 
     case WM_CLOSE:
-        e.type = SN_EVENT_WINDOW_CLOSED;
+        e.type = SN_EVENT_WINDOW_ASKED_CLOSE;
         manager.pushEvent(e);
         break;
 

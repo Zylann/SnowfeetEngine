@@ -141,7 +141,7 @@ int Application::executeEx()
             if (!m_scene->onSystemEvent(ev))
             {
                 // If the event has not been handled, perform default actions
-                if (ev.type == SN_EVENT_WINDOW_CLOSED)
+                if (ev.type == SN_EVENT_WINDOW_ASKED_CLOSE)
                     quit();
             }
         }
