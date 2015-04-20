@@ -424,6 +424,9 @@ void RenderManager::renderCamera(Camera & camera)
 
         quad->recalculateIndexes();
 
+        // Disable depth-test, we'll draw an overlay
+        context->setDepthTest(false);
+
         RenderTexture * targetBuffer = camera.getEffectBuffer(0);
         RenderTexture * sourceBuffer = camera.getEffectBuffer(1);
 
@@ -455,7 +458,6 @@ void RenderManager::renderCamera(Camera & camera)
             {
                 ShaderProgram * shader = material.getShader();
                 context->useProgram(shader);
-                context->setDepthTest(true);
 
                 material.setTexture("u_MainTexture", sourceBuffer);
 
@@ -467,11 +469,6 @@ void RenderManager::renderCamera(Camera & camera)
                 }
 
                 // No projection, no modelview. Everything is [-1, 1].
-
-                //Vector2u sourceSize = sourceBuffer->getSize();
-
-                //shader->setParam("u_MainTextureSize", sourceSize.x(), sourceSize.y());
-                //shader->setParam("u_TargetViewport", viewport.x(), viewport.y(), viewport.width(), viewport.height());
 
                 material.apply();
             }
