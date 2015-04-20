@@ -8,6 +8,7 @@ RenderScreen::RenderScreen(Window & window):
     r_window(window),
     m_impl(nullptr)
 {
+    initImpl();
 }
 
 RenderScreen::~RenderScreen()

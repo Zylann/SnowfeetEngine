@@ -79,6 +79,12 @@ void RenderScreenImpl::swapBuffers()
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 
+void RenderScreen::initImpl()
+{
+    SN_ASSERT(m_impl == nullptr, "Invalid state: impl is not null in initImpl()");
+    m_impl = new RenderScreenImpl(*this);
+}
+
 void RenderScreen::deinitImpl()
 {
     if (m_impl)
@@ -89,8 +95,6 @@ bool RenderScreen::makeCurrentImpl(Context & context)
 {
     if (r_window.getHandle())
     {
-        if (m_impl == nullptr)
-            m_impl = new RenderScreenImpl(*this);
         return m_impl->makeCurrent(context);
     }
     return false;

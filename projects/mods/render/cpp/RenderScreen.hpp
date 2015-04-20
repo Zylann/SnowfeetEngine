@@ -36,8 +36,9 @@ private:
     bool makeCurrent(Context * context = nullptr);
 
     // Platform-specific
+    void initImpl();
+    void deinitImpl();
     bool makeCurrentImpl(Context & context);
-    void deinitImpl(); // Init is called at makeCurrent
 
 private:
     /// \brief Context created for the window
