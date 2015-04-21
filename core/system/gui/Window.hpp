@@ -7,62 +7,14 @@ This file is part of the SnowfeetEngine project.
 #ifndef __HEADER_SN_WINDOW__
 #define __HEADER_SN_WINDOW__
 
-#include <core/math/Rect.hpp>
-//#include <core/system/gui/Layout.hpp>
 #include <core/util/NonCopyable.hpp>
 #include <core/math/Vector2.hpp>
+#include <core/system/gui/WindowParams.hpp>
 
 #include <string>
 
 namespace sn
 {
-
-//------------------------------------------------------------------------------
-typedef void* WindowHandle;
-
-//------------------------------------------------------------------------------
-enum WindowStyle
-{
-    SN_WS_BORDER = 1, // Client border
-    SN_WS_CLOSABLE = 2, // Close button
-    SN_WS_MAXIMIZABLE = 4, // Maximize button
-    SN_WS_MINIMIZABLE = 8, // Minimize button
-    SN_WS_SHOWN = 16, // Show on create
-    SN_WS_FULLSCREEN = 32,
-    SN_WS_CAPTION = 64, // Title bar
-    SN_WS_RESIZEABLE = 128,
-    SN_WS_CENTERED = 256,
-
-    _SN_WS_DEFAULT = SN_WS_BORDER
-        | SN_WS_CLOSABLE
-        | SN_WS_MAXIMIZABLE
-        | SN_WS_MINIMIZABLE
-        | SN_WS_SHOWN
-        | SN_WS_CAPTION
-        | SN_WS_RESIZEABLE
-        | SN_WS_CENTERED
-};
-
-//------------------------------------------------------------------------------
-struct SN_API WindowParams
-{
-    WindowParams(
-        WindowHandle parent_,
-        const std::string title_,
-        IntRect rect_ = IntRect(0, 0, 800, 480),
-        u32 style = _SN_WS_DEFAULT
-    ) :
-        parent(parent_),
-        rect(rect_),
-        title(title_),
-        style(style)
-    {}
-
-    WindowHandle parent;
-    IntRect rect;
-    std::string title;
-    unsigned int style;
-};
 
 //------------------------------------------------------------------------------
 class SystemGUI;
@@ -96,6 +48,17 @@ public:
     IntRect getClientRect() const;
 
     Vector2u getClientSize() const;
+
+    /// \brief Puts the window fullscreen on a specific monitor.
+    /// \param fullscreen:                wether the window should be fullscreen or not
+    /// \param monitorID (optional):      ID of the monitor the window should cover.
+    ///                                   If -1, the choosen monitor will be the one this window currently covers the most.
+    ///                                   This parameter is only relevant if fullscreen is true.
+    void setFullscreen(bool fullscreen, u32 monitorID = -1);
+
+    /// \brief Applies post-creation parameters to the window.
+    /// \note Not all parameters might be applied depending on the case.
+    void applyParams(WindowParams params);
 
     //virtual bool isContainer() const { return false; }
 
