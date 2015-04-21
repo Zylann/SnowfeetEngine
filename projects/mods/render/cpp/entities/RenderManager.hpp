@@ -27,13 +27,14 @@ public:
 
 	bool onSystemEvent(const sn::Event & event) override;
     
-    // No special serialization needed at the moment
+    void serializeState(JsonBox::Value & o, const SerializationContext & ctx) override;
+    void unserializeState(JsonBox::Value & o, const SerializationContext & ctx) override;
 
 private:
     void render();
     void renderCamera(Camera & camera);
 
-    RenderScreen * addScreen(u32 windowID);
+    RenderScreen * addScreen(u32 windowID=-1, const WindowParams * winParams = nullptr);
     void removeScreen(u32 windowID, bool showError=true);
     RenderScreen * getScreen(u32 windowID);
 

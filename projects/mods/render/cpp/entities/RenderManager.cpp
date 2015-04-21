@@ -62,11 +62,14 @@ void RenderManager::onReady()
     // TODO This must depend on RenderManager service parameters
     // Create default screen
     addScreen(0);
+    addScreen(1);
 }
 
 //------------------------------------------------------------------------------
-RenderScreen * RenderManager::addScreen(u32 windowID)
+RenderScreen * RenderManager::addScreen(u32 windowID, const WindowParams * winParams)
 {
+    // Note: windowID can be -1 to mean "give me any window"
+
     auto it = m_screens.find(windowID);
     if (it == m_screens.end())
     {
@@ -74,15 +77,18 @@ RenderScreen * RenderManager::addScreen(u32 windowID)
         Window * window = SystemGUI::get().getWindowByID(windowID);
         if (window == nullptr)
         {
-            window = SystemGUI::get().createWindow();
+            if (winParams)
+                window = SystemGUI::get().createWindow(*winParams);
+            else
+                window = SystemGUI::get().createWindow();
             windowID = SystemGUI::get().getWindowID(window);
+        }
+        else if (winParams)
+        {
+            window->applyParams(*winParams);
         }
 
         RenderScreen * screen = new RenderScreen(*window);
-        //ContextSettings contextSettings;
-        //contextSettings.majorVersion = 3;
-        //contextSettings.minorVersion = 3;
-        //screen.context = new Context(contextSettings, window, m_mainContext);
         m_screens[windowID] = screen;
         return screen;
     }
@@ -489,6 +495,34 @@ void RenderManager::renderCamera(Camera & camera)
     // Go back to screen
     RenderTexture::bind(0);
 
+}
+
+//------------------------------------------------------------------------------
+void RenderManager::serializeState(JsonBox::Value & o, const SerializationContext & ctx)
+{
+    Entity::serializeState(o, ctx);
+    // TODO serialize RenderManager settings
+}
+
+//------------------------------------------------------------------------------
+void RenderManager::unserializeState(JsonBox::Value & o, const SerializationContext & ctx)
+{
+    Entity::unserializeState(o, ctx);
+    if (o.isObject())
+    {
+        JsonBox::Value & screensValue = o["screens"];
+        if (!screensValue.isArray())
+        {
+            const JsonBox::Array & a = screensValue.getArray();
+            for (u32 i = 0; i < a.size(); ++i)
+            {
+                JsonBox::Value & screenValue = screensValue[i];
+                WindowParams params;
+                sn::unserialize(o, params);
+                addScreen(i, &params);
+            }
+        }
+    }
 }
 
 } // namespace render
