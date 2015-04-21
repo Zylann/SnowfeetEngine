@@ -45,14 +45,7 @@ bool ModuleInfo::loadFromFile(const String & pathToProjects, const String & modP
     startupScene = toWideString(v["startupScene"].getString());
 
     // Get services if any
-    if (v["services"].isArray())
-    {
-        const JsonBox::Array & a = v["services"].getArray();
-        for (u32 i = 0; i < a.size(); ++i)
-        {
-            services.push_back(a[i].getString());
-        }
-    }
+    parseServices(v["services"]);
 
     // Get bindings
     {
@@ -81,6 +74,35 @@ bool ModuleInfo::loadFromFile(const String & pathToProjects, const String & modP
     }
 
     return true;
+}
+
+void ModuleInfo::parseServices(JsonBox::Value & o)
+{
+    if (o.isArray())
+    {
+        const JsonBox::Array & a = o.getArray();
+        for (u32 i = 0; i < a.size(); ++i)
+        {
+            JsonBox::Value & serviceValue = o[i];
+            if (serviceValue.isString())
+            {
+                Service s;
+                s.type = serviceValue.getString();
+                services.push_back(s);
+            }
+            else if (serviceValue.isObject())
+            {
+                if (services.size() >= 1)
+                {
+                    services.back().args = serviceValue;
+                }
+                else
+                {
+                    SN_WARNING("Expected service name, got arguments in " + toString(modFilePath));
+                }
+            }
+        }
+    }
 }
 
 } // namespace sn
