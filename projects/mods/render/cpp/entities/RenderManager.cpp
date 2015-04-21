@@ -61,8 +61,7 @@ void RenderManager::onReady()
 
     // TODO This must depend on RenderManager service parameters
     // Create default screen
-    addScreen(0);
-    addScreen(1);
+    //addScreen(0);
 }
 
 //------------------------------------------------------------------------------
@@ -511,14 +510,14 @@ void RenderManager::unserializeState(JsonBox::Value & o, const SerializationCont
     if (o.isObject())
     {
         JsonBox::Value & screensValue = o["screens"];
-        if (!screensValue.isArray())
+        if (screensValue.isArray())
         {
             const JsonBox::Array & a = screensValue.getArray();
             for (u32 i = 0; i < a.size(); ++i)
             {
                 JsonBox::Value & screenValue = screensValue[i];
                 WindowParams params;
-                sn::unserialize(o, params);
+                sn::unserialize(screenValue, params);
                 addScreen(i, &params);
             }
         }
