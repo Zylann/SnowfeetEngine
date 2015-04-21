@@ -9,16 +9,6 @@ namespace render {
 const std::string Camera::TAG = "Camera";
 
 //------------------------------------------------------------------------------
-Camera::~Camera()
-{
-    for (u32 i = 0; i < EFFECT_BUFFERS_COUNT; ++i)
-    {
-        if (m_effectBuffers[i])
-            m_effectBuffers[i]->release();
-    }
-}
-
-//------------------------------------------------------------------------------
 void serialize(JsonBox::Value & o, ClearMode m)
 {
     switch (m)
@@ -56,6 +46,16 @@ void unserialize(JsonBox::Value & o, ScaleMode & m)
         m = SNR_SCALEMODE_ADAPTED;
     else
         m = SNR_SCALEMODE_NONE;
+}
+
+//------------------------------------------------------------------------------
+Camera::~Camera()
+{
+    for (u32 i = 0; i < EFFECT_BUFFERS_COUNT; ++i)
+    {
+        if (m_effectBuffers[i])
+            m_effectBuffers[i]->release();
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -131,6 +131,32 @@ void Camera::setRenderTexture(RenderTexture * rt)
 }
 
 //------------------------------------------------------------------------------
+void Camera::setTargetWindowByID(u32 windowID)
+{
+    m_targetWindowID = windowID;
+}
+
+//------------------------------------------------------------------------------
+u32 Camera::getTargetWindowID() const
+{
+    return m_targetWindowID;
+}
+
+//------------------------------------------------------------------------------
+Window * Camera::getTargetWindow() const
+{
+    if (r_renderTexture.isNull())
+    {
+        Window * win = SystemGUI::get().getWindowByID(m_targetWindowID);
+        return win;
+    }
+    else
+    {
+        return nullptr;
+    }
+}
+
+//------------------------------------------------------------------------------
 void Camera::setViewport(FloatRect normalizedRect)
 {
     m_viewport = normalizedRect;
@@ -162,8 +188,7 @@ IntRect Camera::getPixelViewport() const
     }
     else
     {
-        // TODO Fix this for multi windows!
-        Window * win = SystemGUI::get().getWindowByID(0);
+        Window * win = getTargetWindow();
         if (win)
         {
             targetSize = win->getClientSize();
@@ -240,16 +265,20 @@ void Camera::addEffect(Material * effectMaterial, Mesh * mesh)
 //------------------------------------------------------------------------------
 void Camera::updateEffectBuffers(const Vector2u * overrideResolution)
 {
-    IntRect viewport = getPixelViewport();
-
+    // Get which resolution to use
+    Vector2u targetSize;
     if (overrideResolution)
     {
-        viewport.width() = overrideResolution->x();
-        viewport.height() = overrideResolution->y();
+        targetSize = *overrideResolution;
+    }
+    else
+    {
+        IntRect viewport = getPixelViewport();
+        targetSize.x() = viewport.width();
+        targetSize.y() = viewport.height();
     }
 
-    Vector2u targetSize(viewport.width(), viewport.height());
-
+    // Check zero-size
     if (targetSize.x() == 0 || targetSize.y() == 0)
     {
         SN_WARNING("Camera::updateEffectBuffers: targetSize is " << sn::toString(targetSize));
@@ -276,7 +305,7 @@ void Camera::updateEffectBuffers(const Vector2u * overrideResolution)
         for (u32 i = 0; i < EFFECT_BUFFERS_COUNT; ++i)
         {
             RenderTexture * rt = new RenderTexture();
-            rt->create(Vector2u(viewport.width(), viewport.height()));
+            rt->create(targetSize);
             m_effectBuffers[i] = rt;
         }
     }
@@ -297,6 +326,7 @@ void Camera::serializeState(JsonBox::Value & o, const SerializationContext & con
     render::serialize(o["clearMode"], m_clearMode);
     sn::serialize(o["clearColor"], m_clearColor);
     sn::serialize(o["viewport"], m_viewport);
+    sn::serialize(o["targetWindow"], m_targetWindowID);
 
     if (!r_renderTexture.isNull())
     {
@@ -318,6 +348,7 @@ void Camera::unserializeState(JsonBox::Value & o, const SerializationContext & c
     sn::unserialize(o["drawOrder"], m_drawOrder);
     render::unserialize(o["clearMode"], m_clearMode);
     sn::unserialize(o["clearColor"], m_clearColor, Color());
+    sn::unserialize<u32>(o["targetWindow"], m_targetWindowID, 0);
 
     if (!o["viewport"].isNull())
     {

@@ -10,6 +10,8 @@ This file is part of the SnowfeetEngine project.
 #include <core/system/gui/Window.hpp>
 #include <core/asset/base/Mesh.hpp>
 
+#include <core/util/NonCopyable.hpp>
+
 #include "ShaderProgram.hpp"
 #include "ContextSettings.hpp"
 
@@ -18,11 +20,21 @@ namespace render {
 
 class ContextImpl;
 
-class Context
+/// \brief Holds a valid rendering context.
+class Context : public NonCopyable
 {
 public:
     // TODO What if the window is closed by the user?
-    Context(Window & owner, ContextSettings settings = ContextSettings());
+
+    /// \brief Creates a render context.
+    /// \param window (optional): external window to attach the context to
+    /// \note Settings might change to the closest match during construction, for compatibility reasons.
+    Context(
+        ContextSettings settings = ContextSettings(), 
+        Window * window = nullptr, 
+        Context * sharedContext = nullptr
+    );
+
     ~Context();
 
     bool makeCurrent(bool isCurrent=true);
@@ -44,13 +56,15 @@ public:
     void drawMesh(const Mesh & mesh);
 
     // Platform-specific
-    void swapBuffers();
+    //void swapBuffers();
+    ContextImpl * getImpl() const { return m_impl; }
 
 private:
     // Platform-specific
-    void initImpl();
+    void initImpl(Context * sharedContext);
     void deinitImpl();
 
+private:
     ContextImpl * m_impl;
     Window * r_window;
     ContextSettings m_settings;

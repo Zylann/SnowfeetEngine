@@ -11,7 +11,7 @@ RenderTexture::RenderTexture(): Asset(),
     m_frameBufferID(0),
     m_depthBufferID(0),
     m_texture(nullptr),
-    m_hasDepth(false)
+    m_hasDepth(true)
 {
     m_texture = new Texture();
 }

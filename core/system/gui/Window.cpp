@@ -71,6 +71,26 @@ Vector2u Window::getClientSize() const
     return Vector2u(clientRect.width(), clientRect.height());
 }
 
+//------------------------------------------------------------------------------
+void Window::setFullscreen(bool fullscreen, u32 monitorID)
+{
+    // TODO implement fullscreen
+    SN_WARNING("Window::setFullscreen() is not implemented yet");
+}
+
+//------------------------------------------------------------------------------
+void Window::applyParams(WindowParams params)
+{
+    setTitle(params.title);
+    if (params.style & SN_WS_FULLSCREEN)
+    {
+        setFullscreen(true);
+    }
+    else
+    {
+        setClientRect(params.rect);
+    }
+}
 
 } // namespace sn
 

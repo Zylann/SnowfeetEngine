@@ -9,13 +9,21 @@ This file is part of the SnowfeetEngine project.
 
 #include <core/util/String.hpp>
 #include <vector>
+#include <core/json/json_utils.hpp>
 
 namespace sn
 {
 
-struct ModuleInfo
+class ModuleInfo
 {
+public:
     bool loadFromFile(const String & pathToProjects, const String & modPath);
+
+    struct Service
+    {
+        std::string type;
+        JsonBox::Value args;
+    };
 
     std::string name;
     String directory;
@@ -23,11 +31,17 @@ struct ModuleInfo
     std::string scriptNamespace;
     std::vector<String> dependencies;
     String startupScene;
-    std::vector<std::string> services; // class names of sticky entities to create on load
+
+    /// \brief List of global entities to create in the main scene when the module is loaded
+    std::vector<Service> services;
 
 	/// \brief List of names of shared libraries containing native bindings
     /// \warning The order is important in this container.
     std::vector<String> bindings;
+
+private:
+    void parseServices(JsonBox::Value & o);
+
 };
 
 } // namespace sn

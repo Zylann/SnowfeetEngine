@@ -12,6 +12,7 @@
 namespace sn {
 namespace render {
 
+//------------------------------------------------------------------------------
 enum ClearMode
 {
     SNR_CLEAR_NONE,
@@ -22,6 +23,7 @@ enum ClearMode
 void serialize(JsonBox::Value & o, ClearMode m);
 void unserialize(JsonBox::Value & o, ClearMode & m);
 
+//------------------------------------------------------------------------------
 enum ScaleMode
 {
     SNR_SCALEMODE_NONE,
@@ -31,6 +33,7 @@ enum ScaleMode
 void serialize(JsonBox::Value & o, ScaleMode m);
 void unserialize(JsonBox::Value & o, ScaleMode & m);
 
+//------------------------------------------------------------------------------
 class Camera : public Entity3D
 {
 public:
@@ -60,7 +63,8 @@ public:
         m_scaleMode(SNR_SCALEMODE_ADAPTED),
         m_clearMode(SNR_CLEAR_NONE),
         m_viewport(0,0,1,1),
-        m_projectionMatrixNeedUpdate(true)
+        m_projectionMatrixNeedUpdate(true),
+        m_targetWindowID(0)
     {
         // TODO Have a zeroMemory template function helper
         memset(m_effectBuffers, 0, sizeof(RenderTexture*) * EFFECT_BUFFERS_COUNT);
@@ -90,7 +94,8 @@ public:
     inline const FloatRect & getViewport() const { return m_viewport; }
 
     /// \brief Gets the viewport's coordinates in pixels.
-    /// It corresponds to the actual rectangle where this camera will draw on the target (screen or framebuffer)
+    /// It corresponds to the actual rectangle where this camera will draw on the target (screen or framebuffer).
+    /// \warning It can be zero-sized if the target window is not set or minimized by the system.
     IntRect getPixelViewport() const;
 
     void setFov(f32 newFov);
@@ -110,6 +115,10 @@ public:
 
     void setRenderTexture(RenderTexture * rt);
     RenderTexture * getRenderTarget() const { return r_renderTexture.get(); }
+
+    void setTargetWindowByID(u32 windowID);
+    u32 getTargetWindowID() const;
+    Window * getTargetWindow() const;
 
     //void setVisibilityMask(u32 mask);
 
@@ -160,6 +169,7 @@ private:
     mutable Matrix4 m_projectionMatrix;
 
     WeakRef<RenderTexture> r_renderTexture;
+    u32 m_targetWindowID;
 
     static const u32 EFFECT_BUFFERS_COUNT = 2;
 

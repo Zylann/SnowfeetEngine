@@ -299,7 +299,7 @@ inline void unserialize(JsonBox::Value & o, Quaternion & q)
 
 //------------------------------------------------------------------------------
 template <typename T>
-inline void unserialize(JsonBox::Value & o, T & v, const T & defaultValue)
+inline void unserialize(JsonBox::Value & o, T & v, const T defaultValue)
 {
     if (o.isNull())
         v = defaultValue;
