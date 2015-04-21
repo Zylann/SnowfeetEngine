@@ -44,6 +44,7 @@ Features
 - Hot-reloading of assets
 - Entity hierarchy
 - Dynamic module system
+- Multi-screens
 - Scenes described with JSON
 
 
