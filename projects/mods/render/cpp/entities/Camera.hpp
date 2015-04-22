@@ -34,6 +34,7 @@ void serialize(JsonBox::Value & o, ScaleMode m);
 void unserialize(JsonBox::Value & o, ScaleMode & m);
 
 //------------------------------------------------------------------------------
+/// \brief Point of view on the scene, from which things can be rendered.
 class Camera : public Entity3D
 {
 public:
@@ -135,6 +136,7 @@ public:
     void onReady() override;
 
     //void onTargetResized(u32 width, u32 height);
+    void updateAspectRatio();
 
     //-----------------------------------------
     // Serialization
@@ -146,7 +148,6 @@ public:
     // TODO Don't leave this public, it should be automated (for target textures resizing)
     void updateEffectBuffers(const Vector2u * overrideResolution = nullptr);
 private:
-    void updateAspectRatio();
 
 private:
     //std::bitset<32> m_cullingMask;

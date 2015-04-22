@@ -157,25 +157,20 @@ bool RenderManager::onSystemEvent(const sn::Event & event)
 //------------------------------------------------------------------------------
 void RenderManager::onScreenResized(u32 width, u32 height)
 {
-    //m_lastScreenSize = Vector2u(width, height);
-
-    //auto cameras = getScene()->getTaggedEntities(Camera::TAG);
-    //for (auto it = cameras.begin(); it != cameras.end(); ++it)
-    //{
-    //    Entity * e = *it;
-    //    if (e->isInstanceOf<Camera>())
-    //    {
-    //        Camera & cam = *(Camera*)e;
-    //        if (cam.getRenderTarget() == nullptr)
-    //        {
-    //            cam.onTargetResized(width, height);
-    //        }
-    //    }
-    //    else
-    //    {
-    //        SN_WARNING("Entity tagged Camera is not a Camera: " << e->toString());
-    //    }
-    //}
+    auto cameras = getScene()->getTaggedEntities(Camera::TAG);
+    for (auto it = cameras.begin(); it != cameras.end(); ++it)
+    {
+        Entity * e = *it;
+        if (e->isInstanceOf<Camera>())
+        {
+            Camera & cam = *(Camera*)e;
+            cam.updateAspectRatio();
+        }
+        else
+        {
+            SN_WARNING("Entity tagged Camera is not a Camera: " << e->toString());
+        }
+    }
 }
 
 //------------------------------------------------------------------------------
