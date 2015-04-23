@@ -3,11 +3,15 @@
 
 #include "mod_SnowfeetImage.h"
 
+#include "ImageLoader.hpp"
+
 
 int loadSnowfeetModule_ModImage(ModuleLoadArgs args)
 {
-    //sn::register_image(*args.scriptEngine);
-    //adb.addLoader<sn::Shader>(new sn::ShaderLoader());
+    auto & otb = *args.objectTypeDatabase;
+
+    otb.registerType<sn::ImageLoader>();
+
     return 0;
 }
 
