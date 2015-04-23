@@ -19,16 +19,16 @@ This file is part of the SnowfeetEngine project.
 //------------------------------------------------------------------------------
 #define _SN_LOG(logType, expr) \
     do {\
-        std::stringstream ss;\
-        ss << expr;\
-        sn::Log::get().print(logType, ss.str());\
+        std::stringstream __sn_ss;\
+        __sn_ss << expr;\
+        sn::Log::get().print(logType, __sn_ss.str());\
     } while (false)
 
 #define _SN_WLOG(logType, wexpr) \
     do {\
-        std::wstringstream wss;\
-        wss << wexpr;\
-        sn::Log::get().wprint(logType, wss.str());\
+        std::wstringstream __sn_wss;\
+        __sn_wss << wexpr;\
+        sn::Log::get().wprint(logType, __sn_wss.str());\
     } while (false)
 
 #ifdef SN_BUILD_DEBUG
