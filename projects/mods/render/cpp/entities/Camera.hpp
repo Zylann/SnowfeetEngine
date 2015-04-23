@@ -6,22 +6,12 @@
 #include <core/util/WeakRef.hpp>
 #include <core/asset/base/Mesh.hpp>
 
+#include "../ClearBits.hpp"
 #include "../Material.hpp"
 #include "../RenderTexture.hpp"
 
 namespace sn {
 namespace render {
-
-//------------------------------------------------------------------------------
-enum ClearMode
-{
-    SNR_CLEAR_NONE,
-    SNR_CLEAR_COLOR
-    //SNR_CLEAR_SKYBOX
-};
-
-void serialize(JsonBox::Value & o, ClearMode m);
-void unserialize(JsonBox::Value & o, ClearMode & m);
 
 //------------------------------------------------------------------------------
 enum ScaleMode
@@ -62,7 +52,7 @@ public:
         m_drawOrder(0),
         m_aspectRatio(1),
         m_scaleMode(SNR_SCALEMODE_ADAPTED),
-        m_clearMode(SNR_CLEAR_NONE),
+        m_clearBits(SNR_CLEAR_COLOR | SNR_CLEAR_DEPTH),
         m_viewport(0,0,1,1),
         m_projectionMatrixNeedUpdate(true),
         m_targetWindowID(0)
@@ -88,7 +78,7 @@ public:
     inline f32 getFar() const { return m_far; }
     inline f32 getAspectRatio() const { return m_aspectRatio; }
     inline const Color & getClearColor() const { return m_clearColor; }
-    inline ClearMode getClearMode() const { return m_clearMode; }
+    inline ClearMask getClearBits() const { return m_clearBits; }
     inline ScaleMode getScaleMode() const { return m_scaleMode; }
 
     /// \brief Gets the viewport's coordinates in normalized space (-1 to 1 horizontally and vertically).
@@ -104,7 +94,7 @@ public:
     void setFar(f32 newFar);
     void setAspectRatio(f32 newAspectRatio);
     void setClearColor(const Color & clearColor);
-    void setClearMode(ClearMode mode);
+    void setClearBits(ClearMask mask);
     void setScaleMode(ScaleMode mode);
     void setViewport(FloatRect normalizedRect);
 
@@ -162,7 +152,7 @@ private:
     ScaleMode m_scaleMode;
 
     Color m_clearColor;
-    ClearMode m_clearMode;
+    ClearMask m_clearBits;
 
     FloatRect m_viewport;
 

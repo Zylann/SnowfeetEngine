@@ -14,6 +14,7 @@ This file is part of the SnowfeetEngine project.
 
 #include "ShaderProgram.hpp"
 #include "ContextSettings.hpp"
+#include "ClearBits.hpp"
 
 namespace sn {
 namespace render {
@@ -45,7 +46,7 @@ public:
 
     void useProgram(const ShaderProgram * shader = nullptr);
 
-    void clearTarget();
+    void clearTarget(ClearMask mask = SNR_CLEAR_ALL);
     void clearColor(const Color color);
 
     void setDepthTest(bool enabled);

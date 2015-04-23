@@ -9,26 +9,6 @@ namespace render {
 const std::string Camera::TAG = "Camera";
 
 //------------------------------------------------------------------------------
-void serialize(JsonBox::Value & o, ClearMode m)
-{
-    switch (m)
-    {
-    case SNR_CLEAR_COLOR: o = "color"; break;
-    default: o = "none"; break;
-    }
-}
-
-//------------------------------------------------------------------------------
-void unserialize(JsonBox::Value & o, ClearMode & m)
-{
-    std::string s = o.getString();
-    if (s == "color")
-        m = SNR_CLEAR_COLOR;
-    else
-        m = SNR_CLEAR_NONE;
-}
-
-//------------------------------------------------------------------------------
 void serialize(JsonBox::Value & o, ScaleMode m)
 {
     switch (m)
@@ -113,9 +93,9 @@ void Camera::setScaleMode(ScaleMode mode)
 }
 
 //------------------------------------------------------------------------------
-void Camera::setClearMode(ClearMode mode)
+void Camera::setClearBits(ClearMask mask)
 {
-    m_clearMode = mode;
+    m_clearBits = mask;
 }
 
 //------------------------------------------------------------------------------
@@ -323,7 +303,7 @@ void Camera::serializeState(JsonBox::Value & o, const SerializationContext & con
     sn::serialize(o["fov"], m_fov);
     sn::serialize(o["orthoSize"], m_orthoSize);
     sn::serialize(o["drawOrder"], m_drawOrder);
-    render::serialize(o["clearMode"], m_clearMode);
+    render::serialize(o["clearBits"], m_clearBits);
     sn::serialize(o["clearColor"], m_clearColor);
     sn::serialize(o["viewport"], m_viewport);
     sn::serialize(o["targetWindow"], m_targetWindowID);
@@ -346,7 +326,7 @@ void Camera::unserializeState(JsonBox::Value & o, const SerializationContext & c
     sn::unserialize(o["fov"], m_fov, 70.f);
     sn::unserialize(o["orthoSize"], m_orthoSize, Vector2f(16,9));
     sn::unserialize(o["drawOrder"], m_drawOrder);
-    render::unserialize(o["clearMode"], m_clearMode);
+    render::unserialize(o["clearBits"], m_clearBits);
     sn::unserialize(o["clearColor"], m_clearColor, Color());
     sn::unserialize<u32>(o["targetWindow"], m_targetWindowID, 0);
 

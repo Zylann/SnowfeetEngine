@@ -318,16 +318,12 @@ void RenderManager::renderCamera(Camera & camera)
     }
 
     // Clear?
-    switch (camera.getClearMode())
+    if (camera.getClearBits())
     {
-    case SNR_CLEAR_COLOR:
-        context->clearColor(camera.getClearColor());
-        context->clearTarget();
-        break;
-
-    default:
-        // Don't clear
-        break;
+        ClearMask mask = camera.getClearBits();
+        if (mask & SNR_CLEAR_COLOR)
+            context->clearColor(camera.getClearColor());
+        context->clearTarget(mask);
     }
 
     // Get drawables

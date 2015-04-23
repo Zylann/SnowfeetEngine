@@ -60,9 +60,14 @@ Context::~Context()
 }
 
 //------------------------------------------------------------------------------
-void Context::clearTarget()
+void Context::clearTarget(ClearMask mask)
 {
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    u32 gl_mask = 0;
+    if (mask & SNR_CLEAR_COLOR)
+        gl_mask |= GL_COLOR_BUFFER_BIT;
+    if (mask & SNR_CLEAR_DEPTH)
+        gl_mask |= GL_DEPTH_BUFFER_BIT;
+    glClear(gl_mask);
 }
 
 //------------------------------------------------------------------------------
