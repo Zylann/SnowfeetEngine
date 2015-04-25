@@ -27,11 +27,6 @@ bool ImageLoader::load(std::ifstream & ifs, Asset & asset) const
 {
     sn::Image * image = checked_cast<Image*>(&asset);
 
-    // Load image
-    s32 width = 0;
-    s32 height = 0;
-    s32 channels = 0;
-
     // TODO [Optimize] I was tired when writing this
     // TODO I was tired too when reading this again
     std::vector<u8> buffer;
