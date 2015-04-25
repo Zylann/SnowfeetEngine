@@ -31,6 +31,9 @@ public:
     bool loadFromFile(String metaPath);
     bool saveToFile(String metaPath);
 
+    bool loadFromStream(std::ifstream & ifs);
+    bool saveToStream(std::ofstream & ofs);
+
     std::string type;
     std::string module;
     String path; // File path
