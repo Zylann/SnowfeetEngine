@@ -30,10 +30,12 @@ public:
     /// All assets have a default constructor making an empty asset.
 	Asset() : ScriptObject() {}
 
+    /// \deprecated
     /// \brief Tells if the asset pointed by metadata can be loaded by this type.
     /// Common tests include file extension or checking the first bytes of the file.
     virtual bool canLoad(const AssetMetadata & metadata) const { return false; }
 
+    /// \deprecated
     /// \brief Loads the asset from a file (info is in metadata)
     virtual bool loadFromStream(std::ifstream & ifs) { return false; }
 
