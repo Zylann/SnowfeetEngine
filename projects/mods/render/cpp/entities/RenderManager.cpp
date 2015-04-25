@@ -210,7 +210,7 @@ void RenderManager::render()
     for (auto it = cameras.begin(); it != cameras.end(); ++it)
     {
         Camera * cam = checkTaggedType<Camera>(Camera::TAG, *it);
-        if (cam)
+        if (cam && cam->isEnabled())
         {
             sortedCameras.push_back(cam);
         }
