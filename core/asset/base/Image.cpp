@@ -31,11 +31,12 @@ void Image::loadFromPixels(Vector2u size, PixelFormat format, const u8 * pixelDa
     m_pixelFormat = format;
     m_size = size;
 
-    u32 len = size.x() * size.y();
+    u32 channelCount = 4; // R,G,B,A
+    u32 len = size.x() * size.y() * channelCount;
 
     if (len)
     {
-        m_pixelData = new u8[sizeof(u8)* 4];
+        m_pixelData = new u8[sizeof(u8)* len];
         memcpy(m_pixelData, pixelData, len);
     }
 }
