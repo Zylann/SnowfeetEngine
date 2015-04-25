@@ -3,17 +3,20 @@
 namespace sn
 {
 
+//------------------------------------------------------------------------------
 Image::Image() : Asset(),
     m_pixelData(nullptr),
     m_pixelFormat(SN_IMAGE_RGBA32) // Not really relevant, but known as default
 {
 }
 
+//------------------------------------------------------------------------------
 Image::~Image()
 {
     clear();
 }
 
+//------------------------------------------------------------------------------
 void Image::create(Vector2u size, PixelFormat format, Color8 defaultColor)
 {
     SN_ASSERT(format == SN_IMAGE_RGBA32, "Image format not supported yet");
@@ -23,6 +26,7 @@ void Image::create(Vector2u size, PixelFormat format, Color8 defaultColor)
     fill(defaultColor);
 }
 
+//------------------------------------------------------------------------------
 void Image::loadFromPixels(Vector2u size, PixelFormat format, const u8 * pixelData)
 {
     SN_ASSERT(format == SN_IMAGE_RGBA32, "Image format not supported yet");
@@ -41,6 +45,7 @@ void Image::loadFromPixels(Vector2u size, PixelFormat format, const u8 * pixelDa
     }
 }
 
+//------------------------------------------------------------------------------
 void Image::clear()
 {
     if (m_pixelData)
@@ -51,6 +56,7 @@ void Image::clear()
     m_size = Vector2u(0, 0);
 }
 
+//------------------------------------------------------------------------------
 bool Image::getPixel(u32 x, u32 y, Color8 & out_color) const
 {
     if (x < m_size.x() && y < m_size.y() && m_pixelData)
@@ -62,6 +68,7 @@ bool Image::getPixel(u32 x, u32 y, Color8 & out_color) const
     return false;
 }
 
+//------------------------------------------------------------------------------
 bool Image::setPixel(u32 x, u32 y, Color8 c)
 {
     if (x < m_size.x() && y < m_size.y() && m_pixelData)
@@ -76,6 +83,7 @@ bool Image::setPixel(u32 x, u32 y, Color8 c)
     return false;
 }
 
+//------------------------------------------------------------------------------
 void Image::fill(Color8 color)
 {
     if (m_pixelData)
