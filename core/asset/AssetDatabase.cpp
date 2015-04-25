@@ -109,40 +109,49 @@ void AssetDatabase::releaseLoaders()
 }
 
 //------------------------------------------------------------------------------
-const AssetLoader * AssetDatabase::findLoader(const AssetMetadata & meta) const
+AssetLoaderList AssetDatabase::findLoaders(const AssetMetadata & meta) const
 {
+    AssetLoaderList chain;
     for (auto modIt = m_loaders.begin(); modIt != m_loaders.end(); ++modIt)
     {
         auto & loaders = modIt->second;
         for (auto it = loaders.begin(); it != loaders.end(); ++it)
         {
             AssetLoader & loader = *it->second;
-            if (loader.canLoad(meta))
+            if (loader.canLoad(meta) && loader.isDirect(meta))
             {
-                return &loader;
+                chain.push_back(&loader);
             }
+        }
+    }
+    if (!chain.empty())
+        orderAssetLoaders(chain);
+    return chain;
+}
+
+//------------------------------------------------------------------------------
+AssetLoader * AssetDatabase::findLoader(const ObjectType & assetType) const
+{
+    for (auto modIt = m_loaders.begin(); modIt != m_loaders.end(); ++modIt)
+    {
+        auto & loaders = modIt->second;
+        auto it = loaders.find(assetType.getName());
+        if (it != loaders.end())
+        {
+            return it->second;
         }
     }
     return nullptr;
 }
 
 //------------------------------------------------------------------------------
-const AssetLoader * AssetDatabase::findLoader(const Asset & asset) const
+void AssetDatabase::orderAssetLoaders(AssetLoaderList & chain) const
 {
-    for (auto modIt = m_loaders.begin(); modIt != m_loaders.end(); ++modIt)
-    {
-        auto & loaders = modIt->second;
-
-        const ObjectType & assetType = asset.getObjectType();
-
-        auto it = loaders.find(assetType.getName());
-        if (it != loaders.end())
-        {
-            return it->second;
+    std::sort(chain.begin(), chain.end(), 
+        [](const AssetLoader * lhs, const AssetLoader * rhs) {
+            return lhs->getPriority(*rhs) == -1;
         }
-
-    }
-    return nullptr;
+    );
 }
 
 //------------------------------------------------------------------------------
@@ -164,21 +173,21 @@ void AssetDatabase::loadAssets(const ModuleInfo & modInfo)
     {
         // TODO Ignore special folders such as cpp/
         const FileNode & file = *it;
-		Asset * asset = preloadAsset(file.path, modInfo.name);
-        if (asset)
-        {
-			moduleAssets.push_back(asset);
-            ++indexedCount;
-        }
+		std::vector<Asset*> assets = preloadAssetFile(file.path, modInfo.name);
+        for (u32 i = 0; i < assets.size(); ++i)
+			moduleAssets.push_back(assets[i]);
+        indexedCount += assets.size();;
     }
 #ifdef SN_BUILD_DEBUG
     SN_LOG("Indexed " << indexedCount << " assets from " << modInfo.name << " in " << clock.restart().asSeconds() << " seconds");
 #endif
 
+    // Then, load them
     for (auto it = moduleAssets.begin(); it != moduleAssets.end(); ++it)
     {
         Asset * asset = *it;
-        loadAsset(asset);
+        if (loadAsset(asset) == SN_ALS_LOADED)
+            ++loadedCount;
     }
 #ifdef SN_BUILD_DEBUG
     SN_LOG("Loaded " << loadedCount << " assets from " << modInfo.name << " in " << clock.getElapsedTime().asSeconds() << " seconds");
@@ -186,17 +195,18 @@ void AssetDatabase::loadAssets(const ModuleInfo & modInfo)
 }
 
 //------------------------------------------------------------------------------
-Asset * AssetDatabase::preloadAsset(const String & path, const std::string & moduleName)
+std::vector<Asset*> AssetDatabase::preloadAssetFile(const String & path, const std::string & moduleName)
 {
-    // Check if not already loaded
+    // Check if not already indexed
     auto assetIt = m_fileCache.find(path);
     if (assetIt != m_fileCache.end())
     {
-        // Already loaded, return the asset
+        // Already indexed, return the asset
         return assetIt->second;
     }
 
-    Asset * asset = nullptr;
+    // Assets that will be produced by the file (usually one)
+    std::vector<Asset*> assets;
 
     // Retrieve metadata
     AssetMetadata metadata;
@@ -204,40 +214,59 @@ Asset * AssetDatabase::preloadAsset(const String & path, const std::string & mod
     metadata.module = moduleName;
     metadata.loadFromFile(path); // Not fatal if the .meta file isn't found
 
-    // Find loader
-    const AssetLoader * loader = findLoader(metadata);
+    // Find loaders
+    AssetLoaderList loaderChain = findLoaders(metadata);
 
-    if (loader)
+    if (!loaderChain.empty())
     {
-        // Found a loader, the asset is preloaded
-        const ObjectType & ot = loader->getAssetInstanceType();
-        asset = checked_cast<Asset*>(ot.instantiate());
+        // Found loaders, the asset is preloaded
+        for (auto it = loaderChain.begin(); it != loaderChain.end(); ++it)
+        {
+            const AssetLoader & loader = **it;
+            const ObjectType & ot = loader.getAssetInstanceType();
+            Asset * a = checked_cast<Asset*>(ot.instantiate());
+            SN_ASSERT(a != nullptr, "asset instance type is not derived from Asset");
+            assets.push_back(a);
+        }
     }
     else
     {
+        // TODO Ban this!
         // No loader found, use old method
-        asset = legacy_createMatchingAssetType(metadata);
+        Asset * a = legacy_createMatchingAssetType(metadata);
+        if (a)
+            assets.push_back(a);
     }
 
-    if (asset)
+    if (!assets.empty())
     {
         metadata.name = getFileNameWithoutExtension(toString(path));
 
-        // Assign metadata
-        asset->m_metadata = metadata;
+        unsigned int i = 0;
+        for (auto it = assets.begin(); it != assets.end(); ++it)
+        {
+            Asset & asset = **it;
 
-        // Store in file mapping
-        m_fileCache[metadata.path] = asset;
+            // Assign metadata
+            asset.m_metadata = metadata;
 
-        // Store in asset mapping using the ObjectType specified by the loader
-        const ObjectType & baseObjectType = loader ? loader->getBaseAssetType() : asset->getObjectType();
-        m_assets[metadata.module][baseObjectType.getName()][metadata.name] = asset;
+            // Store in file mapping
+            addToFileCache(asset);
 
-        SN_DLOG("Indexed asset " << toString(path) << "...");
+            const AssetLoader * loader = loaderChain.empty() ? nullptr : loaderChain[i];
+
+            // Store in asset mapping using the ObjectType specified by the loader
+            const ObjectType & baseObjectType = loader ? loader->getBaseAssetType() : asset.getObjectType();
+            m_assets[metadata.module][baseObjectType.getName()][metadata.name] = &asset;
+
+            ++i;
+        }
+
+        SN_DLOG("Indexed asset " << toString(path) << " as " << assets.size() << " objects");
     }
 
     // If nullptr, the asset cannot be loaded
-    return asset;
+    return assets;
 }
 
 //------------------------------------------------------------------------------
@@ -292,12 +321,19 @@ Asset * AssetDatabase::legacy_createMatchingAssetType(const AssetMetadata & meta
 }
 
 //------------------------------------------------------------------------------
-AssetLoadStatus AssetDatabase::loadAsset(Asset * asset)
+AssetLoadStatus AssetDatabase::loadAsset(Asset * asset, const AssetMetadata * a_newMetadata)
 {
     SN_ASSERT(asset != nullptr, "Cannot receive nullptr");
 
+    if (a_newMetadata)
+    {
+        asset->m_metadata = *a_newMetadata;
+    }
+
     const AssetMetadata & metadata = asset->getAssetMetadata();
     const std::string & typeName = asset->getObjectType().getName();
+
+    // TODO Don't load if the file's timestamp has not changed?
 
     SN_DLOG("Loading asset " << toString(metadata.path) << "...");
 
@@ -310,7 +346,7 @@ AssetLoadStatus AssetDatabase::loadAsset(Asset * asset)
         return SN_ALS_OPEN_ERROR;
     }
 
-    const AssetLoader * loader = findLoader(*asset);
+    const AssetLoader * loader = findLoader(asset->getObjectType());
 
     if (loader)
     {
@@ -333,16 +369,49 @@ AssetLoadStatus AssetDatabase::loadAsset(Asset * asset)
 }
 
 //------------------------------------------------------------------------------
-AssetLoadStatus AssetDatabase::loadIndexedAssetByPath(const std::string & path)
+void AssetDatabase::loadIndexedAssetsByPath(const std::string & path)
 {
     auto it = m_fileCache.find(toWideString(path));
     if (it != m_fileCache.end())
     {
-        return loadAsset(it->second);
+        std::vector<Asset*> & assets = it->second;
+        for (u32 i = 0; i < assets.size(); ++i)
+        {
+            loadAsset(assets[i]);
+        }
     }
-    else
+}
+
+//------------------------------------------------------------------------------
+void AssetDatabase::addToFileCache(Asset & asset)
+{
+    std::vector<Asset*> & assets = m_fileCache[asset.getAssetMetadata().path];
+    assets.push_back(&asset);
+}
+
+//------------------------------------------------------------------------------
+void AssetDatabase::removeFromFileCache(Asset & asset)
+{
+    auto it = m_fileCache.find(asset.getAssetMetadata().path);
+    if (it != m_fileCache.end())
     {
-        return SN_ALS_MISMATCH;
+        std::vector<Asset*> & assets = it->second;
+        if (assets.size() == 1)
+        {
+            assets.clear();
+        }
+        else
+        {
+            for (u32 i = 0; i < assets.size(); ++it)
+            {
+                if (assets[i] == &asset)
+                {
+                    assets[i] = assets.back();
+                    assets.pop_back();
+                    break;
+                }
+            }
+        }
     }
 }
 
@@ -495,7 +564,7 @@ void AssetDatabase::updateFileChanges()
             case FileWatcher::FILE_MODIFIED:
                 // TODO win32: two events are received when the asset is saved (CTRL+S). Need to filter the second one!
                 SN_DLOG("Received file change: " << event.path);
-                loadIndexedAssetByPath(FilePath::join(toString(m_root), event.path));
+                loadIndexedAssetsByPath(FilePath::join(toString(m_root), event.path));
                 break;
 
             default:

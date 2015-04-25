@@ -1,7 +1,7 @@
 #ifndef __HEADER_SNR_TEXTURE__
 #define __HEADER_SNR_TEXTURE__
 
-#include <core/asset/Asset.hpp>
+#include <core/asset/base/TextureBase.hpp>
 #include <core/math/Vector2.hpp>
 #include <GL/glew.h>
 
@@ -9,19 +9,19 @@ namespace sn {
 namespace render {
 
 // TODO Make copyable (needs to download pixels?)
-class Texture : public Asset, public NonCopyable
+class Texture : public TextureBase, public NonCopyable
 {
 public:
-    SN_SCRIPT_OBJECT(sn::render::Texture, sn::Asset)
+    SN_SCRIPT_OBJECT(sn::render::Texture, sn::TextureBase)
 
     Texture();
 
     //---------------------------------------
-    // Asset interface
+    // TextureBase interface
     //---------------------------------------
 
-    bool canLoad(const AssetMetadata & meta) const override;
-    bool loadFromStream(std::ifstream & ifs) override;
+    bool uploadToVRAM() override;
+    Image * downloadFromVRAM() override;
 
     //---------------------------------------
     // Texture interface
@@ -33,7 +33,15 @@ public:
     bool loadFromPixelsRGBA8(Vector2u size, const char * data);
 
     Vector2u getSize() const { return m_size; }
-    GLuint getInternalID() const { return m_textureID; }
+    GLuint getInternalID() const { return reinterpret_cast<GLuint>(getHandle()); }
+
+    void setKeepSourceInMemory(bool enable) { m_keepSourceInMemory = true; }
+    void setSmooth(bool enable);
+    void setRepeated(bool enable);
+
+    bool isKeepSourceInMemory() const { return m_keepSourceInMemory; }
+    bool isSmooth() const { return m_isSmooth; }
+    bool isRepeated() const { return m_isRepeated; }
 
     //Texture & operator=(const Texture & other);
 
@@ -43,11 +51,13 @@ public:
 private:
     ~Texture(); // use release();
 
+    void updateFilter();
+    void updateRepeat();
+
 private:
-    Vector2u m_size;
-    GLuint m_textureID;
     bool m_isSmooth;
     bool m_isRepeated;
+    bool m_keepSourceInMemory;
 
     //GLuint m_samplerID;
 

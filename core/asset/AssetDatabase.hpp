@@ -28,6 +28,8 @@ enum AssetLoadStatus
     SN_ALS_READ_ERROR
 };
 
+typedef std::vector<const AssetLoader*> AssetLoaderList;
+
 /// \brief Contains all resources currently loaded by the application.
 class SN_API AssetDatabase : public NonCopyable
 {
@@ -62,6 +64,8 @@ public:
     /// \brief Loads all assets contained in a given module directory.
     /// This function blocks until everything is loaded.
     void loadAssets(const ModuleInfo & modInfo);
+
+    AssetLoadStatus loadAsset(Asset * asset, const AssetMetadata * a_newMetadata = nullptr);
 
     // Gets an asset. If it returns null, the asset may not be loadable or has not been registered.
     Asset * getAsset(const std::string & moduleName, const ObjectType & type, const std::string & name);
@@ -102,6 +106,12 @@ public:
         return getAsset<Asset_T>(location.module, location.name);
     }
 
+    template <class Asset_T>
+    AssetLoader * findLoader()
+    {
+        return findLoader(Asset_T::__sGetObjectType());
+    }
+
 #ifdef SN_BUILD_DEBUG
     void printAssetList() const;
 #endif
@@ -109,20 +119,36 @@ public:
 private:
     void addLoader(AssetLoader * loader);
 
-    const AssetLoader * findLoader(const AssetMetadata & meta) const;
-    const AssetLoader * findLoader(const Asset & asset) const;
+    /// \brief Finds loaders associated to the given asset metadata.
+    /// \param meta: asset info such as the file path, name, load parameters...
+    /// \return list of loaders sorted by execution order. Can be empty if no loaders are available.
+    AssetLoaderList findLoaders(const AssetMetadata & meta) const;
+
+    /// \brief Finds the loader associated to a specific asset type.
+    /// \param assetType: C++ type of the asset.
+    /// \return loader, or null if no loader is associated.
+    AssetLoader * findLoader(const ObjectType & assetType) const;
+
+    /// \brief Sorts a list of loaders by execution order.
+    /// \param chain: loaders to sort
+    void orderAssetLoaders(AssetLoaderList & chain) const;
 
     /// \deprecated
     Asset * legacy_createMatchingAssetType(const AssetMetadata & meta) const;
 
-    // Tests if an asset file can be loaded, and if yes, returns its container object in an empty state,
-    // with associated metadata.
-    // If you don't need the container, you have to call release() on it.
-    // If the asset has already been preloaded, returns the asset directly.
-    Asset * preloadAsset(const String & path, const std::string & moduleName);
+    /// \brief Analyzes a file and creates one or several asset instances it will produce on runtime.
+    /// The file will not be loaded into the instances until loadAsset() is called.
+    /// \param path: path to the source file
+    /// \param moduleName: name of the module this file is associated to
+    /// \return Asset instances. Usually one, but depending on the pipeline it can be more.
+    std::vector<Asset*> preloadAssetFile(const String & path, const std::string & moduleName);
 
-    AssetLoadStatus loadAsset(Asset * asset);
-    AssetLoadStatus loadIndexedAssetByPath(const std::string & path);
+    /// \brief Loads or reloads all assets liked to a specific source file.
+    /// \param Absolute path to the file
+    void loadIndexedAssetsByPath(const std::string & path);
+
+    void addToFileCache(Asset & asset);
+    void removeFromFileCache(Asset & asset);
 
 private:
 
@@ -136,12 +162,13 @@ private:
     std::unordered_map<std::string, std::unordered_map<std::string, AssetLoader*> > m_loaders;
 
     /// \brief [path] => asset
-    std::unordered_map<String, Asset*> m_fileCache;
+    std::unordered_map<String, std::vector<Asset*> > m_fileCache;
 
     /// \brief [moduleName][baseTypeName][name] => asset
     /// \note The moduleName corresponds to the location of the asset, not its type.
     std::unordered_map< std::string, std::unordered_map< std::string, std::unordered_map<std::string, Asset*> > > m_assets;
 
+    /// \brief Listener used to track file changes when live edition is enabled
     FileWatcher m_rootWatcher;
 
 };

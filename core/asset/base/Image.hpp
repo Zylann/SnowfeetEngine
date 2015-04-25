@@ -39,6 +39,8 @@ public:
     bool getPixel(u32 x, u32 y, Color8 & out_color) const;
     bool setPixel(u32 x, u32 y, Color8 c);
 
+    const u8 * getPixelsPtr() const { return m_pixelData; }
+
     u32 getPixelIndex(u32 x, u32 y) const { return x + m_size.x() * y; }
 
     void fill(Color8 color);

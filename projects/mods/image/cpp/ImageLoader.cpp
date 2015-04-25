@@ -23,6 +23,13 @@ bool ImageLoader::canLoad(const AssetMetadata & meta) const
     return ext == L".png" || ext == L".tga" || ext == L".bmp";
 }
 
+bool ImageLoader::isDirect(const AssetMetadata & meta) const
+{
+    JsonBox::Value args = meta.json;
+    const std::string & usage = args["usage"].getString();
+    return usage == "image" || usage == "both";
+}
+
 bool ImageLoader::load(std::ifstream & ifs, Asset & asset) const
 {
     sn::Image * image = checked_cast<Image*>(&asset);

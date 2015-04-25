@@ -20,6 +20,7 @@ public:
 
     const ObjectType & getBaseAssetType() const override;
     bool canLoad(const AssetMetadata & meta) const override;
+    bool isDirect(const AssetMetadata & meta) const override;
     bool load(std::ifstream & ifs, Asset & asset) const override;
 
 private:

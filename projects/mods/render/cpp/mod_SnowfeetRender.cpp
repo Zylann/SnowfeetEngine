@@ -11,6 +11,7 @@
 
 #include "loaders/BasicMeshLoader.hpp"
 #include "loaders/MaterialLoader.hpp"
+#include "loaders/TextureLoader.hpp"
 
 #include "sq_binding/sq_render.hpp"
 
@@ -34,6 +35,7 @@ namespace render {
         // Loaders
         otb.registerType<BasicMeshLoader>();
         otb.registerType<MaterialLoader>();
+        otb.registerType<TextureLoader>();
     }
 
 } // namespace render
