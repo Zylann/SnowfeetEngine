@@ -59,7 +59,7 @@ bool MaterialLoader::load(std::ifstream & ifs, Asset & asset) const
                 auto typeTag = a[SN_JSON_TYPE_TAG];
                 auto valueTag = a["value"];
 
-                if (!typeTag.isString() && !valueTag.isString())
+                if (typeTag.isString() && valueTag.isString())
                 {
                     std::string stype = typeTag.getString();
                     std::string loc = valueTag.getString();
