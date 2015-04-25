@@ -102,6 +102,10 @@ public:
         return getAsset<Asset_T>(location.module, location.name);
     }
 
+#ifdef SN_BUILD_DEBUG
+    void printAssetList() const;
+#endif
+
 private:
     void addLoader(AssetLoader * loader);
 

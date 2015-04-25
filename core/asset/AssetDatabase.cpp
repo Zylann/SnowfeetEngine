@@ -505,6 +505,33 @@ void AssetDatabase::updateFileChanges()
     }
 }
 
+//------------------------------------------------------------------------------
+#ifdef SN_BUILD_DEBUG
+void AssetDatabase::printAssetList() const
+{
+    std::stringstream ss;
+
+    for (auto itMod = m_assets.begin(); itMod != m_assets.end(); ++itMod)
+    {
+        const auto & modAssets = itMod->second;
+        ss << itMod->first << std::endl;
+
+        for (auto itType = modAssets.begin(); itType != modAssets.end(); ++itType)
+        {
+            const auto & assets = itType->second;
+            ss << "    " << itType->first << std::endl;
+
+            for (auto it = assets.begin(); it != assets.end(); ++it)
+            {
+                ss << "        " << it->first << std::endl;
+            }
+        }
+    }
+
+    SN_DLOG("AssetDatabase: \n\n" << ss.str() << '\n');
+}
+#endif
+
 } // namespace sn
 
 
