@@ -17,6 +17,14 @@ namespace sn
 {
 
 //------------------------------------------------------------------------------
+Entity::Entity() : ScriptObject(),
+    m_flags(1 << SN_EF_ENABLED),
+    r_parent(nullptr),
+    r_scene(nullptr)
+{
+}
+
+//------------------------------------------------------------------------------
 Entity::~Entity()
 {
     if (r_parent)
@@ -479,7 +487,11 @@ void Entity::serializeState(JsonBox::Value & o, const SerializationContext & con
 void Entity::unserializeState(JsonBox::Value & o, const SerializationContext & context)
 {
     m_name = o["name"].getString();
-    setEnabled(o["enabled"].getBoolean());
+    
+    bool bEnabled = false;
+    sn::unserialize(o["enabled"], bEnabled, true);
+    setFlag(SN_EF_ENABLED, bEnabled);
+
     sn::unserialize(o["tags"], m_tags);
 
     auto & scripts = o["scripts"];

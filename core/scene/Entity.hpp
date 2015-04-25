@@ -48,11 +48,7 @@ public:
     /// \brief Just constructs the entity.
     /// \note As most of serialized classes in the engine, 
     /// subclasses shouldn't declare a constructor with parameters.
-    Entity() :
-        ScriptObject(),
-        r_parent(nullptr),
-        r_scene(nullptr)
-    {}
+    Entity();
 
     /// \brief Gets the name of the entity
     inline const std::string & getName() const { return m_name; }
