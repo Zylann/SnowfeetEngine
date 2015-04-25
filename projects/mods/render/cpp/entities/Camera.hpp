@@ -43,25 +43,7 @@ public:
         SharedRef<Mesh> mesh;
     };
 
-    Camera():
-        Entity3D(),
-        m_isOrtho(false),
-        m_fov(70.f),
-        m_near(0.1f),
-        m_far(100.f),
-        m_drawOrder(0),
-        m_aspectRatio(1),
-        m_scaleMode(SNR_SCALEMODE_ADAPTED),
-        m_clearBits(SNR_CLEAR_COLOR | SNR_CLEAR_DEPTH),
-        m_viewport(0,0,1,1),
-        m_projectionMatrixNeedUpdate(true),
-        m_targetWindowID(0)
-    {
-        // TODO Have a zeroMemory template function helper
-        memset(m_effectBuffers, 0, sizeof(RenderTexture*) * EFFECT_BUFFERS_COUNT);
-    }
-
-    ~Camera();
+    Camera();
 
     //-----------------------------------------
     // Camera interface
@@ -80,6 +62,7 @@ public:
     inline const Color & getClearColor() const { return m_clearColor; }
     inline ClearMask getClearBits() const { return m_clearBits; }
     inline ScaleMode getScaleMode() const { return m_scaleMode; }
+    inline const std::string & getVisibilityTag() const { return m_visibilityTag; }
 
     /// \brief Gets the viewport's coordinates in normalized space (-1 to 1 horizontally and vertically).
     inline const FloatRect & getViewport() const { return m_viewport; }
@@ -97,6 +80,7 @@ public:
     void setClearBits(ClearMask mask);
     void setScaleMode(ScaleMode mode);
     void setViewport(FloatRect normalizedRect);
+    void setVisibilityTag(const std::string & tag);
 
     const Matrix4 & getProjectionMatrix() const;
     Matrix4 getViewMatrix() const;
@@ -138,6 +122,7 @@ public:
     // TODO Don't leave this public, it should be automated (for target textures resizing)
     void updateEffectBuffers(const Vector2u * overrideResolution = nullptr);
 private:
+    ~Camera();
 
 private:
     //std::bitset<32> m_cullingMask;
@@ -153,6 +138,8 @@ private:
 
     Color m_clearColor;
     ClearMask m_clearBits;
+
+    std::string m_visibilityTag;
 
     FloatRect m_viewport;
 

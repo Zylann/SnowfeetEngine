@@ -332,7 +332,7 @@ void RenderManager::renderCamera(Camera & camera)
     for (auto it = drawables.begin(); it != drawables.end(); ++it)
     {
         Drawable * d = checkTaggedType<Drawable>(Drawable::TAG, *it);
-        if (d)
+        if (d && d->isEnabled() && d->hasTag(camera.getVisibilityTag()))
         {
             sortedDrawables.push_back(d);
         }

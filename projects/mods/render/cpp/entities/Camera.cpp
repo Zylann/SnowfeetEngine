@@ -1,6 +1,7 @@
 #include <core/system/gui/SystemGUI.hpp>
 #include <core/asset/AssetDatabase.hpp>
 
+#include "Drawable.hpp"
 #include "Camera.hpp"
 
 namespace sn {
@@ -26,6 +27,25 @@ void unserialize(JsonBox::Value & o, ScaleMode & m)
         m = SNR_SCALEMODE_ADAPTED;
     else
         m = SNR_SCALEMODE_NONE;
+}
+
+//------------------------------------------------------------------------------
+Camera::Camera(): Entity3D(),
+    m_isOrtho(false),
+    m_fov(70.f),
+    m_near(0.1f),
+    m_far(100.f),
+    m_drawOrder(0),
+    m_aspectRatio(1),
+    m_scaleMode(SNR_SCALEMODE_ADAPTED),
+    m_clearBits(SNR_CLEAR_COLOR | SNR_CLEAR_DEPTH),
+    m_visibilityTag(Drawable::TAG),
+    m_viewport(0,0,1,1),
+    m_projectionMatrixNeedUpdate(true),
+    m_targetWindowID(0)
+{
+    // TODO Have a zeroMemory template function helper
+    memset(m_effectBuffers, 0, sizeof(RenderTexture*) * EFFECT_BUFFERS_COUNT);
 }
 
 //------------------------------------------------------------------------------
@@ -96,6 +116,12 @@ void Camera::setScaleMode(ScaleMode mode)
 void Camera::setClearBits(ClearMask mask)
 {
     m_clearBits = mask;
+}
+
+//------------------------------------------------------------------------------
+void Camera::setVisibilityTag(const std::string & tag)
+{
+    m_visibilityTag = tag;
 }
 
 //------------------------------------------------------------------------------
@@ -307,6 +333,7 @@ void Camera::serializeState(JsonBox::Value & o, const SerializationContext & con
     sn::serialize(o["clearColor"], m_clearColor);
     sn::serialize(o["viewport"], m_viewport);
     sn::serialize(o["targetWindow"], m_targetWindowID);
+    sn::serialize(o["visibilityTag"], m_visibilityTag);
 
     if (!r_renderTexture.isNull())
     {
@@ -329,6 +356,7 @@ void Camera::unserializeState(JsonBox::Value & o, const SerializationContext & c
     render::unserialize(o["clearBits"], m_clearBits);
     sn::unserialize(o["clearColor"], m_clearColor, Color());
     sn::unserialize<u32>(o["targetWindow"], m_targetWindowID, 0);
+    sn::unserialize(o["visibilityTag"], m_visibilityTag, m_visibilityTag);
 
     if (!o["viewport"].isNull())
     {
