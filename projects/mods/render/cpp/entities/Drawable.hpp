@@ -10,6 +10,7 @@
 namespace sn {
 namespace render {
 
+// TODO Rename StaticMesh
 class Drawable : public Entity3D
 {
 public:
@@ -37,7 +38,6 @@ private:
     ~Drawable();
 
 private:
-    std::bitset<32> m_visibilityFlags;
     SharedRef<Mesh> m_mesh;
     SharedRef<Material> m_material;
     s32 m_drawOrder;
