@@ -44,7 +44,10 @@ void Image::loadFromPixels(Vector2u size, PixelFormat format, const u8 * pixelDa
 void Image::clear()
 {
     if (m_pixelData)
+    {
         delete[] m_pixelData;
+        m_pixelData = nullptr;
+    }
     m_size = Vector2u(0, 0);
 }
 
