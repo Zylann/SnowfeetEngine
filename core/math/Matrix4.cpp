@@ -118,20 +118,21 @@ void Matrix4::loadPerspectiveProjection(Fov fov, f32 near, f32 far)
 //------------------------------------------------------------------------------
 void Matrix4::loadOrtho2DProjection(
         const f32 left, const f32 top,
-        const f32 right, const f32 bottom)
+        const f32 right, const f32 bottom,
+        const f32 near, const f32 far)
 {
     memset(m_v, 0, 16 * sizeof(f32)); // zeros
 
-    const f32 near = 0;
-    const f32 far = 1;
+    //  0   1   2   3
+    //  4   5   6   7
+    //  8   9  10  11
+    // 12  13  14  15
 
-    m_v[0] = 2.f / (right - left);
-    m_v[3] = (right + left) / (right - left);
-    m_v[5] = 2.f / (top - bottom);
-    m_v[7] = (top + bottom) / (top - bottom);
-    m_v[10] = -2.f / (far - near);
-    m_v[11] = (far + near) / (far - near);
-    m_v[15] = 1;
+    m_v[0] = 1.f / (right - left);
+	m_v[5] = 1.f / (top - bottom);
+	m_v[10] = 1.f / (far-near);
+	m_v[14] = near / (near-far);
+	m_v[15] = 1;
 }
 
 //------------------------------------------------------------------------------

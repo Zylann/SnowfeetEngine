@@ -46,7 +46,8 @@ public :
 
     void loadOrtho2DProjection(
         const f32 left, const f32 top,
-        const f32 right, const f32 bottom
+        const f32 right, const f32 bottom,
+        const f32 near, const f32 far
     );
 
     void loadLookAt(
