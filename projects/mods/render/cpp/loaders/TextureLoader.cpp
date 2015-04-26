@@ -41,10 +41,6 @@ bool TextureLoader::load(std::ifstream & ifs, Asset & asset) const
     {
         // Create image
         Image * img = new Image();
-        // Load it
-        AssetLoader * imageLoader = AssetDatabase::get().findLoader<Image>();
-        if (imageLoader)
-            imageLoader->load(ifs, *img);
         // Set as source
         texture->setSourceImage(*img);
         // The texture takes ownership of the image
@@ -55,6 +51,14 @@ bool TextureLoader::load(std::ifstream & ifs, Asset & asset) const
         //{
         //    texture->setSourceImage(*img);
         //}
+    }
+
+    // Load image
+    AssetLoader * imageLoader = AssetDatabase::get().findLoader<Image>();
+    if (imageLoader)
+    {
+        if (!imageLoader->load(ifs, *texture->getImage()))
+            return false;
     }
 
     // Set texture flags
