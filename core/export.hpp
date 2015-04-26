@@ -8,8 +8,15 @@
 
     #ifdef _WIN32
 
+        #define SN_API_EXPORT __declspec(dllexport)
+        #define SN_API_IMPORT __declspec(dllimport)
+
         // Windows compilers need specific (and different) keywords for export and import
-        #define SN_API __declspec(dllexport)
+        #ifdef SN_CORE_EXPORT
+            #define SN_API SN_API_EXPORT
+        #else
+            #define SN_API SN_API_IMPORT
+        #endif
 
         #define SN_MOD_EXPORT __declspec(dllexport)
 
@@ -30,6 +37,7 @@
             #define SN_API
         #endif
     #endif
+
 #else
     // Static build doesn't need import/export macros
     #define SN_API

@@ -19,7 +19,9 @@ project "SnowfeetCore"
 	}
 	defines {
 		-- To allow modules to use bindings from the core
-		"SCRAT_EXPORT"
+		"SCRAT_EXPORT",
+		-- To export core API (by default SN_API is set to import)
+		"SN_CORE_EXPORT"
 	}
 	filter "configurations:Debug"
 		targetdir "../_bin/debug"
