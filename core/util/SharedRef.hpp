@@ -15,7 +15,7 @@ namespace sn
 /// \brief RAII ownership container for RefCounted types.
 /// Automatically calls addRef() and release().
 template <class RefCounted_T>
-class SN_API SharedRef
+class SharedRef
 {
 public:
     SharedRef() :
