@@ -38,8 +38,9 @@ private:
     void removeScreen(u32 windowID, bool showError=true);
     RenderScreen * getScreen(u32 windowID);
 
-    void onScreenResized(u32 width, u32 height);
     void onWindowClosed(u32 windowID);
+    void onWindowResized(const Event & ev);
+    void onScreenResized(u32 windowID, u32 width, u32 height);
 
 private:
     Context * m_mainContext;

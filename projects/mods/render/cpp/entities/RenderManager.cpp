@@ -139,7 +139,7 @@ bool RenderManager::onSystemEvent(const sn::Event & event)
 	switch (event.type)
 	{
 	case SN_EVENT_WINDOW_RESIZED:
-        onScreenResized(event.window.width, event.window.height);
+        onWindowResized(event);
 		break;
 
     case SN_EVENT_WINDOW_ASKED_CLOSE:
@@ -155,7 +155,17 @@ bool RenderManager::onSystemEvent(const sn::Event & event)
 }
 
 //------------------------------------------------------------------------------
-void RenderManager::onScreenResized(u32 width, u32 height)
+void RenderManager::onWindowResized(const Event & ev)
+{
+    RenderScreen * screen = getScreen(ev.windowID);
+    if (screen)
+    {
+        onScreenResized(ev.windowID, ev.window.width, ev.window.height);
+    }
+}
+
+//------------------------------------------------------------------------------
+void RenderManager::onScreenResized(u32 windowID, u32 width, u32 height)
 {
     auto cameras = getScene()->getTaggedEntities(Camera::TAG);
     for (auto it = cameras.begin(); it != cameras.end(); ++it)
@@ -164,7 +174,10 @@ void RenderManager::onScreenResized(u32 width, u32 height)
         if (e->isInstanceOf<Camera>())
         {
             Camera & cam = *(Camera*)e;
-            cam.updateAspectRatio();
+            if (cam.getTargetWindowID() == windowID)
+            {
+                cam.onTargetResized();
+            }
         }
         else
         {

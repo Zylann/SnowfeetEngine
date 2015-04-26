@@ -16,8 +16,12 @@ namespace render {
 //------------------------------------------------------------------------------
 enum ScaleMode
 {
+    /// \brief The view will be stretched from a 1:1 aspect ratio
     SNR_SCALEMODE_NONE,
-    SNR_SCALEMODE_ADAPTED
+    /// \brief The aspect ratio will be adjusted to match the target screen
+    SNR_SCALEMODE_ADAPTED,
+    /// \brief in orthographic mode, the size of the view will match the pixel size of the screen
+    SNR_SCALEMODE_PIXELPERFECT
 };
 
 void serialize(JsonBox::Value & o, ScaleMode m);
@@ -109,8 +113,7 @@ public:
 
     void onReady() override;
 
-    //void onTargetResized(u32 width, u32 height);
-    void updateAspectRatio();
+    void onTargetResized();
 
     //-----------------------------------------
     // Serialization
@@ -123,6 +126,9 @@ public:
     void updateEffectBuffers(const Vector2u * overrideResolution = nullptr);
 private:
     ~Camera();
+
+    void updateAspectRatio();
+    void updateOrthographicSize();
 
 private:
     //std::bitset<32> m_cullingMask;

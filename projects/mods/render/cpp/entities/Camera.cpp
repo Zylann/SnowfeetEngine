@@ -15,6 +15,7 @@ void serialize(JsonBox::Value & o, ScaleMode m)
     switch (m)
     {
     case SNR_SCALEMODE_ADAPTED: o = "adapted"; break;
+    case SNR_SCALEMODE_PIXELPERFECT: o = "pixelperfect"; break;
     default: o = "none"; break;
     }
 }
@@ -25,6 +26,8 @@ void unserialize(JsonBox::Value & o, ScaleMode & m)
     std::string s = o.getString();
     if (s == "adapted")
         m = SNR_SCALEMODE_ADAPTED;
+    else if (s == "pixelperfect")
+        m = SNR_SCALEMODE_PIXELPERFECT;
     else
         m = SNR_SCALEMODE_NONE;
 }
@@ -128,12 +131,8 @@ void Camera::setVisibilityTag(const std::string & tag)
 void Camera::setRenderTexture(RenderTexture * rt)
 {
     r_renderTexture.set(rt);
-    //if (rt)
-    //{
-    //    Vector2u size = rt->getSize();
-    //    onTargetResized(size.x(), size.y());
-    //}
-    updateAspectRatio();
+    onTargetResized();
+    //updateAspectRatio();
 }
 
 //------------------------------------------------------------------------------
@@ -166,8 +165,8 @@ Window * Camera::getTargetWindow() const
 void Camera::setViewport(FloatRect normalizedRect)
 {
     m_viewport = normalizedRect;
-    updateAspectRatio();
-    //onTargetResized(rect.width(), rect.height());
+    //updateAspectRatio();
+    onTargetResized();
 }
 
 //------------------------------------------------------------------------------
@@ -180,6 +179,39 @@ void Camera::updateAspectRatio()
         {
             setAspectRatio(static_cast<f32>(viewport.width()) / static_cast<f32>(viewport.height()));
         }
+    }
+}
+
+//------------------------------------------------------------------------------
+void Camera::updateOrthographicSize()
+{
+    if (m_scaleMode == SNR_SCALEMODE_PIXELPERFECT)
+    {
+        // Match pixel size
+        IntRect viewport = getPixelViewport();
+        setOrthoSize(viewport.size());
+    }
+    else if (m_scaleMode == SNR_SCALEMODE_ADAPTED && !math::isZero(m_orthoSize.y()))
+    {
+        // Adapt width of the view
+        IntRect viewport = getPixelViewport();
+        //f32 oldRatio = m_orthoSize.x() / m_orthoSize.y();
+        f32 newRatio = static_cast<f32>(viewport.width()) / static_cast<f32>(viewport.height());
+        m_orthoSize.x() = m_orthoSize.y() * newRatio;
+        m_projectionMatrixNeedUpdate = true;
+    }
+}
+
+//------------------------------------------------------------------------------
+void Camera::onTargetResized()
+{
+    if (m_isOrtho)
+    {
+        updateOrthographicSize();
+    }
+    else
+    {
+        updateAspectRatio();
     }
 }
 
