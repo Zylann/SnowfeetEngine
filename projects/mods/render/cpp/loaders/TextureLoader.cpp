@@ -7,16 +7,19 @@
 namespace sn {
 namespace render {
 
+//-----------------------------------------------------------------------------
 const ObjectType & TextureLoader::getBaseAssetType() const
 {
     return sn::TextureBase::__sGetObjectType();
 }
 
+//-----------------------------------------------------------------------------
 const ObjectType & TextureLoader::getAssetInstanceType() const
 {
     return sn::render::Texture::__sGetObjectType();
 }
 
+//-----------------------------------------------------------------------------
 bool TextureLoader::canLoad(const AssetMetadata & meta) const
 {
     // If the engine can load images, we can load textures out of them
@@ -24,6 +27,7 @@ bool TextureLoader::canLoad(const AssetMetadata & meta) const
     return imageLoader ? imageLoader->canLoad(meta) : false;
 }
 
+//-----------------------------------------------------------------------------
 bool TextureLoader::isDirect(const AssetMetadata & meta) const
 {
     JsonBox::Value args = meta.json;
@@ -31,6 +35,7 @@ bool TextureLoader::isDirect(const AssetMetadata & meta) const
     return usage == "texture" || usage == "both";
 }
 
+//-----------------------------------------------------------------------------
 bool TextureLoader::load(std::ifstream & ifs, Asset & asset) const
 {
     Texture * texture = checked_cast<Texture*>(&asset);
@@ -70,6 +75,7 @@ bool TextureLoader::load(std::ifstream & ifs, Asset & asset) const
     return texture->uploadToVRAM();
 }
 
+//-----------------------------------------------------------------------------
 //s32 TextureLoader::getPriority(const AssetLoader & other) const
 //{
 //    // If the other loads images, run after this one to be able to get image data

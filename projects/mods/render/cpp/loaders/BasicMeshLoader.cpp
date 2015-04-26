@@ -8,17 +8,20 @@
 namespace sn {
 namespace render {
 
+//-----------------------------------------------------------------------------
 const ObjectType & BasicMeshLoader::getBaseAssetType() const
 {
     return Mesh::__sGetObjectType();
 }
 
+//-----------------------------------------------------------------------------
 bool BasicMeshLoader::canLoad(const AssetMetadata & meta) const
 {
     String ext = sn::getFileExtension(meta.path);
     return ext == L".ply";
 }
 
+//-----------------------------------------------------------------------------
 bool BasicMeshLoader::load(std::ifstream & ifs, Asset & asset) const
 {
     Mesh * mesh = checked_cast<Mesh*>(&asset);

@@ -7,6 +7,7 @@
 namespace sn {
 namespace render {
 
+//-----------------------------------------------------------------------------
 Texture::Texture() : TextureBase(),
     m_isSmooth(true),
     m_isRepeated(false),
@@ -14,11 +15,13 @@ Texture::Texture() : TextureBase(),
 {
 }
 
+//-----------------------------------------------------------------------------
 Texture::~Texture()
 {
     destroy();
 }
 
+//-----------------------------------------------------------------------------
 bool Texture::uploadToVRAM()
 {
     Image * img = m_image.get();
@@ -34,12 +37,14 @@ bool Texture::uploadToVRAM()
     return success;
 }
 
+//-----------------------------------------------------------------------------
 Image * Texture::downloadFromVRAM()
 {
     SN_WARNING("Texture::downloadFromVRAM(): not implemented yet");
     return nullptr;
 }
 
+//-----------------------------------------------------------------------------
 void Texture::destroy()
 {
     GLuint textureID = getInternalID();
@@ -50,11 +55,13 @@ void Texture::destroy()
     }
 }
 
+//-----------------------------------------------------------------------------
 bool Texture::create(Vector2u size)
 {
     return loadFromPixelsRGBA8(size, nullptr);
 }
 
+//-----------------------------------------------------------------------------
 bool Texture::loadFromPixelsRGBA8(Vector2u size, const char * data)
 {
     // Note: data can be null in the case we don't want to initialize pixels
@@ -90,6 +97,7 @@ bool Texture::loadFromPixelsRGBA8(Vector2u size, const char * data)
     }
 }
 
+//-----------------------------------------------------------------------------
 void Texture::setSmooth(bool enable)
 {
     m_isSmooth = enable;
@@ -100,6 +108,7 @@ void Texture::setSmooth(bool enable)
     }
 }
 
+//-----------------------------------------------------------------------------
 void Texture::setRepeated(bool enable)
 {
     m_isRepeated = enable;
@@ -110,6 +119,7 @@ void Texture::setRepeated(bool enable)
     }
 }
 
+//-----------------------------------------------------------------------------
 void Texture::updateFilter()
 {
     // Set upscale and downscale filters
@@ -124,16 +134,19 @@ void Texture::updateRepeat()
     glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, m_isRepeated ? GL_REPEAT : GL_CLAMP_TO_EDGE));
 }
 
+//-----------------------------------------------------------------------------
 //Texture & Texture::operator=(const Texture & other)
 //{
 //
 //}
 
+//-----------------------------------------------------------------------------
 void Texture::bind(Texture * tex)
 {
     glCheck(glBindTexture(GL_TEXTURE_2D, tex->getInternalID()));
 }
 
+//-----------------------------------------------------------------------------
 void Texture::setActive(u32 textureUnit, Texture * tex)
 {
     glCheck(glActiveTexture(GL_TEXTURE0 + textureUnit));
