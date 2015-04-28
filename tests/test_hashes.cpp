@@ -10,7 +10,7 @@ void test_hashes()
     unsigned int n = 0;
     unsigned int collisions = 0;
 
-    srand(time(NULL));
+    srand(static_cast<unsigned int>(time(nullptr)));
 
     for (unsigned int j = 0; j < 100; ++j)
     {
