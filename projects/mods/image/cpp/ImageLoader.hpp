@@ -13,7 +13,7 @@
 namespace sn
 {
 
-class SN_API ImageLoader : public AssetLoader
+class ImageLoader : public AssetLoader
 {
 public:
     SN_OBJECT(sn::ImageLoader, sn::AssetLoader)

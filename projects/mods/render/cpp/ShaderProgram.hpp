@@ -28,7 +28,7 @@ enum ShaderType
 
 std::string toString(ShaderType st);
 
-class SN_API ShaderProgram : public Asset
+class ShaderProgram : public Asset
 {
 public:
     SN_SCRIPT_OBJECT(sn::render::ShaderProgram, sn::Asset)
