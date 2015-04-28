@@ -6,11 +6,16 @@
 namespace sn {
 namespace render {
 
-const std::string Drawable::TAG = "Drawable";
-
 //------------------------------------------------------------------------------
 Drawable::~Drawable()
 {
+}
+
+//------------------------------------------------------------------------------
+Drawable::Drawable():
+    m_drawOrder(0)
+{
+    m_mesh.set(new Mesh());
 }
 
 //------------------------------------------------------------------------------
@@ -26,22 +31,33 @@ void Drawable::setMesh(Mesh * mesh)
 }
 
 //------------------------------------------------------------------------------
-Drawable::Drawable():
-    m_drawOrder(0)
+void Drawable::onDraw(IDrawContext & dc)
 {
-    m_mesh.set(new Mesh());
-}
+    const Mesh * mesh = getMesh();
+    if (mesh)
+    {
+        // If the drawable has a material, apply it
+        Material * material = getMaterial();
+        if (material)
+        {
+            Matrix4 normalMatrix;
+            normalMatrix.setRotation(getGlobalRotation());
+            dc.setNormalMatrix(normalMatrix);
 
-//------------------------------------------------------------------------------
-void Drawable::onReady()
-{
-    addTag(TAG);
+            dc.setModelMatrix(getGlobalMatrix());
+
+            dc.setMaterial(*material);
+        }
+
+        // Draw the mesh
+        dc.drawMesh(*mesh);
+    }
 }
 
 //------------------------------------------------------------------------------
 void Drawable::serializeState(JsonBox::Value & o, const SerializationContext & context)
 {
-    Entity3D::serializeState(o, context);
+    sn::Drawable::serializeState(o, context);
     sn::serialize(o["drawOrder"], m_drawOrder);
 
     // TODO Upgrade saving of asset references
@@ -58,7 +74,7 @@ void Drawable::serializeState(JsonBox::Value & o, const SerializationContext & c
 //------------------------------------------------------------------------------
 void Drawable::unserializeState(JsonBox::Value & o, const SerializationContext & context)
 {
-    Entity3D::unserializeState(o, context);
+    sn::Drawable::unserializeState(o, context);
     sn::unserialize(o["drawOrder"], m_drawOrder);
 
     m_mesh.set(getAssetBySerializedLocation<Mesh>(         o["mesh"].getString(),     context.getModule(), this));

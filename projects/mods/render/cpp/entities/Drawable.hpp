@@ -1,7 +1,7 @@
 #ifndef __HEADER_SN_RENDER_DRAWABLE__
 #define __HEADER_SN_RENDER_DRAWABLE__
 
-#include <core/scene/Entity3D.hpp>
+#include <core/scene/Drawable.hpp>
 #include <core/util/SharedRef.hpp>
 #include <core/asset/base/Mesh.hpp>
 
@@ -11,16 +11,14 @@ namespace sn {
 namespace render {
 
 // TODO Rename StaticMesh
-class Drawable : public Entity3D
+class Drawable : public sn::Drawable
 {
 public:
-    SN_ENTITY(sn::render::Drawable, sn::Entity3D)
-
-    static const std::string TAG;
+    SN_ENTITY(sn::render::Drawable, sn::Drawable)
 
     Drawable();
 
-    void onReady() override;
+    void onDraw(IDrawContext & dc) override;
 
     void setMesh(Mesh * mesh);
     const Mesh * getMesh() const { return m_mesh.get(); }

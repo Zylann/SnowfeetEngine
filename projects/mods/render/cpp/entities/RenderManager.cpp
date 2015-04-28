@@ -2,6 +2,7 @@
 #include <core/scene/Scene.hpp>
 #include <core/asset/AssetDatabase.hpp> // TODO Remove?
 #include <core/scene/VRHeadset.hpp>
+#include <core/util/typecheck.hpp>
 
 #include "RenderManager.hpp"
 #include "Drawable.hpp"
@@ -11,6 +12,78 @@ namespace sn {
 namespace render {
 
 const char * RenderManager::TAG = "RenderManager";
+
+//------------------------------------------------------------------------------
+class DrawContext : public IDrawContext
+{
+public:
+    DrawContext(Context & a_context) :
+        context(a_context)
+    {}
+
+    void setMaterial(sn::Material & a_material) override
+    {
+        if (!a_material.isInstanceOf<sn::render::Material>())
+            return;
+        Material & material = *checked_cast<sn::render::Material*>(&a_material);
+
+        context.setDepthTest(material.isDepthTest());
+
+        ShaderProgram * shader = material.getShader();
+
+        if (shader)
+        {
+            context.useProgram(material.getShader());
+
+            modelViewMatrix.loadIdentity();
+            modelViewMatrix.setByProduct(viewMatrix, modelMatrix);
+
+            // Note: Matrix4 is row-major with translation in the last row
+            shader->setParam("u_Projection", projectionMatrix.values(), false);
+            shader->setParam("u_ModelView", modelViewMatrix.values(), false);
+            shader->setParam("u_NormalMatrix", normalMatrix.values(), false);
+
+            material.apply();
+        }
+    }
+
+    void setViewport(const IntRect & pixelRect) override
+    {
+        context.setViewport(pixelRect);
+    }
+
+    void drawMesh(const Mesh & mesh) override
+    {
+        context.drawMesh(mesh);
+    }
+
+    void setProjectionMatrix(const Matrix4 & projection) override
+    {
+        projectionMatrix = projection;
+    }
+
+    void setModelMatrix(const Matrix4 & model) override
+    {
+        modelMatrix = model;
+    }
+
+    void setViewMatrix(const Matrix4 & view) override
+    {
+        viewMatrix = view;
+    }
+
+    void setNormalMatrix(const Matrix4 & m) override
+    {
+        normalMatrix = m;
+    }
+
+    Context & context;
+    Matrix4 modelMatrix;
+    Matrix4 viewMatrix;
+    Matrix4 projectionMatrix;
+    Matrix4 modelViewMatrix;
+    Matrix4 normalMatrix;
+};
 
 //------------------------------------------------------------------------------
 RenderManager::RenderManager() : Entity(), m_mainContext(nullptr)
@@ -198,7 +271,7 @@ template <typename T>
 T * checkTaggedType(const std::string & tag, Entity * e)
 {
     const ObjectType & ot = T::__sGetObjectType();
-    if (e->getObjectType() == ot)
+    if (e->getObjectType().is(ot))
     {
         return static_cast<T*>(e);
     }
@@ -339,29 +412,31 @@ void RenderManager::renderCamera(Camera & camera)
         context->clearTarget(mask);
     }
 
+    // To avoid confusion with sn::render::Drawable
+    typedef sn::Drawable BaseDrawable;
+
     // Get drawables
-    std::vector<Entity*> drawables = getScene()->getTaggedEntities(Drawable::TAG);
-    std::vector<Drawable*> sortedDrawables;
+    std::vector<Entity*> drawables = getScene()->getTaggedEntities(BaseDrawable::TAG);
+    std::vector<BaseDrawable*> sortedDrawables;
     for (auto it = drawables.begin(); it != drawables.end(); ++it)
     {
-        Drawable * d = checkTaggedType<Drawable>(Drawable::TAG, *it);
+        BaseDrawable * d = checkTaggedType<BaseDrawable>(BaseDrawable::TAG, *it);
         if (d && d->isEnabled() && d->hasTag(camera.getVisibilityTag()))
         {
             sortedDrawables.push_back(d);
         }
     }
 
+    // TODO Fix broken draw order of drawables (put it in sn::Drawable?)
     // Sort drawables
-    std::sort(sortedDrawables.begin(), sortedDrawables.end(),
-        [](Drawable * a, Drawable * b) {
-            return a->getDrawOrder() < b->getDrawOrder();
-        }
-    );
+    //std::sort(sortedDrawables.begin(), sortedDrawables.end(),
+    //    [](Drawable * a, Drawable * b) {
+    //        return a->getDrawOrder() < b->getDrawOrder();
+    //    }
+    //);
 
     Matrix4 projectionMatrix = camera.getProjectionMatrix();
     Matrix4 viewMatrix = camera.getViewMatrix();
-    Matrix4 modelViewMatrix;
-    Matrix4 normalMatrix;
 
     // TODO Refactor temporary code
     // This is a temporary workaround to setup a FOV specified by 4 angles,
@@ -372,45 +447,17 @@ void RenderManager::renderCamera(Camera & camera)
         projectionMatrix.loadPerspectiveProjection(eyeDesc.fov, camera.getNear(), camera.getFar());
     }
 
+    DrawContext dc(*context);
+    dc.setViewMatrix(viewMatrix);
+    dc.setProjectionMatrix(projectionMatrix);
+
     // Draw them
     for (auto it = sortedDrawables.begin(); it != sortedDrawables.end(); ++it) 
     {
-        const Drawable & d = **it;
-        const Mesh * mesh = d.getMesh();
-        if (mesh)
-        {
-            // If the drawable has a material, apply it
-            Material * material = d.getMaterial();
-            if (material)
-            {
-                context->setDepthTest(material->isDepthTest());
+        BaseDrawable & d = **it;
+        d.onDraw(dc);
 
-                if (material->getShader())
-                {
-                    ShaderProgram * shader = material->getShader();
-                    context->useProgram(material->getShader());
-
-                    modelViewMatrix.loadIdentity();
-                    const Matrix4 & modelMatrix = d.getGlobalMatrix();
-                    modelViewMatrix.setByProduct(viewMatrix, modelMatrix);
-
-                    normalMatrix.loadIdentity();
-                    normalMatrix.setRotation(d.getGlobalRotation());
-
-                    // Note: Matrix4 is row-major with translation in the last row
-                    shader->setParam("u_Projection", projectionMatrix.values(), false);
-                    shader->setParam("u_ModelView", modelViewMatrix.values(), false);
-                    shader->setParam("u_NormalMatrix", normalMatrix.values(), false);
-
-                    material->apply();
-                }
-            }
-
-            // Draw the mesh
-            context->drawMesh(*mesh);
-
-            context->useProgram(nullptr);
-        }
+        context->useProgram(nullptr);
     }
 
     // If the camera has effects

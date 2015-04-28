@@ -12,6 +12,7 @@
 #include "scene/VRHeadset.hpp"
 #include "scene/helpers/Rotate.hpp"
 #include "scene/helpers/KeyboardMove.hpp"
+#include "scene/Drawable.hpp"
 
 #include "asset/Asset.hpp"
 #include "asset/AssetLoader.hpp"
@@ -36,6 +37,7 @@ void registerObjectTypes(ObjectTypeDatabase & otb)
     otb.registerType<VRHeadset>();
     otb.registerType<Rotate>();
     otb.registerType<KeyboardMove>();
+    otb.registerType<Drawable>();
 
     // Assets base
     otb.registerType<Asset>();
