@@ -159,6 +159,17 @@ public:
             return nullptr;
     }
 
+    template <class Entity_T>
+    void getChildrenOfType(std::vector<Entity_T*> & out) const
+    {
+        for (u32 i = 0; i < m_children.size(); ++i)
+        {
+            Entity * e = m_children[i];
+            if (e->isInstanceOf<Entity_T>())
+                out.push_back(checked_cast<Entity_T*>(e));
+        }
+    }
+
     /// \brief Destroys all children of this entity
     void destroyChildren();
     /// \brief Destroys all children of this entity fulfilling a condition
