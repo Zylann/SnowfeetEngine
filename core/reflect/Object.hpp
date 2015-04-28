@@ -34,7 +34,7 @@ This file is part of the SnowfeetEngine project.
 
 #define _SN_DECLARE_ISINSTANCEOF()                                             \
     template <class Object_T>                                                  \
-    bool isInstanceOf() {                                                      \
+    bool isInstanceOf() const {                                                \
         const sn::ObjectType & expectedType = Object_T::__sGetObjectType();    \
         return getObjectType().is(expectedType);                               \
     }
