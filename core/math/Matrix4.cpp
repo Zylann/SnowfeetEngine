@@ -128,10 +128,10 @@ void Matrix4::loadOrtho2DProjection(
     //  8   9  10  11
     // 12  13  14  15
 
-    m_v[0] = 1.f / (right - left);
-	m_v[5] = 1.f / (top - bottom);
-	m_v[10] = 1.f / (far-near);
-	m_v[14] = near / (near-far);
+    m_v[0] = 2.f / (right - left);
+	m_v[5] = 2.f / (top - bottom);
+	m_v[10] = 2.f / (far - near);
+	m_v[14] = near / (near - far);
 	m_v[15] = 1;
 }
 

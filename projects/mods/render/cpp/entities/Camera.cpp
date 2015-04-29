@@ -249,11 +249,12 @@ const Matrix4 & Camera::getProjectionMatrix() const
     {
         if (m_isOrtho)
         {
+            Vector2f orthoSize = m_orthoSize * 0.5f;
             m_projectionMatrix.loadOrtho2DProjection(
-                -m_orthoSize.x() * 0.5f,
-                m_orthoSize.y() * 0.5f,
-                m_orthoSize.x() * 0.5f,
-                -m_orthoSize.y() * 0.5f,
+                -orthoSize.x(),
+                orthoSize.y(),
+                orthoSize.x(),
+                -orthoSize.y(),
                 m_near, 
                 m_far
             );
