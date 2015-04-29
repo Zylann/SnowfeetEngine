@@ -11,25 +11,6 @@ namespace tgui
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 
-void serialize(JsonBox::Value & o, const Border & b)
-{
-    sn::serialize(o["left"], b.left);
-    sn::serialize(o["right"], b.right);
-    sn::serialize(o["top"], b.top);
-    sn::serialize(o["bottom"], b.bottom);
-}
-
-void unserialize(JsonBox::Value & o, Border & b)
-{
-    sn::unserialize(o["left"], b.left);
-    sn::unserialize(o["right"], b.right);
-    sn::unserialize(o["top"], b.top);
-    sn::unserialize(o["bottom"], b.bottom);
-}
-
-//-----------------------------------------------------------------------------
-//-----------------------------------------------------------------------------
-
 void ControlTheme::serialize(JsonBox::Value & o) const
 {
     tgui::serialize(o["slicing"], slicing);

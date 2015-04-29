@@ -7,23 +7,10 @@
 #include <core/util/WeakRef.hpp>
 #include <core/math/Rect.hpp>
 
+#include "Border.hpp"
+
 namespace tgui
 {
-
-//-----------------------------------------------------------------------------
-/// \brief Distance to each border of a rectangle
-struct Border
-{
-    sn::s32 left;
-    sn::s32 right;
-    sn::s32 top;
-    sn::s32 bottom;
-
-    Border() { memset(this, 0, sizeof(Border)); }
-};
-
-void serialize(JsonBox::Value & o, const Border & b);
-void unserialize(JsonBox::Value & o, Border & b);
 
 //-----------------------------------------------------------------------------
 /// \brief Generic properties of a Control's theme
