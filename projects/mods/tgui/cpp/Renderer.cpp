@@ -14,7 +14,7 @@ void Renderer::onDraw(IDrawContext & dc)
     if (p && p->isInstanceOf<GUI>())
     {
         GUI * gui = checked_cast<GUI*>(p);
-        gui->onDraw(dc);
+        gui->draw(dc);
     }
 }
 

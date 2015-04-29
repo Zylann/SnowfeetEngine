@@ -2,6 +2,9 @@
 
 #include "Control.hpp"
 #include "GUI.hpp"
+#include "Button.hpp"
+#include "Renderer.hpp"
+#include "Theme.hpp"
 
 namespace tgui
 {
@@ -9,6 +12,10 @@ namespace tgui
     {
         otb.registerType<Control>();
         otb.registerType<GUI>();
+        otb.registerType<Button>();
+        otb.registerType<Renderer>();
+        otb.registerType<Theme>();
+        otb.registerType<ThemeLoader>();
         //...
     }
 }
