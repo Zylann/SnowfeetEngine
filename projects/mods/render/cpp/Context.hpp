@@ -56,6 +56,11 @@ public:
 
     void drawMesh(const Mesh & mesh);
 
+    /// \brief Clamps next draw calls to a sub-rectangle on the current render target.
+    void setScissor(IntRect rect);
+    /// \brief Disables scissor.
+    void disableScissor();
+
     // Platform-specific
     //void swapBuffers();
     ContextImpl * getImpl() const { return m_impl; }

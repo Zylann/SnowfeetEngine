@@ -223,6 +223,19 @@ void Context::setViewport(const IntRect & rect)
     setViewport(rect.x(), rect.y(), rect.width(), rect.height());
 }
 
+//------------------------------------------------------------------------------
+void Context::setScissor(IntRect rect)
+{
+    glScissor(rect.x, rect.y, rect.width(), rect.height());
+    glEnable(GL_SCISSOR_TEST);
+}
+
+//------------------------------------------------------------------------------
+void Context::disableScissor()
+{
+    glDisable(GL_SCISSOR_TEST);
+}
+
 } // namespace render
 } // namespace sn
 

@@ -77,6 +77,16 @@ public:
         normalMatrix = m;
     }
 
+    void setScissor(IntRect rect) override
+    {
+        context.setScissor(rect);
+    }
+
+    void disableScissor() override
+    {
+        context.disableScissor();
+    }
+
     Context & context;
     Matrix4 modelMatrix;
     Matrix4 viewMatrix;
