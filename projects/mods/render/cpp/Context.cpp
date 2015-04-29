@@ -226,7 +226,7 @@ void Context::setViewport(const IntRect & rect)
 //------------------------------------------------------------------------------
 void Context::setScissor(IntRect rect)
 {
-    glScissor(rect.x, rect.y, rect.width(), rect.height());
+    glScissor(rect.x(), rect.y(), rect.width(), rect.height());
     glEnable(GL_SCISSOR_TEST);
 }
 
