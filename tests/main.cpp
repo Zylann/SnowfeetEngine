@@ -17,11 +17,14 @@ void testNTree()
 
 int main(int argc, char * argv[])
 {
-    test_fileWatcher();
+	test_variant();
+    //test_fileWatcher();
     //test_stringSplit();
     //test_reflection();
     //testNTree();
     //return sn::appMain(argc, argv);
+
+	getchar();
 }
 
 

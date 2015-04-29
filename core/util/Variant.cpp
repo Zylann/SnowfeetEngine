@@ -9,12 +9,6 @@ This file is part of the SnowfeetEngine project.
 namespace sn
 {
 
-//Variant::Variant(const VariantTable & o):
-//    m_type(SN_VT_VARIANT_TABLE)
-//{
-//    m_data.pTable = new VariantTable(o);
-//}
-
 Variant::Variant(const Variant & other):
     m_type(SN_VT_NIL)
 {
@@ -33,7 +27,6 @@ void Variant::reset()
     case SN_VT_STRING:      delete m_data.pString; break;
     case SN_VT_ARRAY:       delete m_data.pArray; break;
     case SN_VT_DICTIONARY:  delete m_data.pDictionary; break;
-    //case SN_VT_TABLE:       delete m_data.pTable; break;
     default: break;
     }
     m_type = SN_VT_NIL;
@@ -55,7 +48,6 @@ void Variant::reset(VariantType t)
     case SN_VT_STRING:      m_data.pString = new String(); break;
     case SN_VT_ARRAY:       m_data.pArray = new Array(); break;
     case SN_VT_DICTIONARY:  m_data.pDictionary = new Dictionary(); break;
-    //case SN_VT_TABLE:       m_data.pTable = new Table(); break;
     default: break;
     }
 }
@@ -101,80 +93,118 @@ const Variant::Dictionary & Variant::getDictionary() const
     return *m_data.pDictionary;
 }
 
-//const Variant::Table & Variant::getTable() const
-//{
-//    assertType(SN_VT_TABLE);
-//    return *m_data.pTable;
-//}
-
-Variant & Variant::operator=(bool b)
+void Variant::setBool(bool b)
 {
-    reset();
-    m_type = SN_VT_BOOL;
+	if (m_type != SN_VT_BOOL)
+	{
+		reset();
+	    m_type = SN_VT_BOOL;
+	}
     m_data.vBool = b;
-    return *this;
 }
 
-Variant & Variant::operator=(s32 n)
+void Variant::setInt(s32 n)
 {
-    reset();
-    m_type = SN_VT_INT;
+	if (m_type != SN_VT_INT)
+	{
+		reset();
+	    m_type = SN_VT_INT;
+	}
     m_data.vInt = n;
-    return *this;
 }
 
-Variant & Variant::operator=(f32 n)
+void Variant::setFloat(f32 f)
 {
-    reset();
-    m_type = SN_VT_FLOAT;
-    m_data.vFloat = n;
-    return *this;
+	if (m_type != SN_VT_FLOAT)
+	{
+		reset();
+	    m_type = SN_VT_FLOAT;
+	}
+    m_data.vFloat = f;
 }
 
-Variant & Variant::operator=(const String & str)
+void Variant::setString(const String & str)
 {
-    reset();
-    m_type = SN_VT_STRING;
-    m_data.pString = new String(str);
-    return *this;
+	if (m_type != SN_VT_STRING)
+	{
+		reset();
+	    m_type = SN_VT_STRING;
+		m_data.pString = new String(str);
+	}
+	else
+	{
+		*m_data.pString = str;
+	}
 }
 
-Variant & Variant::operator=(const Array & va)
+void Variant::setArray()
 {
-    reset();
-    m_type = SN_VT_ARRAY;
-    m_data.pArray = new Array(va);
-    return *this;
+	if (m_type != SN_VT_ARRAY)
+	{
+		reset();
+	    m_type = SN_VT_ARRAY;
+		m_data.pArray = new Array();
+	}
 }
 
-Variant & Variant::operator=(const Dictionary & vd)
+void Variant::setArray(const Array & va)
 {
-    reset();
-    m_type = SN_VT_DICTIONARY;
-    m_data.pDictionary = new Dictionary(vd);
-    return *this;
+	if (m_type != SN_VT_ARRAY)
+	{
+		reset();
+	    m_type = SN_VT_ARRAY;
+		m_data.pArray = new Array(va);
+	}
+	else
+	{
+		*m_data.pArray = va;
+	}
 }
 
-//Variant & Variant::operator=(const VariantTable & vt)
-//{
-//    reset();
-//    m_type = SN_VT_VARIANT_TABLE;
-//    m_data.pTable = new VariantTable(vt);
-//    return *this;
-//}
+void Variant::setDictionary()
+{
+	if (m_type != SN_VT_DICTIONARY)
+	{
+		reset();
+	    m_type = SN_VT_DICTIONARY;
+		m_data.pDictionary = new Dictionary();
+	}
+}
+
+void Variant::setDictionary(const Dictionary & vd)
+{
+	if (m_type != SN_VT_DICTIONARY)
+	{
+		reset();
+	    m_type = SN_VT_DICTIONARY;
+		m_data.pDictionary = new Dictionary(vd);
+	}
+	else
+	{
+		*m_data.pDictionary = vd;
+	}
+}
+
+void Variant::grab(Variant & other)
+{
+	reset();
+	m_type = other.m_type;
+	m_data = other.m_data;
+	other.m_type = SN_VT_NIL;
+	memset(&other.m_data, 0, sizeof(VariantData));
+}
 
 Variant & Variant::operator=(const Variant & other)
 {
     reset();
     switch (other.m_type)
     {
-    case SN_VT_BOOL:        m_data.vBool =        other.m_data.vBool; break;
-    case SN_VT_INT:         m_data.vInt =         other.m_data.vInt; break;
-    case SN_VT_FLOAT:       m_data.vFloat =       other.m_data.vFloat; break;
-    case SN_VT_STRING:      m_data.pString =      new String(*other.m_data.pString); break;
-    case SN_VT_ARRAY:       m_data.pArray =       new Array(*other.m_data.pArray); break;
-    case SN_VT_DICTIONARY:  m_data.pDictionary =  new Dictionary(*other.m_data.pDictionary); break;
-    //case SN_VT_TABLE:       m_data.pTable =       new Table(*other.m_data.pTable); break;
+    case SN_VT_BOOL:        setBool(other.m_data.vBool); break;
+    case SN_VT_INT:         setInt(other.m_data.vInt); break;
+    case SN_VT_FLOAT:       setFloat(other.m_data.vFloat); break;
+    case SN_VT_STRING:      setString(*other.m_data.pString); break;
+    case SN_VT_ARRAY:       setArray(*other.m_data.pArray); break;
+    case SN_VT_DICTIONARY:  setDictionary(*other.m_data.pDictionary); break;
     }
     return *this;
 }
@@ -194,7 +224,6 @@ bool Variant::operator==(const Variant & other) const
     case SN_VT_STRING:      return *m_data.pString == *other.m_data.pString; break;
     case SN_VT_ARRAY:       return *m_data.pArray == *other.m_data.pArray; break;
     case SN_VT_DICTIONARY:  return *m_data.pDictionary == *other.m_data.pDictionary; break;
-    //case SN_VT_TABLE:       return *m_data.pTable == *other.m_data.pTable; break;
     default: return false;
     }
 }
@@ -202,31 +231,15 @@ bool Variant::operator==(const Variant & other) const
 Variant & Variant::operator[](size_t index)
 {
     assertType(SN_VT_ARRAY);
-    if (m_data.pArray->size() < index)
+    if (m_data.pArray->size() <= index)
         m_data.pArray->resize(index + 1);
     return (*m_data.pArray)[index];
+}
 
-    //switch (m_type)
-    //{
-    //case SN_VT_DICTIONARY:
-    //    // The key must be a string and the type can't be converted
-    //    SN_ASSERT(false, "Cannot index or convert Dictionary when indexing with an integer");
-    //    break;
-
-    //case SN_VT_TABLE:
-    //    return (*m_data.pTable)[Variant((s32)index)];
-
-    //default:
-    //    if (m_type != SN_VT_ARRAY)
-    //    {
-    //        // Convert to Array, which is the closest match
-    //        reset();
-    //        m_data.pArray = new Array();
-    //    }
-    //    if (m_data.pArray->size() < index)
-    //        m_data.pArray->resize(index + 1);
-    //    return (*m_data.pArray)[index];
-    //}
+const Variant & Variant::operator[](size_t index) const
+{
+    assertType(SN_VT_ARRAY);
+    return (*m_data.pArray)[index];
 }
 
 Variant & Variant::operator[](const String & fieldName)
@@ -235,14 +248,23 @@ Variant & Variant::operator[](const String & fieldName)
     return (*m_data.pDictionary)[fieldName];
 }
 
-//Variant & Variant::operator[](const Variant & key)
-//{
-//    // TODO
-//}
+const Variant & Variant::operator[](const String & fieldName) const
+{
+    assertType(SN_VT_DICTIONARY);
+	const Dictionary & dict = *m_data.pDictionary;
+	auto it = dict.find(fieldName);
+	if (it != dict.end())
+		return it->second;
+	else
+	{
+		static const Variant s_defaultVariant;
+		return s_defaultVariant;
+	}
+}
 
 union MarshallFloat
 {
-    float f;
+    f32 f;
     u32 i;
 };
 
@@ -280,10 +302,6 @@ size_t Variant::getHash() const
         return (size_t)m_data.pDictionary;
         //return std::hash<Dictionary>()(*m_data.pDictionary);
 
-    //case SN_VT_TABLE:
-    //    return (size_t)m_data.pTable;
-        //return std::hash<Table>()(*m_data.pTable);
-
     default: return 0;
     }
 }
@@ -299,7 +317,6 @@ std::string toString(VariantType vt)
     case SN_VT_STRING:      return "string"; break;
     case SN_VT_ARRAY:       return "array"; break;
     case SN_VT_DICTIONARY:  return "dictionary"; break;
-    //case SN_VT_TABLE:       return "table"; break;
     default:                return "undefined"; break;
     }
 }
@@ -318,7 +335,6 @@ std::string toString(const Variant & v)
     case SN_VT_STRING:      ss << v.getString(); break;
     case SN_VT_ARRAY:       ss << v.getArray().size() << " elements"; break;
     case SN_VT_DICTIONARY:  ss << v.getDictionary().size() << " elements"; break;
-    //case SN_VT_TABLE:       ss << v.getTable().size() << " elements"; break;
     default: break;
     }
     ss << ")";

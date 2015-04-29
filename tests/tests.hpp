@@ -5,6 +5,7 @@ void test_reflection();
 void test_stringSplit();
 void test_hashes();
 void test_fileWatcher();
+void test_variant();
 
 #endif // __HEADER_TEST_REFLECTION__
 
