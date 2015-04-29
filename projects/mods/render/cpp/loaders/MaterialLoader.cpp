@@ -65,9 +65,21 @@ bool MaterialLoader::load(std::ifstream & ifs, Asset & asset) const
                     std::string loc = valueTag.getString();
 
                     if (stype == "texture")
-                        mat.setTexture(it->first, getAssetBySerializedLocation<Texture>(loc, meta.module, &mat));
+                    {
+                        Texture * tex = getAssetBySerializedLocation<Texture>(loc, meta.module, &mat);
+                        if (tex)
+                            mat.setTexture(it->first, tex);
+                        else
+                            SN_ERROR("Texture not found: " << loc);
+                    }
                     else if (stype == "rendertexture")
-                        mat.setTexture(it->first, getAssetBySerializedLocation<RenderTexture>(loc, meta.module, &mat));
+                    {
+                        RenderTexture * rt = getAssetBySerializedLocation<RenderTexture>(loc, meta.module, &mat);
+                        if (rt)
+                            mat.setTexture(it->first, rt);
+                        else
+                            SN_ERROR("RenderTexture not found: " << loc);
+                    }
                     else
                         SN_ERROR("Unknown specified type: " << stype);
                 }
