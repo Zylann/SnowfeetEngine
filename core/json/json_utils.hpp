@@ -160,6 +160,19 @@ inline void unserialize(JsonBox::Value & o, Vector<s32,N> & vec)
 }
 
 //------------------------------------------------------------------------------
+template <unsigned int N>
+inline void unserialize(JsonBox::Value & o, Vector<u32,N> & vec)
+{
+    for (size_t i = 0; i < N; ++i)
+    {
+        s32 n = o[i].getInt();
+        if (n < 0)
+            n = 0;
+        vec[i] = n;
+    }
+}
+
+//------------------------------------------------------------------------------
 template <typename T>
 inline void serialize(JsonBox::Value & o, const Area<T,2> & rect)
 {
