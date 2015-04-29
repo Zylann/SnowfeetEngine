@@ -49,6 +49,90 @@ void DrawBatch::fillRect(const IntRect & r, const IntRect & texRect, Vector2u ts
     m.addColor(Color(1, 1, 1));
 }
 
+void DrawBatch::fillNineSlices(const sn::IntRect & r, const Border & b, const sn::IntRect & texRect, sn::Vector2u ts)
+{
+    // TODO Optimize, this can be written with plain arrays and added to the mesh
+
+    if (b.left && b.top)
+    {
+        fillRect(
+            IntRect::fromPositionSize(r.minX(), r.minY(), b.left, b.top),
+            IntRect::fromPositionSize(texRect.x(), texRect.y(), b.left, b.top),
+            ts
+        );
+    }
+
+    if (b.right && b.top)
+    {
+        fillRect(
+            IntRect::fromPositionSize(r.maxX() - b.right, r.minY(), b.right, b.top),
+            IntRect::fromPositionSize(texRect.maxX() - b.right, texRect.y(), b.right, b.top),
+            ts
+        );
+    }
+
+    if (b.left && b.bottom)
+    {
+        fillRect(
+            IntRect::fromPositionSize(r.minX(), r.maxY() - b.bottom, b.left, b.bottom),
+            IntRect::fromPositionSize(texRect.x(), texRect.maxY() - b.bottom, b.left, b.bottom),
+            ts
+        );
+    }
+
+    if (b.right && b.bottom)
+    {
+        fillRect(
+            IntRect::fromPositionSize(r.maxX() - b.right, r.maxY() - b.bottom, b.right, b.bottom),
+            IntRect::fromPositionSize(texRect.maxX() - b.right, texRect.maxY() - b.bottom, b.right, b.bottom),
+            ts
+        );
+    }
+
+    if (b.left)
+    {
+        fillRect(
+            IntRect::fromPositionSize(r.minX(), r.minY() + b.top, b.left, r.height() - b.top - b.bottom),
+            IntRect::fromPositionSize(texRect.minX(), texRect.minY() + b.top, b.left, texRect.height() - b.top - b.bottom),
+            ts
+        );
+    }
+
+    if (b.right)
+    {
+        fillRect(
+            IntRect::fromPositionSize(r.maxX() - b.right, r.minY() + b.top, b.right, r.height() - b.top - b.bottom),
+            IntRect::fromPositionSize(texRect.maxX() - b.right, texRect.minY() + b.top, b.right, texRect.height() - b.top - b.bottom),
+            ts
+        );
+    }
+
+    if (b.top)
+    {
+        fillRect(
+            IntRect::fromPositionSize(r.minX() + b.left, r.minY(), r.width() - b.left - b.right, b.top),
+            IntRect::fromPositionSize(texRect.minX() + b.left, texRect.minY(), texRect.width() - b.left - b.right, b.top),
+            ts
+        );
+    }
+
+    if (b.bottom)
+    {
+        fillRect(
+            IntRect::fromPositionSize(r.minX() + b.left, r.maxY() - b.bottom, r.width() - b.left - b.right, b.bottom),
+            IntRect::fromPositionSize(texRect.minX() + b.left, texRect.maxY() - b.bottom, texRect.width() - b.left - b.right, b.bottom),
+            ts
+        );
+    }
+
+    fillRect(
+        IntRect::fromPositionSize(r.minX() + b.left, r.minY() + b.top, r.width() - b.left - b.right, r.height() - b.top - b.bottom),
+        IntRect::fromPositionSize(texRect.minX() + b.left, texRect.minY() + b.top, texRect.width() - b.left - b.right, texRect.height() - b.top - b.bottom),
+        ts
+    );
+
+}
+
 void DrawBatch::flush()
 {
     sn::Mesh & m = *m_mesh;

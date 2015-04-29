@@ -5,6 +5,8 @@
 #include <core/asset/base/Mesh.hpp>
 #include <core/asset/base/Material.hpp>
 
+#include "Border.hpp"
+
 namespace tgui
 {
 
@@ -16,6 +18,7 @@ public:
 
     void setMaterial(sn::Material & m);
     void fillRect(const sn::IntRect & r, const sn::IntRect & texRect, sn::Vector2u ts);
+    void fillNineSlices(const sn::IntRect & r, const Border & b, const sn::IntRect & texRect, sn::Vector2u ts);
     void flush();
 
 private:

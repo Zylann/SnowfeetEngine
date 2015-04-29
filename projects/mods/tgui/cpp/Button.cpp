@@ -46,7 +46,7 @@ void Button::onDrawSelf(sn::IDrawContext & dc)
     const IntRect & uvRect = ct.statesUV[0];
     Vector2u ts = theme.getTextureAtlasSize();
 
-    batch.fillRect(bounds, uvRect, ts);
+    batch.fillNineSlices(bounds, ct.slicing, uvRect, ts);
     batch.flush();
 
     /*
