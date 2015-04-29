@@ -500,7 +500,11 @@ Asset * AssetDatabase::getAsset(const AssetLocation & loc, const std::string & t
 }
 
 //------------------------------------------------------------------------------
-Asset * getAssetBySerializedLocation(const std::string & type, const std::string & locationString, const std::string & contextModule, Object * self)
+Asset * getAssetBySerializedLocation(
+    const std::string & type, 
+    const std::string & locationString, 
+    const std::string & contextModule, 
+    const Object * self)
 {
     AssetLocation location(locationString);
     if (!location.isEmpty())

@@ -179,23 +179,23 @@ private:
 ///
 /// The algorithm searches the asset in the following modules:
 /// - The module where the serialization takes place
-/// - The module where the class of 'self' is defined
+/// - The module where the class of 'self' is defined (if provided)
 /// - If still fails, returns nullptr.
 ///
 /// \param type: type name of the asset
 /// \param locationString: string representing the location of the asset (see AssetLocation)
 /// \param contextModule: name of the module where the serialization is taking place
-/// \param self: object needing to store the asset (typically the caller)
+/// \param self (optional): object needing to store the asset (typically the caller)
 SN_API Asset * getAssetBySerializedLocation(
     const std::string & type, 
     const std::string & locationString, 
     const std::string & contextModule,
-    Object * self
+    const Object * self = nullptr
 );
 
 // Template version
 template <class Asset_T>
-Asset_T * getAssetBySerializedLocation(const std::string & locationString, const std::string & contextModule, Object * self)
+Asset_T * getAssetBySerializedLocation(const std::string & locationString, const std::string & contextModule, const Object * self=nullptr)
 {
     // Note: use SN_ASSET in your asset class
     Asset * a = getAssetBySerializedLocation(Asset_T::__sGetClassName(), locationString, contextModule, self);
