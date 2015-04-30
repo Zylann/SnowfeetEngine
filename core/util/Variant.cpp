@@ -9,17 +9,20 @@ This file is part of the SnowfeetEngine project.
 namespace sn
 {
 
+//-----------------------------------------------------------------------------
 Variant::Variant(const Variant & other):
     m_type(SN_VT_NIL)
 {
     *this = other;
 }
 
+//-----------------------------------------------------------------------------
 Variant::~Variant()
 {
     reset();
 }
 
+//-----------------------------------------------------------------------------
 void Variant::reset()
 {
     switch (m_type)
@@ -33,6 +36,7 @@ void Variant::reset()
 	memset(&m_data, 0, sizeof(VariantData));
 }
 
+//-----------------------------------------------------------------------------
 void Variant::reset(VariantType t)
 {
     reset();
@@ -50,47 +54,55 @@ void Variant::reset(VariantType t)
     }
 }
 
+//-----------------------------------------------------------------------------
 void Variant::assertType(VariantType t) const
 {
     SN_ASSERT(m_type == t, "Variant " << toString(t) << " expected, got " << toString(*this));
 }
 
+//-----------------------------------------------------------------------------
 bool Variant::getBool() const
 {
     assertType(SN_VT_BOOL);
     return m_data.vBool;
 }
 
+//-----------------------------------------------------------------------------
 s32 Variant::getInt() const
 {
     assertType(SN_VT_INT);
     return m_data.vInt;
 }
 
+//-----------------------------------------------------------------------------
 f32 Variant::getFloat() const
 {
     assertType(SN_VT_FLOAT);
     return m_data.vFloat;
 }
 
+//-----------------------------------------------------------------------------
 const Variant::String & Variant::getString() const
 {
     assertType(SN_VT_STRING);
     return *m_data.pString;
 }
 
+//-----------------------------------------------------------------------------
 const Variant::Array & Variant::getArray() const
 {
     assertType(SN_VT_ARRAY);
     return *m_data.pArray;
 }
 
+//-----------------------------------------------------------------------------
 const Variant::Dictionary & Variant::getDictionary() const
 {
     assertType(SN_VT_DICTIONARY);
     return *m_data.pDictionary;
 }
 
+//-----------------------------------------------------------------------------
 void Variant::setBool(bool b)
 {
 	if (m_type != SN_VT_BOOL)
@@ -101,6 +113,7 @@ void Variant::setBool(bool b)
     m_data.vBool = b;
 }
 
+//-----------------------------------------------------------------------------
 void Variant::setInt(s32 n)
 {
 	if (m_type != SN_VT_INT)
@@ -111,6 +124,7 @@ void Variant::setInt(s32 n)
     m_data.vInt = n;
 }
 
+//-----------------------------------------------------------------------------
 void Variant::setFloat(f32 f)
 {
 	if (m_type != SN_VT_FLOAT)
@@ -121,6 +135,7 @@ void Variant::setFloat(f32 f)
     m_data.vFloat = f;
 }
 
+//-----------------------------------------------------------------------------
 void Variant::setString(const String & str)
 {
 	if (m_type != SN_VT_STRING)
@@ -135,6 +150,7 @@ void Variant::setString(const String & str)
 	}
 }
 
+//-----------------------------------------------------------------------------
 void Variant::setArray()
 {
 	if (m_type != SN_VT_ARRAY)
@@ -145,6 +161,7 @@ void Variant::setArray()
 	}
 }
 
+//-----------------------------------------------------------------------------
 void Variant::setArray(const Array & va)
 {
 	if (m_type != SN_VT_ARRAY)
@@ -159,6 +176,7 @@ void Variant::setArray(const Array & va)
 	}
 }
 
+//-----------------------------------------------------------------------------
 void Variant::setDictionary()
 {
 	if (m_type != SN_VT_DICTIONARY)
@@ -169,6 +187,7 @@ void Variant::setDictionary()
 	}
 }
 
+//-----------------------------------------------------------------------------
 void Variant::setDictionary(const Dictionary & vd)
 {
 	if (m_type != SN_VT_DICTIONARY)
@@ -183,6 +202,7 @@ void Variant::setDictionary(const Dictionary & vd)
 	}
 }
 
+//-----------------------------------------------------------------------------
 void Variant::grab(Variant & other)
 {
 	reset();
@@ -192,6 +212,7 @@ void Variant::grab(Variant & other)
 	memset(&other.m_data, 0, sizeof(VariantData));
 }
 
+//-----------------------------------------------------------------------------
 Variant & Variant::operator=(const Variant & other)
 {
     reset();
@@ -210,6 +231,7 @@ Variant & Variant::operator=(const Variant & other)
     return *this;
 }
 
+//-----------------------------------------------------------------------------
 bool Variant::operator==(const Variant & other) const
 {
     if (m_type != other.m_type)
@@ -229,6 +251,7 @@ bool Variant::operator==(const Variant & other) const
     }
 }
 
+//-----------------------------------------------------------------------------
 Variant & Variant::operator[](size_t index)
 {
     assertType(SN_VT_ARRAY);
@@ -237,18 +260,21 @@ Variant & Variant::operator[](size_t index)
     return (*m_data.pArray)[index];
 }
 
+//-----------------------------------------------------------------------------
 const Variant & Variant::operator[](size_t index) const
 {
     assertType(SN_VT_ARRAY);
     return (*m_data.pArray)[index];
 }
 
+//-----------------------------------------------------------------------------
 Variant & Variant::operator[](const String & fieldName)
 {
     assertType(SN_VT_DICTIONARY);
     return (*m_data.pDictionary)[fieldName];
 }
 
+//-----------------------------------------------------------------------------
 const Variant & Variant::operator[](const String & fieldName) const
 {
     assertType(SN_VT_DICTIONARY);
@@ -263,6 +289,7 @@ const Variant & Variant::operator[](const String & fieldName) const
 	}
 }
 
+//-----------------------------------------------------------------------------
 union MarshallFloat
 {
     f32 f;
@@ -307,6 +334,7 @@ size_t Variant::getHash() const
     }
 }
 
+//-----------------------------------------------------------------------------
 std::string toString(VariantType vt)
 {
     switch (vt)
@@ -322,6 +350,7 @@ std::string toString(VariantType vt)
     }
 }
 
+//-----------------------------------------------------------------------------
 std::string toString(const Variant & v)
 {
     if (v.isNil())
