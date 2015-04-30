@@ -30,9 +30,7 @@ void Variant::reset()
     default: break;
     }
     m_type = SN_VT_NIL;
-#ifdef SN_BUILD_DEBUG
-    memset(&m_data, 0, sizeof(VariantData));
-#endif
+	memset(&m_data, 0, sizeof(VariantData));
 }
 
 void Variant::reset(VariantType t)
