@@ -197,12 +197,15 @@ Variant & Variant::operator=(const Variant & other)
     reset();
     switch (other.m_type)
     {
-    case SN_VT_BOOL:        setBool(other.m_data.vBool); break;
-    case SN_VT_INT:         setInt(other.m_data.vInt); break;
-    case SN_VT_FLOAT:       setFloat(other.m_data.vFloat); break;
+	// Objects need proper handling
     case SN_VT_STRING:      setString(*other.m_data.pString); break;
     case SN_VT_ARRAY:       setArray(*other.m_data.pArray); break;
     case SN_VT_DICTIONARY:  setDictionary(*other.m_data.pDictionary); break;
+	// Null and scalar types just need copy
+	default:
+		m_type = other.m_type;
+		m_data = other.m_data;
+		break;
     }
     return *this;
 }
