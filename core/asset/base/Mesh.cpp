@@ -142,13 +142,14 @@ void Mesh::recalculateIndexes()
         m_indices.resize(indiceCount);
         for (u32 j = 0; j < quadCount; ++j)
         {
-            u32 i = j * 4;
-            m_indices[i] = i;
-            m_indices[i + 1] = i + 2;
-            m_indices[i + 2] = i + 1;
-            m_indices[i + 3] = i;
-            m_indices[i + 4] = i + 3;
-            m_indices[i + 5] = i + 2;
+            u32 i = j * 6;
+            u32 ti = j * 4;
+            m_indices[i] = ti;
+            m_indices[i + 1] = ti + 2;
+            m_indices[i + 2] = ti + 1;
+            m_indices[i + 3] = ti;
+            m_indices[i + 4] = ti + 3;
+            m_indices[i + 5] = ti + 2;
         }
         break;
     }
