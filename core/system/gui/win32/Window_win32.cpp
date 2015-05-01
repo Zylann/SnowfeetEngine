@@ -118,6 +118,13 @@ void WindowImpl::onEvent(UINT message, WPARAM wParam, LPARAM lParam)
             ::SetCursor(m_cursor);
         break;
 
+    case WM_MOUSEMOVE:
+        e.type = SN_EVENT_MOUSE_MOVED;
+        e.mouse.x = static_cast<s16>(LOWORD(lParam));
+        e.mouse.y = static_cast<s16>(HIWORD(lParam));
+        manager.pushEvent(e);
+        break;
+
     case WM_LBUTTONDOWN:
         e.type = SN_EVENT_MOUSE_DOWN;
         e.mouse.button = SN_MOUSE_LEFT;
