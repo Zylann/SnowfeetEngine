@@ -12,8 +12,6 @@ class Button : public Control
 public:
     SN_ENTITY(tgui::Button, tgui::Control)
 
-    virtual void onMouseEnter(Event & e) override;
-    virtual void onMouseLeave(Event & e) override;
     virtual void onMousePress(Event & e) override;
     virtual void onMouseRelease(Event & e) override;
 

@@ -7,16 +7,6 @@ using namespace sn;
 namespace tgui
 {
 
-void Button::onMouseEnter(Event & e)
-{
-
-}
-
-void Button::onMouseLeave(Event & e)
-{
-
-}
-
 void Button::onMousePress(Event & e)
 {
     SN_DLOG("Button pressed!");
@@ -24,7 +14,7 @@ void Button::onMousePress(Event & e)
 
 void Button::onMouseRelease(Event & e)
 {
-
+    SN_DLOG("Button released!");
 }
 
 void Button::onDrawSelf(DrawBatch & batch)
