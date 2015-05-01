@@ -10,13 +10,15 @@ namespace tgui
 {
     void registerObjectTypes(sn::ObjectTypeDatabase & otb)
     {
+        // Entities
         otb.registerType<Control>();
         otb.registerType<GUI>();
         otb.registerType<Button>();
         otb.registerType<Renderer>();
+
+        // Assets
         otb.registerType<Theme>();
         otb.registerType<ThemeLoader>();
-        //...
     }
 }
 

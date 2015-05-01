@@ -9,26 +9,31 @@ using namespace sn;
 namespace tgui
 {
 
+//------------------------------------------------------------------------------
 sn::IntRect Control::getClientBounds() const
 {
     return m_clientBounds;
 }
 
+//------------------------------------------------------------------------------
 void Control::setClientBounds(sn::IntRect bounds)
 {
     m_clientBounds = bounds;
 }
 
+//------------------------------------------------------------------------------
 bool Control::getControlFlag(sn::u32 i) const
 {
     return m_controlFlags[i];
 }
 
+//------------------------------------------------------------------------------
 void Control::setControlFlag(sn::u32 i, bool value)
 {
     m_controlFlags[i] = value;
 }
 
+//------------------------------------------------------------------------------
 Control * Control::getParentControl() const
 {
     Entity * parent = getParent();
@@ -37,6 +42,7 @@ Control * Control::getParentControl() const
     return nullptr;
 }
 
+//------------------------------------------------------------------------------
 u32 Control::getWindowID() const
 {
     const Control * root = getRootControl();
@@ -46,6 +52,7 @@ u32 Control::getWindowID() const
         return m_windowID;
 }
 
+//------------------------------------------------------------------------------
 const Control * Control::getRootControl() const
 {
     const Control * last = nullptr;
@@ -60,6 +67,7 @@ const Control * Control::getRootControl() const
     return nullptr;
 }
 
+//------------------------------------------------------------------------------
 GUI * Control::getGUI() const
 {
     Entity * parent = getParent();
@@ -72,6 +80,7 @@ GUI * Control::getGUI() const
     return nullptr;
 }
 
+//------------------------------------------------------------------------------
 Control * Control::getChildControlAt(sn::Vector2i position) const
 {
     std::vector<Control*> children;
@@ -91,6 +100,7 @@ Control * Control::getChildControlAt(sn::Vector2i position) const
     return nullptr;
 }
 
+//------------------------------------------------------------------------------
 void Control::onDraw(sn::IDrawContext & dc)
 {
     onDrawSelf(dc);
@@ -108,6 +118,7 @@ void Control::onDraw(sn::IDrawContext & dc)
     }
 }
 
+//------------------------------------------------------------------------------
 void Control::onEvent(Event & ev)
 {
     dispatchEventToChildren(ev);
@@ -134,6 +145,7 @@ void Control::onEvent(Event & ev)
     }
 }
 
+//------------------------------------------------------------------------------
 void Control::dispatchEventToChildren(Event & ev)
 {
     std::vector<Control*> children;
@@ -151,6 +163,7 @@ void Control::dispatchEventToChildren(Event & ev)
     }
 }
 
+//------------------------------------------------------------------------------
 void Control::processMouseMove(Event & e)
 {
     IntRect bounds = getClientBounds();
@@ -170,6 +183,7 @@ void Control::processMouseMove(Event & e)
     }
 }
 
+//------------------------------------------------------------------------------
 void Control::processMousePress(Event & e)
 {
     if (isHovered())
@@ -179,6 +193,7 @@ void Control::processMousePress(Event & e)
     }
 }
 
+//------------------------------------------------------------------------------
 void Control::processMouseRelease(Event & e)
 {
     if (isPressed())
@@ -188,6 +203,7 @@ void Control::processMouseRelease(Event & e)
     }
 }
 
+//------------------------------------------------------------------------------
 void Control::serializeState(JsonBox::Value & o, const SerializationContext & ctx)
 {
     Entity::serializeState(o, ctx);
@@ -195,6 +211,7 @@ void Control::serializeState(JsonBox::Value & o, const SerializationContext & ct
     sn::serialize(o["hostWindow"], m_windowID);
 }
 
+//------------------------------------------------------------------------------
 void Control::unserializeState(JsonBox::Value & o, const SerializationContext & ctx)
 {
     Entity::unserializeState(o, ctx);
