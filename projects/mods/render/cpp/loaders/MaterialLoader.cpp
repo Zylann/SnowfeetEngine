@@ -40,11 +40,20 @@ bool MaterialLoader::load(std::ifstream & ifs, Asset & asset) const
     JsonBox::Value doc;
     doc.loadFromStream(ifs);
 
+    // Shader
     mat.setShader(getAssetBySerializedLocation<ShaderProgram>(doc["shader"].getString(), meta.module, &mat));
+
+    // Depth
     bool depthTest = false;
     sn::unserialize(doc["depthTest"], depthTest);
     mat.setDepthTest(depthTest);
 
+    // Blending
+    BlendMode blendMode;
+    sn::render::unserialize(doc["blend"], blendMode);
+    mat.setBlendMode(blendMode);
+
+    // Params
     JsonBox::Value params = doc["params"].getObject();
     if (params.isObject())
     {

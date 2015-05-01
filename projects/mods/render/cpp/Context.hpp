@@ -15,6 +15,7 @@ This file is part of the SnowfeetEngine project.
 #include "ShaderProgram.hpp"
 #include "ContextSettings.hpp"
 #include "ClearBits.hpp"
+#include "BlendMode.hpp"
 
 namespace sn {
 namespace render {
@@ -60,6 +61,8 @@ public:
     void setScissor(IntRect rect);
     /// \brief Disables scissor.
     void disableScissor();
+
+    void setBlendMode(BlendMode mode);
 
     // Platform-specific
     //void swapBuffers();

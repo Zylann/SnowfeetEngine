@@ -236,6 +236,21 @@ void Context::disableScissor()
     glDisable(GL_SCISSOR_TEST);
 }
 
+//------------------------------------------------------------------------------
+void Context::setBlendMode(BlendMode mode)
+{
+    if (mode != SNR_BLEND_NONE)
+    {
+        glEnable(GL_BLEND);
+        glBlendEquation(GL_FUNC_ADD);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    }
+    else
+    {
+        glDisable(GL_BLEND);
+    }
+}
+
 } // namespace render
 } // namespace sn
 

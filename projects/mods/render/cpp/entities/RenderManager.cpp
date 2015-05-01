@@ -28,6 +28,7 @@ public:
         Material & material = *checked_cast<sn::render::Material*>(&a_material);
 
         context.setDepthTest(material.isDepthTest());
+        context.setBlendMode(material.getBlendMode());
 
         ShaderProgram * shader = material.getShader();
 

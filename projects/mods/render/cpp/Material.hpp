@@ -7,6 +7,7 @@
 
 #include "ShaderProgram.hpp"
 #include "RenderTexture.hpp"
+#include "BlendMode.hpp"
 
 namespace sn {
 namespace render {
@@ -33,6 +34,9 @@ public:
     bool isDepthTest() const { return m_depthTest; }
     void setDepthTest(bool zTest) { m_depthTest = zTest; }
 
+    BlendMode getBlendMode() const { return m_blendMode; }
+    void setBlendMode(BlendMode mode) { m_blendMode = mode; }
+
     // Note: "setParam" was not used here because C++ method overloads are limited to the scope where they are defined.
     // If setParam was used, those defined in the base class could not be resolved.
 
@@ -50,6 +54,7 @@ private:
     std::unordered_map<std::string, SharedRef<Texture> > m_textures;
 
     bool m_depthTest;
+    BlendMode m_blendMode;
 
 };
 
