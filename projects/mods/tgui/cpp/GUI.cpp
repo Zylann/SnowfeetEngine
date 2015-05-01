@@ -44,7 +44,7 @@ void GUI::draw(sn::IDrawContext & dc)
 
         // Override projection
         Matrix4 projection;
-        projection.loadOrtho2DProjection(0, 0, screenSize.x(), screenSize.y(), -1, 100);
+        projection.loadOrtho2DProjection(0, 0, static_cast<f32>(screenSize.x()), static_cast<f32>(screenSize.y()), -1, 100);
         dc.setProjectionMatrix(projection);
 
         // Override view
