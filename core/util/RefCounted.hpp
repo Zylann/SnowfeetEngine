@@ -122,6 +122,8 @@ protected:
     /// \brief Destructor not exposed because release() must be used instead
     virtual ~RefCounted()
     {
+        // We can't make this test because in some cases we can't get the ref count,
+        // in turn because the SharedState object has been destroyed after its last release().
         //SN_ASSERT(getRefCount() == 0, "refCount is not zero in destructor");
     }
 

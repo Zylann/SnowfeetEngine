@@ -7,15 +7,27 @@ using namespace sn;
 namespace tgui
 {
 
+GUI::GUI()
+{
+    m_defaultTheme = new Theme();
+}
+
+GUI::~GUI()
+{
+    delete m_defaultTheme;
+}
+
 void GUI::onReady()
 {
-
 }
 
 const Theme & GUI::getTheme() const
 {
     if (m_theme.isNull())
-        return m_defaultTheme;
+    {
+        SN_ASSERT(m_defaultTheme != nullptr, "Cannot get a theme now");
+        return *m_defaultTheme;
+    }
     return *m_theme.get();
 }
 

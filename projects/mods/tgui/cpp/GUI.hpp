@@ -16,6 +16,8 @@ class GUI : public Control
 public:
     SN_ENTITY(tgui::GUI, sn::Drawable)
 
+    GUI();
+
     void draw(sn::IDrawContext & dc);
 
     void onReady() override;
@@ -30,10 +32,12 @@ public:
     void unserializeState(JsonBox::Value & o, const sn::SerializationContext & ctx) override;
 
 protected:
+    ~GUI();
+
     bool onSystemEvent(const sn::Event & systemEvent) override;
 
 private:
-    Theme m_defaultTheme;
+    Theme * m_defaultTheme;
     sn::SharedRef<Theme> m_theme;
 
 };
