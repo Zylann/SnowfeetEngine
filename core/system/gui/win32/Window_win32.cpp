@@ -66,6 +66,11 @@ void WindowImpl::onEvent(UINT message, WPARAM wParam, LPARAM lParam)
 
     switch (message)
     {
+
+    //-------------------------------------------------
+    // Window
+    //-------------------------------------------------
+
     case WM_DESTROY:
         // Show cursor if it was hidden
         setCursor(SN_CURSOR_DEFAULT);
@@ -102,11 +107,68 @@ void WindowImpl::onEvent(UINT message, WPARAM wParam, LPARAM lParam)
         break;
     }
 
+    //-------------------------------------------------
+    // Mouse
+    //-------------------------------------------------
+
     case WM_SETCURSOR:
         // The mouse has moved, if the cursor is in our window we must refresh the cursor
+        // TODO Allow receivers to set the cursor? (useful for GUIs)
         if (LOWORD(lParam) == HTCLIENT)
             ::SetCursor(m_cursor);
         break;
+
+    case WM_LBUTTONDOWN:
+        e.type = SN_EVENT_MOUSE_DOWN;
+        e.mouse.button = SN_MOUSE_LEFT;
+        e.mouse.x = static_cast<s16>(LOWORD(lParam));
+        e.mouse.y = static_cast<s16>(HIWORD(lParam));
+        manager.pushEvent(e);
+        break;
+
+    case WM_LBUTTONUP:
+        e.type = SN_EVENT_MOUSE_UP;
+        e.mouse.button = SN_MOUSE_LEFT;
+        e.mouse.x = static_cast<s16>(LOWORD(lParam));
+        e.mouse.y = static_cast<s16>(HIWORD(lParam));
+        manager.pushEvent(e);
+        break;
+
+    case WM_RBUTTONDOWN:
+        e.type = SN_EVENT_MOUSE_DOWN;
+        e.mouse.button = SN_MOUSE_RIGHT;
+        e.mouse.x = static_cast<s16>(LOWORD(lParam));
+        e.mouse.y = static_cast<s16>(HIWORD(lParam));
+        manager.pushEvent(e);
+        break;
+
+    case WM_RBUTTONUP:
+        e.type = SN_EVENT_MOUSE_UP;
+        e.mouse.button = SN_MOUSE_RIGHT;
+        e.mouse.x = static_cast<s16>(LOWORD(lParam));
+        e.mouse.y = static_cast<s16>(HIWORD(lParam));
+        manager.pushEvent(e);
+        break;
+
+    case WM_MBUTTONDOWN:
+        e.type = SN_EVENT_MOUSE_DOWN;
+        e.mouse.button = SN_MOUSE_MIDDLE;
+        e.mouse.x = static_cast<s16>(LOWORD(lParam));
+        e.mouse.y = static_cast<s16>(HIWORD(lParam));
+        manager.pushEvent(e);
+        break;
+
+    case WM_MBUTTONUP:
+        e.type = SN_EVENT_MOUSE_UP;
+        e.mouse.button = SN_MOUSE_MIDDLE;
+        e.mouse.x = static_cast<s16>(LOWORD(lParam));
+        e.mouse.y = static_cast<s16>(HIWORD(lParam));
+        manager.pushEvent(e);
+        break;
+
+    //-------------------------------------------------
+    // Keyboard
+    //-------------------------------------------------
 
     case WM_KEYDOWN:
         e.type =              SN_EVENT_KEY_DOWN;
