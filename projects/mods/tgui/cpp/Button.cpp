@@ -43,7 +43,13 @@ void Button::onDrawSelf(sn::IDrawContext & dc)
 
     DrawBatch batch(dc);
 
-    const IntRect & uvRect = ct.statesUV[0];
+    u32 state = ControlTheme::STATE_NORMAL;
+    if (isPressed())
+        state = ControlTheme::STATE_PRESSED;
+    else if (isHovered())
+        state = ControlTheme::STATE_HOVERED;
+
+    const IntRect & uvRect = ct.statesUV[state];
     Vector2u ts = theme.getTextureAtlasSize();
 
     batch.fillNineSlices(bounds, ct.slicing, uvRect, ts);

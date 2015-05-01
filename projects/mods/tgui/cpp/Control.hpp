@@ -9,13 +9,15 @@
 namespace tgui
 {
 
-enum WidgetFlags
+enum ControlFlags
 {
-    TGUI_ENABLED = 1,
-    TGUI_VISIBLE = 2,
-    TGUI_HOVERED = 4,
-    TGUI_PRESSED = 8,
-    TGUI_FOCUSED = 16
+    TGUI_CF_ENABLED = 0,
+    TGUI_CF_VISIBLE = 1,
+    TGUI_CF_HOVERED = 2,
+    TGUI_CF_PRESSED = 3,
+    TGUI_CF_FOCUSED = 4,
+    
+    TGUI_CF_COUNT = 8
 };
 
 struct Event
@@ -36,7 +38,7 @@ public:
     SN_ENTITY(tgui::Control, sn::Entity)
 
     Control() :
-        m_controlFlags(TGUI_ENABLED | TGUI_VISIBLE),
+        m_controlFlags(TGUI_CF_ENABLED | TGUI_CF_VISIBLE),
         m_windowID(0)
     {}
 
@@ -44,7 +46,6 @@ public:
     void setClientBounds(sn::IntRect bounds);
 
     bool getControlFlag(sn::u32 i) const;
-    void setControlFlag(sn::u32 i, bool value);
 
     Control * getParentControl() const;
     const Control * getRootControl() const;
@@ -55,14 +56,14 @@ public:
 
     virtual void onEvent(Event & ev);
 
-    virtual void onMouseMove(Event & e) {}
-    virtual void onMouseEnter(Event & e) {}
-    virtual void onMouseLeave(Event & e) {}
-    virtual void onMousePress(Event & e) {}
-    virtual void onMouseRelease(Event & e) {}
-    virtual void onControlResized() {}
-
     GUI * getGUI() const;
+
+    //--------------------------------
+    // Helpers
+    //--------------------------------
+
+    bool isHovered() const { return getControlFlag(TGUI_CF_HOVERED); }
+    bool isPressed() const { return getControlFlag(TGUI_CF_PRESSED); }
 
     //--------------------------------
     // Serialization
@@ -73,13 +74,27 @@ public:
 
 protected:
     void dispatchEventToChildren(Event & ev);
+    
+    void setControlFlag(sn::u32 i, bool value);
 
     virtual void onDraw(sn::IDrawContext & dc);
     virtual void onDrawSelf(sn::IDrawContext & dc) {}
 
+    virtual void onMouseMove(Event & e) {}
+    virtual void onMouseEnter(Event & e) {}
+    virtual void onMouseLeave(Event & e) {}
+    virtual void onMousePress(Event & e) {}
+    virtual void onMouseRelease(Event & e) {}
+    virtual void onControlResized() {}
+
+private:
+    void processMouseMove(Event & e);
+    void processMousePress(Event & e);
+    void processMouseRelease(Event & e);
+
 private:
     sn::IntRect m_clientBounds;
-    std::bitset<8> m_controlFlags;
+    std::bitset<TGUI_CF_COUNT> m_controlFlags;
     sn::u32 m_windowID;
 
 };

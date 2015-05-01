@@ -117,7 +117,18 @@ void Control::onEvent(Event & ev)
         switch (ev.value.type)
         {
         case SN_EVENT_MOUSE_MOVED:
-            onMouseMove(ev);
+            processMouseMove(ev);
+            break;
+
+        case SN_EVENT_MOUSE_DOWN:
+            processMousePress(ev);
+            break;
+
+        case SN_EVENT_MOUSE_UP:
+            processMouseRelease(ev);
+            break;
+
+        default:
             break;
         }
     }
@@ -137,6 +148,43 @@ void Control::dispatchEventToChildren(Event & ev)
             if (ev.consumed)
                 break;
         }
+    }
+}
+
+void Control::processMouseMove(Event & e)
+{
+    IntRect bounds = getClientBounds();
+    if (bounds.contains(e.value.mouse.x, e.value.mouse.y))
+    {
+        if (!isHovered())
+        {
+            setControlFlag(TGUI_CF_HOVERED, true);
+            onMouseEnter(e);
+        }
+        onMouseMove(e);
+    }
+    else if (isHovered())
+    {
+        setControlFlag(TGUI_CF_HOVERED, false);
+        onMouseLeave(e);
+    }
+}
+
+void Control::processMousePress(Event & e)
+{
+    if (isHovered())
+    {
+        setControlFlag(TGUI_CF_PRESSED, true);
+        onMousePress(e);
+    }
+}
+
+void Control::processMouseRelease(Event & e)
+{
+    if (isPressed())
+    {
+        setControlFlag(TGUI_CF_PRESSED, false);
+        onMouseRelease(e);
     }
 }
 
