@@ -127,7 +127,7 @@ void Matrix4::loadOrtho2DProjection(
     //  4   5   6   7
     //  8   9  10  11
     // 12  13  14  15
-
+    // TODO FIXME this doesn't works with assymetric view volumes
     m_v[0] = 2.f / (right - left);
 	m_v[5] = 2.f / (top - bottom);
 	m_v[10] = 2.f / (far - near);

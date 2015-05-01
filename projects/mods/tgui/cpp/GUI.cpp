@@ -30,9 +30,16 @@ void GUI::draw(sn::IDrawContext & dc)
 
         Vector2u screenSize = win->getClientSize();
 
+        // Override projection
         Matrix4 projection;
         projection.loadOrtho2DProjection(0, 0, screenSize.x(), screenSize.y(), -1, 100);
         dc.setProjectionMatrix(projection);
+
+        // Override view
+        Matrix4 view;
+        // TODO This translation quickfixes Matrix4 not handling assymetric ortho frustrum, please fix it
+        view.setTranslation(sn::Vector3f(-static_cast<f32>(screenSize.x())/2, -static_cast<f32>(screenSize.y())/2, 0));
+        dc.setViewMatrix(view);
 
         dc.setMaterial(*themeMaterial);
         onDraw(dc);
