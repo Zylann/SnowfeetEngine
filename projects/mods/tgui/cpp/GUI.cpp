@@ -19,6 +19,21 @@ GUI::~GUI()
 
 void GUI::onReady()
 {
+    // Setup event filter
+    u32 events[] {
+        SN_EVENT_MOUSE_DOWN,
+        SN_EVENT_MOUSE_UP,
+        SN_EVENT_MOUSE_MOVED,
+        SN_EVENT_MOUSE_ENTERED,
+        SN_EVENT_MOUSE_LEFT,
+        SN_EVENT_MOUSE_WHEEL_MOVED
+    };
+    for (u32 i = 0; i < sizeof(events) / sizeof(u32); ++i)
+    {
+        m_eventFilter[events[i]] = true;
+    }
+
+    listenToSystemEvents();
 }
 
 const Theme & GUI::getTheme() const
@@ -60,12 +75,16 @@ void GUI::draw(sn::IDrawContext & dc)
 
 bool GUI::onSystemEvent(const sn::Event & systemEvent)
 {
-    tgui::Event ev;
-    ev.value = systemEvent;
+    if (m_eventFilter[systemEvent.type])
+    {
+        tgui::Event ev;
+        ev.value = systemEvent;
 
-    dispatchEventToChildren(ev);
+        dispatchEventToChildren(ev);
 
-    return ev.consumed;
+        return ev.consumed;
+    }
+    return false;
 }
 
 void GUI::serializeState(JsonBox::Value & o, const sn::SerializationContext & ctx)

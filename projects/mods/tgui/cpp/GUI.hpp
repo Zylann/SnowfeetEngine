@@ -4,6 +4,7 @@
 #include <core/scene/Drawable.hpp>
 #include <core/scene/base/IDrawContext.hpp>
 #include <core/util/SharedRef.hpp>
+#include <core/system/gui/Event.hpp>
 
 #include "Control.hpp"
 #include "Theme.hpp"
@@ -39,6 +40,7 @@ protected:
 private:
     Theme * m_defaultTheme;
     sn::SharedRef<Theme> m_theme;
+    std::bitset<sn::SN_EVENT_COUNT> m_eventFilter;
 
 };
 
