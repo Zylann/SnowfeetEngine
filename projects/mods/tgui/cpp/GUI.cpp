@@ -1,6 +1,8 @@
-#include "GUI.hpp"
 #include <core/system/gui/SystemGUI.hpp>
 #include <core/asset/AssetDatabase.hpp>
+
+#include "GUI.hpp"
+#include "DrawBatch.hpp"
 
 using namespace sn;
 
@@ -69,7 +71,10 @@ void GUI::draw(sn::IDrawContext & dc)
         dc.setViewMatrix(view);
 
         dc.setMaterial(*themeMaterial);
-        onDraw(dc);
+
+        DrawBatch batch(dc);
+        onDraw(batch);
+        batch.flush();
     }
 }
 

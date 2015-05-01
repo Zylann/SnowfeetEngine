@@ -101,9 +101,9 @@ Control * Control::getChildControlAt(sn::Vector2i position) const
 }
 
 //------------------------------------------------------------------------------
-void Control::onDraw(sn::IDrawContext & dc)
+void Control::onDraw(DrawBatch & batch)
 {
-    onDrawSelf(dc);
+    onDrawSelf(batch);
 
     std::vector<Control*> children;
     getChildrenOfType<Control>(children);
@@ -113,7 +113,7 @@ void Control::onDraw(sn::IDrawContext & dc)
         Control & child = *children[i];
         if (child.isEnabled())
         {
-            child.onDraw(dc);
+            child.onDraw(batch);
         }
     }
 }

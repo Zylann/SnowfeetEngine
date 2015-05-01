@@ -6,6 +6,8 @@
 #include <core/scene/base/IDrawContext.hpp>
 #include <core/math/Vector2.hpp>
 
+#include "DrawBatch.hpp"
+
 namespace tgui
 {
 
@@ -77,8 +79,8 @@ protected:
     
     void setControlFlag(sn::u32 i, bool value);
 
-    virtual void onDraw(sn::IDrawContext & dc);
-    virtual void onDrawSelf(sn::IDrawContext & dc) {}
+    virtual void onDraw(DrawBatch & batch);
+    virtual void onDrawSelf(DrawBatch & batch) {}
 
     virtual void onMouseMove(Event & e) {}
     virtual void onMouseEnter(Event & e) {}

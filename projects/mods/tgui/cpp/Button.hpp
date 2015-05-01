@@ -20,7 +20,7 @@ public:
     virtual void onPress() {}
     virtual void onRelease() {}
 
-    void onDrawSelf(sn::IDrawContext & dc) override;
+    void onDrawSelf(DrawBatch & batch) override;
 
     //--------------------------------
     // Serialization
