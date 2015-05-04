@@ -5,6 +5,9 @@ project "ModFreetype"
         "*.hpp",
         "*.cpp"
     }
+    includedirs {
+        "freetype/include"
+    }
     links {
         "LibFreetype"
     }
@@ -26,6 +29,7 @@ project "LibFreetype"
     -- Note: for some reason Freetype files we have to include or not aren't separated,
     -- it's difficult to write a rule that includes the good ones automagically.
     -- So they are specified here one by one.
+    -- Source of this list: Visual 2010 project shipped with the library
 
     files {
         -- Headers
