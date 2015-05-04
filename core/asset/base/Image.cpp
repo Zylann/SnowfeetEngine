@@ -19,11 +19,22 @@ Image::~Image()
 //------------------------------------------------------------------------------
 void Image::create(Vector2u size, PixelFormat format, Color8 defaultColor)
 {
-    SN_ASSERT(format == SN_IMAGE_RGBA32, "Image format not supported yet");
-    clear();
-    m_pixelFormat = format;
-    m_size = size;
+    createNoFill(size, format);
     fill(defaultColor);
+}
+
+//------------------------------------------------------------------------------
+void Image::createNoFill(Vector2u size, PixelFormat format)
+{
+    SN_ASSERT(format == SN_IMAGE_RGBA32, "Image format not supported yet");
+    if (m_size != size || m_pixelData == nullptr || m_pixelFormat != format)
+    {
+        clear();
+        m_pixelFormat = format;
+        m_size = size;
+        u32 len = getDataLength();
+        m_pixelData = new u8[sizeof(u8) * len];
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -35,8 +46,7 @@ void Image::loadFromPixels(Vector2u size, PixelFormat format, const u8 * pixelDa
     m_pixelFormat = format;
     m_size = size;
 
-    u32 channelCount = 4; // R,G,B,A
-    u32 len = size.x() * size.y() * channelCount;
+    u32 len = getDataLength();
 
     if (len)
     {
@@ -88,23 +98,34 @@ void Image::fill(Color8 color)
 {
     if (m_pixelData)
     {
-        u32 len = m_size.x() * m_size.y();
-        if (len)
+        u32 pixelCount = m_size.x() * m_size.y();
+        if (pixelCount)
         {
-            m_pixelData = new u8[sizeof(u8)* 4];
-            u32 len4 = len / 4;
-            for (u32 i = 0; i < len4; ++i)
+            for (u32 i = 0; i < pixelCount; ++i)
             {
                 u32 j = i * 4;
-                m_pixelData[j  ] = color.r;
-                m_pixelData[j+1] = color.g;
-                m_pixelData[j+2] = color.b;
-                m_pixelData[j+3] = color.a;
+                m_pixelData[j++] = color.r;
+                m_pixelData[j++] = color.g;
+                m_pixelData[j++] = color.b;
+                m_pixelData[j++] = color.a;
             }
         }
     }
 }
 
+//------------------------------------------------------------------------------
+Image & Image::operator=(const Image & other)
+{
+    if (m_size != other.m_size)
+    {
+        createNoFill(other.m_size, other.m_pixelFormat);
+    }
+    if (m_pixelData)
+    {
+        memcpy(m_pixelData, other.m_pixelData, sizeof(u8)* getDataLength());
+    }
+    return *this;
+}
 
 } // namespace sn
 

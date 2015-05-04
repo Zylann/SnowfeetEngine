@@ -18,6 +18,7 @@ public:
     SN_SCRIPT_OBJECT(sn::Image, sn::Asset)
 
     Image();
+    Image(const Image & other);
 
     void create(
         Vector2u size,
@@ -36,6 +37,10 @@ public:
     Vector2i getSize() const { return m_size; }
     const u8 * getPixelData() { return m_pixelData; }
 
+    PixelFormat getPixelFormat() const { return m_pixelFormat; }
+    // Note: only RGBA is supported at the moment
+    u32 getChannelCount() const { return 4; }
+
     bool getPixel(u32 x, u32 y, Color8 & out_color) const;
     bool setPixel(u32 x, u32 y, Color8 c);
 
@@ -45,8 +50,13 @@ public:
 
     void fill(Color8 color);
 
+    Image & operator=(const Image & other);
+
 private:
     ~Image();
+
+    void createNoFill(Vector2u size, PixelFormat format);
+    u32 getDataLength() const { return m_size.x() * m_size.y() * getChannelCount(); }
 
 private:
     u8 * m_pixelData;
