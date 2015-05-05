@@ -23,6 +23,7 @@ namespace sn
 enum VariantType
 {
     SN_VT_NIL = 0,
+
     SN_VT_BOOL,
     SN_VT_INT,
     SN_VT_FLOAT,
@@ -53,10 +54,10 @@ public:
         Array * pArray;
         Dictionary * pDictionary;
     };
-	
-	//--------------------------------------
-	// Constructors
-	//--------------------------------------
+
+    //--------------------------------------
+    // Constructors
+    //--------------------------------------
 
     Variant() :                       m_type(SN_VT_NIL)         {}
     Variant(bool b) :                 m_type(SN_VT_BOOL)        { m_data.vBool = b; }
@@ -70,9 +71,9 @@ public:
 
     ~Variant();
 
-	//--------------------------------------
-	// Methods
-	//--------------------------------------
+    //--------------------------------------
+    // Methods
+    //--------------------------------------
 
     /// \brief Clears contents and sets the type to NIL.
     void reset();
@@ -87,35 +88,36 @@ public:
     bool getBool() const;
     s32 getInt() const;
     f32 getFloat() const;
+
     const String & getString() const;
     const Array & getArray() const;
     const Dictionary & getDictionary() const;
 
-	void setBool(bool b);
-	void setInt(s32 n);
-	void setFloat(f32 f);
-	void setString(const String & str);
-	void setArray(const Array & va);
-	void setDictionary(const Dictionary & vd);
+    void setBool(bool b);
+    void setInt(s32 n);
+    void setFloat(f32 f);
+    void setString(const String & str);
+    void setArray(const Array & va);
+    void setDictionary(const Dictionary & vd);
 
-	/// \brief Moves the contents of another variant to this one.
-	/// This can be faster than copy the values.
-	/// Previous data is erased.
-	/// \param other: variant to grab. Will be left null.
-	void grab(Variant & other);
+    /// \brief Moves the contents of another variant to this one.
+    /// This can be faster than copy the values.
+    /// Previous data is erased.
+    /// \param other: variant to grab. Will be left null.
+    void grab(Variant & other);
 
-	size_t getHash() const;
+    size_t getHash() const;
 
-	//--------------------------------------
-	// Operators
-	//--------------------------------------
+    //--------------------------------------
+    // Operators
+    //--------------------------------------
 
-	Variant & operator=(bool b)                  { setBool(b); return *this; }
-	Variant & operator=(s32 n)                   { setInt(n); return *this; }
-	Variant & operator=(f32 n)                   { setFloat(n); return *this; }
-	Variant & operator=(const String & str)      { setString(str); return *this; }
-	Variant & operator=(const Array & va)        { setArray(va); return *this; }
-	Variant & operator=(const Dictionary & vd)   { setDictionary(vd); return *this; }
+    Variant & operator=(bool b)                  { setBool(b); return *this; }
+    Variant & operator=(s32 n)                   { setInt(n); return *this; }
+    Variant & operator=(f32 n)                   { setFloat(n); return *this; }
+    Variant & operator=(const String & str)      { setString(str); return *this; }
+    Variant & operator=(const Array & va)        { setArray(va); return *this; }
+    Variant & operator=(const Dictionary & vd)   { setDictionary(vd); return *this; }
 
     Variant & operator=(const Variant & other);
 
@@ -124,19 +126,19 @@ public:
     Variant & operator[](size_t index);
     Variant & operator[](const String & fieldName);
 
-	const Variant & operator[](size_t index) const;
+    const Variant & operator[](size_t index) const;
     const Variant & operator[](const String & fieldName) const;
 
-	//--------------------------------------
-	// Helpers
-	//--------------------------------------
+    //--------------------------------------
+    // Helpers
+    //--------------------------------------
 
-	/// \brief If the variant is not an array, it is changed to an empty array.
-	void setArray();
-	/// \brief If the variant is not a dictionary, it is changed to an empty one.
-	void setDictionary();
+    /// \brief If the variant is not an array, it is changed to an empty array.
+    void setArray();
+    /// \brief If the variant is not a dictionary, it is changed to an empty one.
+    void setDictionary();
 
-	inline bool isNil() const         { return m_type == SN_VT_NIL; }
+    inline bool isNil() const         { return m_type == SN_VT_NIL; }
     inline bool isBool() const        { return m_type == SN_VT_BOOL; }
     inline bool isInt() const         { return m_type == SN_VT_INT; }
     inline bool isFloat() const       { return m_type == SN_VT_FLOAT; }
@@ -148,10 +150,10 @@ private:
 
     VariantType m_type;
     VariantData m_data;
-};
+    };
 
-std::string SN_API toString(VariantType vt);
-std::string SN_API toString(const Variant & v);
+    std::string SN_API toString(VariantType vt);
+    std::string SN_API toString(const Variant & v);
 
 } // namespace sn
 
