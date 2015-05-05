@@ -109,19 +109,30 @@ public :
 	/// \brief Transposes the first 3 rows and columns of the matrix (as if it was 3x3)
     void transpose3x3();
 
-	// TODO Continue doxifying
-
+    /// \brief Sets the translation part of the matrix
     void setTranslation(const Vector3f & v);
+
+    /// \brief Sets the rotation part of the matrix.
     void setRotation(const Quaternion & q);
 
+    /// \brief Scales the transformation represented by the matrix by a factor.
     void scaleTransform(const Vector3f & s);
 
+    /// \brief Gets the raw values of the matrix as a one-dimensional array.
+    /// \return array of 16 float values
     inline const f32 * values() const { return m_v; }
 
+    /// \brief Calculates and returns the determinant of the matrix.
     f32 getD() const;
 
+    /// \brief Tries to compute the inverse matrix.
+    /// \param out_result: result of the inversion. Not modified if it fails.
+    /// \return true if the matrix could be inverted, false otherwise.
     bool getInverse(Matrix4 & out_result) const;
 
+    /// \brief Applies the transformation represented by the matrix to a 3D point.
+    /// \param p: point to transform
+    /// \return transformed point
 	Vector3f transformPoint(const Vector3f & p) const;
 
     //-------------------------------------
@@ -136,10 +147,13 @@ private :
 
     inline f32 operator[](s32 i) const { return m_v[i]; }
 
-    //  0   1   2   3 | i(x, y, z) right
-    //  4   5   6   7 | j(x, y, z) up
-    //  8   9  10  11 | k(x, y, z) front
-    // 12  13  14  15 | t(x, y, z) offset
+    /// \brief Cell values.
+    ///
+    ///  0   1   2   3 | i(x, y, z) right
+    ///  4   5   6   7 | j(x, y, z) up
+    ///  8   9  10  11 | k(x, y, z) front
+    /// 12  13  14  15 | t(x, y, z) offset
+    ///
     f32 m_v[16];
 };
 
