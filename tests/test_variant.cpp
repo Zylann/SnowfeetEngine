@@ -44,7 +44,28 @@ void test_variant()
 	v[2] = 1.f;
 	doc["position"].grab(v);
 
+	if (doc["position"].isArray())
+	{
+		const auto & a = doc["position"].getArray();
+		for (auto it = a.begin(); it != a.end(); ++it)
+		{
+			std::cout << "Hello " << toString(*it) << std::endl;
+		}
+	}
+
+	// Without double lookup
+	{
+		const Variant & temp = doc["position"];
+		if (temp.isArray())
+		{
+			const auto & a = temp.getArray();
+			for (auto it = a.begin(); it != a.end(); ++it)
+			{
+				std::cout << "Hello again " << toString(*it) << std::endl;
+			}
+		}
+	}
+
 	printVariant(doc, std::cout);
 }
-
 
