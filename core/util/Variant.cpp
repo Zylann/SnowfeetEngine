@@ -33,7 +33,7 @@ void Variant::reset()
     default: break;
     }
     m_type = SN_VT_NIL;
-	memset(&m_data, 0, sizeof(VariantData));
+    memset(&m_data, 0, sizeof(VariantData));
 }
 
 //-----------------------------------------------------------------------------
@@ -105,111 +105,111 @@ const Variant::Dictionary & Variant::getDictionary() const
 //-----------------------------------------------------------------------------
 void Variant::setBool(bool b)
 {
-	if (m_type != SN_VT_BOOL)
-	{
-		reset();
-	    m_type = SN_VT_BOOL;
-	}
+    if (m_type != SN_VT_BOOL)
+    {
+        reset();
+        m_type = SN_VT_BOOL;
+    }
     m_data.vBool = b;
 }
 
 //-----------------------------------------------------------------------------
 void Variant::setInt(s32 n)
 {
-	if (m_type != SN_VT_INT)
-	{
-		reset();
-	    m_type = SN_VT_INT;
-	}
+    if (m_type != SN_VT_INT)
+    {
+        reset();
+        m_type = SN_VT_INT;
+    }
     m_data.vInt = n;
 }
 
 //-----------------------------------------------------------------------------
 void Variant::setFloat(f32 f)
 {
-	if (m_type != SN_VT_FLOAT)
-	{
-		reset();
-	    m_type = SN_VT_FLOAT;
-	}
+    if (m_type != SN_VT_FLOAT)
+    {
+        reset();
+        m_type = SN_VT_FLOAT;
+    }
     m_data.vFloat = f;
 }
 
 //-----------------------------------------------------------------------------
 void Variant::setString(const String & str)
 {
-	if (m_type != SN_VT_STRING)
-	{
-		reset();
-	    m_type = SN_VT_STRING;
-		m_data.pString = new String(str);
-	}
-	else
-	{
-		*m_data.pString = str;
-	}
+    if (m_type != SN_VT_STRING)
+    {
+        reset();
+        m_type = SN_VT_STRING;
+        m_data.pString = new String(str);
+    }
+    else
+    {
+        *m_data.pString = str;
+    }
 }
 
 //-----------------------------------------------------------------------------
 void Variant::setArray()
 {
-	if (m_type != SN_VT_ARRAY)
-	{
-		reset();
-	    m_type = SN_VT_ARRAY;
-		m_data.pArray = new Array();
-	}
+    if (m_type != SN_VT_ARRAY)
+    {
+        reset();
+        m_type = SN_VT_ARRAY;
+        m_data.pArray = new Array();
+    }
 }
 
 //-----------------------------------------------------------------------------
 void Variant::setArray(const Array & va)
 {
-	if (m_type != SN_VT_ARRAY)
-	{
-		reset();
-	    m_type = SN_VT_ARRAY;
-		m_data.pArray = new Array(va);
-	}
-	else
-	{
-		*m_data.pArray = va;
-	}
+    if (m_type != SN_VT_ARRAY)
+    {
+        reset();
+        m_type = SN_VT_ARRAY;
+        m_data.pArray = new Array(va);
+    }
+    else
+    {
+        *m_data.pArray = va;
+    }
 }
 
 //-----------------------------------------------------------------------------
 void Variant::setDictionary()
 {
-	if (m_type != SN_VT_DICTIONARY)
-	{
-		reset();
-	    m_type = SN_VT_DICTIONARY;
-		m_data.pDictionary = new Dictionary();
-	}
+    if (m_type != SN_VT_DICTIONARY)
+    {
+        reset();
+        m_type = SN_VT_DICTIONARY;
+        m_data.pDictionary = new Dictionary();
+    }
 }
 
 //-----------------------------------------------------------------------------
 void Variant::setDictionary(const Dictionary & vd)
 {
-	if (m_type != SN_VT_DICTIONARY)
-	{
-		reset();
-	    m_type = SN_VT_DICTIONARY;
-		m_data.pDictionary = new Dictionary(vd);
-	}
-	else
-	{
-		*m_data.pDictionary = vd;
-	}
+    if (m_type != SN_VT_DICTIONARY)
+    {
+        reset();
+        m_type = SN_VT_DICTIONARY;
+        m_data.pDictionary = new Dictionary(vd);
+    }
+    else
+    {
+        *m_data.pDictionary = vd;
+    }
 }
 
 //-----------------------------------------------------------------------------
 void Variant::grab(Variant & other)
 {
-	reset();
-	m_type = other.m_type;
-	m_data = other.m_data;
-	other.m_type = SN_VT_NIL;
-	memset(&other.m_data, 0, sizeof(VariantData));
+    reset();
+    m_type = other.m_type;
+    m_data = other.m_data;
+    other.m_type = SN_VT_NIL;
+    memset(&other.m_data, 0, sizeof(VariantData));
 }
 
 //-----------------------------------------------------------------------------
@@ -218,15 +218,15 @@ Variant & Variant::operator=(const Variant & other)
     reset();
     switch (other.m_type)
     {
-	// Objects need proper handling
+    // Objects need proper handling
     case SN_VT_STRING:      setString(*other.m_data.pString); break;
     case SN_VT_ARRAY:       setArray(*other.m_data.pArray); break;
     case SN_VT_DICTIONARY:  setDictionary(*other.m_data.pDictionary); break;
-	// Null and scalar types just need copy
-	default:
-		m_type = other.m_type;
-		m_data = other.m_data;
-		break;
+    // Null and scalar types just need copy
+    default:
+        m_type = other.m_type;
+        m_data = other.m_data;
+        break;
     }
     return *this;
 }
@@ -278,15 +278,15 @@ Variant & Variant::operator[](const String & fieldName)
 const Variant & Variant::operator[](const String & fieldName) const
 {
     assertType(SN_VT_DICTIONARY);
-	const Dictionary & dict = *m_data.pDictionary;
-	auto it = dict.find(fieldName);
-	if (it != dict.end())
-		return it->second;
-	else
-	{
-		static const Variant s_defaultVariant;
-		return s_defaultVariant;
-	}
+    const Dictionary & dict = *m_data.pDictionary;
+    auto it = dict.find(fieldName);
+    if (it != dict.end())
+        return it->second;
+    else
+    {
+        static const Variant s_defaultVariant;
+        return s_defaultVariant;
+    }
 }
 
 //-----------------------------------------------------------------------------

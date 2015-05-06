@@ -16,9 +16,9 @@ project "Tests"
 	}
 	filter "configurations:Debug"
 		targetdir "../_bin/debug"
-		objdir "../_obj/debug"
+		objdir "_obj/debug"
 	filter "configurations:Release"
 		targetdir "../_bin/release"
-		objdir "../_obj/release"
+		objdir "_obj/release"
 
 
