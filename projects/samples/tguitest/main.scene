@@ -1,0 +1,22 @@
+{
+	"entities":[
+		{
+			"@type":"sn::render::Camera"
+		},
+		{
+			"@type":"tgui::GUI",
+			"theme":"example_theme",
+
+			"_children":[
+				{
+					"@type":"tgui::Renderer"
+				},
+				{
+					"@type":"tgui::Button",
+					"bounds":[10,10,200,24]
+				}
+			]
+		}
+	]
+}
+

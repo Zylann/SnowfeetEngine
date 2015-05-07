@@ -1,0 +1,20 @@
+{
+	"startupScene":"main.scene",
+	"dependencies":[
+		"mods/render/render.mod.json",
+		"mods/image/image.mod.json",
+		"mods/tgui/tgui.mod.json"
+	],
+	"services":[
+		"sn::render::RenderManager",
+		{
+			"screens":[
+				{
+					"size":[800,600],
+					"title":"TGUI test"
+				}
+			]
+		}
+	]
+}
+

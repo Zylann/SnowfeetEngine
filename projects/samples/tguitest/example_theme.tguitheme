@@ -1,0 +1,12 @@
+{
+	"material":"example_theme",
+	"textureSize":[256,256],
+	"controlTheme":{
+		"slicing":{"left":4, "right":4, "top":4, "bottom":4},
+		"statesUV":[
+			{"x":0, "y":0, "w":16, "h":16},
+			{"x":16, "y":0, "w":16, "h":16},
+			{"x":32, "y":0, "w":16, "h":16}
+		]
+	}
+}

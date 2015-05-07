@@ -1,0 +1,6 @@
+{
+	"shader":"sprite",
+	"params":{
+		"u_MainTexture":{"@type":"texture", "value":"example_theme"}
+	}
+}
