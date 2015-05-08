@@ -98,16 +98,26 @@ void Image::fill(Color8 color)
 {
     if (m_pixelData)
     {
-        u32 pixelCount = m_size.x() * m_size.y();
-        if (pixelCount)
+        if (color.r == color.g && 
+            color.r == color.b && 
+            color.r == color.a)
         {
-            for (u32 i = 0; i < pixelCount; ++i)
+            // Optimization: if all components are equal, use memset
+            memset(m_pixelData, color.r, getDataLength());
+        }
+        else
+        {
+            u32 pixelCount = m_size.x() * m_size.y();
+            if (pixelCount)
             {
-                u32 j = i * 4;
-                m_pixelData[j++] = color.r;
-                m_pixelData[j++] = color.g;
-                m_pixelData[j++] = color.b;
-                m_pixelData[j++] = color.a;
+                for (u32 i = 0; i < pixelCount; ++i)
+                {
+                    u32 j = i * 4;
+                    m_pixelData[j++] = color.r;
+                    m_pixelData[j++] = color.g;
+                    m_pixelData[j++] = color.b;
+                    m_pixelData[j++] = color.a;
+                }
             }
         }
     }
