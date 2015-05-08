@@ -35,7 +35,6 @@ public:
     void clear();
 
     Vector2i getSize() const { return m_size; }
-    const u8 * getPixelData() { return m_pixelData; }
 
     PixelFormat getPixelFormat() const { return m_pixelFormat; }
     // Note: only RGBA is supported at the moment
