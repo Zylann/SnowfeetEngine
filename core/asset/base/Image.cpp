@@ -114,6 +114,55 @@ void Image::fill(Color8 color)
 }
 
 //------------------------------------------------------------------------------
+void Image::pasteSubImage(const Image & image, s32 x, s32 y)
+{
+    pasteSubImage(image.getPixelsPtr(), x, y, image.getSize().x(), image.getSize().y(), image.getPixelFormat());
+}
+
+//------------------------------------------------------------------------------
+void Image::pasteSubImage(const u8 * pixels, s32 x, s32 y, u32 w, u32 h, PixelFormat format)
+{
+    SN_ASSERT(pixels != nullptr, "Pixels pointer is null");
+    SN_ASSERT(format == m_pixelFormat, "Pixel formats don't match");
+
+    if (x > static_cast<s32>(m_size.x()) || 
+        y > static_cast<s32>(m_size.y()) ||
+        x + static_cast<s32>(w) <= 0 || 
+        y + static_cast<s32>(h) <= 0)
+    {
+        SN_WARNING("Pasting out of bounds sub-image");
+        return;
+    }
+
+    if (x < 0)
+    {
+        w += x;
+        x = 0;
+    }
+    if (y < 0)
+    {
+        h += y;
+        y = 0;
+    }
+
+    if (x + w > m_size.x())
+        w = m_size.x() - x;
+    if (y + h > m_size.y())
+        h = m_size.y() - y;
+    
+    if (w == 0 || h == 0)
+        return;
+
+    // Copy row by row
+    for (u32 srcY = 0; srcY < w; ++y)
+    {
+        size_t src_i = srcY * w * 4;
+        size_t dst_i = getPixelIndex(x, y + srcY);
+        memcpy(m_pixelData + dst_i, pixels + src_i, w * 4);
+    }
+}
+
+//------------------------------------------------------------------------------
 Image & Image::operator=(const Image & other)
 {
     if (m_size != other.m_size)

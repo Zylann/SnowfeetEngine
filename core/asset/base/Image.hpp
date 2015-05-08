@@ -50,6 +50,9 @@ public:
 
     void fill(Color8 color);
 
+    void pasteSubImage(const Image & image, s32 x, s32 y);
+    void pasteSubImage(const u8 * pixels, s32 x, s32 y, u32 w, u32 h, PixelFormat format);
+
     Image & operator=(const Image & other);
 
 private:
