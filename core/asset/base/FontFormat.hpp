@@ -21,9 +21,9 @@ struct FontFormat
     u32 size;
     u32 style;
 
-    FontFormat() :
-        size(12),
-        style(STYLE_REGULAR)
+    FontFormat(u32 a_size=16, u32 a_style=STYLE_REGULAR) :
+        size(a_size),
+        style(a_style)
     {}
 
     bool isBold() const { return (style & STYLE_BOLD) != 0; }
