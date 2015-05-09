@@ -76,9 +76,9 @@ public:
 
         if (row)
         {
-            n.rect.x() = m_width - row->width;
+            n.rect.x() = row->width;
             n.rect.y() = row->y;
-            row->width -= n.rect.width();
+            row->width += n.rect.width();
             m_nodes.push_back(n);
 
             if (out_rect)
