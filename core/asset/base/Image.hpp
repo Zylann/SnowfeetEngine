@@ -75,7 +75,7 @@ public:
     const u8 * getPixelsPtr() const { return m_pixelData; }
 
     /// \brief Gets the raw index of a pixel.
-    u32 getPixelIndex(u32 x, u32 y) const { return x + m_size.x() * y; }
+    u32 getPixelIndex(u32 x, u32 y) const { return (x + m_size.x() * y) * getChannelCount(); }
 
     /// \brief Fills the image with a color.
     void fill(Color8 color);
