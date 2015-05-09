@@ -134,6 +134,7 @@ void Image::pasteSubImage(const u8 * pixels, s32 x, s32 y, u32 w, u32 h, PixelFo
 {
     SN_ASSERT(pixels != nullptr, "Pixels pointer is null");
     SN_ASSERT(format == m_pixelFormat, "Pixel formats don't match");
+    SN_ASSERT(w <= 0x7fffffff && h <= 0x7fffffff, "Sub-image size is too big");
 
     if (x > static_cast<s32>(m_size.x()) || 
         y > static_cast<s32>(m_size.y()) ||
@@ -163,10 +164,24 @@ void Image::pasteSubImage(const u8 * pixels, s32 x, s32 y, u32 w, u32 h, PixelFo
     if (w == 0 || h == 0)
         return;
 
-    // Copy row by row
-    for (u32 srcY = 0; srcY < w; ++srcY)
+    // Copy pixel by pixel
+    //for (u32 srcY = 0; srcY < h; ++srcY)
+    //{
+    //    for (u32 srcX = 0; srcX < w; ++srcX)
+    //    {
+    //        size_t src_i = (srcX + srcY * w) * 4;
+    //        size_t dst_i = getPixelIndex(x + srcX, y + srcY);
+    //        m_pixelData[dst_i++] = pixels[src_i++];
+    //        m_pixelData[dst_i++] = pixels[src_i++];
+    //        m_pixelData[dst_i++] = pixels[src_i++];
+    //        m_pixelData[dst_i  ] = pixels[src_i  ];
+    //    }
+    //}
+
+    // Copy row by row (much faster)
+    for (u32 srcY = 0; srcY < h; ++srcY)
     {
-        size_t src_i = srcY * w * 4;
+        size_t src_i = (srcY * w) * 4;
         size_t dst_i = getPixelIndex(x, y + srcY);
         memcpy(m_pixelData + dst_i, pixels + src_i, w * 4);
     }
