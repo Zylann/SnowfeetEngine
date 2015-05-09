@@ -28,6 +28,8 @@ AS_DEBUG/
 *.ilk
 *.filters
 *.ipch
+*.vsp
+*.psess
 
 # Code::Blocks
 *.depend
