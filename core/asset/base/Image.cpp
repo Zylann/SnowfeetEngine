@@ -164,7 +164,7 @@ void Image::pasteSubImage(const u8 * pixels, s32 x, s32 y, u32 w, u32 h, PixelFo
         return;
 
     // Copy row by row
-    for (u32 srcY = 0; srcY < w; ++y)
+    for (u32 srcY = 0; srcY < w; ++srcY)
     {
         size_t src_i = srcY * w * 4;
         size_t dst_i = getPixelIndex(x, y + srcY);
