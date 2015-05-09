@@ -124,7 +124,7 @@ bool Font::generateGlyph(Glyph & out_glyph, sn::u32 unicode, sn::FontFormat form
         }
 
         // Compute the glyph's bounding box
-        glyph.bounds = IntRect::fromMinMax(
+        glyph.bounds = IntRect::fromPositionSize(
             bitmapGlyph->left - padding,
             -bitmapGlyph->top - padding,
             width + 2 * padding,
