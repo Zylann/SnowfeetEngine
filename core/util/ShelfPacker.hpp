@@ -61,7 +61,7 @@ public:
     /// Calling repack() can optimize space if nodes can't be inserted anymore.
     bool insert(Node n, IntRect * out_rect = nullptr)
     {
-        if (m_width < n.rect.width())
+        if (static_cast<s32>(m_width) < n.rect.width())
         {
             // Can't store this node
             return false;
