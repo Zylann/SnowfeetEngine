@@ -41,7 +41,7 @@ public:
     // Internal
     //---------------------------------------
 
-    void setFace(FT_Face face);
+    void setFace(FT_Face face, char * fileData=nullptr);
 
 protected:
     ~Font();
@@ -58,10 +58,24 @@ private:
 private:
     typedef std::unordered_map<sn::u32, sn::Glyph> GlyphTable;
 
+    /// \brief Freetype font face
     FT_Face                                 m_face;
+
+    /// \brief Font file data if the face was loaded from memory.
+    /// If provided, it will be freed after the font is destroyed.
+    char *                                  m_fileData;
+
+    /// \brief Atlassed image in which glyphes will be rasterized
     mutable sn::Image *                     m_image;
+
+    /// \brief VRAM texture in which the image will be uploaded.
     mutable sn::TextureBase *               m_texture;
+
+    /// \brief Packing algorithm used to atlas the glyphes
     mutable sn::ShelfPacker<sn::Glyph>      m_packer;
+
+    /// \brief Glyph informations.
+    /// Access: [style][unicode] => Glyph
     mutable GlyphTable                      m_glyphes[sn::FontFormat::STYLE_COMBINATION_COUNT];
 
 };

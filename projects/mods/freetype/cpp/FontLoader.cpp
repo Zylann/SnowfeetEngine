@@ -1,8 +1,14 @@
 #include <core/util/stringutils.hpp>
 #include <core/util/typecheck.hpp>
-
+#include <core/asset/AssetDatabase.hpp>
 #include "Font.hpp"
 #include "FontLoader.hpp"
+
+// These headers are important here because it tells FreeType to initialize features
+// that wouldn't be available otherwise
+#include FT_GLYPH_H
+#include FT_OUTLINE_H
+#include FT_BITMAP_H
 
 using namespace sn;
 
@@ -33,6 +39,10 @@ const sn::ObjectType & FontLoader::getBaseAssetType() const
     return sn::Font::__sGetObjectType();
 }
 
+const sn::ObjectType & FontLoader::getAssetInstanceType() const
+{
+    return freetype::Font::__sGetObjectType();
+}
 bool FontLoader::canLoad(const sn::AssetMetadata & meta) const
 {
     String ext = getFileExtension(meta.path);
@@ -53,18 +63,17 @@ bool FontLoader::load(std::ifstream & ifs, sn::Asset & asset) const
     ifs.seekg(0, ifs.end);
     u32 len = ifs.tellg();
     ifs.seekg(0, ifs.beg);
-    char * data = new char[len];
-    ifs.read(data, len);
+    char * fileData = new char[len];
+    ifs.read(fileData, len);
 
     // Load the face
     FT_Face face;
-    if (FT_New_Memory_Face(m_library, reinterpret_cast<const FT_Byte*>(data), len, 0, &face) != 0)
+    if (FT_New_Memory_Face(m_library, reinterpret_cast<const FT_Byte*>(fileData), len, 0, &face) != 0)
     {
         SN_ERROR("Failed to create Freetype font face from memory");
-        delete[] data;
+        delete[] fileData;
         return false;
     }
-    delete[] data;
 
     // Select the unicode character map
     if (FT_Select_Charmap(face, FT_ENCODING_UNICODE) != 0)
@@ -74,7 +83,7 @@ bool FontLoader::load(std::ifstream & ifs, sn::Asset & asset) const
     }
 
     // Store the loaded font
-    font->setFace(face);
+    font->setFace(face, fileData);
 
     return true;
 }

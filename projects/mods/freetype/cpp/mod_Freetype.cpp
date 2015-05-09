@@ -1,11 +1,13 @@
 #include "mod_Freetype.hpp"
 #include "FontLoader.hpp"
+#include "Font.hpp"
 
 namespace freetype
 {
     void registerObjectTypes(sn::ObjectTypeDatabase & otb)
     {
         otb.registerType<FontLoader>();
+        otb.registerType<Font>();
     }
 }
 

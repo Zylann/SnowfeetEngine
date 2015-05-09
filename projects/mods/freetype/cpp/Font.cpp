@@ -12,17 +12,25 @@ namespace freetype
 //------------------------------------------------------------------------------
 Font::Font() : sn::Font(),
     m_face(nullptr),
+    m_fileData(nullptr),
     m_image(nullptr),
     m_texture(nullptr),
     m_packer(DEFAULT_PAGE_WIDTH, DEFAULT_PAGE_HEIGHT)
 {
     m_image = new Image();
+    m_image->create(
+        Vector2u(DEFAULT_PAGE_WIDTH, DEFAULT_PAGE_HEIGHT), 
+        sn::SN_IMAGE_RGBA32, 
+        sn::Color8(0,0,0,0)
+    );
 }
 
 //------------------------------------------------------------------------------
 Font::~Font()
 {
     clearFace();
+    if (m_texture != nullptr)
+        m_texture->release();
     if (m_image != nullptr)
         m_image->release();
 }
@@ -34,8 +42,17 @@ const sn::Glyph & Font::getGlyph(sn::u32 unicode, sn::FontFormat format) const
     auto it = glyphes.find(unicode);
     if (it == glyphes.end())
     {
-        static Glyph s_defaultGlyph;
-        return s_defaultGlyph;
+        Glyph glyph;
+        if (generateGlyph(glyph, unicode, format))
+        {
+            auto ret = glyphes.insert(std::make_pair(unicode, glyph));
+            return ret.first->second;
+        }
+        else
+        {
+            static Glyph s_defaultGlyph;
+            return s_defaultGlyph;
+        }
     }
     return it->second;
 }
@@ -67,7 +84,13 @@ bool Font::generateGlyph(Glyph & out_glyph, sn::u32 unicode, sn::FontFormat form
     }
 
     // Convert the glyph to a bitmap (i.e. rasterize it)
-    FT_Glyph_To_Bitmap(&glyphDesc, FT_RENDER_MODE_NORMAL, 0, 1);
+    if (glyphDesc->format != FT_GLYPH_FORMAT_BITMAP)
+    {
+        if (FT_Glyph_To_Bitmap(&glyphDesc, FT_RENDER_MODE_NORMAL, 0, 1) != 0)
+        {
+            SN_ERROR("Failed to convert glyph to bitmap");
+        }
+    }
     FT_BitmapGlyph bitmapGlyph = (FT_BitmapGlyph)glyphDesc;
     FT_Bitmap& bitmap = bitmapGlyph->bitmap;
 
@@ -115,7 +138,7 @@ bool Font::generateGlyph(Glyph & out_glyph, sn::u32 unicode, sn::FontFormat form
 
         // Create the destination buffer
         const u32 dstSize = width * height * 4;
-        u8 * dst = new u8(width * height * 4);
+        u8 * dst = new u8[width * height * 4];
         // Fill with white
         memset(dst, 255, dstSize);
 
@@ -158,9 +181,15 @@ bool Font::generateGlyph(Glyph & out_glyph, sn::u32 unicode, sn::FontFormat form
 
         delete[] dst;
     }
+    else
+    {
+        SN_DLOG("Character " << unicode << " (ascii: " << (char)unicode << ") has an empty bitmap");
+    }
 
     // Delete the FT glyph
     FT_Done_Glyph(glyphDesc);
+
+    out_glyph = glyph;
 
     return true;
 }
@@ -234,12 +263,13 @@ bool Font::setCurrentSize(sn::u32 characterSize) const
 }
 
 //------------------------------------------------------------------------------
-void Font::setFace(FT_Face face)
+void Font::setFace(FT_Face face, char * fileData)
 {
     if (m_face != face)
     {
         clearFace();
         m_face = face;
+        m_fileData = fileData;
     }
 }
 
@@ -250,6 +280,11 @@ void Font::clearFace()
     {
         FT_Done_Face(static_cast<FT_Face>(m_face));
         m_face = nullptr;
+    }
+    if (m_fileData)
+    {
+        delete[] m_fileData;
+        m_fileData = nullptr;
     }
 }
 
