@@ -175,9 +175,11 @@ bool Font::generateGlyph(Glyph & out_glyph, sn::u32 unicode, sn::FontFormat form
         // Paste pixels into the image
         u32 x = glyph.imageRect.x() + padding;
         u32 y = glyph.imageRect.y() + padding;
-        u32 w = glyph.imageRect.width() - 2 * padding;
-        u32 h = glyph.imageRect.height() - 2 * padding;
-        m_image->pasteSubImage(dst, x, y, w, h, SN_IMAGE_RGBA32);
+        u32 w = glyph.imageRect.width();// -2 * padding;
+        u32 h = glyph.imageRect.height();// -2 * padding;
+        // FIXME Temporary fix! imageRect.height() becomes negative if padding is applied
+        if (h < 20)
+            m_image->pasteSubImage(dst, x, y, w, h, SN_IMAGE_RGBA32);
 
         delete[] dst;
     }
