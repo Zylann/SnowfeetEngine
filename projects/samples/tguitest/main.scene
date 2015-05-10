@@ -1,7 +1,9 @@
 {
 	"entities":[
 		{
-			"@type":"sn::render::Camera"
+			"@type":"sn::render::Camera",
+			"clearBits":["color", "depth"],
+			"clearColor": [0.5, 0.5, 0.8]
 		},
 		{
 			"@type":"tgui::GUI",
@@ -13,7 +15,7 @@
 				},
 				{
 					"@type":"tgui::Button",
-					"bounds":[10,10,200,24]
+					"bounds":{"x":10,"y":10,"w":200,"h":24}
 				}
 			]
 		}
