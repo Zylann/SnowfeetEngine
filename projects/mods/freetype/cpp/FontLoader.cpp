@@ -43,6 +43,7 @@ const sn::ObjectType & FontLoader::getAssetInstanceType() const
 {
     return freetype::Font::__sGetObjectType();
 }
+
 bool FontLoader::canLoad(const sn::AssetMetadata & meta) const
 {
     String ext = getFileExtension(meta.path);
@@ -61,7 +62,7 @@ bool FontLoader::load(std::ifstream & ifs, sn::Asset & asset) const
 
     // Read the whole stream
     ifs.seekg(0, ifs.end);
-    u32 len = ifs.tellg();
+    size_t len = ifs.tellg();
     ifs.seekg(0, ifs.beg);
     char * fileData = new char[len];
     ifs.read(fileData, len);
