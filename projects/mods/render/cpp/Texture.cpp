@@ -10,8 +10,7 @@ namespace render {
 //-----------------------------------------------------------------------------
 Texture::Texture() : TextureBase(),
     m_isSmooth(true),
-    m_isRepeated(false),
-    m_keepSourceInMemory(false)
+    m_isRepeated(false)
 {
 }
 
@@ -22,26 +21,20 @@ Texture::~Texture()
 }
 
 //-----------------------------------------------------------------------------
-bool Texture::uploadToVRAM()
+bool Texture::onUploadToVRAM()
 {
     Image * img = m_image.get();
     bool success = false;
     if (img)
-    {
         success = loadFromPixelsRGBA8(img->getSize(), reinterpret_cast<const char*>(img->getPixelsPtr()));
-        if (m_keepSourceInMemory)
-        {
-            img->clear();
-        }
-    }
     return success;
 }
 
 //-----------------------------------------------------------------------------
-Image * Texture::downloadFromVRAM()
+bool Texture::onDownloadFromVRAM()
 {
     SN_WARNING("Texture::downloadFromVRAM(): not implemented yet");
-    return nullptr;
+    return false;
 }
 
 //-----------------------------------------------------------------------------

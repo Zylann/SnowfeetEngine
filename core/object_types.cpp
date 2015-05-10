@@ -20,6 +20,7 @@
 #include "asset/base/Material.hpp"
 #include "asset/base/Image.hpp"
 #include "asset/base/TextureBase.hpp"
+#include "asset/base/Font.hpp"
 
 namespace sn
 {
@@ -46,6 +47,7 @@ void registerObjectTypes(ObjectTypeDatabase & otb)
     otb.registerType<Material>();
     otb.registerType<Image>();
     otb.registerType<TextureBase>();
+    otb.registerType<Font>();
 
 }
 

@@ -17,13 +17,6 @@ public:
     Texture();
 
     //---------------------------------------
-    // TextureBase interface
-    //---------------------------------------
-
-    bool uploadToVRAM() override;
-    Image * downloadFromVRAM() override;
-
-    //---------------------------------------
     // Texture interface
     //---------------------------------------
 
@@ -35,11 +28,9 @@ public:
     Vector2u getSize() const { return m_size; }
     GLuint getInternalID() const { return reinterpret_cast<GLuint>(getHandle()); }
 
-    void setKeepSourceInMemory(bool enable) { m_keepSourceInMemory = true; }
     void setSmooth(bool enable);
     void setRepeated(bool enable);
 
-    bool isKeepSourceInMemory() const { return m_keepSourceInMemory; }
     bool isSmooth() const { return m_isSmooth; }
     bool isRepeated() const { return m_isRepeated; }
 
@@ -47,6 +38,14 @@ public:
 
     static void bind(Texture * tex);
     static void setActive(u32 textureUnit, Texture * tex);
+
+protected:
+    //---------------------------------------
+    // TextureBase overrides
+    //---------------------------------------
+
+    bool onUploadToVRAM() override;
+    bool onDownloadFromVRAM() override;
 
 private:
     ~Texture(); // use release();
@@ -57,7 +56,6 @@ private:
 private:
     bool m_isSmooth;
     bool m_isRepeated;
-    bool m_keepSourceInMemory;
 
     //GLuint m_samplerID;
 

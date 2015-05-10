@@ -67,7 +67,9 @@ void AssetDatabase::addLoadersFromModule(const std::string & moduleName)
 void AssetDatabase::addLoader(AssetLoader * loader)
 {
     SN_ASSERT(loader != nullptr, "addLoader() received null pointer");
-    SN_ASSERT(loader->getAssetInstanceType().is(loader->getBaseAssetType(), true), "AssetLoader asset types are not compatible!");
+    const ObjectType & aot = loader->getAssetInstanceType();
+    SN_ASSERT(aot.is(loader->getBaseAssetType(), true), "AssetLoader asset types are not compatible!");
+    SN_ASSERT(!aot.isAbstract(), loader->getObjectType().getName() << " cannot instantiate abstract type " << aot.getName());
 
     const ObjectType & ot = loader->getObjectType();
     auto & loaders = m_loaders[ot.getModuleName()];

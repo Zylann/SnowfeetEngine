@@ -33,6 +33,7 @@ bool ImageLoader::isDirect(const AssetMetadata & meta) const
 bool ImageLoader::load(std::ifstream & ifs, Asset & asset) const
 {
     sn::Image * image = checked_cast<Image*>(&asset);
+    SN_ASSERT(image != nullptr, "Image type to load mismatches");
 
     // TODO [Optimize] I was tired when writing this
     // TODO I was tired too when reading this again
