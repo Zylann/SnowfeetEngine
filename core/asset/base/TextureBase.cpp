@@ -4,6 +4,28 @@ namespace sn
 {
 
 //------------------------------------------------------------------------------
+bool TextureBase::uploadToVRAM()
+{
+    Image * img = m_image.get();
+    bool success = false;
+    if (img)
+    {
+        success = onUploadToVRAM();
+        if (success && !isKeepSourceInMemory())
+        {
+            img->clear();
+        }
+    }
+    return success;
+}
+
+//------------------------------------------------------------------------------
+bool TextureBase::downloadFromVRAM()
+{
+    return onDownloadFromVRAM();
+}
+
+//------------------------------------------------------------------------------
 Image * TextureBase::getImage() const
 {
     return m_image.get();
