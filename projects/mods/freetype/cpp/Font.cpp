@@ -1,4 +1,5 @@
 #include "Font.hpp"
+#include <core/asset/AssetDatabase.hpp>
 
 #include FT_GLYPH_H
 #include FT_OUTLINE_H
@@ -23,6 +24,17 @@ Font::Font() : sn::Font(),
         sn::SN_IMAGE_RGBA32, 
         sn::Color8(0,0,0,0)
     );
+
+    AssetLoader * loader = AssetDatabase::get().findLoader<TextureBase>();
+    if (loader)
+    {
+        const ObjectType & textureClass = loader->getAssetInstanceType();
+        m_texture = checked_cast<TextureBase*>(textureClass.instantiate());
+        m_texture->setSourceImage(*m_image);
+        // TODO This won't be needed when downloading will work
+        m_texture->setKeepSourceInMemory(true);
+        m_texture->uploadToVRAM();
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -178,6 +190,13 @@ bool Font::generateGlyph(Glyph & out_glyph, sn::u32 unicode, sn::FontFormat form
         u32 w = width;//glyph.imageRect.width() - 2 * padding;
         u32 h = height;//glyph.imageRect.height() - 2 * padding;
         m_image->pasteSubImage(dst, x, y, w, h, SN_IMAGE_RGBA32);
+
+        if (m_texture)
+        {
+            // Update the texture
+            // TODO Optimization: only update a sub-rectangle of the texture
+            m_texture->uploadToVRAM();
+        }
 
         delete[] dst;
     }
