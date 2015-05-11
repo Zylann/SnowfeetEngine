@@ -5,6 +5,7 @@ using namespace sn;
 namespace tgui
 {
 
+//------------------------------------------------------------------------------
 DrawBatch::DrawBatch(IDrawContext & dc):
     m_dc(dc),
     r_material(nullptr)
@@ -13,17 +14,20 @@ DrawBatch::DrawBatch(IDrawContext & dc):
     m_mesh->setPrimitiveType(SN_MESH_QUADS);
 }
 
+//------------------------------------------------------------------------------
 DrawBatch::~DrawBatch()
 {
     delete m_mesh;
 }
 
+//------------------------------------------------------------------------------
 void DrawBatch::setMaterial(sn::Material & m)
 {
     m_dc.setMaterial(m);
     r_material = &m;
 }
 
+//------------------------------------------------------------------------------
 void DrawBatch::fillRect(const IntRect & r, const IntRect & texRect, Vector2u ts, Color color)
 {
     Mesh & m = *m_mesh;
@@ -51,6 +55,7 @@ void DrawBatch::fillRect(const IntRect & r, const IntRect & texRect, Vector2u ts
     m.addColor(color);
 }
 
+//------------------------------------------------------------------------------
 void DrawBatch::fillNineSlices(const sn::IntRect & r, const Border & b, const sn::IntRect & texRect, sn::Vector2u ts)
 {
     // TODO Optimize, this can be written with plain arrays and added to the mesh
@@ -135,6 +140,7 @@ void DrawBatch::fillNineSlices(const sn::IntRect & r, const Border & b, const sn
 
 }
 
+//------------------------------------------------------------------------------
 void DrawBatch::drawText(const std::string & str, Vector2i origin, const Font & font, FontFormat format, Color color)
 {
     if (r_material == nullptr)
@@ -170,6 +176,7 @@ void DrawBatch::drawText(const std::string & str, Vector2i origin, const Font & 
     setTexture(lastTexture);
 }
 
+//------------------------------------------------------------------------------
 void DrawBatch::setTexture(TextureBase * tex)
 {
     SN_ASSERT(r_material != nullptr, "Cannot set texture when material is not set");
@@ -184,12 +191,14 @@ void DrawBatch::setTexture(TextureBase * tex)
     }
 }
 
+//------------------------------------------------------------------------------
 sn::TextureBase * DrawBatch::getTexture() const
 {
     SN_ASSERT(r_material != nullptr, "Cannot get texture when material is not set");
     return r_material->getTexture(Material::MAIN_TEXTURE);
 }
 
+//------------------------------------------------------------------------------
 void DrawBatch::flush()
 {
     sn::Mesh & m = *m_mesh;

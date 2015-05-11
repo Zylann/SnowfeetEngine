@@ -9,16 +9,19 @@ using namespace sn;
 namespace tgui
 {
 
+//------------------------------------------------------------------------------
 GUI::GUI()
 {
     m_defaultTheme = new Theme();
 }
 
+//------------------------------------------------------------------------------
 GUI::~GUI()
 {
     delete m_defaultTheme;
 }
 
+//------------------------------------------------------------------------------
 void GUI::onReady()
 {
     // Setup event filter
@@ -38,6 +41,7 @@ void GUI::onReady()
     listenToSystemEvents();
 }
 
+//------------------------------------------------------------------------------
 const Theme & GUI::getTheme() const
 {
     if (m_theme.isNull())
@@ -48,6 +52,7 @@ const Theme & GUI::getTheme() const
     return *m_theme.get();
 }
 
+//------------------------------------------------------------------------------
 void GUI::draw(sn::IDrawContext & dc)
 {
     const Theme & theme = getTheme();
@@ -78,6 +83,7 @@ void GUI::draw(sn::IDrawContext & dc)
     }
 }
 
+//------------------------------------------------------------------------------
 bool GUI::onSystemEvent(const sn::Event & systemEvent)
 {
     if (m_eventFilter[systemEvent.type])
@@ -92,12 +98,14 @@ bool GUI::onSystemEvent(const sn::Event & systemEvent)
     return false;
 }
 
+//------------------------------------------------------------------------------
 void GUI::serializeState(JsonBox::Value & o, const sn::SerializationContext & ctx)
 {
     Control::serializeState(o, ctx);
     // TODO Serialize theme location
 }
 
+//------------------------------------------------------------------------------
 void GUI::unserializeState(JsonBox::Value & o, const sn::SerializationContext & ctx)
 {
     Control::unserializeState(o, ctx);
