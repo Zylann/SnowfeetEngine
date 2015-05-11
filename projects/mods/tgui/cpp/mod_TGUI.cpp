@@ -4,6 +4,7 @@
 #include "GUI.h"
 #include "Button.h"
 #include "Text.h"
+#include "Panel.hpp"
 #include "Renderer.h"
 #include "Theme.h"
 
@@ -17,6 +18,7 @@ namespace tgui
         otb.registerType<Button>();
         otb.registerType<Renderer>();
         otb.registerType<Text>();
+        otb.registerType<Panel>();
 
         // Assets
         otb.registerType<Theme>();

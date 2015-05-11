@@ -54,9 +54,11 @@ public:
     sn::Font * getFont() const { return r_font.isNull() ? nullptr : r_font.get(); }
 
 public:
-    ControlTheme controlTheme;
     sn::FontFormat textFormat;
     sn::Color textColor;
+
+    ControlTheme controlTheme;
+    ControlTheme panelTheme;
 
 private:
     friend class ThemeLoader;

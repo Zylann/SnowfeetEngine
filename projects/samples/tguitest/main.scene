@@ -14,20 +14,27 @@
 					"@type":"tgui::Renderer"
 				},
 				{
-					"@type":"tgui::Button",
-					"bounds":{"x":10,"y":10,"w":100,"h":24},
+					"@type":"tgui::Panel",
+					"bounds":{"x":10, "y":10, "w":300, "h":200},
+
 					"_children":[
 						{
-							"@type":"tgui::Text",
-							"text":"Hello world!",
-							"bounds":{"x":12, "y":17, "w":100, "h":24}
+							"@type":"tgui::Button",
+							"bounds":{"x":10,"y":10,"w":100,"h":24},
+							"_children":[
+								{
+									"@type":"tgui::Text",
+									"text":"Hello world!",
+									"bounds":{"x":12, "y":17, "w":100, "h":24}
+								}
+							]
+						},
+						{
+							"@type":"tgui::Button",
+							"bounds":{"x":10,"y":50,"w":100,"h":50}
 						}
 					]
-				},
-				{
-					"@type":"tgui::Button",
-					"bounds":{"x":10,"y":50,"w":100,"h":50},
-				},
+				}
 			]
 		}
 	]

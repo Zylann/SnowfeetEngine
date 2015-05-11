@@ -58,9 +58,11 @@ bool ThemeLoader::load(std::ifstream & ifs, sn::Asset & asset) const
 
     SerializationContext ctx(asset.getAssetMetadata().module);
 
-    theme->controlTheme.unserialize(o["controlTheme"]);
     sn::unserialize(o["textFormat"], theme->textFormat);
     sn::unserialize(o["textColor"], theme->textColor);
+
+    theme->controlTheme.unserialize(o["controlTheme"]);
+    theme->panelTheme.unserialize(o["panelTheme"]);
 
     // Get material
     Material * mat = sn::getAssetBySerializedLocation<sn::Material>(o["material"].getString(), ctx.getModule(), this);
