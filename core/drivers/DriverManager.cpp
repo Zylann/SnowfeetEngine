@@ -74,6 +74,7 @@ IDriver * DriverManager::loadDriver(const ObjectType & ot)
     else
     {
         SN_WARNING("Unrecognized driver type " << ot.getName());
+        return nullptr;
     }
 }
 
