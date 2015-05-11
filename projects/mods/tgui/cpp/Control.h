@@ -45,8 +45,21 @@ public:
         m_windowID(0)
     {}
 
+    //--------------------------------
+    // Geometry
+    //--------------------------------
+
+    sn::Vector2i getPosition() const;
+    sn::Vector2i getLocalPosition() const { return m_localBounds.origin(); }
+
     sn::IntRect getClientBounds() const;
-    void setClientBounds(sn::IntRect bounds);
+    void setLocalClientBounds(sn::IntRect bounds);
+
+    Control * getChildControlAt(sn::Vector2i position) const;
+
+    //--------------------------------
+    // State
+    //--------------------------------
 
     bool getControlFlag(sn::u32 i) const;
 
@@ -54,8 +67,6 @@ public:
     const Control * getRootControl() const;
 
     sn::u32 getWindowID() const;
-
-    Control * getChildControlAt(sn::Vector2i position) const;
 
     virtual void onEvent(Event & ev);
 
@@ -98,7 +109,7 @@ private:
     void processMouseRelease(Event & e);
 
 private:
-    sn::IntRect m_clientBounds;
+    sn::IntRect m_localBounds;
     std::bitset<TGUI_CF_COUNT> m_controlFlags;
     sn::u32 m_windowID;
 

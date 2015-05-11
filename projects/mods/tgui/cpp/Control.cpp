@@ -10,15 +10,25 @@ namespace tgui
 {
 
 //------------------------------------------------------------------------------
-sn::IntRect Control::getClientBounds() const
+sn::Vector2i Control::getPosition() const
 {
-    return m_clientBounds;
+    Control * parent = getParentControl();
+    if (parent)
+        return getLocalPosition() + parent->getPosition();
+    return getLocalPosition();
 }
 
 //------------------------------------------------------------------------------
-void Control::setClientBounds(sn::IntRect bounds)
+sn::IntRect Control::getClientBounds() const
 {
-    m_clientBounds = bounds;
+    Vector2i pos = getPosition();
+    return IntRect::fromPositionSize(pos.x(), pos.y(), m_localBounds.width(), m_localBounds.height());
+}
+
+//------------------------------------------------------------------------------
+void Control::setLocalClientBounds(sn::IntRect bounds)
+{
+    m_localBounds = bounds;
 }
 
 //------------------------------------------------------------------------------
@@ -216,7 +226,7 @@ void Control::processMouseRelease(Event & e)
 void Control::serializeState(JsonBox::Value & o, const SerializationContext & ctx)
 {
     Entity::serializeState(o, ctx);
-    sn::serialize(o["bounds"], m_clientBounds);
+    sn::serialize(o["bounds"], m_localBounds);
     sn::serialize(o["hostWindow"], m_windowID);
 }
 
@@ -224,7 +234,7 @@ void Control::serializeState(JsonBox::Value & o, const SerializationContext & ct
 void Control::unserializeState(JsonBox::Value & o, const SerializationContext & ctx)
 {
     Entity::unserializeState(o, ctx);
-    sn::unserialize(o["bounds"], m_clientBounds, IntRect(0,0,300,200));
+    sn::unserialize(o["bounds"], m_localBounds, IntRect(0,0,300,200));
     sn::unserialize(o["hostWindow"], m_windowID);
 }
 

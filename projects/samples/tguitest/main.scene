@@ -20,7 +20,7 @@
 						{
 							"@type":"tgui::Text",
 							"text":"Hello world!",
-							"bounds":{"x":22, "y":27, "w":100, "h":24}
+							"bounds":{"x":12, "y":17, "w":100, "h":24}
 						}
 					]
 				},
