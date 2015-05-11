@@ -1,7 +1,7 @@
 #ifndef __HEADER_TGUI_BUTTON__
 #define __HEADER_TGUI_BUTTON__
 
-#include "Control.hpp"
+#include "Control.h"
 #include <core/scene/base/IDrawContext.hpp>
 
 namespace tgui

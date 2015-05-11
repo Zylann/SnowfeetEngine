@@ -1,11 +1,11 @@
-#include "mod_TGUI.hpp"
+#include "mod_TGUI.h"
 
-#include "Control.hpp"
-#include "GUI.hpp"
-#include "Button.hpp"
-#include "Text.hpp"
-#include "Renderer.hpp"
-#include "Theme.hpp"
+#include "Control.h"
+#include "GUI.h"
+#include "Button.h"
+#include "Text.h"
+#include "Renderer.h"
+#include "Theme.h"
 
 namespace tgui
 {

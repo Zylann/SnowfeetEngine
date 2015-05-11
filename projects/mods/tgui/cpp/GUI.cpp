@@ -1,8 +1,8 @@
 #include <core/system/gui/SystemGUI.hpp>
 #include <core/asset/AssetDatabase.hpp>
 
-#include "GUI.hpp"
-#include "DrawBatch.hpp"
+#include "GUI.h"
+#include "DrawBatch.h"
 
 using namespace sn;
 

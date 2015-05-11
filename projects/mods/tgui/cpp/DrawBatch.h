@@ -7,7 +7,7 @@
 #include <core/asset/base/Font.hpp>
 #include <core/math/Color.hpp>
 
-#include "Border.hpp"
+#include "Border.h"
 
 namespace tgui
 {

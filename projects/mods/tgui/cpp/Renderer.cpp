@@ -1,7 +1,7 @@
 #include <core/util/typecheck.hpp>
 
-#include "Renderer.hpp"
-#include "GUI.hpp"
+#include "Renderer.h"
+#include "GUI.h"
 
 using namespace sn;
 

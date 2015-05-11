@@ -1,7 +1,7 @@
 #ifndef __HEADER_TGUI_TEXT__
 #define __HEADER_TGUI_TEXT__
 
-#include "Control.hpp"
+#include "Control.h"
 
 namespace tgui
 {
