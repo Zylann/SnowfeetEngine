@@ -1,5 +1,6 @@
 #include "Font.hpp"
 #include <core/asset/AssetDatabase.hpp>
+#include <core/app/Application.hpp>
 
 #include FT_GLYPH_H
 #include FT_OUTLINE_H
@@ -18,23 +19,6 @@ Font::Font() : sn::Font(),
     m_texture(nullptr),
     m_packer(DEFAULT_PAGE_WIDTH, DEFAULT_PAGE_HEIGHT)
 {
-    m_image = new Image();
-    m_image->create(
-        Vector2u(DEFAULT_PAGE_WIDTH, DEFAULT_PAGE_HEIGHT), 
-        sn::SN_IMAGE_RGBA32, 
-        sn::Color8(0,0,0,0)
-    );
-
-    AssetLoader * loader = AssetDatabase::get().findLoader<TextureBase>();
-    if (loader)
-    {
-        const ObjectType & textureClass = loader->getAssetInstanceType();
-        m_texture = checked_cast<TextureBase*>(textureClass.instantiate());
-        m_texture->setSourceImage(*m_image);
-        // TODO This won't be needed when downloading will work
-        m_texture->setKeepSourceInMemory(true);
-        m_texture->uploadToVRAM();
-    }
 }
 
 //------------------------------------------------------------------------------
@@ -214,7 +198,7 @@ bool Font::generateGlyph(Glyph & out_glyph, sn::u32 unicode, sn::FontFormat form
 }
 
 //------------------------------------------------------------------------------
-const sn::TextureBase * Font::getTexture(sn::FontFormat format) const
+sn::TextureBase * Font::getTexture(sn::FontFormat format) const
 {
     return m_texture;
 }
@@ -289,6 +273,16 @@ void Font::setFace(FT_Face face, char * fileData)
         clearFace();
         m_face = face;
         m_fileData = fileData;
+
+        if (m_face)
+        {
+            if (m_image == nullptr)
+                createImage();
+
+            // TODO Don't do this if we don't want to draw the font
+            if (m_texture == nullptr)
+                createTexture();
+        }
     }
 }
 
@@ -304,6 +298,32 @@ void Font::clearFace()
     {
         delete[] m_fileData;
         m_fileData = nullptr;
+    }
+}
+
+//------------------------------------------------------------------------------
+void Font::createImage() const
+{
+    SN_ASSERT(m_image == nullptr, "Image already created");
+    m_image = new Image();
+    m_image->create(
+        Vector2u(DEFAULT_PAGE_WIDTH, DEFAULT_PAGE_HEIGHT), 
+        sn::SN_IMAGE_RGBA32, 
+        sn::Color8(0,0,0,0)
+    );
+}
+
+//------------------------------------------------------------------------------
+void Font::createTexture() const
+{
+    SN_ASSERT(m_texture == nullptr, "Texture already created");
+    SN_ASSERT(m_image != nullptr, "Image not created");
+    IVideoDriver * driver = Application::get().getDriverManager().getVideoDriver();
+    if (driver)
+    {
+        m_texture = driver->createTexture();
+        m_texture->setSourceImage(*m_image);
+        m_texture->setKeepSourceInMemory(true);
     }
 }
 

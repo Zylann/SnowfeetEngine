@@ -55,6 +55,9 @@ private:
     /// only when necessary to avoid killing performances.
     bool setCurrentSize(sn::u32 characterSize) const;
 
+    void createImage() const;
+    void createTexture() const;
+
 private:
     typedef std::unordered_map<sn::u32, sn::Glyph> GlyphTable;
 
