@@ -6,6 +6,7 @@
 #include <core/scene/base/IDrawContext.hpp>
 #include <core/math/Vector2.hpp>
 
+#include "Theme.hpp"
 #include "DrawBatch.hpp"
 
 namespace tgui
@@ -66,6 +67,8 @@ public:
 
     bool isHovered() const { return getControlFlag(TGUI_CF_HOVERED); }
     bool isPressed() const { return getControlFlag(TGUI_CF_PRESSED); }
+
+    const Theme * getTheme() const;
 
     //--------------------------------
     // Serialization

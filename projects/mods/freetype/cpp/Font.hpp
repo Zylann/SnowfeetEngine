@@ -26,7 +26,7 @@ public:
     //---------------------------------------
 
     const sn::Glyph & getGlyph(sn::u32 unicode, sn::FontFormat format) const override;
-    const sn::TextureBase * getTexture(sn::FontFormat format) const override;
+    sn::TextureBase * getTexture(sn::FontFormat format) const override;
     const sn::Image * getImage(sn::FontFormat format) const override;
 
     sn::Vector2i getKerning(

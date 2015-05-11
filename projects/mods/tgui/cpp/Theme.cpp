@@ -59,13 +59,23 @@ bool ThemeLoader::load(std::ifstream & ifs, sn::Asset & asset) const
     SerializationContext ctx(asset.getAssetMetadata().module);
 
     theme->controlTheme.unserialize(o["controlTheme"]);
+    sn::unserialize(o["textFormat"], theme->textFormat);
+    sn::unserialize(o["textColor"], theme->textColor);
 
+    // Get material
     Material * mat = sn::getAssetBySerializedLocation<sn::Material>(o["material"].getString(), ctx.getModule(), this);
     if (mat)
         theme->setMaterial(*mat);
     else
         SN_WERROR(L"No material specified in theme " << asset.getAssetMetadata().path);
 
+    // Get font
+    Font * font = sn::getAssetBySerializedLocation<sn::Font>(o["font"].getString(), ctx.getModule(), this);
+    if (font)
+        theme->setFont(*font);
+
+    // TODO This can be picked from the material now
+    // Get texture size
     Vector2u ts;
     sn::unserialize(o["textureSize"], ts);
     if (ts.x() == 0 || ts.y() == 0)
@@ -82,4 +92,3 @@ bool ThemeLoader::load(std::ifstream & ifs, sn::Asset & asset) const
 }
 
 } // namespace tgui
-

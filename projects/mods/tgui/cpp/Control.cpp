@@ -81,6 +81,15 @@ GUI * Control::getGUI() const
 }
 
 //------------------------------------------------------------------------------
+const Theme * Control::getTheme() const
+{
+    GUI * gui = getGUI();
+    if (gui == nullptr)
+        return nullptr;
+    return &(gui->getTheme());
+}
+
+//------------------------------------------------------------------------------
 Control * Control::getChildControlAt(sn::Vector2i position) const
 {
     std::vector<Control*> children;

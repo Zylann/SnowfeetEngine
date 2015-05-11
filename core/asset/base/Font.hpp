@@ -42,7 +42,7 @@ public:
     /// \brief Gets the texture in which are stored glyphes of the specified format.
     /// \param format: the format
     /// \return A texture, or null if pixels are not stored in graphic memory
-    virtual const TextureBase * getTexture(FontFormat format) const = 0;
+    virtual TextureBase * getTexture(FontFormat format) const = 0;
 
     /// \brief Gets the image in which are stored glyphes of the specified format.
     /// \param format: the format

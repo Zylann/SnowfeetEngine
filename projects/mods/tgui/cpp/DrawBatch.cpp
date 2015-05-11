@@ -6,7 +6,8 @@ namespace tgui
 {
 
 DrawBatch::DrawBatch(IDrawContext & dc):
-    m_dc(dc)
+    m_dc(dc),
+    r_material(nullptr)
 {
     m_mesh = new sn::Mesh();
     m_mesh->setPrimitiveType(SN_MESH_QUADS);
@@ -20,9 +21,10 @@ DrawBatch::~DrawBatch()
 void DrawBatch::setMaterial(sn::Material & m)
 {
     m_dc.setMaterial(m);
+    r_material = &m;
 }
 
-void DrawBatch::fillRect(const IntRect & r, const IntRect & texRect, Vector2u ts)
+void DrawBatch::fillRect(const IntRect & r, const IntRect & texRect, Vector2u ts, Color color)
 {
     Mesh & m = *m_mesh;
 
@@ -43,10 +45,10 @@ void DrawBatch::fillRect(const IntRect & r, const IntRect & texRect, Vector2u ts
     m.addTexCoord(uvRectf.maxX(), uvRectf.maxY());
     m.addTexCoord(uvRectf.minX(), uvRectf.maxY());
 
-    m.addColor(Color(1, 1, 1));
-    m.addColor(Color(1, 1, 1));
-    m.addColor(Color(1, 1, 1));
-    m.addColor(Color(1, 1, 1));
+    m.addColor(color);
+    m.addColor(color);
+    m.addColor(color);
+    m.addColor(color);
 }
 
 void DrawBatch::fillNineSlices(const sn::IntRect & r, const Border & b, const sn::IntRect & texRect, sn::Vector2u ts)
@@ -131,6 +133,61 @@ void DrawBatch::fillNineSlices(const sn::IntRect & r, const Border & b, const sn
         ts
     );
 
+}
+
+void DrawBatch::drawText(const std::string & str, Vector2i origin, const Font & font, FontFormat format, Color color)
+{
+    if (r_material == nullptr)
+        return;
+    if (str.empty())
+        return;
+
+    TextureBase * tex = font.getTexture(format);
+    if (tex == nullptr)
+        return;
+
+    // TODO Improve DrawBatch so we don't have to swap textures like this
+
+    TextureBase * lastTexture = getTexture();
+    setTexture(tex);
+    
+    Vector2u ts = tex->getSize();
+
+    Vector2i pos = origin;
+    for (u32 i = 0; i < str.size(); ++i)
+    {
+        char c = str[i];
+        const Glyph & glyph = font.getGlyph(c, format);
+
+        IntRect rect = glyph.bounds;
+        rect.origin() += pos;
+
+        fillRect(rect, glyph.imageRect, ts, color);
+
+        pos.x() += glyph.advance;
+    }
+
+    setTexture(lastTexture);
+}
+
+void DrawBatch::setTexture(TextureBase * tex)
+{
+    SN_ASSERT(r_material != nullptr, "Cannot set texture when material is not set");
+    
+    const TextureBase * lastTexture = r_material->getTexture(Material::MAIN_TEXTURE);
+    if (tex != lastTexture)
+    {
+        flush();
+        r_material->setTexture(Material::MAIN_TEXTURE, tex);
+        // TODO Needed to update uniforms...
+        m_dc.setMaterial(*r_material);
+    }
+}
+
+sn::TextureBase * DrawBatch::getTexture() const
+{
+    SN_ASSERT(r_material != nullptr, "Cannot get texture when material is not set");
+    return r_material->getTexture(Material::MAIN_TEXTURE);
 }
 
 void DrawBatch::flush()

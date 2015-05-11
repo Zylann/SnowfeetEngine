@@ -2,6 +2,7 @@
 #define __HEADER_TGUI_THEME__
 
 #include <core/asset/base/Material.hpp>
+#include <core/asset/base/Font.hpp>
 #include <core/asset/SerializationContext.hpp>
 #include <core/asset/AssetLoader.hpp>
 #include <core/util/WeakRef.hpp>
@@ -49,13 +50,21 @@ public:
 
     sn::Vector2u getTextureAtlasSize() const { return m_textureSize; }
 
+    void setFont(sn::Font & font) { r_font.set(&font); }
+    sn::Font * getFont() const { return r_font.isNull() ? nullptr : r_font.get(); }
+
+public:
     ControlTheme controlTheme;
+    sn::FontFormat textFormat;
+    sn::Color textColor;
 
 private:
     friend class ThemeLoader;
 
     sn::Vector2u m_textureSize;
     sn::WeakRef<sn::Material> r_material;
+    sn::WeakRef<sn::Material> r_textMaterial;
+    sn::WeakRef<sn::Font> r_font;
 
 };
 

@@ -70,9 +70,9 @@ void GUI::draw(sn::IDrawContext & dc)
         view.setTranslation(sn::Vector3f(-static_cast<f32>(screenSize.x())/2, -static_cast<f32>(screenSize.y())/2, 0));
         dc.setViewMatrix(view);
 
-        dc.setMaterial(*themeMaterial);
-
         DrawBatch batch(dc);
+        batch.setMaterial(*themeMaterial);
+
         onDraw(batch);
         batch.flush();
     }
