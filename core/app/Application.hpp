@@ -32,6 +32,7 @@ This file is part of the SnowfeetEngine project.
 #include <core/app/ScriptManager.hpp>
 #include <core/app/TimeStepper.hpp>
 #include <core/scene/Scene.hpp>
+#include <core/drivers/DriverManager.hpp>
 #include <map>
 
 namespace sn
@@ -59,6 +60,9 @@ public:
 
     /// \brief Gets the main script manager
     inline ScriptManager & getScriptManager() { return m_scriptEngine; }
+
+    /// \brief Gets the drivers
+    const DriverManager & getDriverManager() const { return m_drivers; }
 
     /// \brief Sets the running flag to false in order to exit the application
     /// at the end of the current update.
@@ -98,6 +102,9 @@ private:
 
     /// \brief Top-level main scene
     Scene * m_scene;
+
+    /// \brief Drivers
+    DriverManager m_drivers;
 
     /// \brief Path (relative to the root) to the main module to be executed
     String m_pathToMainMod;

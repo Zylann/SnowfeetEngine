@@ -22,6 +22,9 @@
 #include "asset/base/TextureBase.hpp"
 #include "asset/base/Font.hpp"
 
+#include "drivers/Driver.hpp"
+#include "drivers/VideoDriver.hpp"
+
 namespace sn
 {
 
@@ -30,6 +33,10 @@ void registerObjectTypes(ObjectTypeDatabase & otb)
     // Base
     otb.registerType<Object>();
     otb.registerType<ScriptObject>();
+
+    // Drivers
+    otb.registerType<IDriver>();
+    otb.registerType<IVideoDriver>();
 
     // Entities
     otb.registerType<Entity>();

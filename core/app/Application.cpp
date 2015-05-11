@@ -198,6 +198,10 @@ int Application::executeEx()
     // Destroy scene itself
     m_scene->release();
 
+    // Destroy drivers
+    SN_LOG("Releasing drivers...");
+    m_drivers.unloadAllDrivers();
+
     // Close all windows
     SystemGUI::get().destroyAllWindows();
 
@@ -295,6 +299,8 @@ void Application::printCommandLineUsage()
 //------------------------------------------------------------------------------
 Module * Application::loadModule(const String & path)
 {
+    // TODO If the path is a directory, append mod file with directory's name
+
     Module * lastModule = nullptr;
 
     SN_WDLOG("Calculating dependencies to load module \"" << path << '"');
@@ -334,6 +340,8 @@ Module * Application::loadModule(const String & path)
             
             mod->loadNativeBindings(m_scriptEngine);
             mod->compileScripts();
+
+            m_drivers.loadDriversFromModule(info.name);
 
             if (m_scene)
             {
