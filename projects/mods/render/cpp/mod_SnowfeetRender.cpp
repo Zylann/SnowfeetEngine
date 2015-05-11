@@ -13,6 +13,8 @@
 #include "loaders/MaterialLoader.hpp"
 #include "loaders/TextureLoader.hpp"
 
+#include "VideoDriver.hpp"
+
 #include "sq_binding/sq_render.hpp"
 
 
@@ -36,6 +38,8 @@ namespace render {
         otb.registerType<BasicMeshLoader>();
         otb.registerType<MaterialLoader>();
         otb.registerType<TextureLoader>();
+
+        otb.registerType<VideoDriver>();
     }
 
 } // namespace render
