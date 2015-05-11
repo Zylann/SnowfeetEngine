@@ -1,6 +1,6 @@
 #include "Button.h"
-#include "GUI.h"
-#include "DrawBatch.h"
+#include "../GUI.h"
+#include "../DrawBatch.h"
 
 using namespace sn;
 

@@ -6,8 +6,8 @@
 #include <core/scene/base/IDrawContext.hpp>
 #include <core/math/Vector2.hpp>
 
-#include "Theme.h"
-#include "DrawBatch.h"
+#include "../theme/Theme.h"
+#include "../DrawBatch.h"
 
 namespace tgui
 {

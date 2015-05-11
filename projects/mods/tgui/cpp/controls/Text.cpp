@@ -1,5 +1,5 @@
 #include "Text.h"
-#include "Theme.h"
+#include "../theme/Theme.h"
 
 using namespace sn;
 

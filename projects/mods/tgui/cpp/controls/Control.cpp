@@ -1,5 +1,5 @@
 #include "Control.h"
-#include "GUI.h"
+#include "../GUI.h"
 
 #include <core/util/typecheck.hpp>
 #include <functional>

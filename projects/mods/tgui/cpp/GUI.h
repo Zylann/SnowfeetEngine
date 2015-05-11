@@ -6,8 +6,8 @@
 #include <core/util/SharedRef.hpp>
 #include <core/system/gui/Event.hpp>
 
-#include "Control.h"
-#include "Theme.h"
+#include "controls/Control.h"
+#include "theme/Theme.h"
 
 namespace tgui
 {

@@ -8,7 +8,7 @@
 #include <core/util/WeakRef.hpp>
 #include <core/math/Rect.hpp>
 
-#include "Border.h"
+#include "../Border.h"
 
 namespace tgui
 {

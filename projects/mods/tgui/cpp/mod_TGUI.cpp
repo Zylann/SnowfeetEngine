@@ -1,12 +1,14 @@
 #include "mod_TGUI.h"
 
-#include "Control.h"
 #include "GUI.h"
-#include "Button.h"
-#include "Text.h"
-#include "Panel.hpp"
 #include "Renderer.h"
-#include "Theme.h"
+
+#include "controls/Control.h"
+#include "controls/Button.h"
+#include "controls/Text.h"
+#include "controls/Panel.hpp"
+
+#include "theme/Theme.h"
 
 namespace tgui
 {
