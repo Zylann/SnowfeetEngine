@@ -1,6 +1,11 @@
 {
 	"material":"example_theme",
 	"textureSize":[256,256],
+
+	"font":"LibertySans",
+	"textFormat":{"size":14},
+	"textColor":[0,0,0,1],
+
 	"controlTheme":{
 		"slicing":{"left":4, "right":4, "top":4, "bottom":4},
 		"statesUV":[

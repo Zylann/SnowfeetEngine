@@ -15,8 +15,19 @@
 				},
 				{
 					"@type":"tgui::Button",
-					"bounds":{"x":10,"y":10,"w":200,"h":24}
-				}
+					"bounds":{"x":10,"y":10,"w":100,"h":24},
+					"_children":[
+						{
+							"@type":"tgui::Text",
+							"text":"Hello world!",
+							"bounds":{"x":22, "y":27, "w":100, "h":24}
+						}
+					]
+				},
+				{
+					"@type":"tgui::Button",
+					"bounds":{"x":10,"y":50,"w":100,"h":50},
+				},
 			]
 		}
 	]
