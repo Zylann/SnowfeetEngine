@@ -40,8 +40,7 @@ public:
     // Note: "setParam" was not used here because C++ method overloads are limited to the scope where they are defined.
     // If setParam was used, those defined in the base class could not be resolved.
 
-    void setTexture(const std::string & name, Texture * tex);
-    void setTexture(const std::string & name, RenderTexture * tex);
+    void setRenderTexture(const std::string & name, RenderTexture * tex);
 
     void apply();
 
@@ -50,8 +49,6 @@ private:
 
 private:
     SharedRef<ShaderProgram> m_shader;
-
-    std::unordered_map<std::string, SharedRef<Texture> > m_textures;
 
     bool m_depthTest;
     BlendMode m_blendMode;

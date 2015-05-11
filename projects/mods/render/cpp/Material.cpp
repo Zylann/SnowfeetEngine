@@ -1,4 +1,5 @@
 #include <core/util/stringutils.hpp>
+#include <core/util/typecheck.hpp>
 #include <core/math/Vector2.hpp>
 #include <core/math/Vector3.hpp>
 #include <core/math/Color.hpp>
@@ -21,13 +22,7 @@ void Material::setShader(ShaderProgram * shader)
 }
 
 //------------------------------------------------------------------------------
-void Material::setTexture(const std::string & name, Texture * texture)
-{
-    m_textures[name].set(texture);
-}
-
-//------------------------------------------------------------------------------
-void Material::setTexture(const std::string & name, RenderTexture * tex)
+void Material::setRenderTexture(const std::string & name, RenderTexture * tex)
 {
     setTexture(name, tex ? tex->getTexture() : nullptr);
 }
@@ -44,8 +39,8 @@ void Material::apply()
     s32 textureUnit = 0;
     for (auto it = m_textures.begin(); it != m_textures.end(); ++it)
     {
-        Texture * tex = it->second.get();
-        Texture::setActive(textureUnit, tex);
+        TextureBase * tex = it->second.get();
+        Texture::setActive(textureUnit, sn::checked_cast<Texture*>(tex));
         shader.setParam(it->first, textureUnit);
         ++textureUnit;
     }

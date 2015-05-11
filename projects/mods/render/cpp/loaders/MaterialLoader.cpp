@@ -85,7 +85,7 @@ bool MaterialLoader::load(std::ifstream & ifs, Asset & asset) const
                     {
                         RenderTexture * rt = getAssetBySerializedLocation<RenderTexture>(loc, meta.module, &mat);
                         if (rt)
-                            mat.setTexture(it->first, rt);
+                            mat.setRenderTexture(it->first, rt);
                         else
                             SN_ERROR("RenderTexture not found: " << loc);
                     }

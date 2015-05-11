@@ -526,7 +526,7 @@ void RenderManager::renderCamera(Camera & camera)
                 ShaderProgram * shader = material.getShader();
                 context->useProgram(shader);
 
-                material.setTexture("u_MainTexture", sourceBuffer);
+                material.setRenderTexture(Material::MAIN_TEXTURE, sourceBuffer);
 
                 // TODO This code is temporary. A better approach is needed.
                 // VR Support callback
