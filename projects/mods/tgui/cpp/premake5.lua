@@ -2,7 +2,7 @@ project "ModTGUI"
     platforms { "x32" }
     commonModConfigCPP()
     files {
-        "**.hpp",
+        "**.h",
         "**.cpp"
     }
     filter "configurations:Debug"
