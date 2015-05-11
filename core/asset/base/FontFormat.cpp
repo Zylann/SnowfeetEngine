@@ -18,5 +18,25 @@ std::string toString(FontFormat format)
     return ss.str();
 }
 
+void serialize(JsonBox::Value & o, const FontFormat & format)
+{
+    sn::serialize(o["size"], format.size);
+
+    if (format.isBold())
+        o["bold"] = true;
+    if (format.isItalic())
+        o["italic"] = true;
+}
+
+void unserialize(JsonBox::Value & o, FontFormat & format)
+{
+    sn::unserialize(o["size"], format.size, format.size);
+    
+    if (o["bold"].getBoolean())
+        format.style |= FontFormat::STYLE_BOLD;
+    if (o["italic"].getBoolean())
+        format.style |= FontFormat::STYLE_ITALIC;
+}
+
 } // namespace sn
 

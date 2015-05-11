@@ -3,6 +3,7 @@
 
 #include <string>
 #include <core/types.hpp>
+#include <core/json/json_utils.hpp>
 
 namespace sn
 {
@@ -30,7 +31,10 @@ struct FontFormat
     bool isItalic() const { return (style & STYLE_ITALIC) != 0; }
 };
 
-std::string toString(FontFormat format);
+std::string SN_API toString(FontFormat format);
+
+void SN_API serialize(JsonBox::Value & o, const FontFormat & format);
+void SN_API unserialize(JsonBox::Value & o, FontFormat & format);
 
 } // namespace sn
 
