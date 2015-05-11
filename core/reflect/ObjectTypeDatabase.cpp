@@ -66,6 +66,19 @@ void ObjectTypeDatabase::unregisterType(ObjectType & t)
 }
 
 //------------------------------------------------------------------------------
+void ObjectTypeDatabase::getTypesByModuleName(const std::string & modName, std::vector<const ObjectType*> & out_types) const
+{
+    for (auto it = m_registeredTypes.begin(); it != m_registeredTypes.end(); ++it)
+    {
+        const ObjectType * ot = it->second;
+        if (ot->getModuleName() == modName)
+        {
+            out_types.push_back(ot);
+        }
+    }
+}
+
+//------------------------------------------------------------------------------
 void ObjectTypeDatabase::unregisterModule(const std::string & name)
 {
     if (name.empty())

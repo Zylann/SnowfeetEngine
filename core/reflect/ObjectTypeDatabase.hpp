@@ -81,6 +81,11 @@ public:
 
     inline const ObjectTypeMap & getTypes() const { return m_registeredTypes; }
 
+    /// \brief Gets all object types defined into a module
+    /// \param modName: name of the module
+    /// \param out_types: list in which results will be added
+    void getTypesByModuleName(const std::string & modName, std::vector<const ObjectType*> & out_types) const;
+
     void beginModule(const std::string & name);
     void endModule();
     void unregisterModule(const std::string & name);

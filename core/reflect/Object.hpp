@@ -115,6 +115,14 @@ public:
 //------------------------------------------------------------------------------
 // Helpers
 
+/// \brief Gets the metaclass of an object.
+/// \note The goal of this function is to encapsulate the way the metaclass is stored.
+template <class Object_T>
+inline const ObjectType & getObjectType()
+{
+    return Object_T::__sGetObjectType();
+}
+
 Object * instantiateDerivedObject(const std::string & typeName, const std::string & derivedTypeName);
 
 } // namespace sn
