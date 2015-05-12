@@ -5,23 +5,6 @@ using namespace sn;
 namespace tgui
 {
 
-void serialize(JsonBox::Value & o, Orientation v)
-{
-    if (v == TGUI_VERTICAL)
-        o = "vertical";
-    else
-        o = "horizontal";
-}
-
-void unserialize(JsonBox::Value & o, Orientation v)
-{
-    const std::string & s = o.getString();
-    if (s == "vertical")
-        v = TGUI_VERTICAL;
-    else
-        v = TGUI_HORIZONTAL;
-}
-
 void Slider::setValue(f32 v)
 {
     m_value = math::clamp(v, 0.f, 1.f);
@@ -42,6 +25,8 @@ void Slider::onDrawSelf(DrawBatch & batch)
         state = ControlTheme::STATE_PRESSED;
     else if (isHovered())
         state = ControlTheme::STATE_HOVERED;
+
+	// TODO Handle vertical case
 
     // Bar
     {

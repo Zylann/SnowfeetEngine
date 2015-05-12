@@ -3,18 +3,10 @@
 
 #include "Control.h"
 #include "../DrawBatch.h"
+#include "../Orientation.h"
 
 namespace tgui
 {
-
-enum Orientation
-{
-    TGUI_HORIZONTAL = 0,
-    TGUI_VERTICAL    
-};
-
-void serialize(JsonBox::Value & o, Orientation v);
-void unserialize(JsonBox::Value & o, Orientation v);
 
 class Slider : public Control
 {
