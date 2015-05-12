@@ -7,6 +7,7 @@
 #include "controls/Button.h"
 #include "controls/Text.h"
 #include "controls/Panel.hpp"
+#include "controls/Slider.h"
 
 #include "theme/Theme.h"
 
@@ -21,6 +22,7 @@ namespace tgui
         otb.registerType<Renderer>();
         otb.registerType<Text>();
         otb.registerType<Panel>();
+        otb.registerType<Slider>();
 
         // Assets
         otb.registerType<Theme>();

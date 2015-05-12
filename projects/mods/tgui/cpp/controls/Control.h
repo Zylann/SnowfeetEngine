@@ -52,6 +52,8 @@ public:
     sn::Vector2i getPosition() const;
     sn::Vector2i getLocalPosition() const { return m_localBounds.origin(); }
 
+    sn::Vector2i getSize() const { return m_localBounds.size(); }
+
     sn::IntRect getClientBounds() const;
     void setLocalClientBounds(sn::IntRect bounds);
 

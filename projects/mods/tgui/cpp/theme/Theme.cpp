@@ -64,6 +64,13 @@ bool ThemeLoader::load(std::ifstream & ifs, sn::Asset & asset) const
     theme->controlTheme.unserialize(o["controlTheme"]);
     theme->panelTheme.unserialize(o["panelTheme"]);
 
+    JsonBox::Value & sliderData = o["sliderTheme"];
+    if (sliderData.isObject())
+    {
+        theme->sliderBar.unserialize(sliderData["bar"]);
+        theme->sliderThumbs.unserialize(sliderData["thumb"]);
+    }
+
     // Get material
     Material * mat = sn::getAssetBySerializedLocation<sn::Material>(o["material"].getString(), ctx.getModule(), this);
     if (mat)

@@ -26,11 +26,15 @@ struct ControlTheme
         STATE_COUNT = 4
     };
 
+    // TODO Include default sizes
+
     Border slicing;
     sn::IntRect statesUV[STATE_COUNT];
 
     void serialize(JsonBox::Value & o) const;
     void unserialize(JsonBox::Value & o);
+
+    //sn::IntRect getStateUV(u32 state);
 };
 
 //-----------------------------------------------------------------------------
@@ -59,6 +63,8 @@ public:
 
     ControlTheme controlTheme;
     ControlTheme panelTheme;
+    ControlTheme sliderBar;
+    ControlTheme sliderThumbs;
 
 private:
     friend class ThemeLoader;
