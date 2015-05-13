@@ -5,11 +5,13 @@ using namespace sn;
 namespace tgui
 {
 
+//------------------------------------------------------------------------------
 void Slider::setValue(f32 v)
 {
     m_value = math::clamp(v, 0.f, 1.f);
 }
 
+//------------------------------------------------------------------------------
 void Slider::onDrawSelf(DrawBatch & batch)
 {
     const Theme * theme = getTheme();
@@ -52,6 +54,7 @@ void Slider::onDrawSelf(DrawBatch & batch)
     }
 }
 
+//------------------------------------------------------------------------------
 void Slider::onMousePress(Event & ev)
 {
     Vector2i mousePos(ev.value.mouse.x, ev.value.mouse.y);
@@ -60,11 +63,13 @@ void Slider::onMousePress(Event & ev)
     ev.consume();
 }
 
+//------------------------------------------------------------------------------
 void Slider::onMouseRelease(Event & e)
 {
 	endCapture();
 }
 
+//------------------------------------------------------------------------------
 void Slider::onMouseMove(Event & ev)
 {
     if (isPressed())
@@ -74,6 +79,7 @@ void Slider::onMouseMove(Event & ev)
     }
 }
 
+//------------------------------------------------------------------------------
 void Slider::setValueFromPos(sn::Vector2i cursorPos)
 {
     Vector2i size = getSize();
@@ -88,6 +94,7 @@ void Slider::setValueFromPos(sn::Vector2i cursorPos)
     m_value = math::clamp(rawValue, 0.f, 1.f);
 }
 
+//------------------------------------------------------------------------------
 void Slider::serializeState(JsonBox::Value & o, const sn::SerializationContext & ctx)
 {
     Control::serializeState(o, ctx);
@@ -95,6 +102,7 @@ void Slider::serializeState(JsonBox::Value & o, const sn::SerializationContext &
     sn::serialize(o, m_value);
 }
 
+//------------------------------------------------------------------------------
 void Slider::unserializeState(JsonBox::Value & o, const sn::SerializationContext & ctx)
 {
     Control::unserializeState(o, ctx);

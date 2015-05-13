@@ -7,16 +7,19 @@ using namespace sn;
 namespace tgui
 {
 
+//------------------------------------------------------------------------------
 void Button::onMousePress(Event & e)
 {
     SN_DLOG("Button pressed!");
 }
 
+//------------------------------------------------------------------------------
 void Button::onMouseRelease(Event & e)
 {
     SN_DLOG("Button released!");
 }
 
+//------------------------------------------------------------------------------
 void Button::onDrawSelf(DrawBatch & batch)
 {
     GUI * gui = getGUI();
@@ -39,12 +42,14 @@ void Button::onDrawSelf(DrawBatch & batch)
     batch.fillNineSlices(bounds, ct.slicing, uvRect, ts);
 }
 
+//------------------------------------------------------------------------------
 void Button::serializeState(JsonBox::Value & o, const SerializationContext & ctx)
 {
     Control::serializeState(o, ctx);
 
 }
 
+//------------------------------------------------------------------------------
 void Button::unserializeState(JsonBox::Value & o, const SerializationContext & ctx)
 {
     Control::unserializeState(o, ctx);

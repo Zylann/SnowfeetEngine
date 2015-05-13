@@ -5,6 +5,7 @@ using namespace sn;
 namespace tgui
 {
 
+//------------------------------------------------------------------------------
 void Panel::onDrawSelf(DrawBatch & batch)
 {
     const Theme * theme = getTheme();
@@ -21,11 +22,13 @@ void Panel::onDrawSelf(DrawBatch & batch)
     batch.fillNineSlices(bounds, ct.slicing, uvRect, ts);
 }
 
+//------------------------------------------------------------------------------
 void Panel::onMousePress(Event & e)
 {
     e.consume();
 }
 
+//------------------------------------------------------------------------------
 void Panel::onMouseRelease(Event & e)
 {
     e.consume();
