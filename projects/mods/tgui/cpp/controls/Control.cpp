@@ -138,6 +138,29 @@ void Control::onDraw(DrawBatch & batch)
 }
 
 //------------------------------------------------------------------------------
+void Control::beginCapture()
+{
+	GUI * gui = getGUI();
+	if (gui)
+	{
+		gui->setCapture(this);
+		setControlFlag(TGUI_CF_CAPTURED, true);
+	}
+}
+
+//------------------------------------------------------------------------------
+void Control::endCapture()
+{
+	GUI * gui = getGUI();
+	if (gui)
+	{
+		SN_ASSERT(gui->getCaptureControl() == this, "Cannot end capture from another control");
+		gui->setCapture(nullptr);
+		setControlFlag(TGUI_CF_CAPTURED, false);
+	}
+}
+
+//------------------------------------------------------------------------------
 void Control::onEvent(Event & ev)
 {
     dispatchEventToChildren(ev);
@@ -186,20 +209,24 @@ void Control::dispatchEventToChildren(Event & ev)
 void Control::processMouseMove(Event & e)
 {
     IntRect bounds = getClientBounds();
-    if (bounds.contains(e.value.mouse.x, e.value.mouse.y))
+	bool hover = bounds.contains(e.value.mouse.x, e.value.mouse.y);
+    if (hover)
     {
         if (!isHovered())
         {
             setControlFlag(TGUI_CF_HOVERED, true);
             onMouseEnter(e);
         }
-        onMouseMove(e);
     }
     else if (isHovered())
     {
         setControlFlag(TGUI_CF_HOVERED, false);
         onMouseLeave(e);
     }
+	if (hover || getControlFlag(TGUI_CF_CAPTURED))
+	{
+		onMouseMove(e);
+	}
 }
 
 //------------------------------------------------------------------------------

@@ -56,7 +56,13 @@ void Slider::onMousePress(Event & ev)
 {
     Vector2i mousePos(ev.value.mouse.x, ev.value.mouse.y);
     setValueFromPos(mousePos - getPosition());
+	beginCapture();
     ev.consume();
+}
+
+void Slider::onMouseRelease(Event & e)
+{
+	endCapture();
 }
 
 void Slider::onMouseMove(Event & ev)

@@ -19,6 +19,7 @@ enum ControlFlags
     TGUI_CF_HOVERED = 2,
     TGUI_CF_PRESSED = 3,
     TGUI_CF_FOCUSED = 4,
+	TGUI_CF_CAPTURED = 5,
     
     TGUI_CF_COUNT = 8
 };
@@ -104,6 +105,13 @@ protected:
     virtual void onMousePress(Event & e) {}
     virtual void onMouseRelease(Event & e) {}
     virtual void onControlResized() {}
+
+	//--------------------------------
+    // Helpers
+    //--------------------------------
+
+	void beginCapture();
+	void endCapture();
 
 private:
     void processMouseMove(Event & e);

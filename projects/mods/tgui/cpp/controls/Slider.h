@@ -28,6 +28,7 @@ protected:
 
     void onMousePress(Event & ev) override;
     void onMouseMove(Event & ev) override;
+	void onMouseRelease(Event & ev) override;
 
 private:
     void setValueFromPos(sn::Vector2i cursorPos);

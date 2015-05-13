@@ -10,7 +10,9 @@ namespace tgui
 {
 
 //------------------------------------------------------------------------------
-GUI::GUI()
+GUI::GUI():
+	m_defaultTheme(nullptr),
+	r_captureControl(nullptr)
 {
     m_defaultTheme = new Theme();
 }
@@ -84,6 +86,12 @@ void GUI::draw(sn::IDrawContext & dc)
 }
 
 //------------------------------------------------------------------------------
+void GUI::setCapture(Control * captureControl)
+{
+	r_captureControl = captureControl;
+}
+
+//------------------------------------------------------------------------------
 bool GUI::onSystemEvent(const sn::Event & systemEvent)
 {
     if (m_eventFilter[systemEvent.type])
@@ -91,7 +99,10 @@ bool GUI::onSystemEvent(const sn::Event & systemEvent)
         tgui::Event ev;
         ev.value = systemEvent;
 
-        dispatchEventToChildren(ev);
+		if (r_captureControl)
+			r_captureControl->onEvent(ev);
+		else
+	        dispatchEventToChildren(ev);
 
         return ev.consumed;
     }
