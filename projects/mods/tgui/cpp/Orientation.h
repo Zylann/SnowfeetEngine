@@ -12,7 +12,7 @@ enum Orientation
     TGUI_VERTICAL    
 };
 
-void serialize(JsonBox::Value & o, Orientation v)
+inline void serialize(JsonBox::Value & o, Orientation v)
 {
     if (v == TGUI_VERTICAL)
         o = "vertical";
@@ -20,7 +20,7 @@ void serialize(JsonBox::Value & o, Orientation v)
         o = "horizontal";
 }
 
-void unserialize(JsonBox::Value & o, Orientation v)
+inline void unserialize(JsonBox::Value & o, Orientation v)
 {
     const std::string & s = o.getString();
     if (s == "vertical")
