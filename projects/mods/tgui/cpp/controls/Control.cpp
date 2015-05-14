@@ -47,7 +47,7 @@ void Control::setControlFlag(sn::u32 i, bool value)
 Control * Control::getParentControl() const
 {
     Entity * parent = getParent();
-    if (parent->isInstanceOf<Control>())
+    if (parent && parent->isInstanceOf<Control>())
         return static_cast<Control*>(parent);
     return nullptr;
 }
@@ -91,6 +91,18 @@ GUI * Control::getGUI() const
 }
 
 //------------------------------------------------------------------------------
+void Control::setParent(Entity * newParent)
+{
+    Control * oldParent = getParentControl();
+    Entity::setParent(newParent);
+    if (oldParent)
+        oldParent->layoutChildren();
+    Control * parent = getParentControl();
+    if (parent)
+        parent->layoutChildren();
+}
+
+//------------------------------------------------------------------------------
 const Theme * Control::getTheme() const
 {
     GUI * gui = getGUI();
@@ -117,6 +129,44 @@ Control * Control::getChildControlAt(sn::Vector2i position) const
         }
     }
     return nullptr;
+}
+
+//------------------------------------------------------------------------------
+void Control::layoutChildren()
+{
+    std::vector<Control*> children;
+    getChildrenOfType<Control>(children);
+
+    // Default vertical layout
+    Vector2i pos;
+    for (auto it = children.begin(); it != children.end(); ++it)
+    {
+        Control & child = **it;
+        if (child.getPositionMode() == TGUI_LAYOUT)
+        {
+            IntRect childBounds = child.m_localBounds;
+            const Anchors & anchors = child.getAnchors();
+            const Border & margin = child.getMargin();
+
+            childBounds.origin() = pos;
+
+            if (anchors[TGUI_LEFT])
+                childBounds.x() = margin.left;
+
+            if (anchors[TGUI_TOP])
+                childBounds.y() = margin.top;
+
+            if (anchors[TGUI_RIGHT])
+                childBounds.width() = m_localBounds.width() - margin.left - margin.right - childBounds.x();
+
+            if (anchors[TGUI_BOTTOM])
+                childBounds.height() = m_localBounds.height() - margin.top - margin.bottom - childBounds.y();
+
+            child.setLocalClientBounds(childBounds);
+
+            pos.y() += childBounds.height() + margin.top + margin.bottom;
+        }
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -255,6 +305,8 @@ void Control::serializeState(JsonBox::Value & o, const SerializationContext & ct
     Entity::serializeState(o, ctx);
     sn::serialize(o["bounds"], m_localBounds);
     sn::serialize(o["hostWindow"], m_windowID);
+    tgui::serialize(o["margins"], m_margins);
+    tgui::serializeAnchors(o["anchors"], m_anchors);
 }
 
 //------------------------------------------------------------------------------
@@ -263,6 +315,8 @@ void Control::unserializeState(JsonBox::Value & o, const SerializationContext & 
     Entity::unserializeState(o, ctx);
     sn::unserialize(o["bounds"], m_localBounds, IntRect(0,0,300,200));
     sn::unserialize(o["hostWindow"], m_windowID);
+    tgui::unserialize(o["margins"], m_margins);
+    tgui::unserializeAnchors(o["anchors"], m_anchors);
 }
 
 } // namespace tgui

@@ -6,8 +6,10 @@
 #include <core/scene/base/IDrawContext.hpp>
 #include <core/math/Vector2.hpp>
 
+#include "../Direction.h"
 #include "../theme/Theme.h"
 #include "../DrawBatch.h"
+#include "../Anchors.h"
 
 namespace tgui
 {
@@ -22,6 +24,13 @@ enum ControlFlags
 	TGUI_CF_CAPTURED = 5,
     
     TGUI_CF_COUNT = 8
+};
+
+enum Position
+{
+    //TGUI_ABSOLUTE = 0,
+    TGUI_RELATIVE = 1,
+    TGUI_LAYOUT = 2
 };
 
 struct Event
@@ -43,7 +52,8 @@ public:
 
     Control() :
         m_controlFlags(TGUI_CF_ENABLED | TGUI_CF_VISIBLE),
-        m_windowID(0)
+        m_windowID(0),
+        m_positionMode(TGUI_LAYOUT)
     {}
 
     //--------------------------------
@@ -61,6 +71,16 @@ public:
     Control * getChildControlAt(sn::Vector2i position) const;
 
     //--------------------------------
+    // Layout
+    //--------------------------------
+    
+    const Anchors & getAnchors() const { return m_anchors; }
+    const Border & getMargin() const { return m_margins; }
+    Position getPositionMode() const { return m_positionMode; }
+
+    void layoutChildren();
+
+    //--------------------------------
     // State
     //--------------------------------
 
@@ -74,6 +94,8 @@ public:
     virtual void onEvent(Event & ev);
 
     GUI * getGUI() const;
+
+    void setParent(Entity * newParent) override;
 
     //--------------------------------
     // Helpers
@@ -122,7 +144,9 @@ private:
     sn::IntRect m_localBounds;
     std::bitset<TGUI_CF_COUNT> m_controlFlags;
     sn::u32 m_windowID;
-
+    Border m_margins;
+    Anchors m_anchors;
+    Position m_positionMode;
 };
 
 } // namespace tgui
