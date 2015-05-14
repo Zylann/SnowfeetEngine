@@ -36,8 +36,10 @@ Entity::~Entity()
         removeTag(*m_tags.begin());
 
 	// Unregister update callback
-	setUpdatable(false);
-    listenToSystemEvents(false);
+    if (getFlag(SN_EF_UPDATABLE))
+    	setUpdatable(false);
+    if (getFlag(SN_EF_SYSTEM_EVENT_LISTENER))
+        listenToSystemEvents(false);
 
     //SN_LOG("Entity " << getName() << " destroyed");
 }
