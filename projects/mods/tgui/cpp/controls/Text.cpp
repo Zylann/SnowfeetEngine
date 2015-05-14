@@ -15,8 +15,11 @@ void Text::onDrawSelf(DrawBatch & batch)
     if (font == nullptr)
         return;
 
+    const FontFormat & format = theme->textFormat;
+
     IntRect bounds = getClientBounds();
-    batch.drawText(m_sourceText, bounds.origin(), *font, theme->textFormat, theme->textColor);
+    Vector2i offset(0, font->getLineHeight(format.size));
+    batch.drawText(m_sourceText, bounds.origin() + offset, *font, theme->textFormat, theme->textColor);
 }
 
 void Text::serializeState(JsonBox::Value & o, const sn::SerializationContext & ctx)
