@@ -272,10 +272,11 @@ private:
     /// \brief Scene this entity is included into. Can be null.
     mutable Scene * r_scene;
 
-    // TODO Make this list more lightweight than a list of strings?
+    // TODO Make this list lighter than a list of strings?
     /// \brief User-defined tags currently set of this entity.
     std::unordered_set<std::string> m_tags;
 
+    // TODO Components.
     /// \brief Script behaviour attached to this entity. Can be unset.
     ScriptInstance m_script;
 
