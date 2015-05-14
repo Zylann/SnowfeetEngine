@@ -8,6 +8,14 @@ using namespace sn;
 
 namespace tgui
 {
+   
+//------------------------------------------------------------------------------
+Control::Control() : sn::Entity(),
+    m_controlFlags((1 << TGUI_CF_ENABLED) | (1 << TGUI_CF_VISIBLE)),
+    m_windowID(0),
+    m_positionMode(TGUI_LAYOUT)
+{
+}
 
 //------------------------------------------------------------------------------
 sn::Vector2i Control::getPosition() const

@@ -44,11 +44,7 @@ class Control : public sn::Entity
 public:
     SN_ENTITY(tgui::Control, sn::Entity)
 
-    Control() :
-        m_controlFlags(TGUI_CF_ENABLED | TGUI_CF_VISIBLE),
-        m_windowID(0),
-        m_positionMode(TGUI_LAYOUT)
-    {}
+    Control();
 
     //--------------------------------
     // Geometry
