@@ -16,6 +16,7 @@
 				{
 					"@type":"tgui::Panel",
 					"bounds":{"x":10, "y":10, "w":300, "h":200},
+					"padding":{"left":4, "right":4, "top":4, "bottom":4},
 					"isResizeable":true,
 
 					"_children":[

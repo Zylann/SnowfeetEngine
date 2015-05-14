@@ -72,6 +72,7 @@ public:
     
     const Anchors & getAnchors() const { return m_anchors; }
     const Border & getMargin() const { return m_margins; }
+    const Border & getPadding() const { return m_padding; }
     Position getPositionMode() const { return m_positionMode; }
 
     void layoutChildren();
@@ -141,6 +142,7 @@ private:
     std::bitset<TGUI_CF_COUNT> m_controlFlags;
     sn::u32 m_windowID;
     Border m_margins;
+    Border m_padding;
     Anchors m_anchors;
     Position m_positionMode;
 };

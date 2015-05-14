@@ -138,7 +138,7 @@ void Control::layoutChildren()
     getChildrenOfType<Control>(children);
 
     // Default vertical layout
-    Vector2i pos;
+    Vector2i pos(0, m_padding.top);
     for (auto it = children.begin(); it != children.end(); ++it)
     {
         Control & child = **it;
@@ -150,17 +150,17 @@ void Control::layoutChildren()
 
             childBounds.origin() = pos;
 
-            if (anchors[TGUI_LEFT])
-                childBounds.x() = margin.left;
+            //if (anchors[TGUI_LEFT])
+            childBounds.x() = margin.left + m_padding.left;
 
             if (anchors[TGUI_TOP])
-                childBounds.y() = margin.top;
+                childBounds.y() = margin.top + m_padding.top;
 
             if (anchors[TGUI_RIGHT])
-                childBounds.width() = m_localBounds.width() - margin.left - margin.right - childBounds.x();
+                childBounds.width() = m_localBounds.width() - margin.left - margin.right - childBounds.x() - m_padding.right;
 
             if (anchors[TGUI_BOTTOM])
-                childBounds.height() = m_localBounds.height() - margin.top - margin.bottom - childBounds.y();
+                childBounds.height() = m_localBounds.height() - margin.top - margin.bottom - childBounds.y() - m_padding.bottom;
 
             child.setLocalClientBounds(childBounds);
 
@@ -306,6 +306,7 @@ void Control::serializeState(JsonBox::Value & o, const SerializationContext & ct
     sn::serialize(o["bounds"], m_localBounds);
     sn::serialize(o["hostWindow"], m_windowID);
     tgui::serialize(o["margins"], m_margins);
+    tgui::serialize(o["padding"], m_padding);
     tgui::serializeAnchors(o["anchors"], m_anchors);
 }
 
@@ -316,6 +317,7 @@ void Control::unserializeState(JsonBox::Value & o, const SerializationContext & 
     sn::unserialize(o["bounds"], m_localBounds, IntRect(0,0,300,200));
     sn::unserialize(o["hostWindow"], m_windowID);
     tgui::unserialize(o["margins"], m_margins);
+    tgui::unserialize(o["padding"], m_padding);
     tgui::unserializeAnchors(o["anchors"], m_anchors);
 }
 
