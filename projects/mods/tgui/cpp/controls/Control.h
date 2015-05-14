@@ -10,6 +10,7 @@
 #include "../theme/Theme.h"
 #include "../DrawBatch.h"
 #include "../Anchors.h"
+#include "../Position.h"
 
 namespace tgui
 {
@@ -24,13 +25,6 @@ enum ControlFlags
 	TGUI_CF_CAPTURED = 5,
     
     TGUI_CF_COUNT = 8
-};
-
-enum Position
-{
-    //TGUI_ABSOLUTE = 0,
-    TGUI_RELATIVE = 1,
-    TGUI_LAYOUT = 2
 };
 
 struct Event
@@ -66,6 +60,8 @@ public:
     sn::Vector2i getSize() const { return m_localBounds.size(); }
 
     sn::IntRect getClientBounds() const;
+
+    const sn::IntRect & getLocalClientBounds() const { return m_localBounds; }
     void setLocalClientBounds(sn::IntRect bounds);
 
     Control * getChildControlAt(sn::Vector2i position) const;
