@@ -96,6 +96,7 @@ public:
 
     bool isHovered() const { return getControlFlag(TGUI_CF_HOVERED); }
     bool isPressed() const { return getControlFlag(TGUI_CF_PRESSED); }
+    bool isVisible() const { return getControlFlag(TGUI_CF_VISIBLE); }
 
     const Theme * getTheme() const;
 

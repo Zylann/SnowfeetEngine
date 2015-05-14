@@ -188,7 +188,7 @@ void Control::onDraw(DrawBatch & batch)
     for (u32 i = 0; i < children.size(); ++i)
     {
         Control & child = *children[i];
-        if (child.isEnabled())
+        if (child.isVisible())
         {
             child.onDraw(batch);
         }
@@ -254,7 +254,7 @@ void Control::dispatchEventToChildren(Event & ev)
     for (u32 i = 0; i < children.size(); ++i)
     {
         Control & child = *children[i];
-        if (child.isEnabled())
+        if (child.isEnabled() && child.isVisible())
         {
             child.onEvent(ev);
             if (ev.consumed)
