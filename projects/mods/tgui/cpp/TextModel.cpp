@@ -26,7 +26,7 @@ void TextModel::setSource(const std::string & sourceText)
     }
 }
 
-void TextModel::getSource(std::string & out_text)
+void TextModel::getSource(std::string & out_text) const
 {
     if (m_lines.empty())
         return;
@@ -43,7 +43,7 @@ void TextModel::getSource(std::string & out_text)
     }
 }
 
-const std::string & TextModel::getLine(sn::u32 i)
+const std::string & TextModel::getLine(sn::u32 i) const
 {
     SN_ASSERT(i < m_lines.size(), "Invalid line index " << i);
     return m_lines[i];

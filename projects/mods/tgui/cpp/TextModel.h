@@ -11,10 +11,10 @@ class TextModel
 {
 public:
     void setSource(const std::string & sourceText);
-    void getSource(std::string & out_text);
+    void getSource(std::string & out_text) const;
 
     sn::u32 getLineCount() const { return m_lines.size(); }
-    const std::string & getLine(sn::u32 i);
+    const std::string & getLine(sn::u32 i) const;
 
 private:
     std::vector<std::string> m_lines;
