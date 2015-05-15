@@ -11,6 +11,8 @@ import sys, os, json
 # 	"tool":"Tool"
 # }
 
+header_extension = ".h"
+
 
 def get_mod_lib_name(modType, name):
 	return modType.title() + name.title()
@@ -23,7 +25,7 @@ def create_cpp_folder(root, modType, namespace, name):
 	eol = "\n"
 	indent = "    "
 
-	headerName = "mod_" + name.title() + ".hpp"
+	headerName = "mod_" + name.title() + header_extension
 	headerPath = os.path.join(cppDir, headerName)
 	implemPath = os.path.join(cppDir, "mod_" + name.title() + ".cpp")
 	premakePath = os.path.join(cppDir, "premake5.lua")
@@ -73,13 +75,15 @@ def create_cpp_folder(root, modType, namespace, name):
 		"",
 		loadFunc,
 		"{",
-		"\t" + namespace + "::" + regFuncName + "(*(args.objectTypeDatabase));",
-		"\t// TODO implement",
+		indent + namespace + "::" + regFuncName + "(*(args.objectTypeDatabase));",
+		indent + "// TODO implement",
+		indent + "return 0;"
 		"}",
 		"",
 		unloadFunc,
 		"{",
-		"\t// TODO implement",
+		indent + "// TODO implement",
+		indent + "return 0;"
 		"}",
 		"",
 		""
@@ -90,7 +94,7 @@ def create_cpp_folder(root, modType, namespace, name):
 	f.write(eol.join([
 		"project \"" + get_mod_lib_name(modType, name) + "\"",
 		indent + "platforms { \"x32\" }",
-		indent + "CommonModConfigCPP()",
+		indent + "commonModConfigCPP()",
 		#indent + "kind \"SharedLib\"",
 		#indent + "language \"C++\"",
 		#indent + "dependson {",
@@ -100,7 +104,7 @@ def create_cpp_folder(root, modType, namespace, name):
 		#indent + "location \".\"",
 		#indent + "targetdir \"..\"",
 		indent + "files {",
-		indent + indent + "\"**.hpp\",",
+		indent + indent + "\"**" + header_extension + "\",",
 		indent + indent + "\"**.cpp\"",
 		indent + "}",
 		#indent + "links {",
@@ -132,11 +136,11 @@ def create_mod_file(path, modType, name):
 
 
 def create_module(root, modType, name, cppNamespace):
-	modDir = os.path.join(root, modType + "s", name)
+	modDir = os.path.join(root, modType + "s", name.lower())
 	if not os.path.isdir(modDir):
 		os.makedirs(modDir)
 	
-	modFilePath = os.path.join(modDir, name + ".mod.json")
+	modFilePath = os.path.join(modDir, name.lower() + ".mod.json")
 	modContents = create_mod_file(modFilePath, modType, name)
 
 	create_cpp_folder(modDir, modType, cppNamespace, name)
