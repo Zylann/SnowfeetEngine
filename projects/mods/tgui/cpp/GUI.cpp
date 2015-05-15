@@ -101,8 +101,14 @@ bool GUI::onSystemEvent(const sn::Event & systemEvent)
 
 		if (r_captureControl)
 			r_captureControl->onEvent(ev);
-		else
+        else
+        {
 	        dispatchEventToChildren(ev);
+            if (!ev.consumed && systemEvent.type == SN_EVENT_MOUSE_MOVED)
+            {
+                onSetCursor(ev);
+            }
+        }
 
         return ev.consumed;
     }

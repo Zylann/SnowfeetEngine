@@ -1,4 +1,5 @@
 #include "Panel.hpp"
+#include <core/system/gui/SystemGUI.hpp>
 
 using namespace sn;
 
@@ -37,7 +38,7 @@ void Panel::onMousePress(Event & e)
     if (m_isResizeable)
     {
         Vector2i cursorPos(e.value.mouse.x, e.value.mouse.y);
-        if (checkResizing(cursorPos))
+        if (checkResizing(cursorPos, m_resizeDirections))
         {
             beginCapture();
         }
@@ -59,55 +60,104 @@ void Panel::onMouseRelease(Event & e)
 //------------------------------------------------------------------------------
 void Panel::onMouseMove(Event & e)
 {
-    if (isResizing())
+    if (m_isResizeable)
     {
-        IntRect b = getLocalClientBounds();
-        Vector2i pos = Vector2i(e.value.mouse.x, e.value.mouse.y);// - getPosition();
-
-        if (m_resizeDirections[TGUI_RIGHT])
-            b.width() = pos.x() - b.x();
-
-        if (m_resizeDirections[TGUI_BOTTOM])
-            b.height() = pos.y() - b.y();
-
-        if (m_resizeDirections[TGUI_LEFT])
+        if (isResizing())
         {
-            b.width() -= pos.x() - b.x();
-            b.x() = pos.x();
+            IntRect b = getLocalClientBounds();
+            Vector2i pos = Vector2i(e.value.mouse.x, e.value.mouse.y);// - getPosition();
+
+            if (m_resizeDirections[TGUI_RIGHT])
+                b.width() = pos.x() - b.x();
+
+            if (m_resizeDirections[TGUI_BOTTOM])
+                b.height() = pos.y() - b.y();
+
+            if (m_resizeDirections[TGUI_LEFT])
+            {
+                b.width() -= pos.x() - b.x();
+                b.x() = pos.x();
+            }
+
+            if (m_resizeDirections[TGUI_TOP])
+            {
+                b.height() -= pos.y() - b.y();
+                b.y() = pos.y();
+            }
+
+            setLocalClientBounds(b);
+            layoutChildren();
+
+            //e.consume();
         }
-
-        if (m_resizeDirections[TGUI_TOP])
-        {
-            b.height() -= pos.y() - b.y();
-            b.y() = pos.y();
-        }
-
-        setLocalClientBounds(b);
-        layoutChildren();
-
         e.consume();
     }
 }
 
 //------------------------------------------------------------------------------
-bool Panel::checkResizing(Vector2i cursorPos)
+void Panel::onSetCursor(Event & e)
+{
+    if (!isResizing())
+    {
+        std::bitset<TGUI_DIRECTION_COUNT> dirs;
+        Vector2i pos = Vector2i(e.value.mouse.x, e.value.mouse.y);
+        sn::Window * win = SystemGUI::get().getWindowByID(getWindowID());
+        if (win)
+        {
+            if (checkResizing(pos, dirs))
+            {
+                CursorType cursor = SN_CURSOR_DEFAULT;
+
+                if ((dirs[TGUI_LEFT] && dirs[TGUI_TOP]) || (dirs[TGUI_RIGHT] && dirs[TGUI_BOTTOM]))
+                {
+                    // Diagonal resize
+                    cursor = SN_CURSOR_RESIZE_TOP_LEFT_BOTTOM_RIGHT;
+                }
+                else if ((dirs[TGUI_LEFT] && dirs[TGUI_BOTTOM]) || (dirs[TGUI_RIGHT] && dirs[TGUI_TOP]))
+                {
+                    // Diagonal resize
+                    cursor = SN_CURSOR_RESIZE_BOTTOM_LEFT_TOP_RIGHT;
+                }
+                else if (dirs[TGUI_LEFT] || dirs[TGUI_RIGHT])
+                {
+                    // Horizontal resize
+                    cursor = SN_CURSOR_RESIZE_HORIZONTAL;
+                }
+                else if (dirs[TGUI_TOP] || dirs[TGUI_BOTTOM])
+                {
+                    // Vertical resize
+                    cursor = SN_CURSOR_RESIZE_VERTICAL;
+                }
+
+                win->setMouseCursor(cursor);
+            }
+            else
+            {
+                win->setMouseCursor(SN_CURSOR_DEFAULT);
+            }
+        }
+    }
+}
+
+//------------------------------------------------------------------------------
+bool Panel::checkResizing(Vector2i cursorPos, std::bitset<TGUI_DIRECTION_COUNT> & out_dirs)
 {
     IntRect clientBounds = getClientBounds();
     if (clientBounds.contains(cursorPos))
     {
         if (cursorPos.x() >= clientBounds.maxX() - m_sideResizerSize)
-            m_resizeDirections[TGUI_RIGHT] = true;
+            out_dirs[TGUI_RIGHT] = true;
 
         if (cursorPos.y() >= clientBounds.maxY() - m_sideResizerSize)
-            m_resizeDirections[TGUI_BOTTOM] = true;
+            out_dirs[TGUI_BOTTOM] = true;
 
         if (cursorPos.x() < clientBounds.minX() + m_sideResizerSize)
-            m_resizeDirections[TGUI_LEFT] = true;
+            out_dirs[TGUI_LEFT] = true;
 
         if (cursorPos.y() < clientBounds.minY() + m_sideResizerSize)
-            m_resizeDirections[TGUI_TOP] = true;
+            out_dirs[TGUI_TOP] = true;
 
-        return m_resizeDirections.any();
+        return out_dirs.any();
     }
     return false;
 }

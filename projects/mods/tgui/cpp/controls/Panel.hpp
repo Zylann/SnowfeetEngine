@@ -25,9 +25,10 @@ protected:
     void onMousePress(Event & e) override;
     void onMouseRelease(Event & e) override;
     void onMouseMove(Event & e) override;
+    void onSetCursor(Event & e) override;
 
 private:
-    bool checkResizing(sn::Vector2i cursorPos);
+    bool checkResizing(sn::Vector2i cursorPos, std::bitset<TGUI_DIRECTION_COUNT> & out_dirs);
 
 private:
     bool m_isResizeable;

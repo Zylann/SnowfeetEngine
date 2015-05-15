@@ -2,6 +2,7 @@
 #include "../GUI.h"
 
 #include <core/util/typecheck.hpp>
+#include <core/system/gui/SystemGUI.hpp>
 #include <functional>
 
 using namespace sn;
@@ -274,6 +275,7 @@ void Control::processMouseMove(Event & e)
         {
             setControlFlag(TGUI_CF_HOVERED, true);
             onMouseEnter(e);
+            onSetCursor(e);
         }
     }
     else if (isHovered())
@@ -284,6 +286,7 @@ void Control::processMouseMove(Event & e)
 	if (hover || getControlFlag(TGUI_CF_CAPTURED))
 	{
 		onMouseMove(e);
+        onSetCursor(e);
 	}
 }
 
@@ -305,6 +308,14 @@ void Control::processMouseRelease(Event & e)
         setControlFlag(TGUI_CF_PRESSED, false);
         onMouseRelease(e);
     }
+}
+
+//------------------------------------------------------------------------------
+void Control::onSetCursor(Event & e)
+{
+    sn::Window * win = SystemGUI::get().getWindowByID(getWindowID());
+    if (win)
+        win->setMouseCursor(SN_CURSOR_DEFAULT);
 }
 
 //------------------------------------------------------------------------------

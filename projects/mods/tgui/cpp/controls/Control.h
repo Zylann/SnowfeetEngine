@@ -121,6 +121,7 @@ protected:
     virtual void onMousePress(Event & e) {}
     virtual void onMouseRelease(Event & e) {}
     virtual void onControlResized() {}
+    virtual void onSetCursor(Event & e);
 
 	//--------------------------------
     // Helpers
