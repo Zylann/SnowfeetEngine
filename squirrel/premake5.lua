@@ -7,9 +7,12 @@ project "Squirrel"
 		"**.h",
 		"**.cpp"
 	}
+	-- Visual Studio only
 	defines {
-		-- Override to allow modules to access squirrel functions
-		"SQUIRREL_API=__declspec(dllexport)"
+		-- Override to allow modules to access Squirrel functions
+		"SQUIRREL_API=__declspec(dllexport)",
+		-- Disable deprecation of C functions used by Squirrel
+		"_CRT_SECURE_NO_WARNINGS"
 	}
 	filter "configurations:Debug"
 		targetdir "../_bin/debug"
