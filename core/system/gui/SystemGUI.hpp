@@ -20,6 +20,8 @@ This file is part of the SnowfeetEngine project.
 namespace sn
 {
 
+class SystemGUIImpl;
+
 /// \brief Singleton manager of all system windows and events
 class SN_API SystemGUI : public NonCopyable
 {
