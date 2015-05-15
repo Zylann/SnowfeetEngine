@@ -39,7 +39,7 @@
 							"_children":[
 								{
 									"@type":"tgui::Text",
-									"text":"Click me, I'm a button",
+									"text":"Click me, I'm a button\nWith a lot of text in it, blah blah blah...\nMultiple lines of text!",
 									"align":"center",
 									"anchors":["left", "right", "top", "bottom"]
 								}

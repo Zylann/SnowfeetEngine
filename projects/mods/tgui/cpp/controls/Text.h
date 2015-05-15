@@ -2,6 +2,7 @@
 #define __HEADER_TGUI_TEXT__
 
 #include "Control.h"
+#include "../TextModel.h"
 
 namespace tgui
 {
@@ -21,7 +22,7 @@ public:
     void unserializeState(JsonBox::Value & o, const sn::SerializationContext & ctx) override;
 
 private:
-    std::string m_sourceText;
+    TextModel m_model;
     TextAlignment m_align;
 };
 
