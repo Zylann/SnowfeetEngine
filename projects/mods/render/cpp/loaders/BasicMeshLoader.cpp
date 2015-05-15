@@ -11,7 +11,7 @@ namespace render {
 //-----------------------------------------------------------------------------
 const ObjectType & BasicMeshLoader::getBaseAssetType() const
 {
-    return Mesh::__sGetObjectType();
+    return sn::getObjectType<Mesh>();
 }
 
 //-----------------------------------------------------------------------------

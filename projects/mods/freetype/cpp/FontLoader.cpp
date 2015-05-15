@@ -36,12 +36,12 @@ FontLoader::~FontLoader()
 
 const sn::ObjectType & FontLoader::getBaseAssetType() const
 {
-    return sn::Font::__sGetObjectType();
+    return sn::getObjectType<sn::Font>();
 }
 
 const sn::ObjectType & FontLoader::getAssetInstanceType() const
 {
-    return freetype::Font::__sGetObjectType();
+    return sn::getObjectType<freetype::Font>();
 }
 
 bool FontLoader::canLoad(const sn::AssetMetadata & meta) const

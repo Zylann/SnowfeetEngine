@@ -14,7 +14,7 @@ namespace sn
 
 const ObjectType & ImageLoader::getBaseAssetType() const
 {
-    return Image::__sGetObjectType();
+    return sn::getObjectType<Image>();
 }
 
 bool ImageLoader::canLoad(const AssetMetadata & meta) const

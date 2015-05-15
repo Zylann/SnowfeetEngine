@@ -93,7 +93,7 @@ public:
     Asset_T * getAsset(const std::string & moduleName, const std::string & name)
     {
         // Note: use SN_ASSET in your asset class
-        Asset * a = getAsset(moduleName, Asset_T::__sGetObjectType(), name);
+        Asset * a = getAsset(moduleName, getObjectType<Asset_T>(), name);
         if (a)
             return checked_cast<Asset_T*>(a);
         else
@@ -109,7 +109,7 @@ public:
     template <class Asset_T>
     AssetLoader * findLoader()
     {
-        return findLoader(Asset_T::__sGetObjectType());
+        return findLoader(getObjectType<Asset_T>());
     }
 
 #ifdef SN_BUILD_DEBUG

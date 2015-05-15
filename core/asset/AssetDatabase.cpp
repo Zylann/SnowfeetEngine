@@ -50,7 +50,7 @@ void AssetDatabase::addLoadersFromModule(const std::string & moduleName)
 {
     const ObjectTypeDatabase & otb = ObjectTypeDatabase::get();
     const ObjectTypeMap & types = otb.getTypes();
-    const ObjectType & loaderType = AssetLoader::__sGetObjectType();
+    const ObjectType & loaderType = getObjectType<AssetLoader>();
 
     for (auto it = types.begin(); it != types.end(); ++it)
     {
@@ -281,7 +281,7 @@ Asset * AssetDatabase::legacy_createMatchingAssetType(const AssetMetadata & meta
 
     const ObjectTypeDatabase & otb = ObjectTypeDatabase::get();
     const ObjectTypeMap & types = otb.getTypes();
-    const ObjectType & assetType = Asset::__sGetObjectType();
+    const ObjectType & assetType = getObjectType<Asset>();
 
     // Iterate over all classes inheriting sn::Asset and call their canLoad() method
     for (auto it = types.begin(); it != types.end(); ++it)
