@@ -22,7 +22,7 @@ void Text::onDrawSelf(DrawBatch & batch)
     IntRect bounds = controlBounds;
     s32 lineHeight = font->getLineHeight(format.size);
 
-    //batch.setScissor(bounds);
+    batch.setScissor(bounds, getWindowID());
 
     for (u32 i = 0; i < m_model.getLineCount(); ++i)
     {
@@ -44,7 +44,7 @@ void Text::onDrawSelf(DrawBatch & batch)
         bounds.height() -= lineHeight;
     }
 
-    //batch.disableScissor();
+    batch.disableScissor();
 }
 
 void Text::serializeState(JsonBox::Value & o, const sn::SerializationContext & ctx)

@@ -1,4 +1,5 @@
 #include "DrawBatch.h"
+#include <core/system/gui/SystemGUI.hpp>
 
 using namespace sn;
 
@@ -218,6 +219,21 @@ sn::TextureBase * DrawBatch::getTexture() const
 {
     SN_ASSERT(r_material != nullptr, "Cannot get texture when material is not set");
     return r_material->getTexture(Material::MAIN_TEXTURE);
+}
+
+//------------------------------------------------------------------------------
+void DrawBatch::setScissor(sn::IntRect rect, u32 windowID)
+{
+    // The batch must be flushed before because previous geometry is not necessarily affected by scissor
+    flush();
+
+    sn::Window * win = SystemGUI::get().getWindowByID(windowID);
+    if (win)
+    {
+        Vector2u winSize = win->getClientSize();
+        rect.y() = static_cast<s32>(winSize.y()) - rect.y() - rect.height();
+        m_dc.setScissor(rect);
+    }
 }
 
 //------------------------------------------------------------------------------

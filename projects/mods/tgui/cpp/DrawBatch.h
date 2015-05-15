@@ -46,6 +46,9 @@ public:
         sn::Color color = sn::Color(1,1,1,1)
     );
 
+    void setScissor(sn::IntRect rect, sn::u32 windowID);
+    void disableScissor() { m_dc.disableScissor(); }
+
 private:
     void setTexture(sn::TextureBase * tex);
     sn::TextureBase * getTexture() const;
