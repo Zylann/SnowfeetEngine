@@ -160,14 +160,15 @@ int Application::executeEx()
         AssetDatabase::get().updateFileChanges();
 
         std::vector<Time> deltas = m_timeStepper.getCallDeltas();
-        for (u32 i = 0; i < deltas.size() && m_runFlag; ++i)
-        {
-            // Call static update callbacks
-            // Note: if quit() is called in one of these callbacks,
-            // the next callbacks will not be executed.
-            update(deltas[i]);
-        }
-
+        //for (u32 i = 0; i < deltas.size() && m_runFlag; ++i)
+        //{
+        //    // Call static update callbacks
+        //    // Note: if quit() is called in one of these callbacks,
+        //    // the next callbacks will not be executed.
+        //    update(deltas[i]);
+        //}
+        update(Time::milliseconds(16));
+        // TODO The update timing system should be improved
         // TODO Sleeping here doesn't makes sense without a render context, so put this in RenderManager?
         // Sleep until the next frame
         Time sleepTime = m_timeStepper.getMinDelta() - frameClock.getElapsedTime();
