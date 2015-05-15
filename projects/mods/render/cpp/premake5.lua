@@ -174,6 +174,14 @@ project "LibAssimp"
     --     pchheader ("AssimpPCH.h")
     --     pchsource ("code/AssimpPCH.cpp")
 
+    -- Visual Studio only
+    linkoptions {
+    	-- Ignore empty obj file errors (LNK4221).
+    	-- This happens because Assimp disables loaders by enclosing .cpp files within #ifdef blocks,
+    	-- making entire files to compile without any symbols.
+    	"/ignore:4221"
+	}
+
     configuration "Debug"
 		objdir "_obj/libassimp/debug"
         flags { "Symbols" }
