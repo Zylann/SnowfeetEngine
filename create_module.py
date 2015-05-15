@@ -90,7 +90,7 @@ def create_cpp_folder(root, modType, namespace, name):
 	f.write(eol.join([
 		"project \"" + get_mod_lib_name(modType, name) + "\"",
 		indent + "platforms { \"x32\" }",
-		indent + "CommonModConfigCPP()"
+		indent + "CommonModConfigCPP()",
 		#indent + "kind \"SharedLib\"",
 		#indent + "language \"C++\"",
 		#indent + "dependson {",
