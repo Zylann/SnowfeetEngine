@@ -64,6 +64,14 @@ public:
         FontFormat format
     ) const { return Vector2i(); }
 
+    /// \brief Calculates the total length of a series of characters.
+    /// \warning New line characters are not counted.
+    /// \param str: pointer to the first character
+    /// \param charCount: number of characters in the string
+    /// \param format: font format
+    /// \return size in pixels
+    s32 getLineWidth(const char * str, u32 charCount, FontFormat format) const;
+
 };
 
 } // namespace sn
