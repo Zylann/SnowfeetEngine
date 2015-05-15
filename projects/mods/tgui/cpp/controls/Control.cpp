@@ -172,6 +172,7 @@ void Control::layoutChildren()
                 childBounds.height() = m_localBounds.height() - margin.top - margin.bottom - childBounds.y() - m_padding.bottom;
 
             child.setLocalClientBounds(childBounds);
+            child.layoutChildren();
 
             pos.y() += childBounds.height() + margin.top + margin.bottom;
         }
