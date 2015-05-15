@@ -43,10 +43,9 @@ void registerWindowClass()
 //==============================================================================
 
 WindowImpl::WindowImpl(Window & win) :
+    m_lastCursor(SN_CURSOR_DEFAULT),
     r_window(win)
 {
-    // Default cursor
-    m_cursor = LoadCursor(NULL, IDC_ARROW);
 }
 
 //------------------------------------------------------------------------------
@@ -73,7 +72,7 @@ void WindowImpl::onEvent(UINT message, WPARAM wParam, LPARAM lParam)
 
     case WM_DESTROY:
         // Show cursor if it was hidden
-        setCursor(SN_CURSOR_DEFAULT);
+        setCursor(m_lastCursor);
         break;
 
     case WM_CLOSE:
@@ -115,7 +114,8 @@ void WindowImpl::onEvent(UINT message, WPARAM wParam, LPARAM lParam)
         // The mouse has moved, if the cursor is in our window we must refresh the cursor
         // TODO Allow receivers to set the cursor? (useful for GUIs)
         if (LOWORD(lParam) == HTCLIENT)
-            ::SetCursor(m_cursor);
+            SystemGUI::get().setMouseCursor(m_lastCursor);
+            //::SetCursor(m_cursor);
         break;
 
     case WM_MOUSEMOVE:
@@ -204,18 +204,8 @@ void WindowImpl::onEvent(UINT message, WPARAM wParam, LPARAM lParam)
 //------------------------------------------------------------------------------
 void WindowImpl::setCursor(CursorType type)
 {
-    switch (type)
-    {
-    case SN_CURSOR_INVISIBLE:
-        m_cursor = NULL;
-        break;
-
-    default: // SN_CURSOR_DEFAULT:
-        m_cursor = LoadCursor(NULL, IDC_ARROW);
-        break;
-    }
-
-    ::SetCursor(m_cursor);
+    m_lastCursor = type;
+    SystemGUI::get().setMouseCursor(type);
 }
 
 //------------------------------------------------------------------------------
@@ -414,6 +404,12 @@ void Window::setTitle(const std::string & title)
 {
     ::SetWindowText(reinterpret_cast<HWND>(m_handle), title.c_str());
     m_title = title;
+}
+
+//------------------------------------------------------------------------------
+void Window::setMouseCursor(CursorType type)
+{
+    m_impl->setCursor(type);
 }
 
 } // namespace sn

@@ -10,6 +10,7 @@ This file is part of the SnowfeetEngine project.
 #include <core/util/NonCopyable.hpp>
 #include <core/math/Vector2.hpp>
 #include <core/system/gui/WindowParams.hpp>
+#include <core/system/gui/Cursor.hpp>
 
 #include <string>
 
@@ -59,6 +60,8 @@ public:
     /// \brief Applies post-creation parameters to the window.
     /// \note Not all parameters might be applied depending on the case.
     void applyParams(WindowParams params);
+
+    void setMouseCursor(CursorType type);
 
     //virtual bool isContainer() const { return false; }
 

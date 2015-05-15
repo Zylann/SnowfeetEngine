@@ -12,12 +12,6 @@ This file is part of the SnowfeetEngine project.
 namespace sn
 {
 
-enum CursorType
-{
-    SN_CURSOR_INVISIBLE = 0,
-    SN_CURSOR_DEFAULT
-};
-
 /// \cond INTERNAL
 
 class WindowImpl
@@ -34,9 +28,8 @@ public:
     static KeyCode platformKeyCodeToGeneric(WPARAM key, LPARAM flags);
 
 private:
-
     Window & r_window;
-    HCURSOR m_cursor; // Which cursor must be displayed over the window
+    CursorType m_lastCursor;
 };
 
 /// \endcond

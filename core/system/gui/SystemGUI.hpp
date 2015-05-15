@@ -11,7 +11,9 @@ This file is part of the SnowfeetEngine project.
 #include <core/util/NonCopyable.hpp>
 #include <core/system/gui/Event.hpp>
 #include <core/math/Vector2.hpp>
+#include <core/system/gui/Cursor.hpp>
 
+#include <vector>
 #include <map>
 #include <queue>
 
@@ -51,6 +53,9 @@ public:
 
     void destroyAllWindows();
 
+    // Platform-specific
+    void setMouseCursor(CursorType cursorType);
+
     //--------------------------------
     // Internal
     //--------------------------------
@@ -62,17 +67,23 @@ public:
     bool popEvent(Event & e);
 
 private:
-
+    // TODO These two functions are not used?
     void onCreate();
     void onDestroy();
 
     u32 makeWindowID();
 
+    void initImpl();
+    void deinitImpl();
+
+private:
     std::map<Window*,u32> m_windows;
     std::map<u32, Window*> m_idToWindow;
     u32 m_nextWindowID;
 
     std::queue<Event> m_events;
+
+    SystemGUIImpl * m_impl;
 };
 
 } // namespace sn

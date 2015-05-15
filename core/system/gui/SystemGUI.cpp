@@ -22,6 +22,7 @@ SystemGUI::SystemGUI():
     m_nextWindowID(0)
 {
     onCreate();
+    initImpl();
 }
 
 //------------------------------------------------------------------------------
@@ -29,6 +30,7 @@ SystemGUI::~SystemGUI()
 {
     destroyAllWindows();
     onDestroy();
+    deinitImpl();
 }
 
 //------------------------------------------------------------------------------
