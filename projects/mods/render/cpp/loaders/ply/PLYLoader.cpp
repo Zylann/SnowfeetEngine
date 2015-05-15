@@ -311,10 +311,14 @@ bool PLYLoader::parseVertices(const PLYElement & element)
         }
     }
 
-    // For test purpose
+    // For test purpose: randomly colors each vertex
     //for (auto it = colors.begin(); it != colors.end(); ++it)
     //{
-    //    *it = Color(math::randf(), math::randf(), math::randf());
+    //    Color c = *it;
+    //    float k = 0.1f * math::randf(1.f, -1.f);
+    //    c = Color(c.r + k, c.g + k, c.b + k);
+    //    c.clamp();
+    //    *it = c;
     //}
 
     Mesh & out_mesh = *r_mesh;
