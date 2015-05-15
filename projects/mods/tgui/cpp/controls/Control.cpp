@@ -222,7 +222,9 @@ void Control::endCapture()
 //------------------------------------------------------------------------------
 void Control::onEvent(Event & ev)
 {
-    dispatchEventToChildren(ev);
+    // If events are not exclusive to the control, forward to children first
+    if (!getControlFlag(TGUI_CF_CAPTURED))
+        dispatchEventToChildren(ev);
 
     if (!ev.consumed)
     {
