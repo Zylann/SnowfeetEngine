@@ -125,6 +125,11 @@ int Application::executeEx()
 
     SN_LOG("Entering main loop");
 
+#ifdef SN_BUILD_DEBUG
+    bool printDebugInfo = false;
+    AssetDatabase::get().printAssetList();
+#endif
+
     // Enter the main loop
     while (m_runFlag)
     {
@@ -144,6 +149,12 @@ int Application::executeEx()
                 if (ev.type == SN_EVENT_WINDOW_ASKED_CLOSE)
                     quit();
             }
+#ifdef SN_BUILD_DEBUG
+            if (ev.type == SN_EVENT_KEY_DOWN && ev.keyboard.keyCode == SN_KEY_F3)
+            {
+                printDebugInfo = true;
+            }
+#endif
         }
 
         AssetDatabase::get().updateFileChanges();
@@ -168,6 +179,17 @@ int Application::executeEx()
         m_timeStepper.onEndFrame();
 
 #ifdef SN_BUILD_DEBUG
+        if (printDebugInfo)
+        {
+            u32 fps = m_timeStepper.getRecordedFPS();
+            std::stringstream ss;
+            for (u32 i = 0; i < deltas.size(); ++i)
+            {
+                ss << " " << deltas[i].asMilliseconds();
+            }
+            SN_DLOG("Recorded FPS: " << fps << ", Deltas: " << ss.str() << ", sleepTime: " << sleepTime.asMilliseconds());
+            printDebugInfo = false;
+        }
         // Quit if no window allow us to do so... (useful to debug app close at the moment, might be removed in server apps)
         if (SystemGUI::get().getWindowCount() == 0)
         {
