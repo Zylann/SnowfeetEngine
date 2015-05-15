@@ -8,6 +8,7 @@
 #include <core/math/Color.hpp>
 
 #include "Border.h"
+#include "TextAlignment.h"
 
 namespace tgui
 {
@@ -35,11 +36,13 @@ public:
         sn::Vector2u ts
     );
     
-    void drawText(
-        const std::string & str, 
-        sn::Vector2i origin, 
+    void drawTextLine(
+        const char * str,
+        sn::u32 charCount,
+        sn::IntRect area, 
         const sn::Font & font, 
         sn::FontFormat format, 
+        TextAlignment align = TGUI_ALIGN_LEFT,
         sn::Color color = sn::Color(1,1,1,1)
     );
 

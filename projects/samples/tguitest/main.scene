@@ -27,14 +27,23 @@
 								{
 									"@type":"tgui::Text",
 									"text":"Hello world!",
-									"bounds":{"x":12, "y":17, "w":100, "h":24}
+									"bounds":{"x":12, "y":17, "w":100, "h":24},
+									"anchors":["left", "right", "top", "bottom"]
 								}
 							]
 						},
 						{
 							"@type":"tgui::Button",
-							"bounds":{"x":10,"y":50,"w":100,"h":50},
-							"anchors":["left", "right"]
+							"bounds":{"x":10,"y":50,"w":200,"h":50},
+							"anchors":["left", "right"],
+							"_children":[
+								{
+									"@type":"tgui::Text",
+									"text":"Click me, I'm a button",
+									"align":"center",
+									"anchors":["left", "right", "top", "bottom"]
+								}
+							]
 						},
 						{
 							"@type":"tgui::Slider",

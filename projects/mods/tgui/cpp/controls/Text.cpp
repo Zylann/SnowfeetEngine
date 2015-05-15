@@ -16,22 +16,32 @@ void Text::onDrawSelf(DrawBatch & batch)
         return;
 
     const FontFormat & format = theme->textFormat;
-
     IntRect bounds = getClientBounds();
-    Vector2i offset(0, font->getLineHeight(format.size));
-    batch.drawText(m_sourceText, bounds.origin() + offset, *font, theme->textFormat, theme->textColor);
+
+    // TODO Handle multi-line text (implement TextModel for better text processing?)
+    batch.drawTextLine(
+        m_sourceText.c_str(), 
+        m_sourceText.size(), 
+        bounds, 
+        *font, 
+        theme->textFormat, 
+        m_align, 
+        theme->textColor
+   );
 }
 
 void Text::serializeState(JsonBox::Value & o, const sn::SerializationContext & ctx)
 {
     Control::serializeState(o, ctx);
     sn::serialize(o["text"], m_sourceText);
+    tgui::serialize(o["align"], m_align);
 }
 
 void Text::unserializeState(JsonBox::Value & o, const sn::SerializationContext & ctx)
 {
     Control::unserializeState(o, ctx);
     sn::unserialize(o["text"], m_sourceText);
+    tgui::unserialize(o["align"], m_align);
 }
 
 } // namespace tgui

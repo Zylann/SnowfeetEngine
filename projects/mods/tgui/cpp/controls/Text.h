@@ -22,6 +22,7 @@ public:
 
 private:
     std::string m_sourceText;
+    TextAlignment m_align;
 };
 
 } // namespace tgui

@@ -141,12 +141,23 @@ void DrawBatch::fillNineSlices(const sn::IntRect & r, const Border & b, const sn
 }
 
 //------------------------------------------------------------------------------
-void DrawBatch::drawText(const std::string & str, Vector2i origin, const Font & font, FontFormat format, Color color)
+/////////////////////////////////
+void DrawBatch::drawTextLine(
+    const char *   str, 
+    u32            charCount, 
+    IntRect        area, 
+    const Font &   font, 
+    FontFormat     format, 
+    TextAlignment  align, 
+    Color          color
+)
+/////////////////////////////////
 {
     if (r_material == nullptr)
         return;
-    if (str.empty())
+    if (charCount == 0)
         return;
+    SN_ASSERT(str != nullptr, "Reveived null string");
 
     TextureBase * tex = font.getTexture(format);
     if (tex == nullptr)
@@ -159,8 +170,19 @@ void DrawBatch::drawText(const std::string & str, Vector2i origin, const Font & 
     
     Vector2u ts = tex->getSize();
 
-    Vector2i pos = origin;
-    for (u32 i = 0; i < str.size(); ++i)
+    Vector2i pos = area.origin();
+    pos.y() += font.getLineHeight(format.size);
+
+    if (align != TGUI_ALIGN_LEFT)
+    {
+        s32 w = font.getLineWidth(str, charCount, format);
+        if (align == TGUI_ALIGN_RIGHT)
+            pos.x() = area.maxX() - w;
+        else
+            pos.x() = area.x() + (area.width() - w) / 2;
+    }
+
+    for (u32 i = 0; i < charCount; ++i)
     {
         char c = str[i];
         const Glyph & glyph = font.getGlyph(c, format);
