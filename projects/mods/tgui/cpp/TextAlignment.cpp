@@ -23,8 +23,6 @@ void unserialize(JsonBox::Value & o, TextAlignment & align)
         align = TGUI_ALIGN_CENTER;
     else if (str == "right")
         align = TGUI_ALIGN_RIGHT;
-    else
-        SN_WARNING("Unknwon text align value: '" + str + '\'');
 }
 
 } // namespace tgui
