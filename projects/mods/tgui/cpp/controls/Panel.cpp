@@ -1,4 +1,4 @@
-#include "Panel.hpp"
+#include "Panel.h"
 #include <core/system/gui/SystemGUI.hpp>
 
 using namespace sn;
