@@ -7,6 +7,7 @@ using namespace sn;
 namespace tgui
 {
 
+//------------------------------------------------------------------------------
 void TextArea::onDrawSelf(DrawBatch & batch)
 {
     const Theme * theme = getTheme();
@@ -58,6 +59,7 @@ void TextArea::onDrawSelf(DrawBatch & batch)
     batch.disableScissor();
 }
 
+//------------------------------------------------------------------------------
 void TextArea::onSetCursor(Event & ev)
 {
     sn::Window * win = SystemGUI::get().getWindowByID(getWindowID());
@@ -68,6 +70,7 @@ void TextArea::onSetCursor(Event & ev)
     }
 }
 
+//------------------------------------------------------------------------------
 void TextArea::onMousePress(Event & ev)
 {
     Vector2i pos(ev.value.mouse.x, ev.value.mouse.y);
@@ -80,6 +83,7 @@ void TextArea::onMousePress(Event & ev)
     ev.consume();
 }
 
+//------------------------------------------------------------------------------
 void TextArea::onKeyDown(Event & ev)
 {
     KeyCode key = ev.value.keyboard.keyCode;
@@ -112,6 +116,7 @@ void TextArea::onKeyDown(Event & ev)
     }
 }
 
+//------------------------------------------------------------------------------
 void TextArea::moveCaretLeft()
 {
     if (m_caretIndex.x() > 0)
@@ -128,6 +133,7 @@ void TextArea::moveCaretLeft()
     }
 }
 
+//------------------------------------------------------------------------------
 void TextArea::moveCaretRight()
 {
     u32 lineSize = m_model.getLine(m_caretIndex.y()).size();
@@ -144,6 +150,7 @@ void TextArea::moveCaretRight()
     }
 }
 
+//------------------------------------------------------------------------------
 void TextArea::moveCaretUp()
 {
     if (m_caretIndex.y() > 0)
@@ -154,6 +161,7 @@ void TextArea::moveCaretUp()
     }
 }
 
+//------------------------------------------------------------------------------
 void TextArea::moveCaretDown()
 {
     if (m_caretIndex.y() + 1 < m_model.getLineCount())
@@ -164,6 +172,7 @@ void TextArea::moveCaretDown()
     }
 }
 
+//------------------------------------------------------------------------------
 void TextArea::setCaretIndex(sn::u32 row, sn::u32 column)
 {
     m_caretIndex.x() = column;
@@ -175,6 +184,7 @@ void TextArea::setCaretIndex(sn::u32 row, sn::u32 column)
     updateCaretPosition();
 }
 
+//------------------------------------------------------------------------------
 void TextArea::clampIndexColumn()
 {
     u32 lineSize = m_model.getLine(m_caretIndex.y()).size();
@@ -182,6 +192,7 @@ void TextArea::clampIndexColumn()
         m_caretIndex.x() = lineSize == 0 ? 0 : lineSize - 1;
 }
 
+//------------------------------------------------------------------------------
 void TextArea::clampIndexRow()
 {
     u32 lineCount = m_model.getLineCount();
@@ -189,12 +200,14 @@ void TextArea::clampIndexRow()
         m_caretIndex.y() = lineCount == 0 ? 0 : lineCount - 1;
 }
 
+//------------------------------------------------------------------------------
 void TextArea::updateCaretPosition()
 {
     m_caretPosition = getCaretPositionFromIndex(m_caretIndex);
     resetCaretBlink();
 }
 
+//------------------------------------------------------------------------------
 sn::Vector2i TextArea::getCaretPositionFromIndex(sn::Vector2u index)
 {
     Vector2i pos;
@@ -220,6 +233,7 @@ sn::Vector2i TextArea::getCaretPositionFromIndex(sn::Vector2u index)
     return pos;
 }
 
+//------------------------------------------------------------------------------
 void TextArea::findCaretPositionFromPixelPos(Vector2i pixelPos, Vector2u & out_caretIndex, Vector2i & out_caretPixelPos)
 {
     // Top left by default
@@ -276,11 +290,13 @@ void TextArea::findCaretPositionFromPixelPos(Vector2i pixelPos, Vector2u & out_c
     }
 }
 
+//------------------------------------------------------------------------------
 void TextArea::resetCaretBlink()
 {
     m_lastMoveTime = getScene()->getTimeSinceStartup();
 }
 
+//------------------------------------------------------------------------------
 void TextArea::serializeState(JsonBox::Value & o, const sn::SerializationContext & ctx)
 {
     Control::serializeState(o, ctx);
@@ -290,6 +306,7 @@ void TextArea::serializeState(JsonBox::Value & o, const sn::SerializationContext
     sn::serialize(o["text"], text);
 }
 
+//------------------------------------------------------------------------------
 void TextArea::unserializeState(JsonBox::Value & o, const sn::SerializationContext & ctx)
 {
     Control::unserializeState(o, ctx);

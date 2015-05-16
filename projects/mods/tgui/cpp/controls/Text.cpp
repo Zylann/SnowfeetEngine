@@ -6,6 +6,7 @@ using namespace sn;
 namespace tgui
 {
 
+//------------------------------------------------------------------------------
 void Text::onDrawSelf(DrawBatch & batch)
 {
     const Theme * theme = getTheme();
@@ -32,6 +33,7 @@ void Text::onDrawSelf(DrawBatch & batch)
     batch.disableScissor();
 }
 
+//------------------------------------------------------------------------------
 void Text::serializeState(JsonBox::Value & o, const sn::SerializationContext & ctx)
 {
     Control::serializeState(o, ctx);
@@ -43,6 +45,7 @@ void Text::serializeState(JsonBox::Value & o, const sn::SerializationContext & c
     tgui::serialize(o["align"], m_align);
 }
 
+//------------------------------------------------------------------------------
 void Text::unserializeState(JsonBox::Value & o, const sn::SerializationContext & ctx)
 {
     Control::unserializeState(o, ctx);
