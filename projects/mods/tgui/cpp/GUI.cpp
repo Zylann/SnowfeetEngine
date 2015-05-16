@@ -34,7 +34,9 @@ void GUI::onReady()
         SN_EVENT_MOUSE_MOVED,
         SN_EVENT_MOUSE_ENTERED,
         SN_EVENT_MOUSE_LEFT,
-        SN_EVENT_MOUSE_WHEEL_MOVED
+        SN_EVENT_MOUSE_WHEEL_MOVED,
+        SN_EVENT_KEY_DOWN,
+        SN_EVENT_KEY_UP
     };
     for (u32 i = 0; i < sizeof(events) / sizeof(u32); ++i)
     {

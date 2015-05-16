@@ -121,6 +121,7 @@ protected:
     virtual void onMouseLeave(Event & e) {}
     virtual void onMousePress(Event & e) {}
     virtual void onMouseRelease(Event & e) {}
+    virtual void onKeyDown(Event & e) {}
     virtual void onControlResized() {}
     virtual void onSetCursor(Event & e);
 
@@ -135,6 +136,7 @@ private:
     void processMouseMove(Event & e);
     void processMousePress(Event & e);
     void processMouseRelease(Event & e);
+    void processKeyDown(Event & e);
 
     void setControlFlag(sn::u32 i, bool value);
 

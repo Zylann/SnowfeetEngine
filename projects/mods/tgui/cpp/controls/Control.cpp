@@ -260,6 +260,10 @@ void Control::onEvent(Event & ev)
             processMouseRelease(ev);
             break;
 
+        case SN_EVENT_KEY_DOWN:
+            processKeyDown(ev);
+            break;
+
         default:
             break;
         }
@@ -328,6 +332,15 @@ void Control::processMouseRelease(Event & e)
     {
         setControlFlag(TGUI_CF_PRESSED, false);
         onMouseRelease(e);
+    }
+}
+
+//------------------------------------------------------------------------------
+void Control::processKeyDown(Event & e)
+{
+    if (isFocused())
+    {
+        onKeyDown(e);
     }
 }
 
