@@ -90,6 +90,8 @@ public:
 
     void setParent(Entity * newParent) override;
 
+    void setFocus(bool isFocused);
+
     //--------------------------------
     // Helpers
     //--------------------------------
@@ -97,6 +99,7 @@ public:
     bool isHovered() const { return getControlFlag(TGUI_CF_HOVERED); }
     bool isPressed() const { return getControlFlag(TGUI_CF_PRESSED); }
     bool isVisible() const { return getControlFlag(TGUI_CF_VISIBLE); }
+    bool isFocused() const { return getControlFlag(TGUI_CF_FOCUSED); }
 
     const Theme * getTheme() const;
 

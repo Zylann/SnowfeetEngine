@@ -12,7 +12,8 @@ namespace tgui
 //------------------------------------------------------------------------------
 GUI::GUI():
 	m_defaultTheme(nullptr),
-	r_captureControl(nullptr)
+	r_captureControl(nullptr),
+    r_focusControl(nullptr)
 {
     m_defaultTheme = new Theme();
 }
@@ -89,6 +90,12 @@ void GUI::draw(sn::IDrawContext & dc)
 void GUI::setCapture(Control * captureControl)
 {
 	r_captureControl = captureControl;
+}
+
+//------------------------------------------------------------------------------
+void GUI::setFocusedControl(Control * focusControl)
+{
+    r_focusControl = focusControl;
 }
 
 //------------------------------------------------------------------------------

@@ -28,6 +28,9 @@ public:
 	void setCapture(Control * captureControl);
 	const Control * getCaptureControl() const { return r_captureControl; }
 
+    void setFocusedControl(Control * focusControl);
+    Control * getFocusedControl() const { return r_focusControl; }
+
     //--------------------------------
     // Serialization
     //--------------------------------
@@ -43,6 +46,7 @@ protected:
 private:
     Theme * m_defaultTheme;
 	Control * r_captureControl;
+    Control * r_focusControl;
     sn::SharedRef<Theme> m_theme;
     std::bitset<sn::SN_EVENT_COUNT> m_eventFilter;
 

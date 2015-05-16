@@ -221,6 +221,23 @@ void Control::endCapture()
 }
 
 //------------------------------------------------------------------------------
+void Control::setFocus(bool isFocused)
+{
+    GUI * gui = getGUI();
+    if (gui)
+    {
+        if (isFocused)
+        {
+            Control * oldFocus = gui->getFocusedControl();
+            if (oldFocus)
+                oldFocus->setControlFlag(TGUI_CF_FOCUSED, false);
+            gui->setFocusedControl(this);
+        }
+        setControlFlag(TGUI_CF_FOCUSED, isFocused);
+    }
+}
+
+//------------------------------------------------------------------------------
 void Control::onEvent(Event & ev)
 {
     // If events are not exclusive to the control, forward to children first
@@ -300,6 +317,7 @@ void Control::processMousePress(Event & e)
     {
         setControlFlag(TGUI_CF_PRESSED, true);
         onMousePress(e);
+        setFocus(true);
     }
 }
 
