@@ -71,6 +71,13 @@ bool ThemeLoader::load(std::ifstream & ifs, sn::Asset & asset) const
         theme->sliderThumbs.unserialize(sliderData["thumb"]);
     }
 
+    JsonBox::Value & textAreaData = o["textAreaTheme"];
+    if (textAreaData.isObject())
+    {
+        theme->textAreaBackground.unserialize(textAreaData["background"]);
+        theme->textAreaCaret.unserialize(textAreaData["caret"]);
+    }
+
     // Get material
     Material * mat = sn::getAssetBySerializedLocation<sn::Material>(o["material"].getString(), ctx.getModule(), this);
     if (mat)

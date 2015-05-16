@@ -36,5 +36,19 @@
 				{"x":32, "y":36, "w":16, "h":16},
 			]
 		}
-	}
+	},
+
+	"textAreaTheme":{
+		"background":{
+			"slicing":{"left":4, "right":4, "top":4, "bottom":4},
+			"statesUV":[
+				{"x":0, "y":52, "w":16, "h":16}
+			]
+		},
+		"caret":{
+			"statesUV":[
+				{"x":16, "y":52, "w":1, "h":16}
+			]
+		}
+	},
 }

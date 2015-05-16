@@ -13,6 +13,8 @@
 namespace tgui
 {
 
+// TODO A rewrite of the theming system is planned. Use something closer to CSS and styles?
+
 //-----------------------------------------------------------------------------
 /// \brief Generic properties of a Control's theme
 struct ControlTheme
@@ -65,6 +67,8 @@ public:
     ControlTheme panelTheme;
     ControlTheme sliderBar;
     ControlTheme sliderThumbs;
+    ControlTheme textAreaBackground;
+    ControlTheme textAreaCaret;
 
 private:
     friend class ThemeLoader;

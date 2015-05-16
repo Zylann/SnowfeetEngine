@@ -8,6 +8,7 @@
 #include "controls/Text.h"
 #include "controls/Panel.h"
 #include "controls/Slider.h"
+#include "controls/TextArea.h"
 
 #include "theme/Theme.h"
 
@@ -23,6 +24,7 @@ namespace tgui
         otb.registerType<Text>();
         otb.registerType<Panel>();
         otb.registerType<Slider>();
+        otb.registerType<TextArea>();
 
         // Assets
         otb.registerType<Theme>();
