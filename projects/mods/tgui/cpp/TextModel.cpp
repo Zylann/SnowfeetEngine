@@ -15,13 +15,13 @@ void TextModel::setSource(const std::string & sourceText)
     for (u32 i = 0; i < sourceText.size(); ++i)
     {
         char c = sourceText[i];
+        if (c != '\r')
+        {
+            m_lines.back() += c;
+        }
         if (c == '\n')
         {
             m_lines.push_back("");
-        }
-        else if (c != '\r')
-        {
-            m_lines.back() += c;
         }
     }
 }

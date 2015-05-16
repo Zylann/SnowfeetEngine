@@ -191,14 +191,17 @@ void DrawBatch::drawTextLine(
     for (u32 i = 0; i < charCount; ++i)
     {
         char c = str[i];
-        const Glyph & glyph = font.getGlyph(c, format);
+        if (c != '\n')
+        {
+            const Glyph & glyph = font.getGlyph(c, format);
 
-        IntRect rect = glyph.bounds;
-        rect.origin() += pos;
+            IntRect rect = glyph.bounds;
+            rect.origin() += pos;
 
-        fillRect(rect, glyph.imageRect, ts, color);
+            fillRect(rect, glyph.imageRect, ts, color);
 
-        pos.x() += glyph.advance;
+            pos.x() += glyph.advance;
+        }
     }
 
     if (swapFontTexture)
