@@ -40,7 +40,8 @@ void TextArea::onDrawSelf(DrawBatch & batch)
     );
 
     // Draw caret
-    bool blink = (m_lastClickTime.asMilliseconds() % CARET_BLINK_INTERVAL_MS) > CARET_BLINK_INTERVAL_MS / 2;
+    Time time = getScene()->getTimeSinceStartup();
+    bool blink = ((time - m_lastClickTime).asMilliseconds() % (2*CARET_BLINK_INTERVAL_MS)) < CARET_BLINK_INTERVAL_MS;
     if (blink)
     {
         const ControlTheme & caretTheme = theme->textAreaCaret;
