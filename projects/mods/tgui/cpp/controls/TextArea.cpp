@@ -61,7 +61,10 @@ void TextArea::onSetCursor(Event & ev)
 {
     sn::Window * win = SystemGUI::get().getWindowByID(getWindowID());
     if (win)
+    {
         win->setMouseCursor(SN_CURSOR_TEXT_EDIT);
+        ev.consume();
+    }
 }
 
 void TextArea::onMousePress(Event & ev)
