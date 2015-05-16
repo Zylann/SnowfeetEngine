@@ -76,8 +76,8 @@ void FileWatcherImpl::startWatching(std::string pathStr, bool recursive)
     std::wstring wpathStr = sn::toWideString(pathStr);
     _tcscpy(path, wpathStr.c_str());
 #else
-    strcpy_s(path, pathStr.size(), pathStr.c_str());
-    path[pathStr.size()] = '\0';
+    strcpy_s(path, pathStr.size()+1, pathStr.c_str());
+    //path[pathStr.size()] = '\0';
 #endif
     AutoArrayDeleter<TCHAR> pathDeleter(path);
 
