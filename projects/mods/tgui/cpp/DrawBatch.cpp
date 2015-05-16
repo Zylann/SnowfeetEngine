@@ -227,6 +227,11 @@ void DrawBatch::setScissor(sn::IntRect rect, u32 windowID)
     // The batch must be flushed before because previous geometry is not necessarily affected by scissor
     flush();
 
+    if (rect.width() < 0)
+        rect.width() = 0;
+    if (rect.height() < 0)
+        rect.height() = 0;
+
     sn::Window * win = SystemGUI::get().getWindowByID(windowID);
     if (win)
     {
