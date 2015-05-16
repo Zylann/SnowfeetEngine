@@ -97,7 +97,7 @@ void Panel::onMouseMove(Event & e)
 //------------------------------------------------------------------------------
 void Panel::onSetCursor(Event & e)
 {
-    if (!isResizing())
+    if (!isResizing() && m_isResizeable)
     {
         std::bitset<TGUI_DIRECTION_COUNT> dirs;
         Vector2i pos = Vector2i(e.value.mouse.x, e.value.mouse.y);
