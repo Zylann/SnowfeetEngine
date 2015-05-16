@@ -41,7 +41,7 @@ void TextArea::onDrawSelf(DrawBatch & batch)
 
     // Draw caret
     Time time = getScene()->getTimeSinceStartup();
-    bool blink = ((time - m_lastClickTime).asMilliseconds() % (2*CARET_BLINK_INTERVAL_MS)) < CARET_BLINK_INTERVAL_MS;
+    bool blink = ((time - m_lastMoveTime).asMilliseconds() % (2*CARET_BLINK_INTERVAL_MS)) < CARET_BLINK_INTERVAL_MS;
     if (blink)
     {
         const ControlTheme & caretTheme = theme->textAreaCaret;
@@ -73,14 +73,154 @@ void TextArea::onMousePress(Event & ev)
     Vector2i pos(ev.value.mouse.x, ev.value.mouse.y);
     pos -= getPosition();
 
-    m_lastClickTime = getScene()->getTimeSinceStartup();
+    resetCaretBlink();
 
-    findCaretPosition(pos, m_caretIndex, m_caretPosition);
+    findCaretPositionFromPixelPos(pos, m_caretIndex, m_caretPosition);
 
     ev.consume();
 }
 
-void TextArea::findCaretPosition(Vector2i pixelPos, Vector2u & out_caretIndex, Vector2i & out_caretPixelPos)
+void TextArea::onKeyDown(Event & ev)
+{
+    KeyCode key = ev.value.keyboard.keyCode;
+    switch (key)
+    {
+    case SN_KEY_LEFT:
+        moveCaretLeft();
+        break;
+
+    case SN_KEY_RIGHT:
+        moveCaretRight();
+        break;
+
+    case SN_KEY_UP:
+        moveCaretUp();
+        break;
+
+    case SN_KEY_DOWN:
+        moveCaretDown();
+        break;
+
+    //case SN_KEY_DELETE:
+    //    break;
+
+    //case SN_KEY_BACKSPACE:
+    //    break;
+
+    default:
+        break;
+    }
+}
+
+void TextArea::moveCaretLeft()
+{
+    if (m_caretIndex.x() > 0)
+    {
+        --m_caretIndex.x();
+        updateCaretPosition();
+    }
+    else if (m_caretIndex.y() > 0)
+    {
+        --m_caretIndex.y();
+        u32 lineSize = m_model.getLine(m_caretIndex.y()).size();
+        m_caretIndex.x() = lineSize == 0 ? 0 : lineSize - 1;
+        updateCaretPosition();
+    }
+}
+
+void TextArea::moveCaretRight()
+{
+    u32 lineSize = m_model.getLine(m_caretIndex.y()).size();
+    if (m_caretIndex.x() + 1 < lineSize)
+    {
+        ++m_caretIndex.x();
+        updateCaretPosition();
+    }
+    else if (m_caretIndex.y() + 1 < m_model.getLineCount())
+    {
+        m_caretIndex.x() = 0;
+        ++m_caretIndex.y();
+        updateCaretPosition();
+    }
+}
+
+void TextArea::moveCaretUp()
+{
+    if (m_caretIndex.y() > 0)
+    {
+        --m_caretIndex.y();
+        clampIndexColumn();
+        updateCaretPosition();
+    }
+}
+
+void TextArea::moveCaretDown()
+{
+    if (m_caretIndex.y() + 1 < m_model.getLineCount())
+    {
+        ++m_caretIndex.y();
+        clampIndexColumn();
+        updateCaretPosition();
+    }
+}
+
+void TextArea::setCaretIndex(sn::u32 row, sn::u32 column)
+{
+    m_caretIndex.x() = column;
+    clampIndexColumn();
+    
+    m_caretIndex.y() = row;
+    clampIndexRow();
+
+    updateCaretPosition();
+}
+
+void TextArea::clampIndexColumn()
+{
+    u32 lineSize = m_model.getLine(m_caretIndex.y()).size();
+    if (m_caretIndex.x() >= lineSize)
+        m_caretIndex.x() = lineSize == 0 ? 0 : lineSize - 1;
+}
+
+void TextArea::clampIndexRow()
+{
+    u32 lineCount = m_model.getLineCount();
+    if (m_caretIndex.y() >= lineCount)
+        m_caretIndex.y() = lineCount == 0 ? 0 : lineCount - 1;
+}
+
+void TextArea::updateCaretPosition()
+{
+    m_caretPosition = getCaretPositionFromIndex(m_caretIndex);
+    resetCaretBlink();
+}
+
+sn::Vector2i TextArea::getCaretPositionFromIndex(sn::Vector2u index)
+{
+    Vector2i pos;
+
+    // Get the font
+    const Theme * theme = getTheme();
+    if (theme == nullptr)
+        return pos;
+    const Font * font = theme->getFont();
+    if (font == nullptr)
+        return pos;
+
+    const FontFormat & format = theme->textFormat;
+    s32 lineHeight = font->getLineHeight(format.size);
+
+    // Get Y
+    pos.y() = index.y() * lineHeight;
+
+    // Get X
+    const std::string & str = m_model.getLine(index.y());
+    pos.x() = font->getLineWidth(str.c_str(), index.x(), format);
+
+    return pos;
+}
+
+void TextArea::findCaretPositionFromPixelPos(Vector2i pixelPos, Vector2u & out_caretIndex, Vector2i & out_caretPixelPos)
 {
     // Top left by default
     out_caretIndex = Vector2u(0, 0);
@@ -134,6 +274,11 @@ void TextArea::findCaretPosition(Vector2i pixelPos, Vector2u & out_caretIndex, V
         out_caretIndex.x() = column;
         out_caretPixelPos.x() = cx;
     }
+}
+
+void TextArea::resetCaretBlink()
+{
+    m_lastMoveTime = getScene()->getTimeSinceStartup();
 }
 
 void TextArea::serializeState(JsonBox::Value & o, const sn::SerializationContext & ctx)
