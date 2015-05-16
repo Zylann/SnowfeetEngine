@@ -18,31 +18,16 @@ void Text::onDrawSelf(DrawBatch & batch)
     const FontFormat & format = theme->textFormat;
     IntRect controlBounds = getClientBounds();
 
-    // TODO Handle multi-line text (implement TextModel for better text processing?)
-    IntRect bounds = controlBounds;
-    s32 lineHeight = font->getLineHeight(format.size);
+    batch.setScissor(controlBounds, getWindowID());
 
-    batch.setScissor(bounds, getWindowID());
-
-    for (u32 i = 0; i < m_model.getLineCount(); ++i)
-    {
-        const std::string & line = m_model.getLine(i);
-
-        batch.drawTextLine(
-            line.c_str(), 
-            line.size(), 
-            bounds, 
-            *font, 
-            theme->textFormat, 
-            m_align, 
-            theme->textColor
-        );
-
-        if (lineHeight > bounds.height())
-            break;
-        bounds.y() += lineHeight;
-        bounds.height() -= lineHeight;
-    }
+    batch.drawText(
+        m_model,
+        controlBounds,
+        *font,
+        theme->textFormat,
+        m_align,
+        theme->textColor
+    );
 
     batch.disableScissor();
 }

@@ -150,7 +150,8 @@ void DrawBatch::drawTextLine(
     const Font &   font, 
     FontFormat     format, 
     TextAlignment  align, 
-    Color          color
+    Color          color,
+    bool           swapFontTexture
 )
 /////////////////////////////////
 {
@@ -166,8 +167,12 @@ void DrawBatch::drawTextLine(
 
     // TODO Improve DrawBatch so we don't have to swap textures like this
 
-    TextureBase * lastTexture = getTexture();
-    setTexture(tex);
+    TextureBase * lastTexture = nullptr;
+    if (swapFontTexture)
+    {
+        lastTexture = getTexture();
+        setTexture(tex);
+    }
     
     Vector2u ts = tex->getSize();
 
@@ -194,6 +199,52 @@ void DrawBatch::drawTextLine(
         fillRect(rect, glyph.imageRect, ts, color);
 
         pos.x() += glyph.advance;
+    }
+
+    if (swapFontTexture)
+        setTexture(lastTexture);
+}
+
+//------------------------------------------------------------------------------
+/////////////////////////////////
+void DrawBatch::drawText(
+    const TextModel &  model,
+    IntRect            area,
+    const Font &       font,
+    FontFormat         format,
+    TextAlignment      align,
+    Color              color
+)
+/////////////////////////////////
+{
+    TextureBase * tex = font.getTexture(format);
+    if (tex == nullptr)
+        return;
+
+    s32 lineHeight = font.getLineHeight(format.size);
+
+    TextureBase * lastTexture = getTexture();
+    setTexture(tex);
+
+    for (u32 i = 0; i < model.getLineCount(); ++i)
+    {
+        const std::string & line = model.getLine(i);
+
+        drawTextLine(
+            line.c_str(),
+            line.size(),
+            area,
+            font,
+            format,
+            align,
+            color,
+            false // Don't set the font's texture (batching)
+        );
+
+        if (lineHeight > area.height())
+            break;
+        area.y() += lineHeight;
+        area.height() -= lineHeight;
     }
 
     setTexture(lastTexture);
