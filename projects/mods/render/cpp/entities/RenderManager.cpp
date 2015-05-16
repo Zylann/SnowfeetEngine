@@ -281,7 +281,7 @@ void RenderManager::onWindowClosed(u32 windowID)
 template <typename T>
 T * checkTaggedType(const std::string & tag, Entity * e)
 {
-    const ObjectType & ot = T::__sGetObjectType();
+    const ObjectType & ot = getObjectType<T>();
     if (e->getObjectType().is(ot))
     {
         return static_cast<T*>(e);

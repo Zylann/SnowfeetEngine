@@ -82,9 +82,9 @@ class ThemeLoader : public sn::AssetLoader
 public:
     SN_OBJECT(tgui::ThemeLoader, sn::AssetLoader)
 
-    const sn::ObjectType & getBaseAssetType() const { return Theme::__sGetObjectType(); }
-    bool canLoad(const sn::AssetMetadata & meta) const;
-    bool load(std::ifstream & ifs, sn::Asset & asset) const;
+    const sn::ObjectType & getBaseAssetType() const override { return sn::getObjectType<Theme>(); }
+    bool canLoad(const sn::AssetMetadata & meta) const override;
+    bool load(std::ifstream & ifs, sn::Asset & asset) const override;
 };
 
 } // namespace tgui

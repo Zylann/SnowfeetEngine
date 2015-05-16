@@ -10,13 +10,13 @@ namespace render {
 //-----------------------------------------------------------------------------
 const ObjectType & TextureLoader::getBaseAssetType() const
 {
-    return sn::TextureBase::__sGetObjectType();
+    return sn::getObjectType<sn::TextureBase>();
 }
 
 //-----------------------------------------------------------------------------
 const ObjectType & TextureLoader::getAssetInstanceType() const
 {
-    return sn::render::Texture::__sGetObjectType();
+    return sn::getObjectType<sn::render::Texture>();
 }
 
 //-----------------------------------------------------------------------------

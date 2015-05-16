@@ -1,4 +1,4 @@
-![Snowfeet Engine](http://zylannprods.fr/snowfeet/engine/artwork/snowfeet_engine_title_alpha_w800_v2.png)
+![Snowfeet Engine](http://zylannprods.fr/snowfeet/engine/artwork/snowfeet_engine_title_alpha_w800_v3.png)
 ====================
 
 This is an experimental, cross-platform, modular, general purpose game engine.
