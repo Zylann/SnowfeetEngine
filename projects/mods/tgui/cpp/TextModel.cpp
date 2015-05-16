@@ -38,7 +38,7 @@ void TextModel::getSource(std::string & out_text) const
 
     for (u32 i = 1; i < m_lines.size(); ++i)
     {
-        out_text += '\n';
+        // Note: EOL characters are already included in lines
         out_text += m_lines[i];
     }
 }
