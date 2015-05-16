@@ -7,6 +7,7 @@
 namespace tgui
 {
 
+/// \brief Lightweight text displayer.
 class Text : public Control
 {
 public:

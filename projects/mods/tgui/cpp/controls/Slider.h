@@ -8,6 +8,7 @@
 namespace tgui
 {
 
+/// \brief Linear widget with a thumb that can be dragged between two ends.
 class Slider : public Control
 {
 public:

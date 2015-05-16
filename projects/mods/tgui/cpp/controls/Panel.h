@@ -31,6 +31,7 @@ private:
     bool checkResizing(sn::Vector2i cursorPos, std::bitset<TGUI_DIRECTION_COUNT> & out_dirs);
 
 private:
+    // TODO Move resizing to a Frame container widget?
     bool m_isResizeable;
     sn::s32 m_sideResizerSize;
     sn::s32 m_cornerResizerSize;
