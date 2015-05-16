@@ -6,7 +6,7 @@
 #include "controls/Control.h"
 #include "controls/Button.h"
 #include "controls/Text.h"
-#include "controls/Panel.hpp"
+#include "controls/Panel.h"
 #include "controls/Slider.h"
 
 #include "theme/Theme.h"
