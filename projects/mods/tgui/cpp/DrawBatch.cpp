@@ -1,5 +1,6 @@
 #include "DrawBatch.h"
 #include <core/system/gui/SystemGUI.hpp>
+#include <core/util/stringutils.hpp>
 
 using namespace sn;
 
@@ -191,7 +192,7 @@ void DrawBatch::drawTextLine(
     for (u32 i = 0; i < charCount; ++i)
     {
         char c = str[i];
-        if (c != '\n' && c != '\r')
+        if (!isEOL(c))
         {
             const Glyph & glyph = font.getGlyph(c, format);
 

@@ -63,6 +63,9 @@ std::string SN_API trim(std::string str);
 /// \brief Splits the given string at sep and returns the list without sep
 std::vector<std::string> SN_API split(const std::string & str, char sep);
 
+/// \brief Tests if the given character is one of the end-of-line / newline characters
+inline bool isEOL(char c) { return c == '\n' || c == '\r'; }
+
 } // namespace sn
 
 #endif // __HEADER_SN_STRINGUTILS__

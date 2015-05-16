@@ -1,17 +1,12 @@
 #include "TextArea.h"
 #include <core/system/gui/SystemGUI.hpp>
 #include <core/scene/Scene.hpp>
+#include <core/util/stringutils.hpp>
 
 using namespace sn;
 
 namespace tgui
 {
-
-//------------------------------------------------------------------------------
-namespace
-{
-    inline bool isEOL(char c) { return c == '\n' || c == '\r'; }
-}
 
 //------------------------------------------------------------------------------
 void TextArea::onDrawSelf(DrawBatch & batch)
