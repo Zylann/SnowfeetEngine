@@ -44,6 +44,7 @@ private:
     void clampIndexRow();
     void updateCaretPosition();
     void resetCaretBlink();
+    void moveCaretToEndOfLine();
 
 private:
     TextModel m_model;

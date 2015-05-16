@@ -191,7 +191,7 @@ void DrawBatch::drawTextLine(
     for (u32 i = 0; i < charCount; ++i)
     {
         char c = str[i];
-        if (c != '\n')
+        if (c != '\n' && c != '\r')
         {
             const Glyph & glyph = font.getGlyph(c, format);
 

@@ -60,7 +60,7 @@
 						{
 							"@type":"tgui::TextArea",
 							"anchors":["left", "right", "bottom"],
-							"text":"This is not a sample text"
+							"text":"This is not a sample text\nAnother line"
 						}
 					]
 				}

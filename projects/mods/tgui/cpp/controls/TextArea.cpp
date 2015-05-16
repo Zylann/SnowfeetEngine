@@ -8,6 +8,12 @@ namespace tgui
 {
 
 //------------------------------------------------------------------------------
+namespace
+{
+    inline bool isEOL(char c) { return c == '\n' || c == '\r'; }
+}
+
+//------------------------------------------------------------------------------
 void TextArea::onDrawSelf(DrawBatch & batch)
 {
     const Theme * theme = getTheme();
@@ -128,7 +134,7 @@ void TextArea::moveCaretLeft()
     {
         --m_caretIndex.y();
         u32 lineSize = m_model.getLine(m_caretIndex.y()).size();
-        m_caretIndex.x() = lineSize == 0 ? 0 : lineSize - 1;
+        moveCaretToEndOfLine();
         updateCaretPosition();
     }
 }
@@ -136,10 +142,13 @@ void TextArea::moveCaretLeft()
 //------------------------------------------------------------------------------
 void TextArea::moveCaretRight()
 {
-    u32 lineSize = m_model.getLine(m_caretIndex.y()).size();
-    if (m_caretIndex.x() + 1 < lineSize)
+    if (m_model.getLineCount() == 0)
+        return;
+    const std::string & line = m_model.getLine(m_caretIndex.y());
+    if (m_caretIndex.x() < line.size() && !isEOL(line[m_caretIndex.x()]))
     {
         ++m_caretIndex.x();
+        clampIndexColumn();
         updateCaretPosition();
     }
     else if (m_caretIndex.y() + 1 < m_model.getLineCount())
@@ -173,6 +182,38 @@ void TextArea::moveCaretDown()
 }
 
 //------------------------------------------------------------------------------
+void TextArea::moveCaretToEndOfLine()
+{
+    if (m_model.getLineCount() == 0)
+    {
+        // Nothing in the model, put the caret at the origin
+        m_caretIndex.x() = 0;
+    }
+    else
+    {
+        const std::string & str = m_model.getLine(m_caretIndex.y());
+        if (str.size() == 0)
+        {
+            // The current line is empty, put the caret at its beginning
+            m_caretIndex.x() = 0;
+        }
+        else
+        {
+            // If the line has no newline character, place the caret at size().
+            u32 i = str.size();
+
+            // If the line has newline characters, go back to the first one
+            while (isEOL(str[i - 1]) && i > 0)
+            {
+                --i;
+            }
+
+            m_caretIndex.x() = i;
+        }
+    }
+}
+
+//------------------------------------------------------------------------------
 void TextArea::setCaretIndex(sn::u32 row, sn::u32 column)
 {
     m_caretIndex.x() = column;
@@ -189,7 +230,7 @@ void TextArea::clampIndexColumn()
 {
     u32 lineSize = m_model.getLine(m_caretIndex.y()).size();
     if (m_caretIndex.x() >= lineSize)
-        m_caretIndex.x() = lineSize == 0 ? 0 : lineSize - 1;
+        moveCaretToEndOfLine();
 }
 
 //------------------------------------------------------------------------------
@@ -275,6 +316,8 @@ void TextArea::findCaretPositionFromPixelPos(Vector2i pixelPos, Vector2u & out_c
         for (; column < str.size(); ++column)
         {
             char c = str[column];
+            if (c == '\n' || c == '\r')
+                break;
             const Glyph & glyph = font->getGlyph(c, format);
             s32 offset = glyph.advance;
             if (pixelPos.x() >= cx && pixelPos.x() < cx + offset)
