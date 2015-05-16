@@ -113,8 +113,6 @@ public:
 protected:
     void dispatchEventToChildren(Event & ev);
     
-    void setControlFlag(sn::u32 i, bool value);
-
     virtual void onDraw(DrawBatch & batch);
     virtual void onDrawSelf(DrawBatch & batch) {}
 
@@ -137,6 +135,8 @@ private:
     void processMouseMove(Event & e);
     void processMousePress(Event & e);
     void processMouseRelease(Event & e);
+
+    void setControlFlag(sn::u32 i, bool value);
 
 private:
     sn::IntRect m_localBounds;
