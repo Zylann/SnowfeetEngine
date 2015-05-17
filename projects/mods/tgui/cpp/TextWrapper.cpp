@@ -116,7 +116,7 @@ TextWrapper::Wrap TextWrapper::getWrap(sn::u32 visualRow) const
 }
 
 //------------------------------------------------------------------------------
-u32 TextWrapper::getWrapFromLine(u32 lineIndex)
+u32 TextWrapper::getWrapFromLine(u32 lineIndex) const
 {
     if (m_wraps.empty())
         return 0;
@@ -137,7 +137,7 @@ u32 TextWrapper::getWrapFromLine(u32 lineIndex)
 }
 
 //------------------------------------------------------------------------------
-sn::u32 TextWrapper::getWrapFromLineAndColumn(sn::u32 line, sn::u32 column)
+sn::u32 TextWrapper::getWrapFromLineAndColumn(sn::u32 line, sn::u32 column) const
 {
     if (m_wraps.empty())
         return 0;
@@ -151,7 +151,7 @@ sn::u32 TextWrapper::getWrapFromLineAndColumn(sn::u32 line, sn::u32 column)
 }
 
 //------------------------------------------------------------------------------
-u32 TextWrapper::getEndWrap(u32 beginWrap)
+u32 TextWrapper::getEndWrap(u32 beginWrap) const
 {
     SN_ASSERT(beginWrap < m_wraps.size(), "Invalid wrap index " << beginWrap);
     u32 endWrap = beginWrap+1;

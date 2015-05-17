@@ -78,12 +78,12 @@ public:
     const TextModel & getTextModel() const { return r_model; }
 
     /// \brief Gets the first wrap corresponding to the given line
-    sn::u32 getWrapFromLine(sn::u32 lineIndex);
+    sn::u32 getWrapFromLine(sn::u32 lineIndex) const;
 
-    sn::u32 getWrapFromLineAndColumn(sn::u32 row, sn::u32 column);
+    sn::u32 getWrapFromLineAndColumn(sn::u32 row, sn::u32 column) const;
 
     /// \brief Gets the last wrap corresponding to the same line as the given wrap
-    sn::u32 getEndWrap(sn::u32 beginWrap);
+    sn::u32 getEndWrap(sn::u32 beginWrap) const;
 
 private:
     /// \brief Current wrap mode
