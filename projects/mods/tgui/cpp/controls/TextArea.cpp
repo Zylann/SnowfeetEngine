@@ -9,6 +9,13 @@ namespace tgui
 {
 
 //------------------------------------------------------------------------------
+TextArea::TextArea():
+    m_wrapper(m_model),
+    m_currentWrap(0)
+{
+}
+
+//------------------------------------------------------------------------------
 void TextArea::onDrawSelf(DrawBatch & batch)
 {
     const Theme * theme = getTheme();
@@ -33,7 +40,7 @@ void TextArea::onDrawSelf(DrawBatch & batch)
     // Draw text
     const FontFormat & format = theme->textFormat;
     batch.drawText(
-        m_model,
+        m_wrapper,
         bounds,
         *font,
         theme->textFormat,
@@ -79,7 +86,7 @@ void TextArea::onMousePress(Event & ev)
 
     resetCaretBlink();
 
-    findCaretPositionFromPixelPos(pos, m_caretIndex, m_caretPosition);
+    findCaretPositionFromPixelPos(pos, m_caretIndex, m_caretPosition, m_currentWrap);
 
     ev.consume();
 }
@@ -118,17 +125,30 @@ void TextArea::onKeyDown(Event & ev)
 }
 
 //------------------------------------------------------------------------------
+void TextArea::onSizeChanged()
+{
+    updateWrap();
+}
+
+//------------------------------------------------------------------------------
 void TextArea::moveCaretLeft()
 {
+    if (m_model.getLineCount() == 0)
+        return;
+
+    TextWrapper::Wrap wrap = m_wrapper.getWrap(m_currentWrap);
+
     if (m_caretIndex.x() > 0)
     {
         --m_caretIndex.x();
+        if (m_caretIndex.x() < wrap.begin)
+            --m_currentWrap;
         updateCaretPosition();
     }
     else if (m_caretIndex.y() > 0)
     {
         --m_caretIndex.y();
-        u32 lineSize = m_model.getLine(m_caretIndex.y()).size();
+        --m_currentWrap;
         moveCaretToEndOfLine();
         updateCaretPosition();
     }
@@ -139,17 +159,23 @@ void TextArea::moveCaretRight()
 {
     if (m_model.getLineCount() == 0)
         return;
-    const std::string & line = m_model.getLine(m_caretIndex.y());
+    
+    TextWrapper::Wrap wrap = m_wrapper.getWrap(m_currentWrap);
+    const std::string & line = m_model.getLine(wrap.line);
+
     if (m_caretIndex.x() < line.size() && !isEOL(line[m_caretIndex.x()]))
     {
         ++m_caretIndex.x();
         clampIndexColumn();
+        if (m_caretIndex.x() >= wrap.end && m_currentWrap+1 < m_wrapper.getWrapCount())
+            ++m_currentWrap;
         updateCaretPosition();
     }
     else if (m_caretIndex.y() + 1 < m_model.getLineCount())
     {
         m_caretIndex.x() = 0;
         ++m_caretIndex.y();
+        ++m_currentWrap;
         updateCaretPosition();
     }
 }
@@ -157,10 +183,25 @@ void TextArea::moveCaretRight()
 //------------------------------------------------------------------------------
 void TextArea::moveCaretUp()
 {
-    if (m_caretIndex.y() > 0)
+    if (m_currentWrap > 0)
     {
-        --m_caretIndex.y();
-        clampIndexColumn();
+        TextWrapper::Wrap lastWrap = m_wrapper.getWrap(m_currentWrap);
+        --m_currentWrap;
+        TextWrapper::Wrap wrap = m_wrapper.getWrap(m_currentWrap);
+
+        if (lastWrap.line == wrap.line)
+        {
+            // We are still in the same line
+            m_caretIndex.x() -= wrap.end;
+        }
+        else
+        {
+            // We moved to the previous line
+            --m_caretIndex.y();
+            m_caretIndex.x() += wrap.begin;
+            clampIndexColumn();
+        }
+
         updateCaretPosition();
     }
 }
@@ -168,12 +209,28 @@ void TextArea::moveCaretUp()
 //------------------------------------------------------------------------------
 void TextArea::moveCaretDown()
 {
-    if (m_caretIndex.y() + 1 < m_model.getLineCount())
+    if (m_currentWrap + 1 < m_wrapper.getWrapCount())
     {
-        ++m_caretIndex.y();
-        clampIndexColumn();
+        TextWrapper::Wrap lastWrap = m_wrapper.getWrap(m_currentWrap);
+        ++m_currentWrap;
+        TextWrapper::Wrap wrap = m_wrapper.getWrap(m_currentWrap);
+
+        if (lastWrap.line == wrap.line)
+        {
+            // We are still in the same line
+            m_caretIndex.x() += lastWrap.end;
+        }
+        else
+        {
+            // We moved to the next line
+            ++m_caretIndex.y();
+            clampIndexColumn();
+        }
+
         updateCaretPosition();
     }
+
+    SN_LOG("Caret index: " << sn::toString(m_caretIndex) << ", row: " << m_currentWrap);
 }
 
 //------------------------------------------------------------------------------
@@ -186,7 +243,12 @@ void TextArea::moveCaretToEndOfLine()
     }
     else
     {
-        const std::string & str = m_model.getLine(m_caretIndex.y());
+        // Move to the last wrap covering the current line
+        m_currentWrap = m_wrapper.getEndWrap(m_currentWrap);
+
+        TextWrapper::Wrap wrap = m_wrapper.getWrap(m_currentWrap);
+        const std::string & str = m_model.getLine(wrap.line);
+
         if (str.size() == 0)
         {
             // The current line is empty, put the caret at its beginning
@@ -194,7 +256,7 @@ void TextArea::moveCaretToEndOfLine()
         }
         else
         {
-            // If the line has no newline character, place the caret at size().
+            // If the line has no newline character, place the caret at the end index.
             u32 i = str.size();
 
             // If the line has newline characters, go back to the first one
@@ -209,21 +271,22 @@ void TextArea::moveCaretToEndOfLine()
 }
 
 //------------------------------------------------------------------------------
-void TextArea::setCaretIndex(sn::u32 row, sn::u32 column)
-{
-    m_caretIndex.x() = column;
-    clampIndexColumn();
-    
-    m_caretIndex.y() = row;
-    clampIndexRow();
-
-    updateCaretPosition();
-}
+//void TextArea::setCaretIndex(sn::u32 row, sn::u32 column)
+//{
+//    m_caretIndex.x() = column;
+//    clampIndexColumn();
+//    
+//    m_caretIndex.y() = row;
+//    clampIndexRow();
+//
+//    updateCaretPosition();
+//}
 
 //------------------------------------------------------------------------------
 void TextArea::clampIndexColumn()
 {
-    u32 lineSize = m_model.getLine(m_caretIndex.y()).size();
+    const TextWrapper::LightWrap & wrap = m_wrapper.getLightWrap(m_currentWrap);
+    u32 lineSize = m_model.getLine(wrap.line).size();
     if (m_caretIndex.x() >= lineSize)
         moveCaretToEndOfLine();
 }
@@ -233,7 +296,16 @@ void TextArea::clampIndexRow()
 {
     u32 lineCount = m_model.getLineCount();
     if (m_caretIndex.y() >= lineCount)
+    {
         m_caretIndex.y() = lineCount == 0 ? 0 : lineCount - 1;
+        m_currentWrap = m_wrapper.getWrapCount() - 1;
+    }
+}
+
+//------------------------------------------------------------------------------
+void TextArea::updateCurrentWrapIndex()
+{
+    m_currentWrap = m_wrapper.getWrapFromLineAndColumn(m_caretIndex.y(), m_caretIndex.x());
 }
 
 //------------------------------------------------------------------------------
@@ -260,24 +332,25 @@ sn::Vector2i TextArea::getCaretPositionFromIndex(sn::Vector2u index)
     s32 lineHeight = font->getLineHeight(format.size);
 
     // Get Y
-    pos.y() = index.y() * lineHeight;
+    pos.y() = m_currentWrap * lineHeight;
 
     // Get X
     const std::string & str = m_model.getLine(index.y());
-    pos.x() = font->getLineWidth(str.c_str(), index.x(), format);
+    const auto & wrap = m_wrapper.getWrap(m_currentWrap);
+    pos.x() = font->getLineWidth(str.c_str(), index.x() - wrap.begin, format);
 
     return pos;
 }
 
 //------------------------------------------------------------------------------
-void TextArea::findCaretPositionFromPixelPos(Vector2i pixelPos, Vector2u & out_caretIndex, Vector2i & out_caretPixelPos)
+void TextArea::findCaretPositionFromPixelPos(Vector2i pixelPos, Vector2u & out_caretIndex, Vector2i & out_caretPixelPos, u32 & out_wrapIndex)
 {
     // Top left by default
     out_caretIndex = Vector2u(0, 0);
     out_caretPixelPos = Vector2i(0, 0);
 
     // Do nothing if there is no text
-    if (m_model.getLineCount() == 0)
+    if (m_model.getLineCount() == 0 || m_wrapper.getWrapCount() == 0)
         return;
 
     // Get the font
@@ -288,6 +361,7 @@ void TextArea::findCaretPositionFromPixelPos(Vector2i pixelPos, Vector2u & out_c
     if (font == nullptr)
         return;
 
+    // Get format
     const FontFormat & format = theme->textFormat;
     s32 lineHeight = font->getLineHeight(format.size);
 
@@ -295,17 +369,21 @@ void TextArea::findCaretPositionFromPixelPos(Vector2i pixelPos, Vector2u & out_c
     if (lineHeight <= 0)
         return;
 
-    // Find line number and Y coordinate
-    u32 row = math::clamp(pixelPos.y() / lineHeight, 0, static_cast<s32>(m_model.getLineCount())-1);
-    out_caretIndex.y() = row;
-    out_caretPixelPos.y() = row * lineHeight;
+    // Find visual row
+    u32 visualRow = math::clamp(pixelPos.y() / lineHeight, 0, static_cast<s32>(m_wrapper.getWrapCount())-1);
+    const auto & wrap = m_wrapper.getWrap(visualRow);
+    out_wrapIndex = visualRow;
+
+    // Find Y
+    out_caretIndex.y() = wrap.line;
+    out_caretPixelPos.y() = visualRow * lineHeight;
 
     // Find column number and X coordinate
     if (pixelPos.x() > 0)
     {
-        const std::string & str = m_model.getLine(row);
+        const std::string & str = m_model.getLine(wrap.line);
 
-        u32 column = 0;
+        u32 column = wrap.begin;
         s32 cx = 0;
 
         for (; column < str.size(); ++column)
@@ -332,6 +410,22 @@ void TextArea::findCaretPositionFromPixelPos(Vector2i pixelPos, Vector2u & out_c
 void TextArea::resetCaretBlink()
 {
     m_lastMoveTime = getScene()->getTimeSinceStartup();
+}
+
+//------------------------------------------------------------------------------
+void TextArea::updateWrap()
+{
+    // Get the font
+    const Theme * theme = getTheme();
+    if (theme == nullptr)
+        return;
+    const Font * font = theme->getFont();
+    if (font == nullptr)
+        return;
+
+    m_wrapper.update(getLocalClientBounds().width(), *font, theme->textFormat);
+    updateCurrentWrapIndex();
+    updateCaretPosition();
 }
 
 //------------------------------------------------------------------------------

@@ -52,5 +52,50 @@ const std::string & TextModel::getLine(sn::u32 i) const
     return m_lines[i];
 }
 
+//------------------------------------------------------------------------------
+////////////////////////////////////
+//void TextModel::wrap(
+//    u32 row,
+//    TextWrapMode mode,
+//    const sn::Font & font,
+//    const sn::FontFormat & format,
+//    const sn::IntRect & rect
+//)
+////////////////////////////////////
+//{
+//    SN_ASSERT(row < m_lines.size(), "Invalid line index " << row);
+//
+//    LineModel & line = m_lines[row];
+//    s32 lineWidth = 0;
+//    std::vector<u32> wraps;
+//    wraps.push_back(0);
+//
+//    if (mode != TGUI_WRAP_NONE)
+//    {
+//        for (u32 i = 0; i < line.str.size(); ++i)
+//        {
+//            char c = line.str[i];
+//            const Glyph & glyph = font.getGlyph(c, format);
+//            u32 offset = glyph.advance;
+//            lineWidth += offset;
+//            if (lineWidth >= rect.width())
+//            {
+//                if (mode == TGUI_WRAP_CHARACTERS)
+//                {
+//                    wraps.push_back(i);
+//                    lineWidth = 0;
+//                }
+//                else
+//                {
+//                    // TODO
+//                }
+//            }
+//        }
+//    }
+//
+//    wraps.push_back(line.str.size());
+//    line.wraps = wraps;
+//}
+
 } // namespace tgui
 

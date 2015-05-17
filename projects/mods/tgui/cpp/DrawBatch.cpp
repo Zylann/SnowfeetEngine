@@ -32,6 +32,8 @@ void DrawBatch::setMaterial(sn::Material & m)
 //------------------------------------------------------------------------------
 void DrawBatch::fillRect(const IntRect & r, const IntRect & texRect, Vector2u ts, Color color)
 {
+    // TODO Optimize: we can pre-allocate data instead of appending one by one
+
     Mesh & m = *m_mesh;
 
     m.addPosition(static_cast<f32>(r.minX()), static_cast<f32>(r.minY()), 0.f);
@@ -156,6 +158,8 @@ void DrawBatch::drawTextLine(
 )
 /////////////////////////////////
 {
+    // TODO Optimize: we can pre-allocate a bunch of quads in the mesh rather than adding vertices one by one
+
     if (r_material == nullptr)
         return;
     if (charCount == 0)
@@ -166,7 +170,7 @@ void DrawBatch::drawTextLine(
     if (tex == nullptr)
         return;
 
-    // TODO Improve DrawBatch so we don't have to swap textures like this
+    // TODO Improve DrawBatch so we don't have to swap textures like this?
 
     TextureBase * lastTexture = nullptr;
     if (swapFontTexture)
@@ -237,6 +241,53 @@ void DrawBatch::drawText(
         drawTextLine(
             line.c_str(),
             line.size(),
+            area,
+            font,
+            format,
+            align,
+            color,
+            false // Don't set the font's texture (batching)
+        );
+
+        if (lineHeight > area.height())
+            break;
+        area.y() += lineHeight;
+        area.height() -= lineHeight;
+    }
+
+    setTexture(lastTexture);
+}
+
+//------------------------------------------------------------------------------
+void DrawBatch::drawText(
+    const TextWrapper & wrapper,
+    sn::IntRect area,
+    const sn::Font & font,
+    sn::FontFormat format,
+    TextAlignment align,
+    sn::Color color
+    )
+{
+    TextureBase * tex = font.getTexture(format);
+    if (tex == nullptr)
+        return;
+
+    s32 lineHeight = font.getLineHeight(format.size);
+
+    TextureBase * lastTexture = getTexture();
+    setTexture(tex);
+
+    const TextModel & model = wrapper.getTextModel();
+
+    for (u32 i = 0; i < wrapper.getWrapCount(); ++i)
+    {
+        TextWrapper::Wrap wrap = wrapper.getWrap(i);
+
+        const std::string & line = model.getLine(wrap.line);
+
+        drawTextLine(
+            line.c_str() + wrap.begin,
+            wrap.end - wrap.begin,
             area,
             font,
             format,

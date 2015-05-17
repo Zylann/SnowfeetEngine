@@ -124,6 +124,7 @@ protected:
     virtual void onKeyDown(Event & e) {}
     virtual void onControlResized() {}
     virtual void onSetCursor(Event & e);
+    virtual void onSizeChanged() {}
 
 	//--------------------------------
     // Helpers

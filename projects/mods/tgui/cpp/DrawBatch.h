@@ -9,7 +9,7 @@
 
 #include "Border.h"
 #include "TextAlignment.h"
-#include "TextModel.h"
+#include "TextWrapper.h"
 
 namespace tgui
 {
@@ -51,6 +51,15 @@ public:
     // Helper (uses drawTextLine())
     void drawText(
         const TextModel & model,
+        sn::IntRect area,
+        const sn::Font & font,
+        sn::FontFormat format,
+        TextAlignment align = TGUI_ALIGN_LEFT,
+        sn::Color color = sn::Color(1,1,1,1)
+    );
+
+    void drawText(
+        const TextWrapper & wrapper,
         sn::IntRect area,
         const sn::Font & font,
         sn::FontFormat format,

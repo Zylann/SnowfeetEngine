@@ -37,7 +37,12 @@ sn::IntRect Control::getClientBounds() const
 //------------------------------------------------------------------------------
 void Control::setLocalClientBounds(sn::IntRect bounds)
 {
+    bool sizeChanged = m_localBounds.size() != bounds.size();
     m_localBounds = bounds;
+    if (sizeChanged)
+    {
+        onSizeChanged();
+    }
 }
 
 //------------------------------------------------------------------------------

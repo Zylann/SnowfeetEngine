@@ -3,10 +3,13 @@
 
 #include <vector>
 #include <core/types.hpp>
+#include <core/asset/base/Font.hpp>
 
 namespace tgui
 {
 
+/// \brief Stores actual editable data of a text.
+/// The text is stored as lines for better performance at editing.
 class TextModel
 {
 public:
