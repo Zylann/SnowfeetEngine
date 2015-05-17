@@ -6,6 +6,7 @@ using namespace sn;
 namespace tgui
 {
 
+//------------------------------------------------------------------------------
 void TextModel::setSource(const std::string & sourceText)
 {
     m_lines.clear();
@@ -26,6 +27,7 @@ void TextModel::setSource(const std::string & sourceText)
     }
 }
 
+//------------------------------------------------------------------------------
 void TextModel::getSource(std::string & out_text) const
 {
     if (m_lines.empty())
@@ -43,6 +45,7 @@ void TextModel::getSource(std::string & out_text) const
     }
 }
 
+//------------------------------------------------------------------------------
 const std::string & TextModel::getLine(sn::u32 i) const
 {
     SN_ASSERT(i < m_lines.size(), "Invalid line index " << i);
