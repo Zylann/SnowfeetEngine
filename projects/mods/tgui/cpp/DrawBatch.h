@@ -59,7 +59,7 @@ public:
     );
 
     void setScissor(sn::IntRect rect, sn::u32 windowID);
-    void disableScissor() { m_dc.disableScissor(); }
+    void disableScissor();
 
 private:
     void setTexture(sn::TextureBase * tex);

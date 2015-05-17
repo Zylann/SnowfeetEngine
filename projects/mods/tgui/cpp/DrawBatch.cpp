@@ -297,6 +297,13 @@ void DrawBatch::setScissor(sn::IntRect rect, u32 windowID)
 }
 
 //------------------------------------------------------------------------------
+void DrawBatch::disableScissor()
+{
+    flush();
+    m_dc.disableScissor();
+}
+
+//------------------------------------------------------------------------------
 void DrawBatch::flush()
 {
     sn::Mesh & m = *m_mesh;
