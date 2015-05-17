@@ -24,6 +24,10 @@ void unserialize(JsonBox::Value & o, TextWrapMode & m);
 class TextWrapper
 {
 public:
+    //---------------------------------
+    // Structures
+    //---------------------------------
+
     struct LightWrap
     {
         /// \brief Index of the line in TextModel
@@ -40,6 +44,10 @@ public:
         sn::u32 end;
     };
 
+    //---------------------------------
+    // Constructor and options
+    //---------------------------------
+
     TextWrapper(const TextModel & model) :
         m_wrapMode(TGUI_WRAP_WORDS),
         r_model(model)
@@ -50,6 +58,10 @@ public:
 
     /// \brief Gets the wrapping mode.
     TextWrapMode getWrapMode() const { return m_wrapMode; }
+
+    //---------------------------------
+    // State update
+    //---------------------------------
 
     /// \brief Recalculate wraps without... wrapping.
     void updateNoWrap();
@@ -64,6 +76,10 @@ public:
     );
 
     // TODO Per-case functions for more efficiency
+
+    //---------------------------------
+    // State access
+    //---------------------------------
 
     /// \brief Gets a row's info as it is internally stored.
     const LightWrap & getLightWrap(sn::u32 visualRow) const;
