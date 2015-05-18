@@ -241,8 +241,6 @@ void TextArea::moveCaretDown()
 
         updateCaretPosition();
     }
-
-    SN_LOG("Caret index: " << sn::toString(m_caretIndex) << ", row: " << m_currentWrap);
 }
 
 //------------------------------------------------------------------------------
