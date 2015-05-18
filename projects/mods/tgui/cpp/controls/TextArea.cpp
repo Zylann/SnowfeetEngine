@@ -337,7 +337,7 @@ sn::Vector2i TextArea::getCaretPositionFromIndex(sn::Vector2u index)
     // Get X
     const std::string & str = m_model.getLine(index.y());
     const auto & wrap = m_wrapper.getWrap(m_currentWrap);
-    pos.x() = font->getLineWidth(str.c_str(), index.x() - wrap.begin, format);
+    pos.x() = font->getLineWidth(str.c_str() + wrap.begin, index.x() - wrap.begin, format);
 
     return pos;
 }
