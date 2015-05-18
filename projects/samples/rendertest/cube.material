@@ -1,0 +1,7 @@
+{
+	"shader":"basic3D_textured",
+	"depthTest":true,
+	"params":{
+		"u_MainTexture":{"@type":"texture", "value":"snowfeet_logo"}
+	}
+}
