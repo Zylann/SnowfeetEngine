@@ -199,8 +199,11 @@ void TextArea::moveCaretUp()
             // We moved to the previous line
             --m_caretIndex.y();
             m_caretIndex.x() += wrap.begin;
-            clampIndexColumn();
         }
+
+		// Make sure we don't go out of line bounds
+		if (m_caretIndex.x() >= wrap.end)
+			m_caretIndex.x() = wrap.end;
 
         updateCaretPosition();
     }
@@ -224,8 +227,11 @@ void TextArea::moveCaretDown()
         {
             // We moved to the next line
             ++m_caretIndex.y();
-            clampIndexColumn();
         }
+
+		// Make sure we don't go out of line bounds
+		if (m_caretIndex.x() >= wrap.end)
+			m_caretIndex.x() = wrap.end;
 
         updateCaretPosition();
     }
