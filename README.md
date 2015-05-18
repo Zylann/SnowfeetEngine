@@ -8,10 +8,11 @@ I develop it as a hobby, for fun.
 It is a spin-off of an earlier version called "Snowfeet Framework",
 with a completely new modular structure and integrated scripting.
 
-The engine is in its early stages of development, so lots of code is WIP,
+The engine is in its early stages of development, so lots of code is WIP, unoptimized,
 breaking changes may occur, and the main platform I develop on/for is win32 with Visual Studio 2013.
-However, the engine is aimed at being cross-platform (desktop or maybe mobile),
-so any platform-specific code can go in separate implementation files.
+However, the engine is aimed at being cross-platform (desktop, mobile or even web),
+so any platform-specific code goes in separate implementation files.
+
 
 Engine structure
 =================
@@ -32,8 +33,7 @@ What the engine does now
 ![Screenshot](http://zylannprods.fr/snowfeet/engine/screenshots/2015_04_11_0041_oculus7_bunny3_w800.png)
 Testing Oculus Rift display with engine-rendered distortion
 
-The current focus is basic rendering, scripting and assets management.
-Things like texture and shaders live-edition are in the works too :)
+My current focus is on the TGUI module, then scripting, rendering fondation improvements and other various things.
 
 
 Features
@@ -45,12 +45,13 @@ Features
 - Entity hierarchy
 - Dynamic module system
 - Multi-screens
+- GUI (WIP)
 - Scenes described with JSON
 
 
 Web export
 ----------
-I might try Emscripten, one day. Sounds like fun.
+I should try Emscripten as a new platform, one day. Sounds like fun.
 
 
 Binaries
@@ -83,7 +84,7 @@ You will need the following to compile everything:
 - Optionally, an IDE
 - Optionally, Git
 
-That's all, the project then should work out of the box.
+That's all, the project should work out of the box.
 
 The premake build system is used to generate IDE solutions or makefiles.
 I choosed it because I know it better than Cmake, it is very small,
