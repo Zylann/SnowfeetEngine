@@ -65,6 +65,12 @@ void TextArea::onDrawSelf(DrawBatch & batch)
     }
 
     batch.disableScissor();
+
+	// DEBUG
+	//std::stringstream ss;
+	//ss << "Caret: " << sn::toString(m_caretIndex) << ", row: " << m_currentWrap;
+	//std::string s = ss.str();
+	//batch.drawTextLine(s.c_str(), s.size(), IntRect::fromPositionSize(300, 10, 200, 30), *font, format, TGUI_ALIGN_LEFT, theme->textColor);
 }
 
 //------------------------------------------------------------------------------
