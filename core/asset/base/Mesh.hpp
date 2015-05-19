@@ -14,6 +14,8 @@ This file is part of the SnowfeetEngine project.
 #include <core/asset/Asset.hpp>
 #include <vector>
 
+#include <core/asset/base/VertexDescription.h>
+
 namespace sn
 {
 
@@ -27,6 +29,22 @@ enum MeshPrimitiveType
     // Emulated primitives
     SN_MESH_QUADS = 3
 };
+
+class Mesh2
+{
+public:
+
+
+private:
+	VertexDescription m_vertexDescription;
+
+	std::vector< std::vector<char> > m_vertexArrays;
+
+	std::vector<u32> m_indices;
+
+};
+
+// TODO
 
 class SN_API Mesh : public Asset
 {
