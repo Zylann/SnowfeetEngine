@@ -19,6 +19,9 @@ This file is part of the SnowfeetEngine project.
     else                                                                       \
         assert(__callOnce)
 
+// Expands to the current function name
+#define SN_FUNCNAME __FUNCTION__
+
 #endif // __HEADER_SN_MACROS__
 
 
