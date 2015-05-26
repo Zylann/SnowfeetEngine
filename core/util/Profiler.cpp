@@ -7,6 +7,19 @@ namespace sn
 {
 
 //------------------------------------------------------------------------------
+Profiler & Profiler::get()
+{
+	static Profiler s_instance;
+	return s_instance;
+}
+
+//------------------------------------------------------------------------------
+void Profiler::setEnabled(bool e)
+{
+	m_enabled = e;
+}
+
+//------------------------------------------------------------------------------
 void Profiler::beginSample(const char * name, const char * file, s32 line, const char * customName)
 {
 	if (!m_enabled)
@@ -18,6 +31,7 @@ void Profiler::beginSample(const char * name, const char * file, s32 line, const
 	u32 i = 0;
 
 	// Note: name should be guaranteed to be unique because it's a pointer to a string litteral
+	// TODO Normalize file path
 	
 	Sample * samplePtr = nullptr;
 
@@ -119,6 +133,8 @@ void serialize(JsonBox::Value & o, const Profiler::Sample & sample)
 	o["line"].setInt(sample.line);
 	o["hitCount"].setInt(sample.hitCount);
 	o["totalTime"].setInt(static_cast<s32>(sample.totalTime.asMicroseconds()));
+	if (sample.customName)
+		o["customName"].setString(sample.customName);
 }
 
 //------------------------------------------------------------------------------

@@ -28,7 +28,7 @@ namespace sn
 
 /// \brief Simple profiler for C++ code blocks.
 /// \note Not thread-safe yet.
-class Profiler
+class SN_API Profiler
 {
 public:
 	enum DumpMode
@@ -67,6 +67,10 @@ public:
 	bool isEnabled() const { return m_enabled; }
 
 private:
+	Profiler() :
+		m_enabled(false)
+	{}
+
 	u32 getParentSample() const;
 
 private:

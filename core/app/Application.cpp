@@ -12,6 +12,7 @@ This file is part of the SnowfeetEngine project.
 #include "../object_types.hpp"
 #include "../system/gui/SystemGUI.hpp"
 #include "../asset/AssetDatabase.hpp"
+#include "../util/Profiler.h"
 
 namespace sn
 {
@@ -76,6 +77,11 @@ int Application::execute(CommandLine commandLine)
 //------------------------------------------------------------------------------
 int Application::executeEx()
 {
+#ifdef SN_BUILD_DEBUG
+	Profiler::get().setEnabled(true);
+#endif
+	SN_BEGIN_PROFILE_SAMPLE_NAMED("Startup");
+
     if (m_pathToMainMod.empty())
     {
         SN_WARNING("No main mod specified.");
@@ -123,6 +129,7 @@ int Application::executeEx()
         m_runFlag = false;
     }
 
+	SN_END_PROFILE_SAMPLE();
     SN_LOG("Entering main loop");
 
 #ifdef SN_BUILD_DEBUG
@@ -133,6 +140,8 @@ int Application::executeEx()
     // Enter the main loop
     while (m_runFlag)
     {
+		SN_BEGIN_PROFILE_SAMPLE_NAMED("Poll system events");
+
         Clock frameClock;
         m_timeStepper.onBeginFrame();
 
@@ -159,6 +168,9 @@ int Application::executeEx()
 
         AssetDatabase::get().updateFileChanges();
 
+		SN_END_PROFILE_SAMPLE();
+		SN_BEGIN_PROFILE_SAMPLE_NAMED("Global update");
+
         std::vector<Time> deltas = m_timeStepper.getCallDeltas();
         //for (u32 i = 0; i < deltas.size() && m_runFlag; ++i)
         //{
@@ -168,6 +180,10 @@ int Application::executeEx()
         //    update(deltas[i]);
         //}
         update(Time::milliseconds(16));
+
+		SN_END_PROFILE_SAMPLE();
+		SN_BEGIN_PROFILE_SAMPLE_NAMED("Global sleep");
+
         // TODO The update timing system should be improved
         // TODO Sleeping here doesn't makes sense without a render context, so put this in RenderManager?
         // Sleep until the next frame
@@ -176,6 +192,8 @@ int Application::executeEx()
         {
             Thread::sleep(sleepTime);
         }
+
+		SN_END_PROFILE_SAMPLE();
 
         m_timeStepper.onEndFrame();
 
@@ -201,6 +219,7 @@ int Application::executeEx()
     }
 
     SN_LOG("Exiting main loop");
+	SN_BEGIN_PROFILE_SAMPLE_NAMED("Shutdown");
 
     // Destroy all entities but services (which may be needed for releasing assets)
     SN_LOG("Destroying entities...");
@@ -229,6 +248,12 @@ int Application::executeEx()
     SystemGUI::get().destroyAllWindows();
 
     // TODO uninitialize all scripts before modules get destroyed
+
+	SN_END_PROFILE_SAMPLE();
+
+#ifdef SN_BUILD_DEBUG
+	Profiler::get().dump("profile_data.json", Profiler::DUMP_JSON);
+#endif
 
     return 0;
 }
