@@ -42,10 +42,10 @@ public:
 		const char * file;
 		const char * customName;
 		s32 line;
-		u32 hitCount;
-		Time totalTime;
-		Time pausedTime;
-		Clock clock;
+		u32 depth;
+		Time beginTime;
+		Time endTime;
+		Time overheadTime;
 	};
 
 	static Profiler & get();
@@ -76,8 +76,8 @@ private:
 private:
 	bool m_enabled;
 	std::vector<Sample> m_samples;
-	std::unordered_map<const char *, u32> m_nameToSample;
 	std::stack<u32> m_sampleStack;
+	Clock m_clock;
 
 };
 

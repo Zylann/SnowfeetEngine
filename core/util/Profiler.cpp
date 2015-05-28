@@ -28,49 +28,23 @@ void Profiler::beginSample(const char * name, const char * file, s32 line, const
 	Clock overheadClock;
 	u32 parentIndex = getParentSample();
 
-	u32 i = 0;
+	u32 i = m_samples.size();
 
-	// Note: name should be guaranteed to be unique because it's a pointer to a string litteral
-	// TODO Normalize file path
+	m_samples.push_back(Sample());
+	Sample & s = m_samples.back();
 	
-	Sample * samplePtr = nullptr;
-
-	auto it = m_nameToSample.find(name);
-	if(it == m_nameToSample.end())
-	{
-		i = m_samples.size();
-		
-		Sample s;
-		s.name = name;
-		s.file = file;
-		s.line = line;
-		s.hitCount = 1;
-		s.customName = customName;
-
-		m_samples.push_back(s);
-		m_nameToSample[name] = i;
-
-		samplePtr = &m_samples.back();
-	}
-	else
-	{
-		i = it->second;
-		Sample & s = m_samples[i];
-
-		++s.hitCount;
-
-		samplePtr = &s;
-	}
+	s.name = name;
+	s.file = file;
+	s.line = line;
+	s.customName = customName;
+	s.beginTime = m_clock.getElapsedTime();
+	s.depth = m_sampleStack.size();
 
 	m_sampleStack.push(i);
 
-	SN_ASSERT(samplePtr != nullptr, "Invalid state");
-
 	// Subtract the overhead on the parent sample
 	if (parentIndex != -1)
-		m_samples[parentIndex].totalTime -= overheadClock.getElapsedTime();
-
-	samplePtr->clock.restart();
+		m_samples[parentIndex].overheadTime += overheadClock.getElapsedTime();
 }
 
 //------------------------------------------------------------------------------
@@ -85,7 +59,7 @@ void Profiler::endSample()
 		m_sampleStack.pop();
 		Sample & s = m_samples[i];
 
-		s.totalTime += s.clock.getElapsedTime();
+		s.endTime = m_clock.getElapsedTime();
 	}
 }
 
@@ -114,6 +88,8 @@ void Profiler::dump(const char * filename, DumpMode mode) const
 //------------------------------------------------------------------------------
 void Profiler::dump(std::ostream & os, DumpMode mode) const
 {
+	SN_LOG("Dumping profiling data...");
+
 	switch (mode)
 	{
 	case DUMP_JSON:
@@ -131,8 +107,14 @@ void serialize(JsonBox::Value & o, const Profiler::Sample & sample)
 {
 	o["file"].setString(sample.file);
 	o["line"].setInt(sample.line);
-	o["hitCount"].setInt(sample.hitCount);
-	o["totalTime"].setInt(static_cast<s32>(sample.totalTime.asMicroseconds()));
+	o["depth"].setInt(sample.depth);
+	o["beginTime"].setInt(static_cast<s32>(sample.beginTime.asMicroseconds())); // JSON love
+	o["endTime"].setInt(static_cast<s32>(sample.endTime.asMicroseconds()));
+	o["overheadTime"].setInt(static_cast<s32>(sample.overheadTime.asMicroseconds()));
+
+	if (sample.name)
+		o["name"].setString(sample.name);
+
 	if (sample.customName)
 		o["customName"].setString(sample.customName);
 }
@@ -151,7 +133,7 @@ void Profiler::dumpJson(std::ostream & os) const
 
 	JsonBox::Value jsonRoot;
 	jsonRoot["samples"] = jsonSamples;
-	jsonRoot.writeToStream(os);
+	jsonRoot.writeToStream(os, false);
 }
 
 } // namespace sn
