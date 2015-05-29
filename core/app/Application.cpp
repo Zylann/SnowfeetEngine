@@ -77,9 +77,6 @@ int Application::execute(CommandLine commandLine)
 //------------------------------------------------------------------------------
 int Application::executeEx()
 {
-#ifdef SN_BUILD_DEBUG
-	Profiler::get().setEnabled(true);
-#endif
 	SN_BEGIN_PROFILE_SAMPLE_NAMED("Startup");
 
     if (m_pathToMainMod.empty())
@@ -251,9 +248,8 @@ int Application::executeEx()
 
 	SN_END_PROFILE_SAMPLE();
 
-#ifdef SN_BUILD_DEBUG
-	Profiler::get().dump("profile_data.json", Profiler::DUMP_JSON);
-#endif
+	if (Profiler::get().isEnabled())
+		Profiler::get().dump("profile_data.json", Profiler::DUMP_JSON);
 
     return 0;
 }
@@ -315,10 +311,14 @@ bool Application::parseCommandLine(CommandLine commandLine)
             {
                 m_pathToMainMod = commandLine.getArg(++i);
             }
-            else if (argc == 6 && arg == L"--trackfiles")
+            else if (arg == L"--trackfiles")
             {
                 AssetDatabase::get().setTrackFileChanges(true);
             }
+			else if (arg == L"--profile")
+			{
+				Profiler::get().setEnabled(true);
+			}
             else
             {
                 SN_WERROR("Unrecognized command line argument: \"" << arg << '"' << endl);

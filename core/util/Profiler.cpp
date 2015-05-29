@@ -42,7 +42,7 @@ void Profiler::beginSample(const char * name, const char * file, s32 line, const
 
 	m_sampleStack.push(i);
 
-	// Subtract the overhead on the parent sample
+	// Add the overhead on the parent sample
 	if (parentIndex != -1)
 		m_samples[parentIndex].overheadTime += overheadClock.getElapsedTime();
 }
