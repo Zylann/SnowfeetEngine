@@ -64,6 +64,13 @@ void Profiler::endSample()
 }
 
 //------------------------------------------------------------------------------
+void Profiler::markFrame()
+{
+    if (m_enabled)
+        m_frameMarks.push_back(m_samples.empty() ? 0 : m_samples.size() - 1);
+}
+
+//------------------------------------------------------------------------------
 u32 Profiler::getParentSample() const
 {
 	if (m_sampleStack.empty())
@@ -122,8 +129,7 @@ void serialize(JsonBox::Value & o, const Profiler::Sample & sample)
 //------------------------------------------------------------------------------
 void Profiler::dumpJson(std::ostream & os) const
 {
-	JsonBox::Value jsonSamples;
-
+    JsonBox::Value jsonSamples;
 	size_t i = 0;
 	for (auto it = m_samples.begin(); it != m_samples.end(); ++it)
 	{
@@ -131,9 +137,45 @@ void Profiler::dumpJson(std::ostream & os) const
 		serialize(jsonSamples[i++], sample);
 	}
 
+    JsonBox::Value jsonFrames;
+    size_t frameIndex = 0;
+    for (auto it = m_frameMarks.begin(); it != m_frameMarks.end(); ++it)
+    {
+        jsonFrames[frameIndex].setInt(m_frameMarks[frameIndex]);
+        ++frameIndex;
+    }
+
 	JsonBox::Value jsonRoot;
 	jsonRoot["samples"] = jsonSamples;
+    jsonRoot["frames"] = jsonFrames;
 	jsonRoot.writeToStream(os, false);
+}
+
+//------------------------------------------------------------------------------
+void Profiler::clear()
+{
+    m_samples.clear();
+    while (!m_sampleStack.empty())
+        endSample();
+}
+
+//------------------------------------------------------------------------------
+const Profiler::Sample & Profiler::getLastSampleByDepth(u32 depth, u32 * out_index) const
+{
+    SN_ASSERT(!m_samples.empty(), "No samples recorded");
+    for (u32 i = m_samples.size() - 1; i < m_samples.size(); --i)
+    {
+        const Sample & s = m_samples[i];
+        if (s.depth == depth)
+        {
+            if (out_index)
+                *out_index = i;
+            return s;
+        }
+    }
+    if (out_index)
+        *out_index = 0;
+    return m_samples[0];
 }
 
 } // namespace sn

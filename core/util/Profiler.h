@@ -59,12 +59,23 @@ public:
 
 	void endSample();
 
+    void markFrame();
+
 	void dump(const char * filename, DumpMode mode) const;
 	void dump(std::ostream & os, DumpMode mode) const;
 	void dumpJson(std::ostream & os) const;
 
 	void setEnabled(bool e);
 	bool isEnabled() const { return m_enabled; }
+
+    const std::vector<Sample> & getSamples() const { return m_samples; }
+    const std::vector<u32> & getFrames() const { return m_frameMarks; }
+
+    void clear();
+
+    u32 getSampleCount() const { return m_samples.size(); }
+
+    const Sample & getLastSampleByDepth(u32 depth, u32 * out_index=nullptr) const;
 
 private:
 	Profiler() :
@@ -76,6 +87,7 @@ private:
 private:
 	bool m_enabled;
 	std::vector<Sample> m_samples;
+    std::vector<u32> m_frameMarks;
 	std::stack<u32> m_sampleStack;
 	Clock m_clock;
 
@@ -98,7 +110,6 @@ public:
 		Profiler::get().endSample();
 	}
 };
-
 
 } // namespace sn
 

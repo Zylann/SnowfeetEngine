@@ -137,6 +137,7 @@ int Application::executeEx()
     // Enter the main loop
     while (m_runFlag)
     {
+        Profiler::get().markFrame();
 		SN_BEGIN_PROFILE_SAMPLE_NAMED("Poll system events");
 
         Clock frameClock;
