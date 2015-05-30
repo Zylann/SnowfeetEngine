@@ -120,6 +120,8 @@ private:
 
     /// \brief The main loop will run as long as this flag is true
     bool m_runFlag;
+    
+    bool m_dumpProfilingOnClose;
 
 };
 

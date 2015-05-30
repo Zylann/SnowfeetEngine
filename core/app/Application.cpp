@@ -30,7 +30,8 @@ Application & Application::get()
 Application::Application() :
     m_scriptEngine(*this),
     m_scene(nullptr),
-    m_runFlag(false)
+    m_runFlag(false),
+    m_dumpProfilingOnClose(false)
 {
     SN_ASSERT(g_applicationInstance == nullptr, "Application: multiple instances are not allowed.");
     g_applicationInstance = this;
@@ -249,7 +250,7 @@ int Application::executeEx()
 
 	SN_END_PROFILE_SAMPLE();
 
-	if (Profiler::get().isEnabled())
+	if (Profiler::get().isEnabled() && m_dumpProfilingOnClose)
 		Profiler::get().dump("profile_data.json", Profiler::DUMP_JSON);
 
     return 0;
@@ -319,6 +320,11 @@ bool Application::parseCommandLine(CommandLine commandLine)
 			else if (arg == L"--profile")
 			{
 				Profiler::get().setEnabled(true);
+                if (i + 1 < argc && commandLine.getArg(i + 1) == L"dump")
+                {
+                    m_dumpProfilingOnClose = true;
+                    ++i;
+                }
 			}
             else
             {
@@ -420,7 +426,7 @@ Module * Application::loadModule(const String & path)
     }
 
     // Note: the last loaded module will be the one we requested when calling this function
-    return lastModule; 
+    return lastModule;
 }
 
 //------------------------------------------------------------------------------
