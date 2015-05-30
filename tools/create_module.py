@@ -161,5 +161,8 @@ def main():
 		print_usage()
 
 
+# Place ourselves in the root of SnowfeetEngine
+os.chdir('..')
+
 main()
 
