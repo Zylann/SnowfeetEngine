@@ -150,10 +150,10 @@ private:
 
     VariantType m_type;
     VariantData m_data;
-    };
+};
 
-    std::string SN_API toString(VariantType vt);
-    std::string SN_API toString(const Variant & v);
+std::string SN_API toString(VariantType vt);
+std::string SN_API toString(const Variant & v);
 
 } // namespace sn
 
