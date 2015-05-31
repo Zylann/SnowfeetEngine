@@ -26,6 +26,7 @@ int appMain(int argc, char * argv[])
     //MemoryManager::get().reportLeaks();
 
     // Maintains the console window open on exit
+    std::cout << "D: Remaining objects: " << Object::getInstanceCount() << std::endl;
     std::cout << "I: Execution finished with code " << exitCode << ". Press a key to dismiss..." << std::endl;
     sn::pauseConsole();
 

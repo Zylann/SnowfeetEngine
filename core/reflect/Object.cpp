@@ -6,8 +6,42 @@ This file is part of the SnowfeetEngine project.
 
 #include "Object.hpp"
 
+#ifdef SN_BUILD_DEBUG
+#include <unordered_set>
+#include <core/system/thread/Mutex.hpp>
+#endif
+
 namespace sn
 {
+
+#ifdef SN_BUILD_DEBUG
+    
+    namespace
+    {
+        std::unordered_set<Object*> s_allObjects;
+        Mutex s_allObjectsMutex;
+    }
+
+    Object::Object()
+    {
+        Lock l(s_allObjectsMutex);
+        s_allObjects.insert(this);
+    }
+
+    Object::~Object()
+    {
+        Lock l(s_allObjectsMutex);
+        s_allObjects.erase(this);
+    }
+
+    // Static
+    u32 Object::getInstanceCount()
+    {
+        Lock l(s_allObjectsMutex);
+        return s_allObjects.size();
+    }
+
+#endif
 
 Object * instantiateDerivedObject(const std::string & typeName, const std::string & derivedTypeName)
 {

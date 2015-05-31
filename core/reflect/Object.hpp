@@ -100,7 +100,13 @@ public:
     _SN_DECLARE_GETOBJECTTYPE(sn::Object)
     _SN_DECLARE_ISINSTANCEOF()
 
+#ifdef SN_BUILD_DEBUG
+    Object();
+    virtual ~Object();
+    static u32 getInstanceCount();
+#else
     virtual ~Object() {}
+#endif
 
     static sn::Object * instantiate()
     {
