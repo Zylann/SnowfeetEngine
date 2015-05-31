@@ -1,6 +1,8 @@
 #ifndef __HEADER_SN_SERIALIZATIONCONTEXT__
 #define __HEADER_SN_SERIALIZATIONCONTEXT__
 
+#include <string>
+
 namespace sn
 {
 
