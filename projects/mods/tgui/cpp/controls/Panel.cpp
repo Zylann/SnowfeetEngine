@@ -1,5 +1,7 @@
-#include "Panel.h"
+#include <core/util/Profiler.h>
 #include <core/system/gui/SystemGUI.hpp>
+
+#include "Panel.h"
 
 using namespace sn;
 
@@ -21,6 +23,8 @@ void Panel::onDrawSelf(DrawBatch & batch)
     const Theme * theme = getTheme();
     if (theme == nullptr)
         return;
+    
+    SN_BEGIN_PROFILE_SAMPLE_NAMED("TGUI draw Panel");
 
     const ControlTheme & ct = theme->panelTheme;
 
@@ -30,6 +34,8 @@ void Panel::onDrawSelf(DrawBatch & batch)
     Vector2u ts = theme->getTextureAtlasSize();
 
     batch.fillNineSlices(bounds, ct.slicing, uvRect, ts);
+
+    SN_END_PROFILE_SAMPLE();
 }
 
 //------------------------------------------------------------------------------

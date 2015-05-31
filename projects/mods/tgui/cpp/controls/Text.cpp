@@ -1,3 +1,5 @@
+#include <core/util/Profiler.h>
+
 #include "Text.h"
 #include "../theme/Theme.h"
 
@@ -16,6 +18,8 @@ void Text::onDrawSelf(DrawBatch & batch)
     if (font == nullptr)
         return;
 
+    SN_BEGIN_PROFILE_SAMPLE_NAMED("TGUI Draw Text");
+
     const FontFormat & format = theme->textFormat;
     IntRect controlBounds = getClientBounds();
 
@@ -31,6 +35,8 @@ void Text::onDrawSelf(DrawBatch & batch)
     );
 
     batch.disableScissor();
+
+    SN_END_PROFILE_SAMPLE();
 }
 
 //------------------------------------------------------------------------------

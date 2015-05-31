@@ -1,3 +1,5 @@
+#include <core/util/Profiler.h>
+
 #include "Button.h"
 #include "../GUI.h"
 #include "../DrawBatch.h"
@@ -28,6 +30,8 @@ void Button::onDrawSelf(DrawBatch & batch)
     const Theme & theme = gui->getTheme();
     const ControlTheme & ct = theme.controlTheme;
 
+    SN_BEGIN_PROFILE_SAMPLE_NAMED("TGUI draw Button");
+
     IntRect bounds = getClientBounds();
 
     u32 state = ControlTheme::STATE_NORMAL;
@@ -40,6 +44,8 @@ void Button::onDrawSelf(DrawBatch & batch)
     Vector2u ts = theme.getTextureAtlasSize();
 
     batch.fillNineSlices(bounds, ct.slicing, uvRect, ts);
+
+    SN_END_PROFILE_SAMPLE();
 }
 
 //------------------------------------------------------------------------------

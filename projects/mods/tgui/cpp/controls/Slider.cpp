@@ -1,3 +1,4 @@
+#include <core/util/Profiler.h>
 #include "Slider.h"
 
 using namespace sn;
@@ -17,6 +18,8 @@ void Slider::onDrawSelf(DrawBatch & batch)
     const Theme * theme = getTheme();
     if (theme == nullptr)
         return;
+
+    SN_BEGIN_PROFILE_SAMPLE_NAMED("TGUI draw Slider");
 
     IntRect b = getClientBounds();
     Vector2u ts = theme->getTextureAtlasSize();
@@ -52,6 +55,8 @@ void Slider::onDrawSelf(DrawBatch & batch)
             thumbImageRect, ts
         );
     }
+
+    SN_END_PROFILE_SAMPLE();
 }
 
 //------------------------------------------------------------------------------

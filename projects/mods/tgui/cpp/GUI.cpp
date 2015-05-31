@@ -1,5 +1,6 @@
 #include <core/system/gui/SystemGUI.hpp>
 #include <core/asset/AssetDatabase.hpp>
+#include <core/util/Profiler.h>
 
 #include "GUI.h"
 #include "DrawBatch.h"
@@ -60,6 +61,8 @@ const Theme & GUI::getTheme() const
 //------------------------------------------------------------------------------
 void GUI::draw(sn::IDrawContext & dc)
 {
+    SN_BEGIN_PROFILE_SAMPLE_NAMED("TGUI draw");
+
     const Theme & theme = getTheme();
 
     Material * themeMaterial = theme.getMaterial();
@@ -86,6 +89,8 @@ void GUI::draw(sn::IDrawContext & dc)
         onDraw(batch);
         batch.flush();
     }
+
+    SN_END_PROFILE_SAMPLE();
 }
 
 //------------------------------------------------------------------------------

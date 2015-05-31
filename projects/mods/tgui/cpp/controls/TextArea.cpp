@@ -2,6 +2,7 @@
 #include <core/system/gui/SystemGUI.hpp>
 #include <core/scene/Scene.hpp>
 #include <core/util/stringutils.hpp>
+#include <core/util/Profiler.h>
 
 using namespace sn;
 
@@ -24,6 +25,8 @@ void TextArea::onDrawSelf(DrawBatch & batch)
     Font * font = theme->getFont();
     if (font == nullptr)
         return;
+
+    SN_BEGIN_PROFILE_SAMPLE_NAMED("TGUI draw TextArea");
 
     const ControlTheme & bg = theme->textAreaBackground;
     IntRect bounds = getClientBounds();
@@ -71,6 +74,8 @@ void TextArea::onDrawSelf(DrawBatch & batch)
 	//ss << "Caret: " << sn::toString(m_caretIndex) << ", row: " << m_currentWrap;
 	//std::string s = ss.str();
 	//batch.drawTextLine(s.c_str(), s.size(), IntRect::fromPositionSize(300, 10, 200, 30), *font, format, TGUI_ALIGN_LEFT, theme->textColor);
+
+    SN_END_PROFILE_SAMPLE();
 }
 
 //------------------------------------------------------------------------------
