@@ -1,6 +1,6 @@
 #include "Profiler.h"
 #include "Log.hpp"
-#include "../json/json_utils.hpp"
+#include "../util/assert.hpp"
 #include <fstream>
 
 namespace sn
@@ -110,45 +110,110 @@ void Profiler::dump(std::ostream & os, DumpMode mode) const
 }
 
 //------------------------------------------------------------------------------
-void serialize(JsonBox::Value & o, const Profiler::Sample & sample)
+//void serialize(JsonBox::Value & o, const Profiler::Sample & sample)
+//{
+//	o["file"].setString(sample.file);
+//	o["line"].setInt(sample.line);
+//	o["depth"].setInt(sample.depth);
+//	o["beginTime"].setInt(static_cast<s32>(sample.beginTime.asMicroseconds())); // JSON love
+//	o["endTime"].setInt(static_cast<s32>(sample.endTime.asMicroseconds()));
+//	o["overheadTime"].setInt(static_cast<s32>(sample.overheadTime.asMicroseconds()));
+//
+//	if (sample.name)
+//		o["name"].setString(sample.name);
+//
+//	if (sample.customName)
+//		o["customName"].setString(sample.customName);
+//}
+
+//------------------------------------------------------------------------------
+//void Profiler::dumpJson(std::ostream & os) const
+//{
+//    JsonBox::Value jsonSamples;
+//	size_t i = 0;
+//	for (auto it = m_samples.begin(); it != m_samples.end(); ++it)
+//	{
+//		Sample sample = *it;
+//		serialize(jsonSamples[i++], sample);
+//	}
+//
+//    JsonBox::Value jsonFrames;
+//    size_t frameIndex = 0;
+//    for (auto it = m_frameMarks.begin(); it != m_frameMarks.end(); ++it)
+//    {
+//        jsonFrames[frameIndex].setInt(m_frameMarks[frameIndex]);
+//        ++frameIndex;
+//    }
+//
+//	JsonBox::Value jsonRoot;
+//	jsonRoot["samples"] = jsonSamples;
+//    jsonRoot["frames"] = jsonFrames;
+//	jsonRoot.writeToStream(os, false);
+//}
+
+//------------------------------------------------------------------------------
+void serializeJson(std::ostream & os, const char * str)
 {
-	o["file"].setString(sample.file);
-	o["line"].setInt(sample.line);
-	o["depth"].setInt(sample.depth);
-	o["beginTime"].setInt(static_cast<s32>(sample.beginTime.asMicroseconds())); // JSON love
-	o["endTime"].setInt(static_cast<s32>(sample.endTime.asMicroseconds()));
-	o["overheadTime"].setInt(static_cast<s32>(sample.overheadTime.asMicroseconds()));
+    u32 i = 0;
+    while (str[i] != '\0')
+    {
+        char c = str[i++];
+        if (c == '\\')
+            os << "\\\\";
+        else if (c == '\n')
+            os << "\\n";
+        else
+            os << c;
+    }
+}
 
-	if (sample.name)
-		o["name"].setString(sample.name);
+//------------------------------------------------------------------------------
+void serializeJson(std::ostream & os, const Profiler::Sample & s)
+{
+    os << "{\"name\":";
+    serializeJson(os, s.name);
 
-	if (sample.customName)
-		o["customName"].setString(sample.customName);
+    os << ",\"customName\":";
+    serializeJson(os, s.customName);
+
+    os << ",\"file\":";
+    serializeJson(os, s.file);
+
+    os << ",\"line\":" << s.line
+        << ",\"depth\":" << s.depth
+        << ",\"beginTime\":" << s.beginTime.asMicroseconds()
+        << ",\"endTime\":" << s.endTime.asMicroseconds()
+        << ",\"overheadTime\":" << s.overheadTime.asMicroseconds()
+        << "}";
 }
 
 //------------------------------------------------------------------------------
 void Profiler::dumpJson(std::ostream & os) const
 {
-    JsonBox::Value jsonSamples;
-	size_t i = 0;
-	for (auto it = m_samples.begin(); it != m_samples.end(); ++it)
-	{
-		Sample sample = *it;
-		serialize(jsonSamples[i++], sample);
-	}
-
-    JsonBox::Value jsonFrames;
-    size_t frameIndex = 0;
-    for (auto it = m_frameMarks.begin(); it != m_frameMarks.end(); ++it)
+    os << "{\"frames\":[";
+    
+    if (!m_frameMarks.empty())
     {
-        jsonFrames[frameIndex].setInt(m_frameMarks[frameIndex]);
-        ++frameIndex;
+        os << m_frameMarks[0];
+        for (u32 i = 1; i < m_frameMarks.size(); ++i)
+        {
+            os << ',' << m_frameMarks[i];
+        }
     }
 
-	JsonBox::Value jsonRoot;
-	jsonRoot["samples"] = jsonSamples;
-    jsonRoot["frames"] = jsonFrames;
-	jsonRoot.writeToStream(os, false);
+    os << "],\"samples\":[";
+
+    if (!m_samples.empty())
+    {
+        serializeJson(os, m_samples[0]);
+        for (u32 i = 1; i < m_samples.size(); ++i)
+        {
+            os << ',';
+            serializeJson(os, m_samples[i]);
+        }
+    }
+
+    os << "]}";
 }
 
 //------------------------------------------------------------------------------

@@ -63,7 +63,7 @@ public:
 
 	void dump(const char * filename, DumpMode mode) const;
 	void dump(std::ostream & os, DumpMode mode) const;
-	void dumpJson(std::ostream & os) const;
+    void dumpJson(std::ostream & os) const;
 
 	void setEnabled(bool e);
 	bool isEnabled() const { return m_enabled; }
