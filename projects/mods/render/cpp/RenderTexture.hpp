@@ -17,13 +17,6 @@ public:
     RenderTexture();
 
     //---------------------------------------
-    // Asset interface
-    //---------------------------------------
-
-    bool canLoad(const AssetMetadata & meta) const override;
-    bool loadFromStream(std::ifstream & ifs) override;
-
-    //---------------------------------------
     // RenderTarget interface
     //---------------------------------------
 
@@ -34,6 +27,8 @@ public:
     //---------------------------------------
 
     bool create(Vector2u size);
+    bool create(Vector2u size, bool hasDepth);
+
     void destroy();
 
     Texture * getTexture() const { return m_texture; }

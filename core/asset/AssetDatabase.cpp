@@ -231,14 +231,6 @@ std::vector<Asset*> AssetDatabase::preloadAssetFile(const String & path, const s
             assets.push_back(a);
         }
     }
-    else
-    {
-        // TODO Ban this!
-        // No loader found, use old method
-        Asset * a = legacy_createMatchingAssetType(metadata);
-        if (a)
-            assets.push_back(a);
-    }
 
     if (!assets.empty())
     {
@@ -272,57 +264,6 @@ std::vector<Asset*> AssetDatabase::preloadAssetFile(const String & path, const s
 }
 
 //------------------------------------------------------------------------------
-Asset * AssetDatabase::legacy_createMatchingAssetType(const AssetMetadata & meta) const
-{
-    // The following is hammerish and sometimes conflictish.
-    // That's why it is currently deprecated, loaders should be used instead.
-
-    Asset * asset = nullptr;
-
-    const ObjectTypeDatabase & otb = ObjectTypeDatabase::get();
-    const ObjectTypeMap & types = otb.getTypes();
-    const ObjectType & assetType = getObjectType<Asset>();
-
-    // Iterate over all classes inheriting sn::Asset and call their canLoad() method
-    for (auto it = types.begin(); it != types.end(); ++it)
-    {
-        const ObjectType & t = *(it->second);
-        if (t.derivesFrom(assetType))
-        {
-            if (!t.isAbstract())
-            {
-                Asset * candidateAsset = (Asset*)(t.instantiate());
-                if (candidateAsset->canLoad(meta))
-                {
-                    if (asset == nullptr)
-                    {
-                        asset = candidateAsset;
-                    }
-                    else
-                    {
-                        SN_WERROR(L"Cannot determine which asset loader to use for file '" << meta.path << L"'.");
-                        SN_ERROR("Candidates are: " << asset->getObjectType().getName() << ", " << candidateAsset->getObjectType().getName());
-                        asset->release();
-                        candidateAsset->release();
-                        return nullptr;
-                    }
-                }
-                else
-                {
-                    candidateAsset->release();
-                }
-            }
-            //else
-            //{
-            //	SN_DLOG("Ignored asset type " << t.toString() << " because it is abstract");
-            //}
-        }
-    }
-
-    return asset;
-}
-
-//------------------------------------------------------------------------------
 AssetLoadStatus AssetDatabase::loadAsset(Asset * asset, const AssetMetadata * a_newMetadata)
 {
     SN_ASSERT(asset != nullptr, "Cannot receive nullptr");
@@ -353,11 +294,6 @@ AssetLoadStatus AssetDatabase::loadAsset(Asset * asset, const AssetMetadata * a_
     if (loader)
     {
         loader->load(ifs, *asset);
-        ifs.close();
-        return SN_ALS_LOADED;
-    }
-    else if (asset->loadFromStream(ifs))
-    {
         ifs.close();
         return SN_ALS_LOADED;
     }

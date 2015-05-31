@@ -21,28 +21,12 @@ RenderTexture::~RenderTexture()
     destroy();
 }
 
-bool RenderTexture::canLoad(const AssetMetadata & meta) const
-{
-	String ext = getFileExtension(meta.path);
-    return ext == L".rendertexture";
-}
-
-bool RenderTexture::loadFromStream(std::ifstream & ifs)
-{
-	JsonBox::Value doc;
-    doc.loadFromStream(ifs);
-
-	Vector2i size;
-	sn::unserialize(doc["size"], size);
-	if (size.x() <= 0 && size.y() <= 0)
-		return false;
-
-	sn::unserialize(doc["hasDepth"], m_hasDepth);
-
-	return create(Vector2u(size.x(), size.y()));
-}
-
 bool RenderTexture::create(Vector2u size)
+{
+    return create(size, m_hasDepth);
+}
+
+bool RenderTexture::create(Vector2u size, bool hasDepth)
 {
     SN_ASSERT(m_texture != nullptr, "Invalid state");
 
@@ -66,6 +50,8 @@ bool RenderTexture::create(Vector2u size)
 
     // Attach color buffer from the texture to the framebuffer
     glCheck(glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_texture->getInternalID(), 0));
+
+    m_hasDepth = hasDepth;
 
     // If we need a depth buffer
     if (m_hasDepth)

@@ -133,9 +133,6 @@ private:
     /// \param chain: loaders to sort
     void orderAssetLoaders(AssetLoaderList & chain) const;
 
-    /// \deprecated
-    Asset * legacy_createMatchingAssetType(const AssetMetadata & meta) const;
-
     /// \brief Analyzes a file and creates one or several asset instances it will produce on runtime.
     /// The file will not be loaded into the instances until loadAsset() is called.
     /// \param path: path to the source file

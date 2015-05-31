@@ -12,6 +12,8 @@
 #include "loaders/BasicMeshLoader.hpp"
 #include "loaders/MaterialLoader.hpp"
 #include "loaders/TextureLoader.hpp"
+#include "loaders/RenderTextureLoader.h"
+#include "loaders/ShaderLoader.h"
 
 #include "VideoDriver.hpp"
 
@@ -38,6 +40,8 @@ namespace render {
         otb.registerType<BasicMeshLoader>();
         otb.registerType<MaterialLoader>();
         otb.registerType<TextureLoader>();
+        otb.registerType<RenderTextureLoader>();
+        otb.registerType<ShaderLoader>();
 
         otb.registerType<VideoDriver>();
     }

@@ -40,13 +40,6 @@ public:
     {}
 
 	//----------------------------------
-	// Asset interface
-	//----------------------------------
-
-    bool canLoad(const AssetMetadata & meta) const override;
-    bool loadFromStream(std::ifstream & ifs) override;
-
-	//----------------------------------
 	// ShaderProgram interface
 	//----------------------------------
 

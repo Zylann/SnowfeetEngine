@@ -1,13 +1,32 @@
+#include "ShaderLoader.h"
 #include <core/util/stringutils.hpp>
-#include <core/util/Log.hpp>
-
-#include "ShaderLoader.hpp"
-#include "../../ShaderProgram.hpp"
+#include <core/util/typecheck.hpp>
 
 namespace sn {
 namespace render {
 
+//------------------------------------------------------------------------------
+const ObjectType & ShaderLoader::getBaseAssetType() const
+{
+    return sn::getObjectType<sn::render::ShaderProgram>();
+}
 
+//------------------------------------------------------------------------------
+bool ShaderLoader::canLoad(const AssetMetadata & meta) const
+{
+    String ext = sn::getFileExtension(meta.path);
+    return ext == L".mshader";
+    //return ext == L".vs" || ext == L".ps" || ext == L".gs" || ext == L".shader";
+}
+
+//------------------------------------------------------------------------------
+bool ShaderLoader::load(std::ifstream & ifs, Asset & asset) const
+{
+    ShaderProgram * shader = checked_cast<sn::render::ShaderProgram*>(&asset);
+    SN_ASSERT(shader != nullptr, "ShaderLoader received null or invalid asset");
+    return ShaderLoader::loadMergedShaderFromStream(*shader, ifs);
+}
+    
 //------------------------------------------------------------------------------
 std::string ShaderLoader::extractPreprocessorCommand(const std::string & str)
 {
@@ -112,5 +131,4 @@ bool ShaderLoader::loadMergedShaderFromStream(ShaderProgram & shaderProgram, std
 
 } // namespace render
 } // namespace sn
-
 

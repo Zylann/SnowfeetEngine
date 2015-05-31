@@ -1,8 +1,6 @@
 ﻿#include <core/util/Log.hpp>
-#include <core/util/stringutils.hpp>
 
 #include "gl_check.hpp"
-#include "loaders/mshader/ShaderLoader.hpp"
 #include "ShaderProgram.hpp"
 
 namespace sn {
@@ -49,14 +47,6 @@ ShaderProgram::~ShaderProgram()
 }
 
 //------------------------------------------------------------------------------
-bool ShaderProgram::canLoad(const AssetMetadata & meta) const
-{
-    String ext = sn::getFileExtension(meta.path);
-    return ext == L".mshader";
-    //return ext == L".vs" || ext == L".ps" || ext == L".gs" || ext == L".shader";
-}
-
-//------------------------------------------------------------------------------
 void ShaderProgram::unload()
 {
     // TODO FIXME OpenGL fails here because contextes are destroyed before assets to be released...
@@ -79,12 +69,6 @@ void ShaderProgram::unload()
     }
 
     m_shaders.clear();
-}
-
-//------------------------------------------------------------------------------
-bool ShaderProgram::loadFromStream(std::ifstream & ifs)
-{
-    return ShaderLoader::loadMergedShaderFromStream(*this, ifs);
 }
 
 //------------------------------------------------------------------------------
