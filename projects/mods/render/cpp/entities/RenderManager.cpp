@@ -3,6 +3,7 @@
 #include <core/asset/AssetDatabase.hpp> // TODO Remove?
 #include <core/scene/VRHeadset.hpp>
 #include <core/util/typecheck.hpp>
+#include <core/util/Profiler.h>
 
 #include "RenderManager.hpp"
 #include "Drawable.hpp"
@@ -296,6 +297,8 @@ T * checkTaggedType(const std::string & tag, Entity * e)
 //------------------------------------------------------------------------------
 void RenderManager::render()
 {
+    SN_BEGIN_PROFILE_SAMPLE_NAMED("Render");
+
     if (m_mainContext == nullptr)
         return; // Can't render
 
@@ -332,11 +335,15 @@ void RenderManager::render()
         RenderScreen & screen = *it->second;
         screen.swapBuffers();
     }
+
+    SN_END_PROFILE_SAMPLE();
 }
 
 //------------------------------------------------------------------------------
 void RenderManager::renderCamera(Camera & camera)
 {
+    SN_BEGIN_PROFILE_SAMPLE_NAMED("Render camera");
+
     // Note: at the moment, only render with a single main context
 
     // Get context of the target window, or the main shared context if we render offscreen
@@ -556,6 +563,7 @@ void RenderManager::renderCamera(Camera & camera)
     // Go back to screen
     RenderTexture::bind(0);
 
+    SN_END_PROFILE_SAMPLE();
 }
 
 //------------------------------------------------------------------------------
