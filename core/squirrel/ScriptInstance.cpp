@@ -5,29 +5,36 @@
 namespace sn
 {
 
-ScriptInstance::ScriptInstance()
+//------------------------------------------------------------------------------
+ScriptInstance::ScriptInstance():
+    m_vm(nullptr)
 {
     // Initialize object to none
     sq_resetobject(&m_sqObject);
 }
 
+//------------------------------------------------------------------------------
 ScriptInstance::~ScriptInstance()
 {
     destroy();
 }
 
+//------------------------------------------------------------------------------
 HSQUIRRELVM ScriptInstance::getVM() const
 {
-    return Application::get().getScriptManager().getVM();
+    return m_vm;
 }
 
-bool ScriptInstance::create(const std::string & name)
+//------------------------------------------------------------------------------
+bool ScriptInstance::create(const std::string & fullClassName)
 {
     // Destroy previous instance if any
     destroy();
 
+    m_vm = Application::get().getScriptManager().getVM();
+
     // Parse the full name to extract namespaces
-    std::vector<std::string> parts = split(name, '.');
+    std::vector<std::string> parts = split(fullClassName, '.');
 
     auto vm = getVM();
     sq_pushroottable(vm);
@@ -43,20 +50,20 @@ bool ScriptInstance::create(const std::string & name)
         if (SQ_FAILED(sq_get(vm, -1)))
         {
             sq_pop(vm, 1); // Pop root table
-            SN_ERROR("Squirrel class not found: '" << name << "'");
+            SN_ERROR("Squirrel class not found: '" << fullClassName << "'");
             return false;
         }
     }
 
     // Push class name
-    const std::string & className = parts.back();
-    sq_pushstring(vm, _SC(className.c_str()), className.size());
+    const std::string & relativeClassName = parts.back();
+    sq_pushstring(vm, _SC(relativeClassName.c_str()), relativeClassName.size());
 
     // Get the class
     if (SQ_FAILED(sq_get(vm, -2))) // -2 because it's like we do roottable."className"
     {
         sq_pop(vm, 1);
-        SN_ERROR("Squirrel class not found: '" << name << "'");
+        SN_ERROR("Squirrel class not found: '" << fullClassName << "'");
         return false;
     }
 
@@ -79,11 +86,13 @@ bool ScriptInstance::create(const std::string & name)
     return true;
 }
 
+//------------------------------------------------------------------------------
 bool ScriptInstance::isNull() const
 {
     return m_sqObject._unVal.pUserPointer == NULL && m_sqObject._type == OT_NULL;
 }
 
+//------------------------------------------------------------------------------
 bool ScriptInstance::destroy()
 {
     if (!isNull())
@@ -95,18 +104,37 @@ bool ScriptInstance::destroy()
     return true;
 }
 
+//------------------------------------------------------------------------------
 Variant ScriptInstance::getProperty(const std::string & name)
 {
     // TODO
     return Variant();
 }
 
-bool ScriptInstance::hasMethod(const std::string & name)
+//------------------------------------------------------------------------------
+bool ScriptInstance::hasMethod(const std::string & methodName)
 {
-    // TODO
-    return false;
+    if (isNull())
+        return false;
+
+    auto vm = getVM();
+
+    sq_pushobject(vm, m_sqObject);
+    sq_pushstring(vm, methodName.c_str(), methodName.size());
+
+    if (SQ_FAILED(sq_get(vm, -2)))
+    {
+        sq_pop(vm, -1);
+        return false;
+    }
+    else
+    {
+        sq_pop(vm, -1);
+        return true;
+    }
 }
 
+//------------------------------------------------------------------------------
 bool ScriptInstance::callMethod(const std::string & methodName)
 {
     if (isNull())

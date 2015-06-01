@@ -11,7 +11,7 @@ This file is part of the SnowfeetEngine project.
 #include <core/json/json_utils.hpp>
 #include <core/app/ScriptObject.hpp>
 #include <core/system/gui/Event.hpp>
-#include <core/scene/ScriptInstance.hpp>
+#include <core/squirrel/ScriptInstance.hpp>
 #include <core/asset/SerializationContext.hpp>
 
 #include <vector>

@@ -8,22 +8,23 @@
 namespace sn
 {
 
-/// \brief Handles script class instance.
+/// \brief Wraps a Squirrel class instance.
 /// C++ has ownership on this instance.
 class SN_API ScriptInstance
 {
 public:
+
     ScriptInstance();
     ~ScriptInstance();
 
-    bool create(const std::string & name);
+    bool create(const std::string & fullClassName);
     bool destroy();
 
     bool isNull() const;
 
     Variant getProperty(const std::string & name);
 
-    bool hasMethod(const std::string & name);
+    bool hasMethod(const std::string & methodName);
 
     bool callMethod(const std::string & methodName);
 
@@ -32,6 +33,7 @@ private:
 
 private:
     HSQOBJECT m_sqObject;
+    HSQUIRRELVM m_vm;
     
 };
 
