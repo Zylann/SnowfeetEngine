@@ -4,7 +4,7 @@
 namespace sn
 {
 
-void sqDebugStackDump(HSQUIRRELVM v)
+void debugStackDump(HSQUIRRELVM v)
 {
     SN_LOG("Squirrel stack dump:");
     for (SQInteger n = 1; n <= sq_gettop(v); ++n)

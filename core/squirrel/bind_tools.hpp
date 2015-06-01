@@ -293,10 +293,11 @@ SQInteger sqRefCountedReleaseHook(SQUserPointer ptr, SQInteger size)
 
 namespace sn
 {
-    /// \brief Prints the Squirrel stack in the console output
-    void sqDebugStackDump(HSQUIRRELVM v);
 
-}
+    /// \brief Prints the Squirrel stack in the console output
+    void debugStackDump(HSQUIRRELVM v);
+
+} // namespace sn
 
 #endif // __HEADER_SN_SQ_BIND_TOOLS__
 
