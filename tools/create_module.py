@@ -77,13 +77,13 @@ def create_cpp_folder(root, modType, namespace, name):
 		"{",
 		indent + namespace + "::" + regFuncName + "(*(args.objectTypeDatabase));",
 		indent + "// TODO implement",
-		indent + "return 0;"
+		indent + "return 0;",
 		"}",
 		"",
 		unloadFunc,
 		"{",
 		indent + "// TODO implement",
-		indent + "return 0;"
+		indent + "return 0;",
 		"}",
 		"",
 		""
