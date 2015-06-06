@@ -8,9 +8,9 @@ This file is part of the SnowfeetEngine project.
 #define __HEADER_SN_SQ_BIND_TOOLS__
 
 #include <squirrel.h>
-#include <core/app/ScriptObject.hpp>
+#include <core/app/ScriptableObject.hpp>
 
-// TODO Use template magic to auto-do this when the class inherits ScriptObject?
+// TODO Use template magic to auto-do this when the class inherits ScriptableObject?
 #define SN_SQ_DEFINE_SCRIPTOBJECT_VARTYPE(_className)                         \
     namespace Sqrat {                                                         \
         template<>                                                            \

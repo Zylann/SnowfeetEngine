@@ -9,7 +9,7 @@ This file is part of the SnowfeetEngine project.
 
 #include <core/types.hpp>
 #include <core/json/json_utils.hpp>
-#include <core/app/ScriptObject.hpp>
+#include <core/app/ScriptableObject.hpp>
 #include <core/system/gui/Event.hpp>
 #include <core/squirrel/ScriptInstance.hpp>
 #include <core/asset/SerializationContext.hpp>
@@ -39,11 +39,11 @@ enum EntityFlags
 class Scene;
 
 /// \brief Base class for all components of the scene.
-class SN_API Entity : public ScriptObject
+class SN_API Entity : public ScriptableObject
 {
 public:
 
-    SN_ENTITY(sn::Entity, sn::ScriptObject)
+    SN_ENTITY(sn::Entity, sn::ScriptableObject)
 
     /// \brief Just constructs the entity.
     /// \note As most of serialized classes in the engine, 

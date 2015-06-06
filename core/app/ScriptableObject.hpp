@@ -1,11 +1,11 @@
 /*
-ScriptObject.hpp
+ScriptableObject.hpp
 Copyright (C) 2014-2015 Marc GILLERON
 This file is part of the SnowfeetEngine project.
 */
 
-#ifndef __HEADER_SN_SCRIPTOBJECT__
-#define __HEADER_SN_SCRIPTOBJECT__
+#ifndef __HEADER_SN_SCRIPTABLEOBJECT__
+#define __HEADER_SN_SCRIPTABLEOBJECT__
 
 #include <core/squirrel/sqrat.h>
 #include <core/reflect/Object.hpp>
@@ -25,16 +25,16 @@ This file is part of the SnowfeetEngine project.
 namespace sn
 {
 
-/// \brief All classes accessible and creatable from scripts must inherit this class.
-class SN_API ScriptObject : public RefCounted, public Object
+/// \brief All classes accessible and creatable from scripts should inherit this class.
+class SN_API ScriptableObject : public RefCounted, public Object
 {
 public:
-    SN_SCRIPT_OBJECT(sn::ScriptObject, sn::Object)
+    SN_SCRIPT_OBJECT(sn::ScriptableObject, sn::Object)
        
-    ScriptObject() : RefCounted() {}
+    ScriptableObject() : RefCounted() {}
 };
 
 } // namespace sn
 
-#endif // __HEADER_SN_SCRIPTOBJECT__
+#endif // __HEADER_SN_SCRIPTABLEOBJECT__
 
