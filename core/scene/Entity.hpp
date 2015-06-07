@@ -273,7 +273,7 @@ private:
     mutable Scene * r_scene;
 
     // TODO Make this list lighter than a list of strings?
-    /// \brief User-defined tags currently set of this entity.
+    /// \brief User-defined tags currently set on this entity.
     std::unordered_set<std::string> m_tags;
 
     // TODO Components.
