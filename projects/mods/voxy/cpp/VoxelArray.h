@@ -50,22 +50,22 @@ public:
 
 	u32 getIndex(u32 rx, u32 ry, u32 rz) const { return rx + (ry + rz * SIZE_Y) * SIZE_X; }
 
-	u8 getValueRaw(Block::Attribute a, u32 i) const { return m_arrays[a][i]; }
-	void setValueRaw(Block::Attribute a, u32 i, u8 v) { m_arrays[a][i] = v; }
+	u8 getValueRaw(Attribute a, u32 i) const { return m_arrays[a][i]; }
+	void setValueRaw(Attribute a, u32 i, u8 v) { m_arrays[a][i] = v; }
 
-	const u8 * getArray(Block::Attribute a) const { return m_arrays[a]; }
+	const u8 * getArray(Attribute a) const { return m_arrays[a]; }
 
-	bool hasAttribute(Block::Attribute a) const { return m_arrays[a] != nullptr; }
-	void setAttributeDefaultValue(Block::Attribute a, u8 val) { m_defaultValues[a] = val; };
+	bool hasAttribute(Attribute a) const { return m_arrays[a] != nullptr; }
+	void setAttributeDefaultValue(Attribute a, u8 val) { m_defaultValues[a] = val; };
 	
-	void setAttribute(Block::Attribute a, sn::u8 fillValue)
+	void setAttribute(Attribute a, sn::u8 fillValue)
 	{
 		if(!m_arrays[a])
 			m_arrays[a] = new u8(VOLUME);
 		memset(m_arrays[a], fillValue, v);
 	}
 
-	void removeAttribute(Block::Attribute a)
+	void removeAttribute(Attribute a)
 	{
 		if(m_arrays[a])
 		{

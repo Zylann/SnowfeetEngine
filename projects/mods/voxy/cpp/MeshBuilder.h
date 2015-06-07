@@ -1,7 +1,7 @@
 #ifndef __HEADER_VOXY_MESHBUILDER__
 #define __HEADER_VOXY_MESHBUILDER__
 
-#include "Block.h"
+#include "Terrain.h"
 #include <core/asset/base/Mesh.hpp>
 #include <core/math/Color.hpp>
 
