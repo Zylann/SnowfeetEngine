@@ -1,5 +1,6 @@
 #include <iostream>
 #include "bind_tools.hpp"
+#include <core/util/Log.hpp>
 
 namespace sn
 {
@@ -74,6 +75,33 @@ void debugStackDump(HSQUIRRELVM v)
 
         SN_MORE(s);
     }
+}
+
+void setGlobalFunction(HSQUIRRELVM vm, const char * name, SQFUNCTION cb_func)
+{
+    sq_pushroottable(vm);
+    sq_pushstring(vm, name, -1);
+    sq_newclosure(vm, cb_func, 0);
+    sq_newslot(vm, -3, false);
+    sq_pop(vm, 1); // pop roottable
+}
+
+std::string getLastError(HSQUIRRELVM vm)
+{
+    const SQChar* errorString = nullptr;
+
+    sq_getlasterror(vm);
+    if (sq_gettype(vm, -1) == OT_NULL)
+    {
+		sq_pop(vm, 1);
+        return std::string();
+    }
+
+    sq_tostring(vm, -1);
+    sq_getstring(vm, -1, &errorString);
+    sq_pop(vm, 2);
+
+    return std::string(errorString);
 }
 
 } // namespace sn

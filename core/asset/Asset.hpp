@@ -8,7 +8,7 @@ This file is part of the SnowfeetEngine project.
 #define __HEADER_SN_ASSET__
 
 #include <core/config.hpp>
-#include <core/app/ScriptObject.hpp>
+#include <core/app/ScriptableObject.hpp>
 #include <core/asset/AssetMetadata.hpp>
 #include <core/asset/AssetLocation.hpp>
 
@@ -21,14 +21,14 @@ class AssetDatabase;
 /// It is a container which can have loaded or unloaded state, with additional metadata.
 /// Modules are free to register their own types if they derive from Asset.
 /// Note: If the object you want to turn into an asset is a class already, you have to wrap it.
-class SN_API Asset : public ScriptObject
+class SN_API Asset : public ScriptableObject
 {
 public:
-    SN_SCRIPT_OBJECT(sn::Asset, sn::ScriptObject)
+    SN_SCRIPT_OBJECT(sn::Asset, sn::ScriptableObject)
 
     /// \brief Default constructor.
     /// All assets have a default constructor making an empty asset.
-	Asset() : ScriptObject() {}
+	Asset() : ScriptableObject() {}
 
     inline const AssetMetadata & getAssetMetadata() const { return m_metadata; }
 

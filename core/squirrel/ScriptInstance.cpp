@@ -6,37 +6,15 @@ namespace sn
 {
 
 //------------------------------------------------------------------------------
-ScriptInstance::ScriptInstance():
-    m_vm(nullptr)
-{
-    // Initialize object to none
-    sq_resetobject(&m_sqObject);
-}
-
-//------------------------------------------------------------------------------
-ScriptInstance::~ScriptInstance()
-{
-    destroy();
-}
-
-//------------------------------------------------------------------------------
-HSQUIRRELVM ScriptInstance::getVM() const
-{
-    return m_vm;
-}
-
-//------------------------------------------------------------------------------
 bool ScriptInstance::create(const std::string & fullClassName)
 {
     // Destroy previous instance if any
-    destroy();
-
-    m_vm = Application::get().getScriptManager().getVM();
+    releaseObject();
 
     // Parse the full name to extract namespaces
     std::vector<std::string> parts = split(fullClassName, '.');
 
-    auto vm = getVM();
+    auto vm = m_vm;
     sq_pushroottable(vm);
 
     // Push tables the class might be into
@@ -77,30 +55,12 @@ bool ScriptInstance::create(const std::string & fullClassName)
     }
 
     // Reference the object
-    sq_getstackobj(vm, -1, &m_sqObject);
-    sq_addref(vm, &m_sqObject);
+    sq_getstackobj(vm, -1, &m_object);
+    sq_addref(vm, &m_object);
 
     // Pops instance, class and roottable
     sq_pop(vm, 3);
 
-    return true;
-}
-
-//------------------------------------------------------------------------------
-bool ScriptInstance::isNull() const
-{
-    return m_sqObject._unVal.pUserPointer == NULL && m_sqObject._type == OT_NULL;
-}
-
-//------------------------------------------------------------------------------
-bool ScriptInstance::destroy()
-{
-    if (!isNull())
-    {
-        auto vm = getVM();
-        sq_release(vm, &m_sqObject);
-        sq_resetobject(&m_sqObject);
-    }
     return true;
 }
 
@@ -117,9 +77,9 @@ bool ScriptInstance::hasMethod(const std::string & methodName)
     if (isNull())
         return false;
 
-    auto vm = getVM();
+    auto vm = m_vm;
 
-    sq_pushobject(vm, m_sqObject);
+    sq_pushobject(vm, m_object);
     sq_pushstring(vm, methodName.c_str(), methodName.size());
 
     if (SQ_FAILED(sq_get(vm, -2)))
@@ -140,9 +100,9 @@ bool ScriptInstance::callMethod(const std::string & methodName)
     if (isNull())
         return false;
 
-    auto vm = getVM();
+    auto vm = m_vm;
 
-    sq_pushobject(vm, m_sqObject);
+    sq_pushobject(vm, m_object);
     sq_pushstring(vm, methodName.c_str(), methodName.size());
 
     // Get the method
@@ -153,7 +113,7 @@ bool ScriptInstance::callMethod(const std::string & methodName)
     }
 
     // Push this
-    sq_pushobject(vm, m_sqObject);
+    sq_pushobject(vm, m_object);
 
     // Call the method
     if (SQ_FAILED(sq_call(vm, 1, SQFalse, SQTrue)))

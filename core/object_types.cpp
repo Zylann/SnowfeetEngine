@@ -32,7 +32,7 @@ void registerObjectTypes(ObjectTypeDatabase & otb)
 {
     // Base
     otb.registerType<Object>();
-    otb.registerType<ScriptObject>();
+    otb.registerType<ScriptableObject>();
 
     // Drivers
     otb.registerType<IDriver>();

@@ -17,7 +17,7 @@ namespace sn
 {
 
 //------------------------------------------------------------------------------
-Entity::Entity() : ScriptObject(),
+Entity::Entity() : ScriptableObject(),
     m_flags(1 << SN_EF_ENABLED),
     r_parent(nullptr),
     r_scene(nullptr)

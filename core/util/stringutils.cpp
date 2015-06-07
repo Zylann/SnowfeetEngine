@@ -5,9 +5,11 @@ This file is part of the SnowfeetEngine project.
 */
 
 #include <sstream>
+#include <fstream>
 #include <cmath>
 
 #include <core/util/stringutils.hpp>
+#include <core/util/Log.hpp>
 
 namespace sn
 {
@@ -285,6 +287,27 @@ std::vector<std::string> split(const std::string & str, char sep)
     }
 
     return strings;
+}
+
+//------------------------------------------------------------------------------
+bool readFile(const std::string & filePath, std::string & str)
+{
+    std::ifstream ifs(filePath.c_str(), std::ios::in | std::ios::binary);
+    if (!ifs.good())
+    {
+        SN_ERROR("Coudln't open file \"" + filePath + '"');
+        return false;
+    }
+
+    ifs.seekg(0, std::ios::end);
+    std::streamoff len = ifs.tellg();
+    ifs.seekg(0, std::ios::beg);
+
+    str.resize(len, '\0');
+
+    ifs.read(&str[0], len);
+
+    return true;
 }
 
 } // namespace sn
