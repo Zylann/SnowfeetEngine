@@ -24,31 +24,35 @@ This file is part of the SnowfeetEngine project.
 namespace sn
 {
 
-//------------------------------------------------------------------------------
-void sqPrintfunc(HSQUIRRELVM v, const SQChar *s, ...)
-{
-    char buffer[2048];
-    va_list vl;
-    va_start(vl, s);
-    vsprintf(buffer, s, vl);
-    //printf(s, vl);
-    //scvprintf(s, vl);
-    va_end(vl);
-    SN_LOG(buffer);
-}
+    namespace
+    {
+        //------------------------------------------------------------------------------
+        void sqPrintfunc(HSQUIRRELVM v, const SQChar *s, ...)
+        {
+            char buffer[2048];
+            va_list vl;
+            va_start(vl, s);
+            vsprintf(buffer, s, vl);
+            //printf(s, vl);
+            //scvprintf(s, vl);
+            va_end(vl);
+            SN_LOG(buffer);
+        }
 
-//------------------------------------------------------------------------------
-void sqErrorfunc(HSQUIRRELVM v, const SQChar *s, ...)
-{
-    char buffer[2048];
-    va_list vl;
-	va_start(vl, s);
-    vsprintf(buffer, s, vl);
-    //printf(s, vl);
-	//scvprintf(s, vl);
-	va_end(vl);
-    SN_ERROR(buffer);
-}
+        //------------------------------------------------------------------------------
+        void sqErrorfunc(HSQUIRRELVM v, const SQChar *s, ...)
+        {
+            char buffer[2048];
+            va_list vl;
+	        va_start(vl, s);
+            vsprintf(buffer, s, vl);
+            //printf(s, vl);
+	        //scvprintf(s, vl);
+	        va_end(vl);
+            SN_ERROR(buffer);
+        }
+    }
+
 
 //==============================================================================
 // ScriptManager
