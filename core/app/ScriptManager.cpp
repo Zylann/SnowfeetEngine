@@ -9,6 +9,8 @@ This file is part of the SnowfeetEngine project.
 #include "../util/stringutils.hpp"
 #include "../util/Exception.hpp"
 #include "../scene/sq_binding/sq_scene.hpp"
+#include "../squirrel/Script.h"
+#include <sqstdaux.h>
 
 #include <stdarg.h>
 #include <stdio.h>
@@ -76,7 +78,6 @@ void ScriptManager::initialize()
 
     // Create the script engine
     m_squirrelVM = sq_open(1024);
-    Sqrat::DefaultVM::Set(m_squirrelVM);
 
 	// Registers default error handlers
 	sqstd_seterrorhandlers(m_squirrelVM);
@@ -92,28 +93,38 @@ void ScriptManager::initialize()
 bool ScriptManager::compileSquirrelModule(const std::string & modName, const std::string & modNamespace, const std::vector<String> & files)
 {
     // Compile scripts
-    std::vector<Sqrat::Script> scripts;
+
+    std::vector<Script> scripts;
+    std::string sourceCode;
+
     for (auto it = files.begin(); it != files.end(); ++it)
     {
         const String & filePath = *it;
-        try
+        if (readFile(toString(filePath), sourceCode))
         {
-            Sqrat::Script script(m_squirrelVM);
-            script.CompileFile(toString(filePath));
-            scripts.push_back(script);
+            Script script(m_squirrelVM);
+            if (script.compileString(sourceCode))
+            {
+                scripts.push_back(script);
+            }
+            else
+            {
+                SN_ERROR(getLastError(script.getVM()));
+                return false;
+            }
         }
-        catch (Sqrat::Exception ex)
+        else
         {
-            SN_ERROR(ex.Message());
             return false;
         }
     }
 
     // Run scripts
+
     for (auto it = scripts.begin(); it != scripts.end(); ++it)
     {
         auto & script = *it;
-        script.Run();
+        script.execute();
     }
 
     return true;

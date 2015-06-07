@@ -7,16 +7,15 @@ This file is part of the SnowfeetEngine project.
 #ifndef __HEADER_SN_SCRIPTABLEOBJECT__
 #define __HEADER_SN_SCRIPTABLEOBJECT__
 
-#include <core/squirrel/sqrat.h>
 #include <core/reflect/Object.hpp>
 #include <core/util/RefCounted.hpp>
 #include <type_traits>
 
 #define _SN_DECLARE_PUSHSQUIRRELOBJ(_className)                        \
-    virtual void pushSquirrelObject(HSQUIRRELVM vm) {                  \
-        Sqrat::ClassType<_className>::PushInstance(vm, this);          \
-        addRef();                                                      \
-    }
+    //virtual void pushSquirrelObject(HSQUIRRELVM vm) {                  \
+    //    Sqrat::ClassType<_className>::PushInstance(vm, this);          \
+    //    addRef();                                                      \
+    //}
 
 #define SN_SCRIPT_OBJECT(_className, _baseName)                        \
     _SN_DECLARE_PUSHSQUIRRELOBJ(_className)                            \

@@ -66,6 +66,12 @@ std::vector<std::string> SN_API split(const std::string & str, char sep);
 /// \brief Tests if the given character is one of the end-of-line / newline characters
 inline bool isEOL(char c) { return c == '\n' || c == '\r'; }
 
+/// \brief Reads a whole file and puts its content into the given string.
+/// \param filePath: path to the file
+/// \param str: output string
+/// \return true on success, false if the file couldn't be opened
+bool readFile(const std::string & filePath, std::string & str);
+
 } // namespace sn
 
 #endif // __HEADER_SN_STRINGUTILS__

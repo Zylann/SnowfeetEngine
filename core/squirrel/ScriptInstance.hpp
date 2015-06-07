@@ -3,37 +3,22 @@
 
 #include <vector>
 #include <core/util/Variant.hpp>
-#include <squirrel.h>
+#include <core/squirrel/ScriptObject.h>
 
 namespace sn
 {
 
+// TODO Make it inherit ScriptTable?
 /// \brief Wraps a Squirrel class instance.
-/// C++ has ownership on this instance.
-class SN_API ScriptInstance
+class SN_API ScriptInstance : public ScriptObject
 {
 public:
-
-    ScriptInstance();
-    ~ScriptInstance();
-
     bool create(const std::string & fullClassName);
-    bool destroy();
-
-    bool isNull() const;
 
     Variant getProperty(const std::string & name);
 
     bool hasMethod(const std::string & methodName);
-
     bool callMethod(const std::string & methodName);
-
-private:
-    HSQUIRRELVM getVM() const;
-
-private:
-    HSQOBJECT m_sqObject;
-    HSQUIRRELVM m_vm;
     
 };
 
