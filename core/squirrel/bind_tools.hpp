@@ -9,16 +9,17 @@ This file is part of the SnowfeetEngine project.
 
 #include <squirrel.h>
 #include <string>
+#include <core/export.hpp>
 //#include <core/app/ScriptableObject.hpp>
 
 namespace sn
 {
     /// \brief Prints the Squirrel stack in the console output
-    void debugStackDump(HSQUIRRELVM v);
+    void SN_API debugStackDump(HSQUIRRELVM v);
 
-    void setGlobalFunction(HSQUIRRELVM vm, const char * name, SQFUNCTION cb_func);
+    void SN_API setGlobalFunction(HSQUIRRELVM vm, const char * name, SQFUNCTION cb_func);
 
-    std::string getLastError(HSQUIRRELVM vm);
+    std::string SN_API getLastError(HSQUIRRELVM vm);
 
 } // namespace sn
 
