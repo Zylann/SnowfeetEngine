@@ -295,7 +295,7 @@ bool readFile(const std::string & filePath, std::string & str)
     std::ifstream ifs(filePath.c_str(), std::ios::in | std::ios::binary);
     if (!ifs.good())
     {
-        SN_ERROR("Coudln't open file \"" + filePath + '"');
+        SN_ERROR("Couldn't open file \"" + filePath + '"');
         return false;
     }
 
