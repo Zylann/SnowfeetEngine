@@ -28,8 +28,8 @@ ScriptClass::ScriptClass(HSQUIRRELVM vm, const std::string & className) : Script
     sq_getstackobj(vm, -1, &m_object);
     sq_addref(vm, &m_object);
 
-    // Pop classes table
-    sq_pop(vm, 1);
+    // Pop class, classes table and registry table
+    sq_pop(vm, 3);
 }
 
 //------------------------------------------------------------------------------
