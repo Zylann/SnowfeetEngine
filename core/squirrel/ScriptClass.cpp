@@ -45,7 +45,7 @@ ScriptClass & ScriptClass::setMethod(const char * methodName, SQFUNCTION cb_meth
     SN_ASSERT(cb_method != nullptr, "Function pointer argument is null");
 
     sq_pushobject(m_vm, m_object);
-    sq_pushstring(m_vm, "constructor", -1);
+    sq_pushstring(m_vm, methodName, -1);
     sq_newclosure(m_vm, cb_method, 0);
     // Store the method
     SQBool isStatic = SQFalse;
