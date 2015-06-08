@@ -14,7 +14,7 @@ public:
     ScriptClass(HSQUIRRELVM vm, const std::string & className);
 
     ScriptClass & setConstructor(SQFUNCTION cb_constructor);
-    ScriptClass & setRelease(SQFUNCTION cb_release);
+    //ScriptClass & setRelease(SQFUNCTION cb_release);
     ScriptClass & setMethod(const char * methodName, SQFUNCTION cb_method);
     //ScriptClass & setProperty(const char * propertyName, SQFUNCTION cb_getter, SQFUNCTION cb_setter=nullptr);
 
