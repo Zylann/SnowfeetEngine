@@ -70,7 +70,7 @@ inline bool isEOL(char c) { return c == '\n' || c == '\r'; }
 /// \param filePath: path to the file
 /// \param str: output string
 /// \return true on success, false if the file couldn't be opened
-bool readFile(const std::string & filePath, std::string & str);
+bool SN_API readFile(const std::string & filePath, std::string & str);
 
 } // namespace sn
 
