@@ -6,6 +6,7 @@ void test_stringSplit();
 void test_hashes();
 void test_fileWatcher();
 void test_variant();
+void test_squirrelBinding();
 
 #endif // __HEADER_TEST_REFLECTION__
 

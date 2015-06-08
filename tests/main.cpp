@@ -17,7 +17,8 @@ void testNTree()
 
 int main(int argc, char * argv[])
 {
-	test_variant();
+    test_squirrelBinding();
+	//test_variant();
     //test_fileWatcher();
     //test_stringSplit();
     //test_reflection();
