@@ -11,11 +11,27 @@ namespace voxy
 class MeshBuilder
 {
 public:
+	MeshBuilder();
+	~MeshBuilder();
+
 	void process(const Block & block, sn::Mesh & out_mesh);
 
 private:
-	sn::Color8 m_colorPalette[255];
+	enum Direction
+	{
+		DIR_XP,
+		DIR_XN,
+		DIR_YP,
+		DIR_YN,
+		DIR_ZP,
+		DIR_ZN
+	};
 
+	void makeFace(u8 x, u8 y, u8 z, sn::Color8 c, Direction dir);
+
+private:
+	sn::Color8 m_colorPalette[255];
+	sn::Mesh * m_mesh;
 };
 
 } // namespace voxy
