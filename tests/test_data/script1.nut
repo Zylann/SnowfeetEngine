@@ -10,7 +10,7 @@ function println(msg) {
 function printVar(v, title="(var)") {
 	print("--- " + title + " ---\n")
 	foreach(key,val in v) {
-		print(key + ": " + val + "\n")
+		print("- " + key + ": " + val + "\n")
 		// TODO go recursive
 	}
 	print("\n")
@@ -25,12 +25,12 @@ function test() {
 	
 	// Call the function with intentionally more arguments than needed.
 	// Shouldn't raise an error.
-	c.doStuff()
+	c.doStuff(1, 2, 3)
 
 	// Try some pointer thing
-	local f = c.doStuff
-	// Whoa! But doesn't works yet actually...
-	//f()
+	local f = c.doStuff.bindenv(c)
+	// Whoa!
+	f()
 
 	println("Before new test")
 	c.setText("Bread")

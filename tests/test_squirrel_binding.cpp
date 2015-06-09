@@ -7,36 +7,6 @@
 
 using namespace sn;
 
-//------------------------------------------------------------------------------
-// Helpers (should be included in the engine)
-namespace
-{
-    template <typename T>
-    SQInteger createClassInstance(HSQUIRRELVM vm)
-    {
-        T * p = new T();
-        sq_setinstanceup(vm, -1, p);
-        sq_setreleasehook(vm, -1, deleteClassInstance<T>);
-        return 0;
-    }
-
-    template <typename T>
-    SQInteger deleteClassInstance(SQUserPointer ptr, SQInteger size)
-    {
-        T * p = static_cast<T*>(ptr);
-        delete p;
-        return 0;
-    }
-
-    template <typename T>
-    T * checkClassInstance(HSQUIRRELVM vm, int i)
-    {
-        SQUserPointer p = NULL;
-        sq_getinstanceup(vm, i, &p, NULL);
-        return static_cast<T*>(p);
-    }
-}
-
 void debugStackDump(HSQUIRRELVM vm) { sn::debugStackDump(vm); }
 
 //------------------------------------------------------------------------------
@@ -73,23 +43,22 @@ namespace
 {
     int Something_doStuff(HSQUIRRELVM vm)
     {
-        auto * self = checkClassInstance<Something>(vm, 1);
+        auto * self = getNativeInstance<Something>(vm, 1);
         self->doStuff();
         return 0;
     }
 
 	int Something_getText(HSQUIRRELVM vm)
 	{
-		auto * self = checkClassInstance<Something>(vm, 1);
+		auto * self = getNativeInstance<Something>(vm, 1);
 		sq_pushstring(vm, self->getText().c_str(), -1);
 		return 1;
 	}
 
 	int Something_setText(HSQUIRRELVM vm)
 	{
-		auto * self = checkClassInstance<Something>(vm, 1);
-		const char * str = nullptr;
-		sq_getstring(vm, 2, &str);
+		auto * self = getNativeInstance<Something>(vm, 1);
+        const char * str = getString(vm, 2);
 		if (str)
 			self->setText(str);
 		return 0;
