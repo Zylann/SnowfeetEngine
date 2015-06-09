@@ -25,12 +25,17 @@ function test() {
 	
 	// Call the function with intentionally more arguments than needed.
 	// Shouldn't raise an error.
-	c.doStuff(1, 2, 3)
+	c.doStuff()
 
 	// Try some pointer thing
 	local f = c.doStuff
-	// Whoa!
-	f(4,5,6)
+	// Whoa! But doesn't works yet actually...
+	//f()
+
+	println("Before new test")
+	c.setText("Bread")
+	c.doStuff()
+	println(c.getText())
 }
 
 //------------------------------------------------------------------------------

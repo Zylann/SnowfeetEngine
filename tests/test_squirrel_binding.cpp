@@ -47,6 +47,7 @@ public:
     Something()
     {
         std::cout << "Something constructed" << std::endl;
+		m_text = "(empty)";
     }
 
     ~Something()
@@ -56,8 +57,14 @@ public:
 
     void doStuff()
     {
-        std::cout << "Hello I am something!" << std::endl;
+        std::cout << "Hello I am something, and my text is " << m_text << std::endl;
     }
+
+	const std::string & getText() { return m_text; }
+	void setText(const std::string & str) { m_text = str; }
+
+private:
+	std::string m_text;
 };
 
 //------------------------------------------------------------------------------
@@ -71,6 +78,23 @@ namespace
         return 0;
     }
 
+	int Something_getText(HSQUIRRELVM vm)
+	{
+		auto * self = checkClassInstance<Something>(vm, 1);
+		sq_pushstring(vm, self->getText().c_str(), -1);
+		return 1;
+	}
+
+	int Something_setText(HSQUIRRELVM vm)
+	{
+		auto * self = checkClassInstance<Something>(vm, 1);
+		const char * str = nullptr;
+		sq_getstring(vm, 2, &str);
+		if (str)
+			self->setText(str);
+		return 0;
+	}
+
     void registerSomething(HSQUIRRELVM vm)
     {
         const char * className = "Something";
@@ -78,6 +102,8 @@ namespace
         ScriptClass c(vm, className);
         c.setConstructor(createClassInstance<Something>);
         c.setMethod("doStuff", Something_doStuff);
+		c.setMethod("setText", Something_setText);
+		c.setMethod("getText", Something_getText);
 
         ScriptRootTable(vm).setObject(className, c);
     }
