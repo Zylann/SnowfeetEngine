@@ -10,7 +10,7 @@ This file is part of the SnowfeetEngine project.
 #include <squirrel.h>
 #include <string>
 #include <core/export.hpp>
-#include <core/app/ScriptableObject.hpp>
+#include <core/types.hpp>
 
 namespace sn
 {
