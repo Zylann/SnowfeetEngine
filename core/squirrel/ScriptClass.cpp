@@ -24,6 +24,10 @@ ScriptClass::ScriptClass(HSQUIRRELVM vm, const std::string & className) : Script
         sq_push(vm, -2); // The class will be on the stack after that
         sq_rawset(vm, -4);
     }
+    else
+    {
+        SN_WARNING("Overriding Squirrel class '" << className << "'");
+    }
 
     sq_getstackobj(vm, -1, &m_object);
     sq_addref(vm, &m_object);
