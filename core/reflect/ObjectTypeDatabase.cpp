@@ -39,6 +39,14 @@ ObjectType * ObjectTypeDatabase::getType(const std::string & typeName)
 }
 
 //------------------------------------------------------------------------------
+const ObjectType & ObjectTypeDatabase::getTypeConstRef(const std::string & typeName)
+{
+    ObjectType * ot = getType(typeName);
+    SN_ASSERT(ot != nullptr, "Type '" << typeName << "' is not registered");
+    return *ot;
+}
+
+//------------------------------------------------------------------------------
 void ObjectTypeDatabase::beginModule(const std::string & name)
 {
     m_currentModule = name;

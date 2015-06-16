@@ -79,6 +79,10 @@ public:
     /// \return the object type, or null if not found.
     ObjectType * getType(const std::string & typeName);
 
+    /// \brief Gets an object metaclass from its name, and produces an error if it was not found.
+    /// \return a constant reference to the object type.
+    const ObjectType & getTypeConstRef(const std::string & typeName);
+
     inline const ObjectTypeMap & getTypes() const { return m_registeredTypes; }
 
     /// \brief Gets all object types defined into a module

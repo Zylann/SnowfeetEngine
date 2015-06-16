@@ -24,7 +24,8 @@ This file is part of the SnowfeetEngine project.
 
 #define _SN_DECLARE_STATIC_GETOBJECTTYPE(_name)                                \
     static inline const sn::ObjectType & __sGetObjectType() {                  \
-        return *sn::ObjectTypeDatabase::get().getType(__sGetClassName());      \
+        return sn::ObjectTypeDatabase::get()                                   \
+                    .getTypeConstRef(__sGetClassName());                       \
     }
 
 #define _SN_DECLARE_GETOBJECTTYPE(_name)                                       \
