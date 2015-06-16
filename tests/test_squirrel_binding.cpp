@@ -3,31 +3,34 @@
 #include <core/squirrel/ScriptVM.h>
 #include <core/squirrel/ScriptClass.h>
 #include <core/squirrel/ScriptTable.h>
+#include <core/app/ScriptableObject.hpp>
 #include <core/util/stringutils.hpp>
+#include <core/object_types.hpp>
 
 using namespace sn;
 
 void debugStackDump(HSQUIRRELVM vm) { sn::debugStackDump(vm); }
 
 //------------------------------------------------------------------------------
-// The native class
+// The native classes
+
 class Something
 {
 public:
     Something()
     {
-        std::cout << "Something constructed" << std::endl;
+        SN_LOG("Something constructed");
 		m_text = "(empty)";
     }
 
     ~Something()
     {
-        std::cout << "Something destroyed" << std::endl;
+        SN_LOG("Something destroyed");
     }
 
     void doStuff()
     {
-        std::cout << "Hello I am something, and my text is " << m_text << std::endl;
+        SN_LOG("Hello I am something, and my text is ");
     }
 
 	const std::string & getText() { return m_text; }
@@ -38,9 +41,75 @@ private:
 };
 
 //------------------------------------------------------------------------------
+class SharedThing : public ScriptableObject
+{
+public:
+    SN_SCRIPT_OBJECT(SharedThing, sn::ScriptableObject)
+
+    SharedThing(const char * name = "(unnamed)", bool createChild=true) : ScriptableObject(),
+        m_name(name)
+    {
+        SN_LOG("SharedThing " << m_name << " constructed");
+        m_child = createChild ? new SharedThing("sub-thing", false) : nullptr;
+    }
+
+    virtual void sayHello()
+    {
+        SN_LOG("Hello, I am a thing (" << m_name << ")");
+    }
+
+    SharedThing * getChild()
+    {
+        return m_child;
+    }
+
+protected:
+    ~SharedThing()
+    {
+        SN_LOG("SharedThing " << m_name << " destroyed");
+        if (m_child)
+            m_child->release();
+    }
+
+    std::string m_name;
+
+private:
+    SharedThing * m_child;
+};
+
+//------------------------------------------------------------------------------
+class DerivedThing : public SharedThing
+{
+public:
+    SN_SCRIPT_OBJECT(DerivedThing, SharedThing)
+
+    DerivedThing(const char * name = "(unnamed derived)") : SharedThing(name, false)
+    {
+        SN_LOG("Derived thing constructed");
+    }
+
+    void sayHello()
+    {
+        SN_LOG("Hello, I am a derived thing (" << m_name << ")");
+    }
+
+protected:
+    ~DerivedThing()
+    {
+        SN_LOG("Derived thing destroyed");
+    }
+};
+
+//------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+
 // Binding
+
 namespace
 {
+    //--------------------------------------------------------------------------
+    // Raw binding of a C++ class
+
     int Something_doStuff(HSQUIRRELVM vm)
     {
         auto * self = getNativeInstance<Something>(vm, 1);
@@ -76,18 +145,71 @@ namespace
 
         ScriptRootTable(vm).setObject(className, c);
     }
+
+    //--------------------------------------------------------------------------
+    // Binding of a ScriptableObject 
+
+    int SharedThing_sayHello(HSQUIRRELVM vm)
+    {
+        auto * self = getNativeInstance<SharedThing>(vm, 1);
+        self->sayHello();
+        return 0;
+    }
+
+    int SharedThing_getChild(HSQUIRRELVM vm)
+    {
+        auto * self = getNativeInstance<SharedThing>(vm, 1);
+        SharedThing * sub = self->getChild();
+        sub->pushScriptObject(vm);
+        return 1;
+    }
+
+    void registerSharedThing(HSQUIRRELVM vm)
+    {
+        ObjectTypeDatabase::get().registerType<SharedThing>();
+
+        ScriptableObject::bindBase<SharedThing>(vm)
+            .setMethod("sayHello", SharedThing_sayHello)
+            .setMethod("getChild", SharedThing_getChild);
+    }
+
+    //--------------------------------------------------------------------------
+    // Binding of a DerivedThing
+
+    int DerivedThing_sayHello(HSQUIRRELVM vm)
+    {
+        auto * self = getNativeInstance<DerivedThing>(vm, 1);
+        self->sayHello();
+        return 0;
+    }
+
+    void registerDerivedThing(HSQUIRRELVM vm)
+    {
+        ObjectTypeDatabase::get().registerType<DerivedThing>();
+        
+        ScriptableObject::bindBase<DerivedThing>(vm)
+            .setMethod("sayHello", DerivedThing_sayHello);
+    }
 }
 
 //------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+
 // C++ execution
+
 void test_squirrelBinding()
 {
+    // Register engine's types to be sure things work
+    sn::registerObjectTypes(ObjectTypeDatabase::get());
+
     // Create the VM
     ScriptVM vmObject;
     HSQUIRRELVM vm = vmObject.getSquirrelVM();
 
     // Register native interface
     registerSomething(vm);
+    registerSharedThing(vm);
+    registerDerivedThing(vm);
 
     {
         // Execute a script

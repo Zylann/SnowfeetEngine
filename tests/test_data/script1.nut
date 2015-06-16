@@ -16,7 +16,7 @@ function printVar(v, title="(var)") {
 	print("\n")
 }
 
-function test() {
+function test1() {
 	// Let's print the class object
 	printVar(Something, "class Something")
 
@@ -38,6 +38,26 @@ function test() {
 	println(c.getText())
 }
 
-//------------------------------------------------------------------------------
-test()
+function test2() {
+	println("Beginning test 2")
+	local child = test2_sub()
+	child.sayHello()
+}
 
+function test2_sub() {
+	local c = SharedThing()
+	c.sayHello()
+	local child = c.getChild()
+	return child
+}
+
+function test3() {
+	println("Beginning test 3")
+	local c = DerivedThing()
+	c.sayHello()
+}
+
+//------------------------------------------------------------------------------
+test1()
+test2()
+test3()

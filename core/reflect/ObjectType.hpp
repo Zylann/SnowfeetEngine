@@ -28,12 +28,7 @@ public:
     ObjectType(
         const std::string & p_name,
         const std::string & p_baseName
-    ) :
-        m_isAbstract(false),
-        m_ID(0), // null ID, until the type gets registered
-        m_name(p_name),
-        m_baseName(p_baseName)
-    {}
+    );
 
     ~ObjectType()
     {
@@ -94,6 +89,9 @@ public:
 
     std::string toString() const;
 
+    void setScriptName(const std::string & fullClassName) { m_scriptName = fullClassName; }
+    const std::string & getScriptName() const { return m_scriptName; }
+
 private:
 	friend class ObjectTypeDatabase;
 
@@ -115,6 +113,9 @@ private:
 
     /// \brief Optional name of the module this object type is registered in.
     std::string m_moduleName;
+
+    /// \brief Optional name given in a scripting environment.
+    std::string m_scriptName;
 
     /// \brief Closure responsible for object instances creation
     std::function<Object*()> m_factory;

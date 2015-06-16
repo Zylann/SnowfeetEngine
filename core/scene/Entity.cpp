@@ -10,6 +10,7 @@ This file is part of the SnowfeetEngine project.
 
 #include "Entity.hpp"
 #include "Scene.hpp"
+#include "../app/Application.hpp"
 
 #define SN_JSON_ENTITY_CHILDREN_TAG "_children"
 
@@ -502,7 +503,8 @@ void Entity::unserializeState(JsonBox::Value & o, const SerializationContext & c
         std::string classPath = scripts[(size_t)0].getString();
         if (!classPath.empty())
         {
-            m_script.create(classPath);
+            HSQUIRRELVM vm = Application::get().getScriptManager().getVM();
+            m_script.create(vm, classPath);
         }
     }
 

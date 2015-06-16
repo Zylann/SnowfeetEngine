@@ -35,7 +35,7 @@ public:
     /// However, IDs may differ if the version of the engine differ too, as there
     /// might be new objects.
     template <class Object_T>
-    ObjectType & registerType()
+    ObjectType & registerType(const char * scriptName = nullptr)
     {
         std::string typeName = Object_T::__sGetClassName();
         std::string baseName = Object_T::__sGetBaseClassName();
@@ -55,6 +55,11 @@ public:
         type->m_factory = Object_T::instantiate;
 
 		type->m_isAbstract = std::is_abstract<Object_T>();
+
+        if (scriptName)
+            type->setScriptName(scriptName);
+        //else
+            // By default, the undecorated class name is used
 
         // Register type
         m_registeredTypes[type->getName()] = type;

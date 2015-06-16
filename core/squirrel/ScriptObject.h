@@ -25,8 +25,9 @@ public:
     HSQOBJECT getObject() const { return m_object; }
     HSQUIRRELVM getVM() const { return m_vm; }
 
-protected:
     void releaseObject();
+
+protected:
 
     HSQOBJECT m_object;
     HSQUIRRELVM m_vm;

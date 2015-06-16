@@ -12,6 +12,31 @@ This file is part of the SnowfeetEngine project.
 namespace sn
 {
 
+    namespace
+    {
+        std::string getClassNameWithoutNamespace(const std::string & str)
+        {
+            size_t i = str.find_last_of(':');
+            if (i == std::string::npos)
+                return str;
+            else
+                return str.substr(i+1);
+        }
+    }
+
+//------------------------------------------------------------------------------
+ObjectType::ObjectType(
+    const std::string & p_name,
+    const std::string & p_baseName
+) :
+    m_isAbstract(false),
+    m_ID(0), // null ID, until the type gets registered
+    m_name(p_name),
+    m_baseName(p_baseName)
+{
+    m_scriptName = getClassNameWithoutNamespace(m_name);
+}
+
 //------------------------------------------------------------------------------
 bool ObjectType::is(const std::string & typeName, bool includeInheritance) const
 {

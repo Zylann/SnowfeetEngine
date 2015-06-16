@@ -8,17 +8,35 @@ namespace sn
 static const char * CLASSES_TABLE = "__classes";
 
 //------------------------------------------------------------------------------
-ScriptClass::ScriptClass(HSQUIRRELVM vm, const std::string & className) : ScriptObject(vm)
+ScriptClass::ScriptClass(HSQUIRRELVM vm, const std::string & className, const std::string & baseClassName) : ScriptObject(vm)
 {
     pushClassesTable();
 
     sq_pushstring(vm, className.c_str(), -1);
+
     // Get the class
     if (SQ_FAILED(sq_rawget(vm, -2)))
     {
         // If it doesn't exists, create it
-        SQBool hasBase = SQFalse;
+
+        // Push the base if specified
+        SQBool hasBase = !baseClassName.empty();
+        if (hasBase)
+        {
+            sq_pushstring(vm, baseClassName.c_str(), -1);
+            if (SQ_FAILED(sq_rawget(vm, -2)))
+            {
+                SN_ERROR("Base class not found: '" << baseClassName << "' when binding class '" << className << "'");
+            }
+        }
+
+#ifdef SN_BUILD_DEBUG
+        SN_LOG("Creating Squirrel class '" << className << "'");
+#endif
+
+        // Create the class (the inherited class will be popped if specified)
         sq_newclass(vm, hasBase);
+
         // Store it in the classes table
         sq_pushstring(vm, className.c_str(), -1);
         sq_push(vm, -2); // The class will be on the stack after that
@@ -29,6 +47,7 @@ ScriptClass::ScriptClass(HSQUIRRELVM vm, const std::string & className) : Script
         SN_WARNING("Overriding Squirrel class '" << className << "'");
     }
 
+    // Reference the class object in C++ for further access
     sq_getstackobj(vm, -1, &m_object);
     sq_addref(vm, &m_object);
 

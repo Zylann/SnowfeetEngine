@@ -53,6 +53,8 @@ void ScriptObject::releaseObject()
     if (!isNull())
     {
         auto vm = m_vm;
+        // Note: if the refcount is already zero, this has no effect
+        u32 rc = sq_getrefcount(vm, &m_object);
         sq_release(vm, &m_object);
         sq_resetobject(&m_object);
     }

@@ -13,12 +13,16 @@ namespace sn
 class SN_API ScriptInstance : public ScriptObject
 {
 public:
-    bool create(const std::string & fullClassName);
+    static bool createNoRef(HSQUIRRELVM vm, const std::string & fullClassName, HSQOBJECT * out_obj, bool callConstructor=true);
+
+    bool create(HSQUIRRELVM vm, const std::string & fullClassName, bool callConstructor=true);
 
     Variant getProperty(const std::string & name);
 
     bool hasMethod(const std::string & methodName);
     bool callMethod(const std::string & methodName);
+
+    void setObject(HSQUIRRELVM vm, HSQOBJECT obj);
     
 };
 

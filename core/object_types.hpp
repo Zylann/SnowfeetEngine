@@ -12,7 +12,7 @@
 namespace sn
 {
 
-void registerObjectTypes(ObjectTypeDatabase & otb);
+void SN_API registerObjectTypes(ObjectTypeDatabase & otb);
 
 } // namespace sn
 
