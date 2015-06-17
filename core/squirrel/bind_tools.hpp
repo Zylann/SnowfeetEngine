@@ -77,7 +77,7 @@ inline bool getBool(HSQUIRRELVM vm, s32 i)
 	SQBool b;
 	if (SQ_FAILED(sq_getbool(vm, i, &b)))
 		return false;
-	return b;
+	return b != 0;
 }
 
 //------------------------------------------------------------------------------
@@ -86,7 +86,7 @@ inline bool getInt(HSQUIRRELVM vm, s32 i)
 {
 	SQInteger v;
 	if (SQ_FAILED(sq_getinteger(vm, i, &v)))
-		return v;
+		return v != 0;
 	return 0;
 }
 

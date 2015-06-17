@@ -89,7 +89,7 @@ namespace sn
 			if (t == OT_INTEGER)
 			{
 				s32 i = getInt(vm, 2);
-				if (i >= 0 && i < self->getChildCount())
+				if (i >= 0 && i < static_cast<s32>(self->getChildCount()))
 				{
 					Entity * child = self->getChildByIndex(i);
 					child->pushScriptObject(vm);
