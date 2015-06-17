@@ -62,7 +62,7 @@ ScriptClass & ScriptClass::setConstructor(SQFUNCTION cb_constructor)
 }
 
 //------------------------------------------------------------------------------
-ScriptClass & ScriptClass::setMethod(const char * methodName, SQFUNCTION cb_method)
+ScriptClass & ScriptClass::setMethod(const char * methodName, SQFUNCTION cb_method, s32 nparams, const char * paramsMask)
 {
     SN_ASSERT(!isNull(), "Class is null");
     SN_ASSERT(cb_method != nullptr, "Function pointer argument is null");
@@ -70,6 +70,12 @@ ScriptClass & ScriptClass::setMethod(const char * methodName, SQFUNCTION cb_meth
     sq_pushobject(m_vm, m_object);
     sq_pushstring(m_vm, methodName, -1);
     sq_newclosure(m_vm, cb_method, 0);
+
+    if (nparams != NO_PARAMCHECK)
+    {
+        sq_setparamscheck(m_vm, nparams, paramsMask);
+    }
+
     // Store the method
     SQBool isStatic = SQFalse;
     sq_newslot(m_vm, -3, isStatic);

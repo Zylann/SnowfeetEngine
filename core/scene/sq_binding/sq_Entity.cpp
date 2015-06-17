@@ -109,16 +109,16 @@ namespace sn
 
 void registerEntity(HSQUIRRELVM vm)
 {
-	ScriptableObject::bindBase<Entity>(vm)
-		.setMethod("getParent", getParent)
-		.setMethod("getChild", getChild)
-		.setMethod("getChildCount", getChild)
-		.setMethod("getName", getName)
-		.setMethod("setName", setName)
+    ScriptableObject::bindBase<Entity>(vm)
+        .setMethod("getParent", getParent)
+        .setMethod("getChild", getChild)
+        .setMethod("getChildCount", getChild)
+        .setMethod("getName", getName)
+        .setMethod("setName", setName, 1, "s")
 		.setMethod("isEnabled", isEnabled)
-		.setMethod("setEnabled", setEnabled)
+		.setMethod("setEnabled", setEnabled, 1, "b")
 		.setMethod("hasTag", hasTag)
-		.setMethod("addTag", addTag)
+		.setMethod("addTag", addTag, 1, "s")
 		.setMethod("removeTag", removeTag);
 }
     
