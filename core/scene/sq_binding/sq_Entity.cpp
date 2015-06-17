@@ -6,19 +6,7 @@ This file is part of the SnowfeetEngine project.
 
 #include "sq_scene.hpp"
 #include <iostream>
-#include "../../util/macros.hpp"
-
-#define BEGIN_METHOD(_name) \
-	SQInteger _name(HSQUIRRELVM vm) { \
-		auto * self = getNativeInstance<Entity>(vm, 1); \
-		if(self) {
-
-#define END_METHOD \
-		} else { \
-			SN_ERROR("Attempt to call native method '" << SN_FUNCNAME << "' on destroyed instance"); \
-			return 0; \
-		} \
-	}
+#include "../../squirrel/bind_macros.h"
 		
 namespace sn
 {
@@ -67,17 +55,17 @@ namespace sn
 		BEGIN_METHOD(hasTag)
 			sq_pushbool(vm, self->hasTag(getString(vm, 2)));
 			return 1;
-			END_METHOD
+		END_METHOD
 
 		BEGIN_METHOD(addTag)
 			self->addTag(getString(vm, 2));
 			return 0;
-			END_METHOD
+		END_METHOD
 
 		BEGIN_METHOD(removeTag)
 			self->removeTag(getString(vm, 2));
 			return 0;
-			END_METHOD
+		END_METHOD
 
 		BEGIN_METHOD(getChildCount)
 			sq_pushinteger(vm, self->getChildCount());
@@ -131,8 +119,7 @@ void registerEntity(HSQUIRRELVM vm)
 		.setMethod("setEnabled", setEnabled)
 		.setMethod("hasTag", hasTag)
 		.setMethod("addTag", addTag)
-		.setMethod("removeTag", removeTag)
-		.setMethod("destroy", destroy);
+		.setMethod("removeTag", removeTag);
 }
     
 } // namespace sn
