@@ -71,6 +71,26 @@ inline const char * getString(HSQUIRRELVM vm, s32 i)
 }
 
 //------------------------------------------------------------------------------
+/// \brief Gets a boolean value at given index on the stack of a Squirrel VM.
+inline bool getBool(HSQUIRRELVM vm, s32 i)
+{
+	SQBool b;
+	if (SQ_FAILED(sq_getbool(vm, i, &b)))
+		return false;
+	return b;
+}
+
+//------------------------------------------------------------------------------
+/// \brief Gets an integer value at given index on the stack of a Squirrel VM.
+inline bool getInt(HSQUIRRELVM vm, s32 i)
+{
+	SQInteger v;
+	if (SQ_FAILED(sq_getinteger(vm, i, &v)))
+		return v;
+	return 0;
+}
+
+//------------------------------------------------------------------------------
 namespace priv
 {
     template<class T>
