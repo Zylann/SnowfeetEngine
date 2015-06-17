@@ -31,7 +31,7 @@ ScriptTable & ScriptTable::setFunction(const char * name, SQFUNCTION cb_func)
     SN_ASSERT(cb_func != nullptr, "Function pointer argument is null");
 
     sq_pushobject(m_vm, m_object);
-    sq_pushstring(m_vm, "constructor", -1);
+    sq_pushstring(m_vm, name, -1);
     sq_newclosure(m_vm, cb_func, 0);
     // Store the method
     SQBool isStatic = SQFalse;
