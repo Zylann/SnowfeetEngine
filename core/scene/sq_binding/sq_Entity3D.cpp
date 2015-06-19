@@ -6,28 +6,13 @@ namespace sn
 {
 	namespace
 	{
-		inline f32 getFloat(HSQUIRRELVM vm, s32 i)
+		inline bool isNumber(HSQUIRRELVM vm, s32 i)
 		{
-			SQFloat fval = 0;
 			SQObjectType t = sq_gettype(vm, i);
-			if (t == OT_FLOAT)
-			{
-				sq_getfloat(vm, i, &fval);
-			}
-			else if (t == OT_INTEGER)
-			{
-				s32 ival;
-				sq_getinteger(vm, i, &ival);
-				fval = static_cast<SQFloat>(ival);
-			}
-			else
-			{
-				SN_ERROR("Expected number value");
-			}
-			return fval;
+			return t == OT_INTEGER || t == OT_FLOAT;
 		}
-
-		template <u32 i_base>
+        
+        template <u32 i_base>
 		inline Vector3f getVector3f(HSQUIRRELVM vm)
 		{
 			if (isNumber(vm, i_base) && 
@@ -45,12 +30,6 @@ namespace sn
 				SN_ERROR("Expected 3 numbers");
 				return Vector3f(0, 0, 0);
 			}
-		}
-
-		inline bool isNumber(HSQUIRRELVM vm, s32 i)
-		{
-			SQObjectType t = sq_gettype(vm, i);
-			return t == OT_INTEGER || t == OT_FLOAT;
 		}
 
 		DEFINE_CLASS(Entity3D)
