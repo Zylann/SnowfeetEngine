@@ -18,8 +18,6 @@ public:
 
     bool create(HSQUIRRELVM vm, const std::string & fullClassName, bool callConstructor=true);
 
-    Variant getProperty(const std::string & name);
-
     bool hasMethod(const std::string & methodName);
     bool callMethod(const std::string & methodName);
 

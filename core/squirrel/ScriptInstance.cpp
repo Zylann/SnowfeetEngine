@@ -111,14 +111,6 @@ void ScriptInstance::setObject(HSQUIRRELVM vm, HSQOBJECT obj)
     sq_addref(vm, &m_object);
 }
 
-
-//------------------------------------------------------------------------------
-Variant ScriptInstance::getProperty(const std::string & name)
-{
-    // TODO
-    return Variant();
-}
-
 //------------------------------------------------------------------------------
 bool ScriptInstance::hasMethod(const std::string & methodName)
 {
