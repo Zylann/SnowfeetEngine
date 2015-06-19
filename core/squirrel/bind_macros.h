@@ -4,13 +4,17 @@
 //
 // This header defines helper macros to bind functions to Squirrel.
 // Their name have been shortened for readability, also ONLY include them in a binding implementation file.
+// Also, only use them exclusively in a private namespace where Squirrel wrappers are defined.
 //
 
 #include "../../util/macros.hpp"
 
+// Put this on top of the file
+#define DEFINE_CLASS(_name) typedef _name __sn_BoundClass;
+
 #define BEGIN_METHOD(_name) \
 	SQInteger _name(HSQUIRRELVM vm) { \
-		auto * self = getNativeInstance<Entity>(vm, 1); \
+		auto * self = getNativeInstance<__sn_BoundClass>(vm, 1); \
 		if(self) {
 		
 		// Insert function code here
