@@ -4,14 +4,6 @@ namespace sn
 {
 
 //------------------------------------------------------------------------------
-ScriptObject::ScriptObject():
-    m_vm(nullptr)
-{
-    // Initialize object to none
-    sq_resetobject(&m_object);
-}
-
-//------------------------------------------------------------------------------
 ScriptObject::ScriptObject(HSQUIRRELVM vm):
     m_vm(vm)
 {
@@ -19,7 +11,14 @@ ScriptObject::ScriptObject(HSQUIRRELVM vm):
 }
 
 //------------------------------------------------------------------------------
-ScriptObject::ScriptObject(const ScriptObject & other): m_vm(other.m_vm), m_object(other.m_object)
+ScriptObject::ScriptObject(HSQUIRRELVM vm, HSQOBJECT obj):
+    m_vm(vm), m_object(obj)
+{
+}
+
+//------------------------------------------------------------------------------
+ScriptObject::ScriptObject(const ScriptObject & other): 
+    m_vm(other.m_vm), m_object(other.m_object)
 {
     sq_addref(m_vm, &m_object);
 }

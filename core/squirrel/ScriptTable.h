@@ -10,10 +10,14 @@ namespace sn
 class SN_API ScriptTable : public ScriptObject
 {
 public:
-    ScriptTable(HSQUIRRELVM vm);
+    ScriptTable(HSQUIRRELVM vm, HSQOBJECT obj) : ScriptObject(vm, obj) {}
 
     ScriptTable & setFunction(const char * name, SQFUNCTION cb_func);
+    ScriptTable & setObject(const char * name, HSQOBJECT obj);
     ScriptTable & setObject(const char * name, ScriptObject & obj);
+
+protected:
+    ScriptTable(HSQUIRRELVM vm) : ScriptObject(vm) {}
 
 };
 

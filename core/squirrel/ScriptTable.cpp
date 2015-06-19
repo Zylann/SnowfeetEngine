@@ -5,19 +5,20 @@ namespace sn
 {
 
 //------------------------------------------------------------------------------
-ScriptTable::ScriptTable(HSQUIRRELVM vm) : ScriptObject(vm)
+ScriptTable & ScriptTable::setObject(const char * name, ScriptObject & obj)
 {
+    return setObject(name, obj.getObject());
 }
 
 //------------------------------------------------------------------------------
-ScriptTable & ScriptTable::setObject(const char * name, ScriptObject & obj)
+ScriptTable & ScriptTable::setObject(const char * name, HSQOBJECT obj)
 {
     SN_ASSERT(!isNull(), "Table is null");
-    SN_ASSERT(!obj.isNull(), "Argument object is null");
+    SN_ASSERT(!sq_isnull(obj), "Argument object is null");
 
     sq_pushobject(m_vm, m_object);
     sq_pushstring(m_vm, name, -1);
-    sq_pushobject(m_vm, obj.getObject());
+    sq_pushobject(m_vm, obj);
     sq_newslot(m_vm, -3, false);
     sq_pop(m_vm, 1); // pop table
 

@@ -12,23 +12,21 @@ namespace sn
 class SN_API ScriptObject
 {
 public:
-    ScriptObject();
-    ScriptObject(HSQUIRRELVM vm);
-    ScriptObject(const ScriptObject& other);
+    ScriptObject(HSQUIRRELVM vm=nullptr);
+    ScriptObject(HSQUIRRELVM vm, HSQOBJECT obj);
+    ScriptObject(const ScriptObject & other);
 
-    virtual ~ScriptObject();
-
-    bool isNull() const;
-
-    ScriptObject & operator=(const ScriptObject & other);
+    ~ScriptObject();
 
     HSQOBJECT getObject() const { return m_object; }
     HSQUIRRELVM getVM() const { return m_vm; }
 
+    bool isNull() const;
     void releaseObject();
 
-protected:
+    ScriptObject & operator=(const ScriptObject & other);
 
+protected:
     HSQOBJECT m_object;
     HSQUIRRELVM m_vm;
 };
