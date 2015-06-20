@@ -1,7 +1,7 @@
 #ifndef __HEADER_SN_RENDER_SQ_BINDING__
 #define __HEADER_SN_RENDER_SQ_BINDING__
 
-#include <core/scene/sq_binding/sq_scene.hpp>
+#include <squirrel.h>
 
 namespace sn {
 namespace render {

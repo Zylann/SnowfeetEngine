@@ -4,12 +4,12 @@ Copyright (C) 2015-2015 Marc GILLERON
 This file is part of the SnowfeetEngine project.
 */
 
-#include "sq_scene.hpp"
-#include "../../squirrel/bind_macros.h"
+#include "../scene/Scene.hpp"
+#include "sq_core.h"
+#include "../squirrel/bind_macros.h"
 
 namespace sn
 {
-
 	namespace
 	{
 		DEFINE_CLASS(Scene)
@@ -52,8 +52,7 @@ namespace sn
 
 	}
 
-
-void registerScene(HSQUIRRELVM vm)
+void bindScene(HSQUIRRELVM vm)
 {
 	ScriptableObject::bindBase<Scene>(vm)
 		.setMethod("getTaggedEntity", getTaggedEntity)

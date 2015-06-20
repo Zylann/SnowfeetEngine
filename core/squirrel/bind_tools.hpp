@@ -91,6 +91,16 @@ inline bool getInt(HSQUIRRELVM vm, s32 i)
 }
 
 //------------------------------------------------------------------------------
+/// \brief Gets a float value at given index on the stack of a Squirrel VM.
+inline bool getFloat(HSQUIRRELVM vm, s32 i)
+{
+	SQFloat v;
+	if (SQ_FAILED(sq_getfloat(vm, i, &v)))
+		return v != 0;
+	return 0;
+}
+
+//------------------------------------------------------------------------------
 namespace priv
 {
     template<class T>

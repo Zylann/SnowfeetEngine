@@ -4,9 +4,10 @@ Copyright (C) 2015-2015 Marc GILLERON
 This file is part of the SnowfeetEngine project.
 */
 
-#include "sq_scene.hpp"
+#include "../scene/Entity.hpp"
+#include "sq_core.h"
 #include <iostream>
-#include "../../squirrel/bind_macros.h"
+#include "../squirrel/bind_macros.h"
 		
 namespace sn
 {
@@ -109,7 +110,7 @@ namespace sn
 		END_METHOD
 	}
 
-void registerEntity(HSQUIRRELVM vm)
+void bindEntity(HSQUIRRELVM vm)
 {
     ScriptableObject::bindBase<Entity>(vm)
         .setMethod("getParent", getParent)

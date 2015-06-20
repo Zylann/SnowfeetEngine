@@ -7,9 +7,9 @@
 // Also, only use them exclusively in a private namespace where Squirrel wrappers are defined.
 //
 
-#include "../../util/macros.hpp"
+#include <core/util/macros.hpp>
 
-// Put this on top of the file
+// Put this on top of the namespace containing the wrappers
 #define DEFINE_CLASS(_name) typedef _name __sn_BoundClass;
 
 #define BEGIN_METHOD(_name) \

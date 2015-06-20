@@ -8,7 +8,7 @@ This file is part of the SnowfeetEngine project.
 #include "../util/assert.hpp"
 #include "../util/stringutils.hpp"
 #include "../util/Exception.hpp"
-#include "../scene/sq_binding/sq_scene.hpp"
+#include "../bind/sq_core.h"
 #include "../squirrel/Script.h"
 #include <sqstdaux.h>
 
@@ -138,25 +138,7 @@ bool ScriptManager::compileSquirrelModule(const std::string & modName, const std
 void ScriptManager::registerCoreAPI()
 {
     SN_LOG("Registering core API");
-
-    // Register math functions
-    // TODO
-
-    // Register print functions
-    // TODO
-
-    // Time
-    // TODO
-    //register_Time(m_engine);
-    //register_Clock(m_engine);
-
-    // Console stuff
-    // TODO
-	//register_console(*m_engine);
-
-    // Register Entity system
-    registerEntity(m_squirrelVM);
-    registerScene(m_squirrelVM);
+    bindCore(m_squirrelVM);
 }
 
 } // namespace sn
