@@ -1,16 +1,16 @@
-#ifndef __HEADER_SN_SCRIPTINSTANCE__
-#define __HEADER_SN_SCRIPTINSTANCE__
+#ifndef __HEADER_SQUIRREL_INSTANCE__
+#define __HEADER_SQUIRREL_INSTANCE__
 
 #include <vector>
 #include <core/util/Variant.hpp>
 #include <core/squirrel/ScriptObject.h>
 
-namespace sn
+namespace squirrel
 {
 
 // TODO Make it inherit ScriptTable?
 /// \brief Wraps a Squirrel class instance.
-class SN_API ScriptInstance : public ScriptObject
+class SN_API Instance : public Object
 {
 public:
     static bool createRef(HSQUIRRELVM vm, const std::string & fullClassName, HSQOBJECT * out_obj, bool callConstructor=true);
@@ -25,7 +25,7 @@ public:
     
 };
 
-} // namespace sn
+} // namespace squirrel
 
-#endif // __HEADER_SN_SCRIPTINSTANCE__
+#endif // __HEADER_SQUIRREL_INSTANCE__
 

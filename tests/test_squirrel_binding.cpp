@@ -9,7 +9,7 @@
 
 using namespace sn;
 
-void debugStackDump(HSQUIRRELVM vm) { sn::debugStackDump(vm); }
+void debugStackDump(HSQUIRRELVM vm) { squirrel::debugStackDump(vm); }
 
 //------------------------------------------------------------------------------
 // The native classes
@@ -112,22 +112,22 @@ namespace
 
     int Something_doStuff(HSQUIRRELVM vm)
     {
-        auto * self = getNativeInstance<Something>(vm, 1);
+        auto * self = squirrel::getNativeInstance<Something>(vm, 1);
         self->doStuff();
         return 0;
     }
 
 	int Something_getText(HSQUIRRELVM vm)
 	{
-		auto * self = getNativeInstance<Something>(vm, 1);
+		auto * self = squirrel::getNativeInstance<Something>(vm, 1);
 		sq_pushstring(vm, self->getText().c_str(), -1);
 		return 1;
 	}
 
 	int Something_setText(HSQUIRRELVM vm)
 	{
-		auto * self = getNativeInstance<Something>(vm, 1);
-        const char * str = getString(vm, 2);
+		auto * self = squirrel::getNativeInstance<Something>(vm, 1);
+        const char * str = squirrel::getString(vm, 2);
 		if (str)
 			self->setText(str);
 		return 0;
@@ -137,13 +137,13 @@ namespace
     {
         const char * className = "Something";
 
-        ScriptClass c(vm, className);
-        c.setConstructor(createClassInstance<Something>);
+        squirrel::Class c(vm, className);
+        c.setConstructor(squirrel::createClassInstance<Something>);
         c.setMethod("doStuff", Something_doStuff);
 		c.setMethod("setText", Something_setText);
 		c.setMethod("getText", Something_getText);
 
-        ScriptRootTable(vm).setObject(className, c);
+        squirrel::RootTable(vm).setObject(className, c);
     }
 
     //--------------------------------------------------------------------------
@@ -151,14 +151,14 @@ namespace
 
     int SharedThing_sayHello(HSQUIRRELVM vm)
     {
-        auto * self = getNativeInstance<SharedThing>(vm, 1);
+        auto * self = squirrel::getNativeInstance<SharedThing>(vm, 1);
         self->sayHello();
         return 0;
     }
 
     int SharedThing_getChild(HSQUIRRELVM vm)
     {
-        auto * self = getNativeInstance<SharedThing>(vm, 1);
+        auto * self = squirrel::getNativeInstance<SharedThing>(vm, 1);
         SharedThing * sub = self->getChild();
         sub->pushScriptObject(vm);
         return 1;
@@ -178,7 +178,7 @@ namespace
 
     int DerivedThing_sayHello(HSQUIRRELVM vm)
     {
-        auto * self = getNativeInstance<DerivedThing>(vm, 1);
+        auto * self = squirrel::getNativeInstance<DerivedThing>(vm, 1);
         self->sayHello();
         return 0;
     }
@@ -203,7 +203,7 @@ void test_squirrelBinding()
     sn::registerObjectTypes(ObjectTypeDatabase::get());
 
     // Create the VM
-    ScriptVM vmObject;
+    squirrel::VM vmObject;
     HSQUIRRELVM vm = vmObject.getSquirrelVM();
 
     // Register native interface
@@ -218,7 +218,7 @@ void test_squirrelBinding()
         if (!readFile("test_data/script1.nut", source))
             return;
 
-        Script script(vm);
+        squirrel::Script script(vm);
         if (!script.compileString(source))
             return;
 

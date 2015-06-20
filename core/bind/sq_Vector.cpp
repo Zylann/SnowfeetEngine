@@ -18,13 +18,13 @@ void bindVector3(HSQUIRRELVM vm)
 {
     const char * className = "Vector3";
 
-    ScriptClass c(vm, className);
+    squirrel::Class c(vm, className);
 
     // Bind constructor
     c.setConstructor(constructor);
 
     // Make it accessible from the root table
-    ScriptRootTable(vm).setObject(className, c);
+    squirrel::RootTable(vm).setObject(className, c);
 }
 
 } // namespace sn

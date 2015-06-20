@@ -1,5 +1,5 @@
-#ifndef __HEADER_SN_SQUIRREL_BIND_MACROS__
-#define __HEADER_SN_SQUIRREL_BIND_MACROS__
+#ifndef __HEADER_SQUIRREL_BIND_MACROS__
+#define __HEADER_SQUIRREL_BIND_MACROS__
 
 //
 // This header defines helper macros to bind functions to Squirrel.
@@ -26,6 +26,6 @@
 		} \
 	}
 
-#endif // __HEADER_SN_SQUIRREL_BIND_MACROS__
+#endif // __HEADER_SQUIRREL_BIND_MACROS__
 
 

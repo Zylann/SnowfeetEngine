@@ -2,19 +2,19 @@
 #include "../app/Application.hpp"
 #include "../squirrel/bind_tools.hpp"
 
-namespace sn
+namespace squirrel
 {
 
 //------------------------------------------------------------------------------
-bool ScriptInstance::createRef(HSQUIRRELVM vm, const std::string & fullClassName, HSQOBJECT * out_obj, bool callConstructor)
+bool Instance::createRef(HSQUIRRELVM vm, const std::string & fullClassName, HSQOBJECT * out_obj, bool callConstructor)
 {
     // Parse the full name to extract namespaces
-    std::vector<std::string> parts = split(fullClassName, '.');
+    std::vector<std::string> parts = sn::split(fullClassName, '.');
 
     sq_pushroottable(vm);
 
     // Push tables the class might be into
-    for (u32 i = 0; i < parts.size() - 1; ++i)
+    for (size_t i = 0; i < parts.size() - 1; ++i)
     {
         // Push table name
         const std::string &tableName = parts[i];
@@ -74,7 +74,7 @@ bool ScriptInstance::createRef(HSQUIRRELVM vm, const std::string & fullClassName
 }
 
 //------------------------------------------------------------------------------
-bool ScriptInstance::createNoRef(HSQUIRRELVM vm, const std::string & fullClassName, HSQOBJECT * out_obj, bool callConstructor)
+bool Instance::createNoRef(HSQUIRRELVM vm, const std::string & fullClassName, HSQOBJECT * out_obj, bool callConstructor)
 {
     if (createRef(vm, fullClassName, out_obj, callConstructor))
     {
@@ -86,18 +86,18 @@ bool ScriptInstance::createNoRef(HSQUIRRELVM vm, const std::string & fullClassNa
 }
 
 //------------------------------------------------------------------------------
-bool ScriptInstance::create(HSQUIRRELVM vm, const std::string & fullClassName, bool callConstructor)
+bool Instance::create(HSQUIRRELVM vm, const std::string & fullClassName, bool callConstructor)
 {
     // Destroy previous instance if any
     releaseObject();
     // Parse the full name to extract namespaces
-    std::vector<std::string> parts = split(fullClassName, '.');
+    std::vector<std::string> parts = sn::split(fullClassName, '.');
     m_vm = vm;
-    return ScriptInstance::createRef(vm, fullClassName, &m_object, callConstructor);
+    return Instance::createRef(vm, fullClassName, &m_object, callConstructor);
 }
 
 //------------------------------------------------------------------------------
-void ScriptInstance::setObject(HSQUIRRELVM vm, HSQOBJECT obj)
+void Instance::setObject(HSQUIRRELVM vm, HSQOBJECT obj)
 {
     SN_ASSERT(sq_isinstance(obj), "Object is not a Squirrel class instance");
 
@@ -112,7 +112,7 @@ void ScriptInstance::setObject(HSQUIRRELVM vm, HSQOBJECT obj)
 }
 
 //------------------------------------------------------------------------------
-bool ScriptInstance::hasMethod(const std::string & methodName)
+bool Instance::hasMethod(const std::string & methodName)
 {
     if (isNull())
         return false;
@@ -135,7 +135,7 @@ bool ScriptInstance::hasMethod(const std::string & methodName)
 }
 
 //------------------------------------------------------------------------------
-bool ScriptInstance::callMethod(const std::string & methodName)
+bool Instance::callMethod(const std::string & methodName)
 {
     if (isNull())
         return false;
@@ -169,5 +169,5 @@ bool ScriptInstance::callMethod(const std::string & methodName)
     return true;
 }
 
-} // namespace sn
+} // namespace squirrel
 

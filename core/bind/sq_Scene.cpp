@@ -8,6 +8,8 @@ This file is part of the SnowfeetEngine project.
 #include "sq_core.h"
 #include "../squirrel/bind_macros.h"
 
+using namespace squirrel;
+
 namespace sn
 {
 	namespace

@@ -2,6 +2,8 @@
 #include "sq_core.h"
 #include "../squirrel/bind_macros.h"
 
+using namespace squirrel;
+
 namespace sn
 {
 	namespace

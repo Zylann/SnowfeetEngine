@@ -1,14 +1,14 @@
-#ifndef __HEADER_SN_SCRIPT__
-#define __HEADER_SN_SCRIPT__
+#ifndef __HEADER_SQUIRREL_SCRIPT__
+#define __HEADER_SQUIRREL_SCRIPT__
 
 #include <core/squirrel/ScriptObject.h>
 #include <string>
 
-namespace sn
+namespace squirrel
 {
 
 /// \brief Wraps a script closure that can be executed.
-class SN_API Script : public ScriptObject
+class SN_API Script : public Object
 {
 public:
     Script(HSQUIRRELVM vm);
@@ -22,7 +22,7 @@ public:
 
 };
 
-} // namespace sn
+} // namespace squirrel
 
-#endif // __HEADER_SN_SCRIPT__
+#endif // __HEADER_SQUIRREL_SCRIPT__
 

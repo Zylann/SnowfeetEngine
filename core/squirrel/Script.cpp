@@ -1,11 +1,11 @@
 #include "Script.h"
 #include <core/util/assert.hpp>
 
-namespace sn
+namespace squirrel
 {
 
 //------------------------------------------------------------------------------
-Script::Script(HSQUIRRELVM vm) : ScriptObject(vm)
+Script::Script(HSQUIRRELVM vm) : Object(vm)
 {
 }
 
@@ -48,5 +48,5 @@ bool Script::execute()
     return !SQ_FAILED(result);
 }
 
-} // namespace sn
+} // namespace squirrel
 

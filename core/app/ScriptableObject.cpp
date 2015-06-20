@@ -51,7 +51,7 @@ void ScriptableObject::pushScriptObject(HSQUIRRELVM vm)
         // Create instance without calling constructor (which would create a new C++ instance).
         // We'll store the object as a weak reference, so we shouldn't end up with a cycle.
         m_vm = vm;
-        ScriptInstance::createNoRef(m_vm, bindClassName, &m_scriptSide, false);
+        squirrel::Instance::createNoRef(m_vm, bindClassName, &m_scriptSide, false);
         // Push it on the stack (done by createNoRef)
         //sq_pushobject(vm, m_scriptSide.getObject());
 

@@ -4,15 +4,15 @@ Copyright (C) 2015-2015 Marc GILLERON
 This file is part of the SnowfeetEngine project.
 */
 
-#ifndef __HEADER_SN_SQ_BIND_TOOLS__
-#define __HEADER_SN_SQ_BIND_TOOLS__
+#ifndef __HEADER_SQUIRREL_BIND_TOOLS__
+#define __HEADER_SQUIRREL_BIND_TOOLS__
 
 #include <squirrel.h>
 #include <string>
 #include <core/export.hpp>
 #include <core/types.hpp>
 
-namespace sn
+namespace squirrel
 {
 
 //------------------------------------------------------------------------------
@@ -53,7 +53,7 @@ SQInteger releaseClassInstance(SQUserPointer ptr, SQInteger size)
 /// \brief Gets the associated userpointer of an instance at the given index on the stack of a Squirrel VM.
 /// In a custom Squirrel callback bound as a method, you can use it to retrieve your C++ instance at index 1.
 template <typename T>
-T * getNativeInstance(HSQUIRRELVM vm, s32 i)
+T * getNativeInstance(HSQUIRRELVM vm, SQInteger i)
 {
     SQUserPointer p = NULL;
     sq_getinstanceup(vm, i, &p, NULL);
@@ -62,7 +62,7 @@ T * getNativeInstance(HSQUIRRELVM vm, s32 i)
 
 //------------------------------------------------------------------------------
 /// \brief Gets a string value at given index on the stack of a Squirrel VM.
-inline const char * getString(HSQUIRRELVM vm, s32 i)
+inline const char * getString(HSQUIRRELVM vm, SQInteger i)
 {
     const char * str = nullptr;
     if (SQ_FAILED(sq_getstring(vm, 2, &str)))
@@ -72,7 +72,7 @@ inline const char * getString(HSQUIRRELVM vm, s32 i)
 
 //------------------------------------------------------------------------------
 /// \brief Gets a boolean value at given index on the stack of a Squirrel VM.
-inline bool getBool(HSQUIRRELVM vm, s32 i)
+inline bool getBool(HSQUIRRELVM vm, SQInteger i)
 {
 	SQBool b;
 	if (SQ_FAILED(sq_getbool(vm, i, &b)))
@@ -82,7 +82,7 @@ inline bool getBool(HSQUIRRELVM vm, s32 i)
 
 //------------------------------------------------------------------------------
 /// \brief Gets an integer value at given index on the stack of a Squirrel VM.
-inline bool getInt(HSQUIRRELVM vm, s32 i)
+inline bool getInt(HSQUIRRELVM vm, SQInteger i)
 {
 	SQInteger v;
 	if (SQ_FAILED(sq_getinteger(vm, i, &v)))
@@ -92,7 +92,7 @@ inline bool getInt(HSQUIRRELVM vm, s32 i)
 
 //------------------------------------------------------------------------------
 /// \brief Gets a float value at given index on the stack of a Squirrel VM.
-inline bool getFloat(HSQUIRRELVM vm, s32 i)
+inline bool getFloat(HSQUIRRELVM vm, SQInteger i)
 {
 	SQFloat v;
 	if (SQ_FAILED(sq_getfloat(vm, i, &v)))
@@ -125,7 +125,7 @@ namespace priv
     }
 }
 
-} // namespace sn
+} // namespace squirrel
 
 #endif // __HEADER_SN_SQ_BIND_TOOLS__
 

@@ -9,6 +9,8 @@ This file is part of the SnowfeetEngine project.
 #include <iostream>
 #include "../squirrel/bind_macros.h"
 		
+using namespace squirrel;
+
 namespace sn
 {
 	namespace 

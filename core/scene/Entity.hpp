@@ -278,7 +278,7 @@ private:
 
     // TODO Components.
     /// \brief Script behaviour attached to this entity. Can be unset.
-    ScriptInstance m_script;
+    squirrel::Instance m_script;
 
 };
 

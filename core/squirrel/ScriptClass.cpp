@@ -1,14 +1,14 @@
 #include "ScriptClass.h"
 #include <core/util/assert.hpp>
 
-namespace sn
+namespace squirrel
 {
 
 //------------------------------------------------------------------------------
 static const char * CLASSES_TABLE = "__classes";
 
 //------------------------------------------------------------------------------
-ScriptClass::ScriptClass(HSQUIRRELVM vm, const std::string & className, const std::string & baseClassName) : ScriptObject(vm)
+Class::Class(HSQUIRRELVM vm, const std::string & className, const std::string & baseClassName) : Object(vm)
 {
     pushClassesTable();
 
@@ -56,13 +56,13 @@ ScriptClass::ScriptClass(HSQUIRRELVM vm, const std::string & className, const st
 }
 
 //------------------------------------------------------------------------------
-ScriptClass & ScriptClass::setConstructor(SQFUNCTION cb_constructor)
+Class & Class::setConstructor(SQFUNCTION cb_constructor)
 {
     return setMethod("constructor", cb_constructor);
 }
 
 //------------------------------------------------------------------------------
-ScriptClass & ScriptClass::setMethod(const char * methodName, SQFUNCTION cb_method, s32 nparams, const char * paramsMask)
+Class & Class::setMethod(const char * methodName, SQFUNCTION cb_method, SQInteger nparams, const char * paramsMask)
 {
     SN_ASSERT(!isNull(), "Class is null");
     SN_ASSERT(cb_method != nullptr, "Function pointer argument is null");
@@ -86,7 +86,7 @@ ScriptClass & ScriptClass::setMethod(const char * methodName, SQFUNCTION cb_meth
 }
 
 //------------------------------------------------------------------------------
-//ScriptClass & ScriptClass::setProperty(const char * propertyName, SQFUNCTION cb_getter, SQFUNCTION cb_setter)
+//Class & Class::setProperty(const char * propertyName, SQFUNCTION cb_getter, SQFUNCTION cb_setter)
 //{
 //    SN_ASSERT(!isNull(), "Class is null");
 //    SN_ASSERT(cb_getter != nullptr || cb_setter != nullptr, "Property function pointers are both null");
@@ -97,7 +97,7 @@ ScriptClass & ScriptClass::setMethod(const char * methodName, SQFUNCTION cb_meth
 //}
 
 //------------------------------------------------------------------------------
-void ScriptClass::pushClassesTable()
+void Class::pushClassesTable()
 {
     auto vm = m_vm;
     // Get classes table
@@ -115,5 +115,5 @@ void ScriptClass::pushClassesTable()
 
 }
 
-} // namespace sn
+} // namespace squirrel
 

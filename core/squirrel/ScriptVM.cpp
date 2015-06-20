@@ -11,10 +11,10 @@
 #define scvprintf vprintf
 #endif
 
-namespace sn
+namespace squirrel
 {
 
-ScriptVM::ScriptVM(u32 initialStackSize):
+VM::VM(SQInteger initialStackSize):
     m_vm(sq_open(initialStackSize))
 {
     // Set default print functions
@@ -24,12 +24,12 @@ ScriptVM::ScriptVM(u32 initialStackSize):
 	sqstd_seterrorhandlers(m_vm);
 }
 
-ScriptVM::~ScriptVM()
+VM::~VM()
 {
     sq_close(m_vm);
 }
 
-void ScriptVM::defaultPrintFunc(HSQUIRRELVM vm, const SQChar *s, ...)
+void VM::defaultPrintFunc(HSQUIRRELVM vm, const SQChar *s, ...)
 {
     va_list vl;
     va_start(vl, s);
@@ -38,5 +38,5 @@ void ScriptVM::defaultPrintFunc(HSQUIRRELVM vm, const SQChar *s, ...)
 }
 
 
-} // namespace sn
+} // namespace squirrel
 

@@ -2,7 +2,7 @@
 #include "bind_tools.hpp"
 #include <core/util/Log.hpp>
 
-namespace sn
+namespace squirrel
 {
 
 void debugStackDump(HSQUIRRELVM v)
@@ -104,7 +104,7 @@ std::string getLastError(HSQUIRRELVM vm)
     return std::string(errorString);
 }
 
-} // namespace sn
+} // namespace squirrel
 
 
 

@@ -1,17 +1,17 @@
 #include "ScriptTable.h"
 #include <core/util/assert.hpp>
 
-namespace sn
+namespace squirrel
 {
 
 //------------------------------------------------------------------------------
-ScriptTable & ScriptTable::setObject(const char * name, ScriptObject & obj)
+Table & Table::setObject(const char * name, Object & obj)
 {
     return setObject(name, obj.getObject());
 }
 
 //------------------------------------------------------------------------------
-ScriptTable & ScriptTable::setObject(const char * name, HSQOBJECT obj)
+Table & Table::setObject(const char * name, HSQOBJECT obj)
 {
     SN_ASSERT(!isNull(), "Table is null");
     SN_ASSERT(!sq_isnull(obj), "Argument object is null");
@@ -26,7 +26,7 @@ ScriptTable & ScriptTable::setObject(const char * name, HSQOBJECT obj)
 }
 
 //------------------------------------------------------------------------------
-ScriptTable & ScriptTable::setFunction(const char * name, SQFUNCTION cb_func)
+Table & Table::setFunction(const char * name, SQFUNCTION cb_func)
 {
     SN_ASSERT(!isNull(), "Table is null");
     SN_ASSERT(cb_func != nullptr, "Function pointer argument is null");
@@ -44,7 +44,7 @@ ScriptTable & ScriptTable::setFunction(const char * name, SQFUNCTION cb_func)
 }
 
 //------------------------------------------------------------------------------
-ScriptRootTable::ScriptRootTable(HSQUIRRELVM vm) : ScriptTable(vm)
+RootTable::RootTable(HSQUIRRELVM vm) : Table(vm)
 {
     sq_pushroottable(vm);
     sq_getstackobj(vm, -1, &m_object);
@@ -53,7 +53,7 @@ ScriptRootTable::ScriptRootTable(HSQUIRRELVM vm) : ScriptTable(vm)
 }
 
 //------------------------------------------------------------------------------
-ScriptRegistryTable::ScriptRegistryTable(HSQUIRRELVM vm) : ScriptTable(vm)
+RegistryTable::RegistryTable(HSQUIRRELVM vm) : Table(vm)
 {
     sq_pushregistrytable(vm);
     sq_getstackobj(vm, -1, &m_object);
@@ -61,5 +61,5 @@ ScriptRegistryTable::ScriptRegistryTable(HSQUIRRELVM vm) : ScriptTable(vm)
     sq_pop(vm, 1);
 }
 
-} // namespace sn
+} // namespace squirrel
 

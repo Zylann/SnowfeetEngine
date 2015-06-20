@@ -38,7 +38,7 @@ public:
     /// \brief Auto-binds a ScriptableObject class to Squirrel with just a constructor and destructor,
     /// and returns it to let binding the other specific members.
     template <typename T>
-    static ScriptClass bindBase(HSQUIRRELVM vm)
+    static squirrel::Class bindBase(HSQUIRRELVM vm)
     {
         // Get the class name
         const ObjectType & ot = sn::getObjectType<T>();
@@ -54,13 +54,13 @@ public:
         }
 
         // Create the class
-        ScriptClass c(vm, sqName, sqBaseName);
+        squirrel::Class c(vm, sqName, sqBaseName);
 
         // Bind constructor
         c.setConstructor(cb_scriptConstructor<T>);
 
         // Make it accessible from the root table
-        ScriptRootTable(vm).setObject(sqName.c_str(), c);
+        squirrel::RootTable(vm).setObject(sqName.c_str(), c);
 
         return c;
     }
@@ -76,7 +76,7 @@ private:
     void onReleaseFromScript();
 
     /// \brief Applies inheritance from base classes if they were bound already
-    void bindBaseClasses(ScriptClass & c);
+    void bindBaseClasses(squirrel::Class & c);
 
     /// \brief Must be bound as native constructor of the class in Squirrel
     template <typename T>

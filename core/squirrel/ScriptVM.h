@@ -1,18 +1,18 @@
-#ifndef __HEADER_SN_SCRIPTVM__
-#define __HEADER_SN_SCRIPTVM__
+#ifndef __HEADER_SQUIRREL_VM__
+#define __HEADER_SQUIRREL_VM__
 
 #include <core/squirrel/Script.h>
 #include <core/types.hpp>
 
-namespace sn
+namespace squirrel
 {
     
 /// \brief C++ wrapper for a Squirrel VM
-class SN_API ScriptVM
+class SN_API VM
 {
 public:
-    ScriptVM(u32 initialStackSize = 1024);
-    ~ScriptVM();
+    VM(SQInteger initialStackSize = 1024);
+    ~VM();
 
     HSQUIRRELVM getSquirrelVM() const { return m_vm; }
 
@@ -24,7 +24,7 @@ private:
 
 };
 
-} // namespace sn
+} // namespace squirrel
 
-#endif // __HEADER_SN_SCRIPTVM__
+#endif // __HEADER_SQUIRREL_VM__
 

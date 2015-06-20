@@ -1,22 +1,22 @@
-#ifndef __HEADER_SN_SCRIPTOBJECT__
-#define __HEADER_SN_SCRIPTOBJECT__
+#ifndef __HEADER_SQUIRREL_OBJECT__
+#define __HEADER_SQUIRREL_OBJECT__
 
 #include <core/squirrel/bind_tools.hpp>
 #include <core/util/NonCopyable.hpp>
 
-namespace sn
+namespace squirrel
 {
 
 /// \brief Base class holding a reference to a Squirrel object.
 /// C++ takes shared ownership on this instance.
-class SN_API ScriptObject
+class SN_API Object
 {
 public:
-    ScriptObject(HSQUIRRELVM vm=nullptr);
-    ScriptObject(HSQUIRRELVM vm, HSQOBJECT obj);
-    ScriptObject(const ScriptObject & other);
+    Object(HSQUIRRELVM vm=nullptr);
+    Object(HSQUIRRELVM vm, HSQOBJECT obj);
+    Object(const Object & other);
 
-    ~ScriptObject();
+    ~Object();
 
     HSQOBJECT getObject() const { return m_object; }
     HSQUIRRELVM getVM() const { return m_vm; }
@@ -24,14 +24,14 @@ public:
     bool isNull() const;
     void releaseObject();
 
-    ScriptObject & operator=(const ScriptObject & other);
+    Object & operator=(const Object & other);
 
 protected:
     HSQOBJECT m_object;
     HSQUIRRELVM m_vm;
 };
 
-} // namespace sn
+} // namespace squirrel
 
-#endif // __HEADER_SN_SCRIPTOBJECT__
+#endif // __HEADER_SQUIRREL_OBJECT__
 

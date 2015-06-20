@@ -98,7 +98,7 @@ bool ScriptManager::compileSquirrelModule(const std::string & modName, const std
 {
     // Compile scripts
 
-    std::vector<Script> scripts;
+    std::vector<squirrel::Script> scripts;
     std::string sourceCode;
 
     for (auto it = files.begin(); it != files.end(); ++it)
@@ -106,14 +106,14 @@ bool ScriptManager::compileSquirrelModule(const std::string & modName, const std
         const String & filePath = *it;
         if (readFile(toString(filePath), sourceCode))
         {
-            Script script(m_squirrelVM);
+            squirrel::Script script(m_squirrelVM);
             if (script.compileString(sourceCode))
             {
                 scripts.push_back(script);
             }
             else
             {
-                SN_ERROR(getLastError(script.getVM()));
+                SN_ERROR(squirrel::getLastError(script.getVM()));
                 return false;
             }
         }
