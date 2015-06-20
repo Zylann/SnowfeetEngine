@@ -1,7 +1,7 @@
 #ifndef __HEADER_SQUIRREL_TABLE__
 #define __HEADER_SQUIRREL_TABLE__
 
-#include <core/squirrel/ScriptObject.h>
+#include <core/squirrel/Object.h>
 
 namespace squirrel
 {

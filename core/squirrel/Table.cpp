@@ -1,4 +1,4 @@
-#include "ScriptTable.h"
+#include "Table.h"
 #include <core/util/assert.hpp>
 
 namespace squirrel

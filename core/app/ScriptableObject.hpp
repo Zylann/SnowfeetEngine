@@ -9,9 +9,9 @@ This file is part of the SnowfeetEngine project.
 
 #include <core/reflect/Object.hpp>
 #include <core/util/RefCounted.hpp>
-#include <core/squirrel/ScriptInstance.hpp>
-#include <core/squirrel/ScriptClass.h>
-#include <core/squirrel/ScriptTable.h>
+#include <core/squirrel/Instance.h>
+#include <core/squirrel/Class.h>
+#include <core/squirrel/Table.h>
 #include <type_traits>
 
 #define SN_SCRIPT_OBJECT(_className, _baseName) SN_OBJECT(_className, _baseName)

@@ -1,4 +1,4 @@
-#include "ScriptObject.h"
+#include "Object.h"
 
 namespace squirrel
 {

@@ -1,6 +1,6 @@
 #include "sq_core.h"
-#include "../squirrel/ScriptClass.h"
-#include "../squirrel/ScriptTable.h"
+#include "../squirrel/Class.h"
+#include "../squirrel/Table.h"
 
 namespace sn
 {

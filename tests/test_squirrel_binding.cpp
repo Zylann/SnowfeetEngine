@@ -1,8 +1,8 @@
 #include "tests.hpp"
 #include <iostream>
-#include <core/squirrel/ScriptVM.h>
-#include <core/squirrel/ScriptClass.h>
-#include <core/squirrel/ScriptTable.h>
+#include <core/squirrel/VM.h>
+#include <core/squirrel/Class.h>
+#include <core/squirrel/Table.h>
 #include <core/app/ScriptableObject.hpp>
 #include <core/util/stringutils.hpp>
 #include <core/object_types.hpp>

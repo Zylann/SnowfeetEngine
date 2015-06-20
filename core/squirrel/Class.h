@@ -1,7 +1,7 @@
 #ifndef __HEADER_SQUIRREL_CLASS__
 #define __HEADER_SQUIRREL_CLASS__
 
-#include <core/squirrel/ScriptObject.h>
+#include <core/squirrel/Object.h>
 #include <string>
 
 namespace squirrel

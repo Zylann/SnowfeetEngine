@@ -1,4 +1,4 @@
-#include "ScriptInstance.hpp"
+#include "Instance.h"
 #include "../app/Application.hpp"
 #include "../squirrel/bind_tools.hpp"
 

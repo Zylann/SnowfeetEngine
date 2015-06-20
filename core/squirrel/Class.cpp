@@ -1,4 +1,4 @@
-#include "ScriptClass.h"
+#include "Class.h"
 #include <core/util/assert.hpp>
 
 namespace squirrel

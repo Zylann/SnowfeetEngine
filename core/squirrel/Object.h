@@ -2,7 +2,6 @@
 #define __HEADER_SQUIRREL_OBJECT__
 
 #include <core/squirrel/bind_tools.hpp>
-#include <core/util/NonCopyable.hpp>
 
 namespace squirrel
 {

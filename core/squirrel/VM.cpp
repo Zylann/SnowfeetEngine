@@ -1,4 +1,4 @@
-#include "ScriptVM.h"
+#include "VM.h"
 
 #include <stdarg.h>
 #include <stdio.h>

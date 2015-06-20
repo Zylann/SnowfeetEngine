@@ -3,7 +3,7 @@
 
 #include <vector>
 #include <core/util/Variant.hpp>
-#include <core/squirrel/ScriptObject.h>
+#include <core/squirrel/Object.h>
 
 namespace squirrel
 {
