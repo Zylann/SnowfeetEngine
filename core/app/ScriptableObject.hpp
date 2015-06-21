@@ -99,9 +99,7 @@ private:
     /// or when it needs to be pushed on the Squirrel stack for the first time.
     /// It allows the engine to ensure the Squirrel world will get the same
     /// instance when it needs to be pushed by C++.
-    /// It also enables inheriting the native class in Squirrel,
-    /// however virtual calls from C++ are not guaranteed at all. 
-    /// It all depends on the scriptable API of the class.
+    /// \warning Althought this could allow inheriting native classes, this is not a supported feature.
     HSQOBJECT m_scriptSide;
 
 };
