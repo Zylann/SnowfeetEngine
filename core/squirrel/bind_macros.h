@@ -10,11 +10,11 @@
 #include <core/util/macros.hpp>
 
 // Put this on top of the namespace containing the wrappers
-#define DEFINE_CLASS(_name) typedef _name __sn_BoundClass;
+#define CURRENT_CLASS(_name) typedef _name __sn_CurrentClass;
 
 #define BEGIN_METHOD(_name) \
 	SQInteger _name(HSQUIRRELVM vm) { \
-		auto * self = getNativeInstance<__sn_BoundClass>(vm, 1); \
+		auto * self = getNativeInstance<__sn_CurrentClass>(vm, 1); \
 		if(self) {
 		
 		// Insert function code here

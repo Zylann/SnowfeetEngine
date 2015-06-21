@@ -22,7 +22,7 @@ namespace sn
             return Vector3f(x, y, z);
 		}
 
-		DEFINE_CLASS(Entity3D)
+		CURRENT_CLASS(Entity3D)
 
 		BEGIN_METHOD(setPosition)
 			self->setPosition(getVector3fAs3Numbers<2>(vm));

@@ -15,7 +15,7 @@ namespace sn
 {
 	namespace 
 	{
-		DEFINE_CLASS(Entity)
+		CURRENT_CLASS(Entity)
 
 		BEGIN_METHOD(getName)
 			sq_pushstring(vm, self->getName().c_str(), -1);

@@ -14,7 +14,7 @@ namespace sn
 {
 	namespace
 	{
-		DEFINE_CLASS(Scene)
+		CURRENT_CLASS(Scene)
 
 		BEGIN_METHOD(getTaggedEntity)
 			const char * tagName = getString(vm, 2);
@@ -38,7 +38,7 @@ namespace sn
 				sq_set(vm, -3);
 			}
 			return 1;
-			END_METHOD
+	    END_METHOD
 
 		BEGIN_METHOD(getDeltaTime)
 			Time t = self->getDeltaTime();
