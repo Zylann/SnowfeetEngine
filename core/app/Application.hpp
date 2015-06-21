@@ -82,6 +82,8 @@ private:
     /// \brief Loads a module from its path within one of the roots known by the engine.
     Module * loadModule(const String & path);
 
+    void unloadAllModules();
+
     /// \brief Executes the application without catching any exception (no try/catch)
     int executeEx();
 

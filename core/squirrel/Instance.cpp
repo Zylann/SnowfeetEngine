@@ -41,13 +41,13 @@ bool Instance::createRef(HSQUIRRELVM vm, const std::string & fullClassName, HSQO
         return false;
     }
 
-    sq_pushroottable(vm); // this
     if (callConstructor)
     {
+        sq_pushroottable(vm); // this
         // Create an instance of it (It's like calling a function)
-        if (SQ_FAILED(sq_call(vm, -3, SQTrue, SQTrue)))
+        if (SQ_FAILED(sq_call(vm, 1, SQTrue, SQTrue)))
         {
-            sq_pop(vm, 1);
+            sq_pop(vm, 2);
             SN_ERROR("Squirrel class instantiation raised an error: " << getLastError(vm));
             return false;
         }
@@ -55,9 +55,9 @@ bool Instance::createRef(HSQUIRRELVM vm, const std::string & fullClassName, HSQO
     else
     {
         // Create the instance without invoking the constructor
-        if (SQ_FAILED(sq_createinstance(vm, -2)))
+        if (SQ_FAILED(sq_createinstance(vm, -1)))
         {
-            sq_pop(vm, 1);
+            sq_pop(vm, 2);
             SN_ERROR("Squirrel class instantiation raised an error (without constructor): " << getLastError(vm));
             return false;
         }
@@ -68,7 +68,7 @@ bool Instance::createRef(HSQUIRRELVM vm, const std::string & fullClassName, HSQO
     sq_getstackobj(vm, -1, out_obj);
     sq_addref(vm, out_obj);
 
-    sq_pop(vm, callConstructor ? 3 : 4); // instance, class and roottable
+    sq_pop(vm, 3); // instance, class and roottable
 
     return true;
 }
@@ -167,6 +167,34 @@ bool Instance::callMethod(const std::string & methodName)
     sq_pop(vm, 2);
 
     return true;
+}
+
+//------------------------------------------------------------------------------
+bool Instance::setMember(const char * name, HSQOBJECT obj)
+{
+    SN_ASSERT(!isNull(), "Instance is null");
+
+    sq_pushobject(m_vm, m_object);
+    sq_pushstring(m_vm, name, -1);
+    sq_pushobject(m_vm, obj);
+    SQRESULT res = sq_set(m_vm, -3);
+    sq_pop(m_vm, 1); // pop m_object
+
+    return SQ_SUCCEEDED(res);
+}
+
+//------------------------------------------------------------------------------
+bool Instance::setMemberNull(const char * name)
+{
+    SN_ASSERT(!isNull(), "Instance is null");
+
+    sq_pushobject(m_vm, m_object);
+    sq_pushstring(m_vm, name, -1);
+    sq_pushnull(m_vm);
+    SQRESULT res = sq_set(m_vm, -3);
+    sq_pop(m_vm, 1); // pop m_object
+
+    return SQ_SUCCEEDED(res);
 }
 
 } // namespace squirrel

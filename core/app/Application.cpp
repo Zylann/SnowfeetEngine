@@ -40,12 +40,7 @@ Application::Application() :
 //------------------------------------------------------------------------------
 Application::~Application()
 {
-    // TODO Unload modules in right order!
-	// Unload modules
-    for (auto it = m_modules.begin(); it != m_modules.end(); ++it)
-    {
-        delete it->second;
-    }
+    unloadAllModules();
 }
 
 //------------------------------------------------------------------------------
@@ -246,7 +241,12 @@ int Application::executeEx()
     // Close all windows
     SystemGUI::get().destroyAllWindows();
 
-    // TODO uninitialize all scripts before modules get destroyed
+    // Uninitialize all scripts before modules get destroyed
+    SN_LOG("Closing main Squirrel VM...");
+    m_scriptEngine.close();
+
+    // Unload all modules
+    unloadAllModules();
 
 	SN_END_PROFILE_SAMPLE();
 
@@ -427,6 +427,18 @@ Module * Application::loadModule(const String & path)
 
     // Note: the last loaded module will be the one we requested when calling this function
     return lastModule;
+}
+
+//------------------------------------------------------------------------------
+void Application::unloadAllModules()
+{
+    // TODO Unload modules in right order!
+	// Unload modules
+    for (auto it = m_modules.begin(); it != m_modules.end(); ++it)
+    {
+        delete it->second;
+    }
+    m_modules.clear();
 }
 
 //------------------------------------------------------------------------------

@@ -407,6 +407,7 @@ void Entity::destroy()
     {
         onDestroy();
         setFlag(SN_EF_DESTROYED, true);
+        releaseScript();
         // TODO Instant destruction
         release();
     }
@@ -422,6 +423,13 @@ void Entity::destroyLater()
     SN_WARNING("Entity::destroyLater(): not implemented yet");
     // TODO Different flag?
     //setFlag(SN_EF_DESTROYED, true);
+}
+
+//------------------------------------------------------------------------------
+void Entity::releaseScript()
+{
+    //m_script.setMemberNull("entity");
+    m_script.releaseObject();
 }
 
 //------------------------------------------------------------------------------
@@ -497,14 +505,26 @@ void Entity::unserializeState(JsonBox::Value & o, const SerializationContext & c
 
     sn::unserialize(o["tags"], m_tags);
 
-    auto & scripts = o["scripts"];
-    if (scripts.isArray())
+    auto & script = o["script"];
+    if (script.isObject())
     {
-        std::string classPath = scripts[(size_t)0].getString();
+        std::string classPath = script["class"].getString();
         if (!classPath.empty())
         {
+            // TODO should be context.squirrelVM
             HSQUIRRELVM vm = Application::get().getScriptManager().getVM();
-            m_script.create(vm, classPath);
+
+            if (m_script.create(vm, classPath))
+            {
+                // Set the "entity" member
+                if (pushScriptObject(vm))
+                {
+                    HSQOBJECT entityObj;
+                    sq_getstackobj(vm, -1, &entityObj);
+                    m_script.setMember("entity", entityObj);
+                    sq_pop(vm, 1); // pop entityObj
+                }
+            }
         }
     }
 

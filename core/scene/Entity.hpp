@@ -255,6 +255,8 @@ private:
     void propagateOnReady();
     void removeChildAtIndex(u32 index);
 
+    void releaseScript();
+
 private:
     /// \brief Flags of the entity.
     /// These are like internal tags used on the engine's core side.

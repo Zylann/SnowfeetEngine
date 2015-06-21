@@ -22,6 +22,9 @@ public:
     bool callMethod(const std::string & methodName);
 
     void setObject(HSQUIRRELVM vm, HSQOBJECT obj);
+
+    bool setMember(const char * name, HSQOBJECT obj);
+    bool setMemberNull(const char * name);
     
 };
 

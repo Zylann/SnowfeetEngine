@@ -33,7 +33,7 @@ public:
     /// \brief Pushes the C++ instance on the Squirrel stack.
     /// Several calls should return the same Squirrel instance, as long as at least one stays referenced.
     /// If no class instance is referenced by Squirrel at the time, a new one will be created.
-    void pushScriptObject(HSQUIRRELVM vm);
+    bool pushScriptObject(HSQUIRRELVM vm);
 
     /// \brief Auto-binds a ScriptableObject class to Squirrel with just a constructor and destructor,
     /// and returns it to let binding the other specific members.
@@ -66,7 +66,7 @@ public:
     }
 
 protected:
-    ~ScriptableObject();
+    virtual ~ScriptableObject();
 
 private:
     /// \brief This should be called when the ScriptableObject is created from a script.

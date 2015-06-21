@@ -67,10 +67,7 @@ ScriptManager::ScriptManager(Application & app) :
 //------------------------------------------------------------------------------
 ScriptManager::~ScriptManager()
 {
-    if (m_squirrelVM)
-    {
-        sq_close(m_squirrelVM);
-    }
+    close();
 }
 
 //------------------------------------------------------------------------------
@@ -91,6 +88,16 @@ void ScriptManager::initialize()
 
 	// Register API
     registerCoreAPI();
+}
+
+//------------------------------------------------------------------------------
+void ScriptManager::close()
+{
+    if (m_squirrelVM)
+    {
+        sq_close(m_squirrelVM);
+        m_squirrelVM = nullptr;
+    }
 }
 
 //------------------------------------------------------------------------------

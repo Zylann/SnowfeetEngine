@@ -27,6 +27,7 @@ public:
     ~ScriptManager();
 
     void initialize();
+    void close();
 
     inline HSQUIRRELVM getVM() const { return m_squirrelVM; }
 

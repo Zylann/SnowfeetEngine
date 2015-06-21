@@ -38,7 +38,7 @@ ScriptableObject::~ScriptableObject()
 }
 
 //------------------------------------------------------------------------------
-void ScriptableObject::pushScriptObject(HSQUIRRELVM vm)
+bool ScriptableObject::pushScriptObject(HSQUIRRELVM vm)
 {
     if (sq_isnull(m_scriptSide))
     {
@@ -51,7 +51,13 @@ void ScriptableObject::pushScriptObject(HSQUIRRELVM vm)
         // Create instance without calling constructor (which would create a new C++ instance).
         // We'll store the object as a weak reference, so we shouldn't end up with a cycle.
         m_vm = vm;
-        squirrel::Instance::createNoRef(m_vm, bindClassName, &m_scriptSide, false);
+        if (!squirrel::Instance::createNoRef(m_vm, bindClassName, &m_scriptSide, false))
+        {
+            SN_ERROR("The class " << ot.getName() << " seems not bound to Squirrel");
+            sq_pushnull(vm);
+            return false;
+        }
+
         // Push it on the stack (done by createNoRef)
         //sq_pushobject(vm, m_scriptSide.getObject());
 
@@ -70,6 +76,8 @@ void ScriptableObject::pushScriptObject(HSQUIRRELVM vm)
         // Squirrel already has shared ownership on our instance, so we just push it
         sq_pushobject(vm, m_scriptSide);
     }
+
+    return true;
 }
 
 //------------------------------------------------------------------------------
