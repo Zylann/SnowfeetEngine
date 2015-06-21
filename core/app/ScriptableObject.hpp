@@ -75,9 +75,6 @@ private:
     /// \brief This should be called when the ScriptableObject is released from a script.
     void onReleaseFromScript();
 
-    /// \brief Applies inheritance from base classes if they were bound already
-    void bindBaseClasses(squirrel::Class & c);
-
     /// \brief Must be bound as native constructor of the class in Squirrel
     template <typename T>
     static SQInteger cb_scriptConstructor(HSQUIRRELVM vm)
