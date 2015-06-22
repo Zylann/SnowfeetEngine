@@ -12,6 +12,8 @@
 
 #include "theme/Theme.h"
 
+#include "bind/sq_tgui.h"
+
 namespace tgui
 {
     void registerObjectTypes(sn::ObjectTypeDatabase & otb)
@@ -35,6 +37,7 @@ namespace tgui
 int loadSnowfeetModule_ModTGUI(ModuleLoadArgs args)
 {
 	tgui::registerObjectTypes(*(args.objectTypeDatabase));
+    tgui::bindTGUI(args.squirrelVM);
     return 0;
 }
 
