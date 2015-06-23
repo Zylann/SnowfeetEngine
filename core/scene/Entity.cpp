@@ -524,6 +524,9 @@ void Entity::unserializeState(JsonBox::Value & o, const SerializationContext & c
                     m_script.setMember("entity", entityObj);
                     sq_pop(vm, 1); // pop entityObj
                 }
+
+				// Call onCreate
+				m_script.callMethod("onCreate");
             }
         }
     }
