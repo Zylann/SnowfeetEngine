@@ -12,13 +12,15 @@ namespace tgui
 //------------------------------------------------------------------------------
 void Button::onMousePress(Event & e)
 {
-    SN_DLOG("Button pressed!");
+	if (!getScript().isNull())
+	{
+		getScript().callMethod("onButtonPress");
+	}
 }
 
 //------------------------------------------------------------------------------
 void Button::onMouseRelease(Event & e)
 {
-    SN_DLOG("Button released!");
 }
 
 //------------------------------------------------------------------------------

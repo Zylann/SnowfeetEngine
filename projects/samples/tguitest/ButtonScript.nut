@@ -4,11 +4,15 @@ class ButtonScript
 
 	constructor() {
 		println("Hello from Squirrel!")
+	}
+
+	function onCreate() {
+		println("onCreate was called")
 		println("entity: " + entity)
 	}
 
-	function onPress() {
-		println("lol")
+	function onButtonPress() {
+		println("Wahaha someone pressed me")
 	}
 }
 

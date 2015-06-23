@@ -230,6 +230,12 @@ public:
 	/// \return true if the event has been consumed, false otherwise
 	virtual bool onSystemEvent(const sn::Event & event) { return false; }
 
+	//---------------------------------------------
+    // Scripting
+    //---------------------------------------------
+
+	squirrel::Instance & getScript() { return m_script; }
+
     //---------------------------------------------
     // Internal use
     //---------------------------------------------
