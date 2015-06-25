@@ -90,8 +90,11 @@ namespace sn
 				}
 				else
 				{
-					SN_ERROR("Invalid child index (" << i << ")");
-					return 0;
+                    // TODO Have a helper for this that doesn't looks too macro-ish
+                    std::stringstream ss;
+                    ss << "Invalid child index (" << i << ")";
+                    std::string s = ss.str();
+					return sq_throwerror(vm, s.c_str());
 				}
 			}
 			else if (t == OT_STRING)
@@ -106,8 +109,10 @@ namespace sn
 			}
 			else
 			{
-				SN_ERROR("Invalid argument type to " << SN_FUNCNAME);
-				return 0;
+                std::stringstream ss;
+                ss << "Invalid argument type to " << SN_FUNCNAME;
+                std::string s = ss.str();
+                return sq_throwerror(vm, s.c_str());
 			}
 		END_METHOD
 	}

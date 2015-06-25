@@ -21,8 +21,7 @@
 
 #define END_METHOD \
 		} else { \
-			SN_ERROR("Attempt to call native method '" << SN_FUNCNAME << "' on destroyed instance"); \
-			return 0; \
+            return sq_throwerror(vm, "Attempt to call native method '" SN_FUNCNAME "' on destroyed instance"); \
 		} \
 	}
 
