@@ -6,16 +6,18 @@ namespace sn
 // Notes about the ownership system
 //----------------------------------------
 
-// If C++ releases all its references to the ScriptableObject, if refCount is 1, the ownership will go to Squirrel.
-// If squirrel loses reference of the object, the release hook will get called and ownership will go to C++.
-// When one of the two receives complete ownership and refcount reaches zero, the instance will be destroyed.
+// Calling addRef() or creating an instance of a ScriptableObject means taking ownership of it.
 
-// Note: if an object (for example, Entity) gets released from C++ as a result of calling a destroy() function,
-// the instance will still exist (in a somehow unusable state) as long as it is referenced somewhere in a script.
-// FYI: this is similar to what happens in Unity3D when you Destroy() a game object.
+// By default, ScriptableObjects that are created in C++ don't give ownership to Squirrel.
+// If they are created from script, however, Squirrel has ownership, because it gets the first reference.
+// Ownership can be switched by calling add/releaseScriptOwnership, however it shouldn't be
+// required depending on the way you bind your classes (somehow making constructors private to the script writer).
 
-// Note 2 for the future: why not use the HSQOBJECT as reference counter instead of RefCounted?
-// It would make the engine strongly dependent on Squirrel, thought...
+// ScriptableObjects that are not owned by Squirrel will set the userpointer of their script object to null when they are destroyed.
+// This means the "self" pointer must always be checked when a method call is performed.
+
+// ScriptableObjects that are owned by Squirrel can still be present in the VM even after the scene is destroyed,
+// if they are stored in globals for instance.
 
 //------------------------------------------------------------------------------
 SQInteger ScriptableObject::cb_releaseHook(SQUserPointer ptr, SQInteger size)

@@ -19,7 +19,6 @@ This file is part of the SnowfeetEngine project.
 namespace sn
 {
 
-// TODO Move to the squirrel/ folder?
 /// \brief All classes accessible and creatable from scripts should inherit this class.
 /// It is an Object because reflection is currently used to get the class name used in scripts.
 /// It is RefCounted because of shared ownership between C++ and scripts.
@@ -41,6 +40,9 @@ public:
     u32 releaseScriptOwnership();
 
     void addScriptOwnership();
+
+	// TODO Option to prevent constructing classes directly from script,
+	// Because it would first give ownership to Squirrel, and sometimes we don't want that
 
     /// \brief Auto-binds a ScriptableObject class to Squirrel with just a constructor and destructor,
     /// and returns it to let binding the other specific members.
@@ -86,14 +88,20 @@ private:
     template <typename T>
     static SQInteger cb_scriptConstructor(HSQUIRRELVM vm)
     {
+		// Check class type
         typedef std::is_base_of<ScriptableObject, T> TestBaseOfT;
         SN_STATIC_ASSERT_MSG(TestBaseOfT::value, "Class does not derives from ScriptableObject");
+
+		// Create C++ instance and put a reference inside the Squirrel object
         T * self = new T();
         sq_setinstanceup(vm, -1, self);
         sq_setreleasehook(vm, -1, cb_releaseHook);
+
+		// Notify
         HSQOBJECT obj;
         sq_getstackobj(vm, -1, &obj);
         self->onCreateFromScript(vm, obj);
+
         return 0;
     }
 
@@ -112,6 +120,7 @@ private:
     /// \warning Althought this could allow inheriting native classes, this is not a supported feature.
     HSQOBJECT m_scriptSide;
 
+	/// \brief If true, Squirrel holds one of the RefCounted references.
     bool m_scriptOwnership;
 
 };
