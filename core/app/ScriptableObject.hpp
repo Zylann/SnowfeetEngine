@@ -33,7 +33,14 @@ public:
     /// \brief Pushes the C++ instance on the Squirrel stack.
     /// Several calls should return the same Squirrel instance, as long as at least one stays referenced.
     /// If no class instance is referenced by Squirrel at the time, a new one will be created.
-    bool pushScriptObject(HSQUIRRELVM vm);
+    bool pushScriptObject(HSQUIRRELVM vm, bool giveOwnership=false);
+
+    /// \brief Releases ownership from Squirrel.
+    /// release() will be called, so if you hold no other reference to the object, it will be destroyed.
+    /// \return reference count
+    u32 releaseScriptOwnership();
+
+    void addScriptOwnership();
 
     /// \brief Auto-binds a ScriptableObject class to Squirrel with just a constructor and destructor,
     /// and returns it to let binding the other specific members.
@@ -81,9 +88,12 @@ private:
     {
         typedef std::is_base_of<ScriptableObject, T> TestBaseOfT;
         SN_STATIC_ASSERT_MSG(TestBaseOfT::value, "Class does not derives from ScriptableObject");
-        T * p = new T();
-        sq_setinstanceup(vm, -1, p);
+        T * self = new T();
+        sq_setinstanceup(vm, -1, self);
         sq_setreleasehook(vm, -1, cb_releaseHook);
+        HSQOBJECT obj;
+        sq_getstackobj(vm, -1, &obj);
+        self->onCreateFromScript(vm, obj);
         return 0;
     }
 
@@ -94,13 +104,15 @@ private:
     /// \brief VM owning the object. Can be null if the object is not referenced in a script.
     HSQUIRRELVM m_vm;
 
-    /// \brief This is the Squirrel side of the object.
+    /// \brief This is a _weak_ reference to the Squirrel side of the object.
     /// It becomes non-null when the C++ class is instantiated from a script,
     /// or when it needs to be pushed on the Squirrel stack for the first time.
     /// It allows the engine to ensure the Squirrel world will get the same
     /// instance when it needs to be pushed by C++.
     /// \warning Althought this could allow inheriting native classes, this is not a supported feature.
     HSQOBJECT m_scriptSide;
+
+    bool m_scriptOwnership;
 
 };
 

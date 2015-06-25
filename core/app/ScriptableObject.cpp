@@ -27,7 +27,7 @@ SQInteger ScriptableObject::cb_releaseHook(SQUserPointer ptr, SQInteger size)
 }
 
 //------------------------------------------------------------------------------
-ScriptableObject::ScriptableObject() : RefCounted(), m_vm(0)
+ScriptableObject::ScriptableObject() : RefCounted(), m_vm(0), m_scriptOwnership(false)
 {
     sq_resetobject(&m_scriptSide);
 }
@@ -35,10 +35,21 @@ ScriptableObject::ScriptableObject() : RefCounted(), m_vm(0)
 //------------------------------------------------------------------------------
 ScriptableObject::~ScriptableObject()
 {
+    // Note: the following only works if m_scriptSide is updated accordingly.
+    // (Horrible crashes occur if it's not done properly)
+
+    // If m_scriptSide still exists
+    if (!sq_isnull(m_scriptSide))
+    {
+        // Reset its userpointer
+        sq_pushobject(m_vm, m_scriptSide);
+        sq_setinstanceup(m_vm, -1, nullptr);
+        sq_pop(m_vm, 1);
+    }
 }
 
 //------------------------------------------------------------------------------
-bool ScriptableObject::pushScriptObject(HSQUIRRELVM vm)
+bool ScriptableObject::pushScriptObject(HSQUIRRELVM vm, bool giveOwnership)
 {
     if (sq_isnull(m_scriptSide))
     {
@@ -63,11 +74,17 @@ bool ScriptableObject::pushScriptObject(HSQUIRRELVM vm)
 
         // Sets its pointer (because we didn't called the constructor)
         sq_setinstanceup(vm, -1, this);
-        // Set the release hook to be notified when Squirrel looses track of the object
+
+        // Set the release hook to be notified when Squirrel looses track of the object.
+        // We need this to destroy the C++ instance OR reset m_scriptSide when needed.
         sq_setreleasehook(vm, -1, ScriptableObject::cb_releaseHook);
 
-        // Addref the C++ instance the first time to give Squirrel a shared ownership.
-        addRef();
+        if (giveOwnership && !m_scriptOwnership)
+        {
+            // Addref the C++ instance the first time to give Squirrel a shared ownership.
+            addRef();
+            m_scriptOwnership = true;
+        }
     }
     else
     {
@@ -81,6 +98,27 @@ bool ScriptableObject::pushScriptObject(HSQUIRRELVM vm)
 }
 
 //------------------------------------------------------------------------------
+u32 ScriptableObject::releaseScriptOwnership()
+{
+    if (m_scriptOwnership && !sq_isnull(m_scriptSide))
+    {
+        m_scriptOwnership = false;
+        return release();
+    }
+    return 0;
+}
+
+//------------------------------------------------------------------------------
+void ScriptableObject::addScriptOwnership()
+{
+    if (!m_scriptOwnership && !sq_isnull(m_scriptSide))
+    {
+        m_scriptOwnership = true;
+        addRef();
+    }
+}
+
+//------------------------------------------------------------------------------
 void ScriptableObject::onCreateFromScript(HSQUIRRELVM vm, HSQOBJECT obj)
 {
     SN_ASSERT(sq_isnull(m_scriptSide), "Invalid state, m_scriptSide should be null");
@@ -88,22 +126,32 @@ void ScriptableObject::onCreateFromScript(HSQUIRRELVM vm, HSQOBJECT obj)
     m_vm = vm;
     // Just keep a weak reference so we can push the same object from C++ when needed
     m_scriptSide = obj;
+    // Now Squirrel has ownership on the object
+    m_scriptOwnership = true;
 }
 
 //------------------------------------------------------------------------------
 void ScriptableObject::onReleaseFromScript()
 {
-    // Release the ownership Squirrel had on the C++ instance
-    if (release()) // Test if returned _native_ refCount is > 0
+    if (m_scriptOwnership) 
     {
-        // If there is still a reference in C++, just reset the dangling object handle.
-        // (It will be re-created if we need to push the object in Squirrel again).
+        // Release the ownership Squirrel had on the C++ instance
+        if (release()) // Test if returned _native_ refCount is > 0
+        {
+            // If there is still a reference in C++, just reset the dangling object handle.
+            // (It will be re-created if we need to push the object in Squirrel again).
+            sq_resetobject(&m_scriptSide);
+            m_scriptOwnership = false;
+        }
+        //else
+        //{
+        //    // the ScriptableObject has been destroyed
+        //}
+    }
+    else
+    {
         sq_resetobject(&m_scriptSide);
     }
-    //else
-    //{
-    //    // the ScriptableObject has been destroyed
-    //}
 }
 
 } // namespace sn
