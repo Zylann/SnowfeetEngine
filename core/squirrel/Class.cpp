@@ -62,7 +62,7 @@ Class & Class::setConstructor(SQFUNCTION cb_constructor)
 }
 
 //------------------------------------------------------------------------------
-Class & Class::setMethod(const char * methodName, SQFUNCTION cb_method, SQInteger nparams, const char * paramsMask)
+Class & Class::setMethod(const char * methodName, SQFUNCTION cb_method, SQInteger nparams, const std::string & a_paramsMask)
 {
     SN_ASSERT(!isNull(), "Class is null");
     SN_ASSERT(cb_method != nullptr, "Function pointer argument is null");
@@ -73,7 +73,9 @@ Class & Class::setMethod(const char * methodName, SQFUNCTION cb_method, SQIntege
 
     if (nparams != NO_PARAMCHECK)
     {
-        sq_setparamscheck(m_vm, nparams, paramsMask);
+        // Note: we need to include the "this" parameter
+        std::string paramsMask = "x" + a_paramsMask;
+        sq_setparamscheck(m_vm, nparams+1, paramsMask.c_str());
     }
 
     // Store the method

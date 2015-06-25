@@ -28,7 +28,13 @@ public:
     //Class & setRelease(SQFUNCTION cb_release);
 
     /// \brief Sets a native method callable from scripts
-    Class & setMethod(const char * methodName, SQFUNCTION cb_method, SQInteger nparams=NO_PARAMCHECK, const char * paramsMask=nullptr);
+    Class & setMethod(
+        const char * methodName, 
+        SQFUNCTION cb_method, 
+        SQInteger nparams=NO_PARAMCHECK, 
+        const std::string & a_paramsMask=""
+    );
+
     //Class & setProperty(const char * propertyName, SQFUNCTION cb_getter, SQFUNCTION cb_setter=nullptr);
 
 private:
