@@ -22,9 +22,11 @@ namespace sn
 //------------------------------------------------------------------------------
 SQInteger ScriptableObject::cb_releaseHook(SQUserPointer ptr, SQInteger size)
 {
-    auto * self = static_cast<ScriptableObject*>(ptr);
-    SN_ASSERT(self != nullptr, "self is null in release hook");
-    self->onReleaseFromScript();
+	if (ptr)
+	{
+		auto * self = static_cast<ScriptableObject*>(ptr);
+		self->onReleaseFromScript();
+	}
     return 0;
 }
 
