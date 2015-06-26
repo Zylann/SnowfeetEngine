@@ -155,6 +155,7 @@ void Profiler::dump(std::ostream & os, DumpMode mode) const
 void serializeJson(std::ostream & os, const char * str)
 {
     u32 i = 0;
+	os << '"';
     while (str[i] != '\0')
     {
         char c = str[i++];
@@ -165,6 +166,7 @@ void serializeJson(std::ostream & os, const char * str)
         else
             os << c;
     }
+	os << '"';
 }
 
 //------------------------------------------------------------------------------
