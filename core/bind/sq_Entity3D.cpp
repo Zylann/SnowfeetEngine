@@ -21,6 +21,7 @@ namespace sn
             out.x() = x;
             out.y() = y;
             out.z() = z;
+			return true;
 		}
 
         CURRENT_CLASS(Entity3D)
