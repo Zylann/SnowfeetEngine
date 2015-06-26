@@ -245,13 +245,13 @@ int Application::executeEx()
     SN_LOG("Closing main Squirrel VM...");
     m_scriptEngine.close();
 
-    // Unload all modules
-    unloadAllModules();
-
 	SN_END_PROFILE_SAMPLE();
 
 	if (Profiler::get().isEnabled() && m_dumpProfilingOnClose)
 		Profiler::get().dump("profile_data.json", Profiler::DUMP_JSON);
+
+    // Unload all modules
+    unloadAllModules();
 
     return 0;
 }
