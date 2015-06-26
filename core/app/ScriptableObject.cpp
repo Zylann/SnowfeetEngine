@@ -93,8 +93,6 @@ bool ScriptableObject::pushScriptObject(HSQUIRRELVM vm, bool giveOwnership)
     else
     {
         SN_ASSERT(m_vm == vm, "Invalid VM");
-
-        // Squirrel already has shared ownership on our instance, so we just push it
         sq_pushobject(vm, m_scriptSide);
     }
 
