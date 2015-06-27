@@ -210,6 +210,42 @@ void Entity::setParent(Entity * newParent)
 }
 
 //------------------------------------------------------------------------------
+void Entity::onReady()
+{
+    if (!m_script.isNull())
+    {
+        m_script.callMethod("onReady");
+    }
+}
+
+//------------------------------------------------------------------------------
+void Entity::onFirstUpdate()
+{
+    if (!m_script.isNull())
+    {
+        m_script.callMethod("onFirstUpdate");
+    }
+}
+
+//------------------------------------------------------------------------------
+void Entity::onDestroy()
+{
+    if (!m_script.isNull())
+    {
+        m_script.callMethod("onDestroy");
+    }
+}
+
+//------------------------------------------------------------------------------
+void Entity::onUpdate()
+{
+    if (!m_script.isNull())
+    {
+        m_script.callMethod("onUpdate");
+    }
+}
+
+//------------------------------------------------------------------------------
 void Entity::propagateOnReady()
 {
     onReady();

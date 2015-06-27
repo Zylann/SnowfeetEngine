@@ -214,17 +214,17 @@ public:
     //---------------------------------------------
 
     /// \brief Called when the entity is ready to perform in the Scene
-    virtual void onReady() {}
+    virtual void onReady();
 
     /// \brief Called when the entity is marked (or scheduled) as destroyed.
     /// Destruction usually follow immediately after, or at the end of the update cycle.
-    virtual void onDestroy() {}
+    virtual void onDestroy();
 
     /// \brief Called just before the first call to onUpdate().
-    virtual void onFirstUpdate() {}
+    virtual void onFirstUpdate();
 
     /// \brief Called on each update cycle if the entity has been marked as updatable.
-    virtual void onUpdate() {}
+    virtual void onUpdate();
 
     /// \brief Called when a system event occurs if this entity has been marked as a system event listener.
 	/// \return true if the event has been consumed, false otherwise
