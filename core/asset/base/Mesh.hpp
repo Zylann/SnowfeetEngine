@@ -33,9 +33,7 @@ class SN_API Mesh : public Asset
 public:
     SN_SCRIPT_OBJECT(sn::Mesh, sn::Asset)
 
-    Mesh() :
-        m_primitiveType(SN_MESH_TRIANGLES)
-    {}
+    Mesh();
 
     void clear();
     bool isEmpty() const;
@@ -81,6 +79,8 @@ public:
 //
 //    void host();
 //    void unhost();
+protected:
+    ~Mesh();
 
 private:
 
