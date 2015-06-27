@@ -16,7 +16,7 @@ namespace sn
 	{
 		CURRENT_CLASS(Scene)
 
-		BEGIN_METHOD(getTaggedEntity)
+		BEGIN_METHOD(getEntityByTag)
 			const char * tagName = getString(vm, 2);
 			Entity * e = self->getTaggedEntity(tagName);
 			if (e)
@@ -26,7 +26,7 @@ namespace sn
 			return 0;
 		END_METHOD
 
-		BEGIN_METHOD(getTaggedEntities)
+		BEGIN_METHOD(getEntitiesByTag)
 			const char * tagName = getString(vm, 2);
 			std::vector<Entity*> entities = self->getTaggedEntities(tagName);
 			sq_newarray(vm, entities.size());
@@ -57,8 +57,8 @@ namespace sn
 void bindScene(HSQUIRRELVM vm)
 {
 	ScriptableObject::bindBase<Scene>(vm)
-		.setMethod("getTaggedEntity", getTaggedEntity)
-		.setMethod("getTaggedEntities", getTaggedEntities)
+		.setMethod("getEntityByTag", getEntityByTag)
+		.setMethod("getEntitiesByTag", getEntitiesByTag)
 		.setMethod("getDeltaTime", getDeltaTime)
 		.setMethod("getTimeSinceStartup", getTimeSinceStartup);
 }
