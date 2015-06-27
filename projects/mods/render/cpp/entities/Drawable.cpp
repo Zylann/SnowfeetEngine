@@ -15,7 +15,6 @@ Drawable::~Drawable()
 Drawable::Drawable():
     m_drawOrder(0)
 {
-    m_mesh.set(new Mesh());
 }
 
 //------------------------------------------------------------------------------
