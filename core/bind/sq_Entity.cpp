@@ -5,6 +5,7 @@ This file is part of the SnowfeetEngine project.
 */
 
 #include "../scene/Entity.hpp"
+#include "../scene/Scene.hpp"
 #include "sq_core.h"
 #include <iostream>
 #include "../squirrel/bind_macros.h"
@@ -28,6 +29,14 @@ namespace sn
 			return 0;
 		END_METHOD
 
+		BEGIN_METHOD(getScene)
+			auto * p = self->getScene();
+			if (p)
+				p->pushScriptObject(vm);
+			else
+				sq_pushnull(vm);
+			return 1;
+		END_METHOD
 		BEGIN_METHOD(getParent)
 			auto * p = self->getParent();
 			if (p)
@@ -120,6 +129,7 @@ namespace sn
 void bindEntity(HSQUIRRELVM vm)
 {
     ScriptableObject::bindBase<Entity>(vm)
+        .setMethod("getScene", getScene)
         .setMethod("getParent", getParent)
         .setMethod("getChild", getChild)
         .setMethod("getChildCount", getChild)
