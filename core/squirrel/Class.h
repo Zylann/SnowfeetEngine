@@ -25,7 +25,7 @@ public:
     /// \brief Sets the native function that will be called when the Squirrel class is instantiated.
     Class & setConstructor(SQFUNCTION cb_constructor);
 
-    //Class & setRelease(SQFUNCTION cb_release);
+    // TODO Class & setPrivateConstructor();
 
     /// \brief Sets a native method callable from scripts
     Class & setMethod(
@@ -35,7 +35,7 @@ public:
         const std::string & a_paramsMask=""
     );
 
-    //Class & setProperty(const char * propertyName, SQFUNCTION cb_getter, SQFUNCTION cb_setter=nullptr);
+    //TODO Class & setProperty(const char * propertyName, SQFUNCTION cb_getter, SQFUNCTION cb_setter=nullptr, const std::string & a_paramMask);
 
 private:
     void pushClassesTable();
