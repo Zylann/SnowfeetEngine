@@ -13,6 +13,7 @@ namespace sn
 {
 
 void bindVector3(HSQUIRRELVM vm);
+void bindQuaternion(HSQUIRRELVM vm);
 
 void bindEntity(HSQUIRRELVM vm);
 void bindEntity3D(HSQUIRRELVM vm);
