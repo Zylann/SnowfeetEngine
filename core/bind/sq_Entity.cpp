@@ -37,6 +37,7 @@ namespace sn
 				sq_pushnull(vm);
 			return 1;
 		END_METHOD
+
 		BEGIN_METHOD(getParent)
 			auto * p = self->getParent();
 			if (p)
@@ -123,7 +124,14 @@ namespace sn
                 std::string s = ss.str();
                 return sq_throwerror(vm, s.c_str());
 			}
-		END_METHOD
+        END_METHOD
+
+        BEGIN_METHOD(setUpdatable)
+            bool enable = getBool(vm, 2);
+            self->setUpdatable(enable);
+            return 0;
+        END_METHOD
+
 	}
 
 void bindEntity(HSQUIRRELVM vm)
@@ -139,7 +147,8 @@ void bindEntity(HSQUIRRELVM vm)
 		.setMethod("setEnabled", setEnabled, 1, "b")
 		.setMethod("hasTag", hasTag)
 		.setMethod("addTag", addTag, 1, "s")
-		.setMethod("removeTag", removeTag);
+		.setMethod("removeTag", removeTag)
+        .setMethod("setUpdatable", setUpdatable, -1, "b");
 }
     
 } // namespace sn
