@@ -98,7 +98,7 @@ public:
 };
 
 //------------------------------------------------------------------------------
-RenderManager::RenderManager() : Entity(), m_mainContext(nullptr)
+RenderManager::RenderManager() : Entity(), m_mainContext(nullptr), m_effectQuad(nullptr)
 {
     // This entity is always present across scenes
     setFlag(SN_EF_STICKY, true);
@@ -120,11 +120,19 @@ RenderManager::~RenderManager()
         delete m_mainContext;
         m_mainContext = nullptr;
     }
+
+    if (m_effectQuad)
+    {
+        m_effectQuad->release();
+        m_effectQuad = nullptr;
+    }
 }
 
 //------------------------------------------------------------------------------
 void RenderManager::onReady()
 {
+    Entity::onReady();
+
     SN_ASSERT(m_mainContext == nullptr, "Invalid state, m_context is not null");
 
     // TODO If two renderManager are created, just use another window ID and it might work
@@ -211,6 +219,8 @@ RenderScreen * RenderManager::getScreen(u32 windowID)
 //------------------------------------------------------------------------------
 void RenderManager::onUpdate()
 {
+    Entity::onUpdate();
+
     // Render!
     render();
 }
@@ -482,21 +492,24 @@ void RenderManager::renderCamera(Camera & camera)
     if (camera.getEffectCount() > 0 && !bypassEffects)
     {
         // Create the default quad on which we'll render images
-        Mesh * quad = new Mesh();
+        if (m_effectQuad == 0)
+        {
+            m_effectQuad = new Mesh();
 
-        quad->setPrimitiveType(SN_MESH_QUADS);
+            m_effectQuad->setPrimitiveType(SN_MESH_QUADS);
 
-        quad->addPosition(-1, -1, 0);
-        quad->addPosition( 1, -1, 0);
-        quad->addPosition( 1,  1, 0);
-        quad->addPosition(-1,  1, 0);
+            m_effectQuad->addPosition(-1, -1, 0);
+            m_effectQuad->addPosition( 1, -1, 0);
+            m_effectQuad->addPosition( 1,  1, 0);
+            m_effectQuad->addPosition(-1,  1, 0);
 
-        quad->addTexCoord(0, 0);
-        quad->addTexCoord(1, 0);
-        quad->addTexCoord(1, 1);
-        quad->addTexCoord(0, 1);
+            m_effectQuad->addTexCoord(0, 0);
+            m_effectQuad->addTexCoord(1, 0);
+            m_effectQuad->addTexCoord(1, 1);
+            m_effectQuad->addTexCoord(0, 1);
 
-        quad->recalculateIndexes();
+            m_effectQuad->recalculateIndexes();
+        }
 
         // Disable depth-test, we'll draw an overlay
         context->setDepthTest(false);
@@ -549,15 +562,13 @@ void RenderManager::renderCamera(Camera & camera)
 
             Mesh * effectMesh = effect.mesh.get();
             if (effectMesh == nullptr)
-                effectMesh = quad;
+                effectMesh = m_effectQuad;
 
             // Draw
             context->drawMesh(*effectMesh);
 
             context->useProgram(nullptr);
         }
-
-        quad->release();
     }
 
     // Go back to screen

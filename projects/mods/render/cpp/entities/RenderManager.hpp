@@ -45,6 +45,7 @@ private:
 private:
     Context * m_mainContext;
     std::unordered_map<u32, RenderScreen*> m_screens;
+    sn::Mesh * m_effectQuad;
 
 };
 
