@@ -25,13 +25,15 @@ namespace sn
     Object::Object()
     {
         Lock l(s_allObjectsMutex);
-        s_allObjects.insert(this);
+        auto & allObjects = s_allObjects;
+        allObjects.insert(this);
     }
 
     Object::~Object()
     {
         Lock l(s_allObjectsMutex);
-        s_allObjects.erase(this);
+        auto & allObjects = s_allObjects;
+        allObjects.erase(this);
     }
 
     // Static
