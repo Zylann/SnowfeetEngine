@@ -21,8 +21,6 @@ inline bool getVector3fAs3Numbers(HSQUIRRELVM vm, const u32 i_base, Vector3f & o
 	return true;
 }
 
-void registerVector3(HSQUIRRELVM vm);
-
 } // namespace sn
 
 #endif // __HEADER_SN_SQ_VECTOR__
