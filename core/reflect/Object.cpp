@@ -41,6 +41,19 @@ namespace sn
         return s_allObjects.size();
     }
 
+    // Static
+    void Object::printInstances()
+    {
+        Lock l(s_allObjectsMutex);
+        std::stringstream ss;
+        for (auto it = s_allObjects.begin(); it != s_allObjects.end(); ++it)
+        {
+            Object * obj = *it;
+            ss << obj->getObjectType().getName() << std::endl;
+        }
+        SN_LOG("Objects:\n" << ss.str());
+    }
+
 #endif
 
 Object * instantiateDerivedObject(const std::string & typeName, const std::string & derivedTypeName)

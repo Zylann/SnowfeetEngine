@@ -105,6 +105,7 @@ public:
     Object();
     virtual ~Object();
     static u32 getInstanceCount();
+    static void printInstances(); // Warning: will not work if C++ modules are not loaded
 #else
     virtual ~Object() {}
 #endif

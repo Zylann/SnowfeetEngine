@@ -250,6 +250,15 @@ int Application::executeEx()
 	if (Profiler::get().isEnabled() && m_dumpProfilingOnClose)
 		Profiler::get().dump("profile_data.json", Profiler::DUMP_JSON);
 
+#ifdef SN_BUILD_DEBUG
+    u32 leakingObjects = Object::getInstanceCount();
+    if (leakingObjects > 0)
+    {
+        SN_WARNING("Objects are leaking!");
+        Object::printInstances();
+    }
+#endif
+
     // Unload all modules
     unloadAllModules();
 
