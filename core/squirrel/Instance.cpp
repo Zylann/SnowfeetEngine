@@ -90,9 +90,9 @@ bool Instance::create(HSQUIRRELVM vm, const std::string & fullClassName, bool ca
 {
     // Destroy previous instance if any
     releaseObject();
-    // Parse the full name to extract namespaces
-    std::vector<std::string> parts = sn::split(fullClassName, '.');
+    // Set VM
     m_vm = vm;
+    // Create instance
     return Instance::createRef(vm, fullClassName, &m_object, callConstructor);
 }
 
