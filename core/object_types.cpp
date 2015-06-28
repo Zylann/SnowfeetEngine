@@ -45,7 +45,7 @@ void registerObjectTypes(ObjectTypeDatabase & otb)
     otb.registerType<VRHeadset>();
     otb.registerType<Rotate>();
     otb.registerType<KeyboardMove>();
-    otb.registerType<Drawable>();
+    otb.registerType<Drawable>("DrawableBase"); // TODO Drawable shouldn't be there...
 
     // Assets base
     otb.registerType<Asset>();
