@@ -57,7 +57,7 @@ public:
         std::string sqBaseName;
         const ObjectType * base = ot.getBase();
         const ObjectType & rootType = sn::getObjectType<ScriptableObject>();
-        if (base && !base->isAbstract() && *base != rootType)
+        if (base && *base != rootType)
         {
             sqBaseName = base->getScriptName();
         }
