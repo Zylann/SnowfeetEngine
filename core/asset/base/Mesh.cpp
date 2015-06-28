@@ -21,13 +21,11 @@ std::string toString(MeshPrimitiveType pt)
 Mesh::Mesh() : Asset(),
     m_primitiveType(SN_MESH_TRIANGLES)
 {
-    SN_LOG("Create mesh " << (size_t)this);
 }
 
 //------------------------------------------------------------------------------
 Mesh::~Mesh()
 {
-    SN_LOG("Delete mesh " << (size_t)this);
 }
 
 //------------------------------------------------------------------------------
@@ -301,4 +299,3 @@ FloatAABB Mesh::getBounds()
 }
 
 } // namespace sn
-
