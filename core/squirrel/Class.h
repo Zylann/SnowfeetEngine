@@ -25,7 +25,7 @@ public:
     /// \brief Sets the native function that will be called when the Squirrel class is instantiated.
     Class & setConstructor(SQFUNCTION cb_constructor);
 
-    // TODO Class & setPrivateConstructor();
+    Class & setPrivateConstructor();
 
     /// \brief Sets a native method callable from scripts
     Class & setMethod(

@@ -8,6 +8,15 @@ namespace squirrel
 static const char * CLASSES_TABLE = "__classes";
 
 //------------------------------------------------------------------------------
+namespace
+{
+    SQRESULT cb_privateConstructor(HSQUIRRELVM vm)
+    {
+        return sq_throwerror(vm, "Cannot instantiate this class, constructor is private.");
+    }
+}
+
+//------------------------------------------------------------------------------
 Class::Class(HSQUIRRELVM vm, const std::string & className, const std::string & baseClassName) : Object(vm)
 {
     pushClassesTable();
@@ -59,6 +68,12 @@ Class::Class(HSQUIRRELVM vm, const std::string & className, const std::string & 
 Class & Class::setConstructor(SQFUNCTION cb_constructor)
 {
     return setMethod("constructor", cb_constructor);
+}
+
+//------------------------------------------------------------------------------
+Class & Class::setPrivateConstructor()
+{
+    return setConstructor(cb_privateConstructor);
 }
 
 //------------------------------------------------------------------------------
