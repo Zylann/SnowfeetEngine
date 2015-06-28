@@ -38,6 +38,7 @@ bool SN_API pathExists(String path);
 bool SN_API makeDir(String path);
 
 /// \brief Gets the list of files and directories within a directory (not recursive)
+/// Elements are added at the end of the given vector.
 /// \param topDirectory: directory from which to list the files
 /// \param out_nodes: returned list of file nodes
 /// \return true on success, false on error
@@ -46,8 +47,10 @@ bool SN_API getFiles(String topDirectory, std::vector<FileNode> & out_nodes);
 // Platform-independent
 
 /// \brief Recursively gets the list of files within a directory.
+/// Elements are added at the end of the given vector.
+/// The top directory is included in file paths.
 /// \param topDirectory: directory from which to list the files
-/// \param out_nodes: returned list of file nodes, in arbitrary order. No directories.
+/// \param out_nodes: returned list of file nodes, in arbitrary order. Directories are not included.
 /// \return true on success, false on error
 bool SN_API getFilesRecursively(String topDirectory, std::vector<FileNode> & out_nodes);
 
