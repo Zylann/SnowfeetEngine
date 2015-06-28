@@ -30,6 +30,42 @@ namespace CallbackName
 }
 
 //------------------------------------------------------------------------------
+namespace
+{
+    bool getFilesRecursivelyIgnoringTopDirs(
+            String topDirectory, 
+            std::vector<FileNode> & out_nodes, 
+            std::unordered_set<String> ignoreTopDirs)
+    {
+        std::vector<FileNode> nodes;
+        if (!getFiles(topDirectory, nodes))
+            return false;
+
+        for (auto it = nodes.begin(); it != nodes.end(); ++it)
+        {
+            FileNode & node = *it;
+
+            if (node.isDirectory && ignoreTopDirs.find(node.path) != ignoreTopDirs.end())
+                continue;
+
+            node.path = FilePath::join(topDirectory, node.path);
+
+            if (node.isDirectory)
+            {
+                if (!getFilesRecursively(node.path, out_nodes))
+                    return false;
+            }
+            else
+            {
+                out_nodes.push_back(node);
+            }
+        }
+
+        return true;
+    }
+}
+
+//------------------------------------------------------------------------------
 // Static
 void Module::calculateDependencies(
     const String & pathToProjects,
@@ -222,24 +258,25 @@ void Module::unloadNativeBindings()
 }
 
 //------------------------------------------------------------------------------
-void Module::getScriptFiles(std::vector<String> & out_filePaths, const std::set<String> & extensions)
+void Module::getScriptFiles(
+        std::vector<String> & out_filePaths, 
+        const std::set<String> & extensions,
+        const std::unordered_set<String> & ignoreDirectories)
 {
-    String fullDirectoryPath = r_app.getPathToProjects() + L"/" + m_info.directory;
+    String pathBase = r_app.getPathToProjects() + L"/" + m_info.directory;
+
     std::vector<FileNode> files;
-    getFiles(fullDirectoryPath, files);
+    getFilesRecursivelyIgnoringTopDirs(pathBase, files, ignoreDirectories);
 
-    String pathBase = r_app.getPathToProjects() + L"/" + m_info.directory + L"/";
-
+    // Retrieve paths
     for (u32 i = 0; i < files.size(); ++i)
     {
-        if (!files[i].isDirectory)
+        FileNode & node = files[i];
+        SN_ASSERT(!node.isDirectory, "Unexpected directory");
+        String ext = getFileExtension(node.path);
+        if (extensions.find(ext) != extensions.end())
         {
-            String path = files[i].path;
-            String ext = getFileExtension(path);
-            if (extensions.find(ext) != extensions.end())
-            {
-                out_filePaths.push_back(pathBase + path);
-            }
+            out_filePaths.push_back(node.path);
         }
     }
 }
@@ -251,7 +288,9 @@ bool Module::compileScripts()
     std::vector<String> scriptFiles;
     std::set<String> exts;
     exts.insert(L".nut");
-    getScriptFiles(scriptFiles, exts);
+    std::unordered_set<String> ignoreDirs;
+    ignoreDirs.insert(L"cpp");
+    getScriptFiles(scriptFiles, exts, ignoreDirs);
 
     if (!scriptFiles.empty())
     {
