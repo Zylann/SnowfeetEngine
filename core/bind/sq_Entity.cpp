@@ -132,6 +132,15 @@ namespace sn
             return 0;
         END_METHOD
 
+        BEGIN_METHOD(getScript)
+            squirrel::Instance & obj = self->getScript();
+            if (obj.isNull() || obj.getVM() != vm)
+                sq_pushnull(vm);
+            else
+                sq_pushobject(vm, obj.getObject());
+            return 1;
+        END_METHOD
+
 	}
 
 void bindEntity(HSQUIRRELVM vm)
@@ -148,6 +157,7 @@ void bindEntity(HSQUIRRELVM vm)
 		.setMethod("hasTag", hasTag)
 		.setMethod("addTag", addTag, 1, "s")
 		.setMethod("removeTag", removeTag)
+        .setMethod("getScript", getScript)
         .setMethod("setUpdatable", setUpdatable, -1, "b");
 }
     
