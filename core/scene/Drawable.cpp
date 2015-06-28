@@ -10,6 +10,7 @@ const std::string Drawable::TAG = "Drawable";
 //------------------------------------------------------------------------------
 void Drawable::onReady()
 {
+    Entity3D::onReady();
     addTag(TAG);
 }
 
