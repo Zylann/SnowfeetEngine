@@ -6,7 +6,10 @@
 namespace sn {
 namespace render {
 
-void bindRenderManager(HSQUIRRELVM vm);
+void bindDrawable(HSQUIRRELVM vm);
+void bindCamera(HSQUIRRELVM vm);
+
+void bindRenderModule(HSQUIRRELVM vm);
 
 } // namespace render
 } // namespace sn

@@ -17,7 +17,7 @@
 
 #include "VideoDriver.hpp"
 
-#include "sq_binding/sq_render.hpp"
+#include "bind/sq_render.hpp"
 
 
 namespace sn {
@@ -52,9 +52,7 @@ namespace render {
 int loadSnowfeetModule_ModRender(ModuleLoadArgs args)
 {
     sn::render::registerObjectTypes(*(args.objectTypeDatabase));
-
-    sn::render::bindRenderManager(args.squirrelVM);
-
+    sn::render::bindRenderModule(args.squirrelVM);
     return 0;
 }
 

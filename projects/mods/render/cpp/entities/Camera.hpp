@@ -3,8 +3,10 @@
 
 #include <core/scene/Entity3D.hpp>
 #include <core/math/Vector2.hpp>
+#include <core/math/Rect.hpp>
 #include <core/util/WeakRef.hpp>
 #include <core/asset/base/Mesh.hpp>
+#include <core/system/gui/Window.hpp>
 
 #include "../ClearBits.hpp"
 #include "../Material.hpp"
