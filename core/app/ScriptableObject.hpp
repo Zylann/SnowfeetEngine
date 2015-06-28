@@ -66,7 +66,7 @@ public:
         squirrel::Class c(vm, sqName, sqBaseName);
 
         // Bind constructor
-        c.setConstructor(cb_scriptConstructor<T>);
+        ScriptableObject::bindBaseConstructor<T>(vm, c, std::is_abstract<T>());
 
         // Make it accessible from the root table
         squirrel::RootTable(vm).setObject(sqName.c_str(), c);
@@ -83,6 +83,18 @@ private:
 
     /// \brief This should be called when the ScriptableObject is released from a script.
     void onReleaseFromScript();
+
+    template <typename T>
+    static void bindBaseConstructor(HSQUIRRELVM vm, squirrel::Class & c, std::false_type isAbstract)
+    {
+        c.setConstructor(cb_scriptConstructor<T>);
+    }
+
+    template <typename T>
+    static void bindBaseConstructor(HSQUIRRELVM vm, squirrel::Class & c, std::true_type isAbstract)
+    {
+        c.setPrivateConstructor();
+    }
 
     /// \brief Must be bound as native constructor of the class in Squirrel
     template <typename T>
