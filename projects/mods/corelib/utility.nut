@@ -9,9 +9,8 @@ function println(msg) {
 function printVar(v, title="(var)") {
 	print("--- " + title + " ---\n")
 	foreach(key,val in v) {
-		print("- " + key + ": " + val + "\n")
+		print("- " + key + ": " + val)
 		// TODO go recursive
 	}
 	print("\n")
 }
-
