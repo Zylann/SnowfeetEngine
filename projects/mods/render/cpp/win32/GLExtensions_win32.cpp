@@ -1,5 +1,5 @@
 #include "../GLExtensions.hpp"
-#include <core/util/Log.hpp>
+#include <core/util/Log.h>
 #include <GL/glew.h>
 #include <Windows.h>
 

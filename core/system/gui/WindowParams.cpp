@@ -1,5 +1,5 @@
-#include "WindowParams.hpp"
-#include <core/math/Vector2.hpp>
+#include "WindowParams.h"
+#include <core/math/Vector2.h>
 
 namespace sn
 {

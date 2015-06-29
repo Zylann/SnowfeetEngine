@@ -1,11 +1,11 @@
 ﻿/*
-AutoTiler.hpp
+AutoTiler.h
 Copyright (C) 2014-2015 Marc GILLERON
 This file is part of the SnowfeetEngine project.
 */
 
-#include <core/pcg/AutoTiler.hpp>
-#include <core/util/Log.hpp>
+#include <core/pcg/AutoTiler.h>
+#include <core/util/Log.h>
 
 namespace sn
 {

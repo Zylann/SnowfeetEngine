@@ -7,7 +7,7 @@
 // Also, only use them exclusively in a private namespace where Squirrel wrappers are defined.
 //
 
-#include <core/util/macros.hpp>
+#include <core/util/macros.h>
 
 // Put this on top of the namespace containing the wrappers
 #define CURRENT_CLASS(_name) typedef _name __sn_CurrentClass;

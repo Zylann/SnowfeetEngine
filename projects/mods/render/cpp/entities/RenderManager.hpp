@@ -1,7 +1,7 @@
 #ifndef __HEADER_SN_RENDER_RENDERMANAGER__
 #define __HEADER_SN_RENDER_RENDERMANAGER__
 
-#include <core/scene/Entity.hpp>
+#include <core/scene/Entity.h>
 #include "../Context.hpp"
 #include "../RenderScreen.hpp"
 

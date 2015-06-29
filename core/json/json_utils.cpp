@@ -5,8 +5,8 @@ This file is part of the SnowfeetEngine project.
 */
 
 #include <fstream>
-#include <core/json/json_utils.hpp>
-#include <core/util/Log.hpp>
+#include <core/json/json_utils.h>
+#include <core/util/Log.h>
 
 namespace sn
 {

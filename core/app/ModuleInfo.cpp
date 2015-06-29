@@ -4,9 +4,9 @@ Copyright (C) 2014-2015 Marc GILLERON
 This file is part of the SnowfeetEngine project.
 */
 
-#include "ModuleInfo.hpp"
-#include "../json/json_utils.hpp"
-#include "../util/stringutils.hpp"
+#include "ModuleInfo.h"
+#include "../json/json_utils.h"
+#include "../util/stringutils.h"
 #include <fstream>
 
 namespace sn

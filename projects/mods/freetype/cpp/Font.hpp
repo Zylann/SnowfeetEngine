@@ -1,8 +1,8 @@
 #ifndef __HEADER_FREETYPE_FONT__
 #define __HEADER_FREETYPE_FONT__
 
-#include <core/asset/base/Font.hpp>
-#include <core/util/ShelfPacker.hpp>
+#include <core/asset/base/Font.h>
+#include <core/util/ShelfPacker.h>
 
 #include <ft2build.h>
 #include FT_FREETYPE_H

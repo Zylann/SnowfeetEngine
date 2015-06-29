@@ -1,6 +1,6 @@
-#include <core/asset/base/Mesh.hpp>
-#include <core/util/stringutils.hpp>
-#include <core/util/typecheck.hpp>
+#include <core/asset/base/Mesh.h>
+#include <core/util/stringutils.h>
+#include <core/util/typecheck.h>
 
 #include "BasicMeshLoader.hpp"
 #include "ply/PLYLoader.hpp"

@@ -1,5 +1,5 @@
-﻿#include <core/app/ModuleArgs.hpp>
-#include <core/asset/AssetDatabase.hpp>
+﻿#include <core/app/ModuleArgs.h>
+#include <core/asset/AssetDatabase.h>
 
 #include "mod_SnowfeetImage.h"
 

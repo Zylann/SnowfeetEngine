@@ -1,9 +1,9 @@
 #ifndef __HEADER_SN_RENDER_MATERIAL__
 #define __HEADER_SN_RENDER_MATERIAL__
 
-#include <core/asset/base/Material.hpp>
-#include <core/util/SharedRef.hpp>
-#include <core/math/Vector4.hpp>
+#include <core/asset/base/Material.h>
+#include <core/util/SharedRef.h>
+#include <core/math/Vector4.h>
 
 #include "ShaderProgram.hpp"
 #include "RenderTexture.hpp"

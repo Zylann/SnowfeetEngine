@@ -1,7 +1,7 @@
 #ifndef __HEADER_FREETYPE_FONTLOADER__
 #define __HEADER_FREETYPE_FONTLOADER__
 
-#include <core/asset/AssetLoader.hpp>
+#include <core/asset/AssetLoader.h>
 
 #include <ft2build.h>
 #include FT_FREETYPE_H

@@ -1,8 +1,8 @@
 ﻿#ifndef __HEADER_SN_SNOWFEET_IMAGE__
 #define __HEADER_SN_SNOWFEET_IMAGE__
 
-#include <core/app/ModuleArgs.hpp>
-#include <core/config.hpp>
+#include <core/app/ModuleArgs.h>
+#include <core/config.h>
 
 extern "C"
 {

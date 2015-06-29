@@ -1,5 +1,5 @@
 #include "json_squirrel.h"
-#include <core/util/assert.hpp>
+#include <core/util/assert.h>
 
 namespace sn
 {

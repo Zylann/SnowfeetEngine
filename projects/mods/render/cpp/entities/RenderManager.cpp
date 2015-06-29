@@ -1,8 +1,8 @@
-#include <core/system/gui/SystemGUI.hpp>
-#include <core/scene/Scene.hpp>
-#include <core/asset/AssetDatabase.hpp> // TODO Remove?
-#include <core/scene/VRHeadset.hpp>
-#include <core/util/typecheck.hpp>
+#include <core/system/gui/SystemGUI.h>
+#include <core/scene/Scene.h>
+#include <core/asset/AssetDatabase.h> // TODO Remove?
+#include <core/scene/VRHeadset.h>
+#include <core/util/typecheck.h>
 #include <core/util/Profiler.h>
 
 #include "RenderManager.hpp"

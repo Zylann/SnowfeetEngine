@@ -1,4 +1,4 @@
-#include "AssetLocation.hpp"
+#include "AssetLocation.h"
 
 namespace sn
 {

@@ -1,5 +1,5 @@
 #include "TextModel.h"
-#include <core/util/assert.hpp>
+#include <core/util/assert.h>
 
 using namespace sn;
 

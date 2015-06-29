@@ -1,16 +1,16 @@
 ﻿/*
-Window_win32.hpp
+Window_win32.h
 Copyright (C) 2014-2015 Marc GILLERON
 This file is part of the SnowfeetEngine project.
 */
 
-#include "../../../util/assert.hpp"
-#include "../Window.hpp"
-#include "../SystemGUI.hpp"
-#include "../Event.hpp"
+#include "../../../util/assert.h"
+#include "../Window.h"
+#include "../SystemGUI.h"
+#include "../Event.h"
 
-#include "Window_win32.hpp"
-#include "Keyboard_win32.hpp"
+#include "Window_win32.h"
+#include "Keyboard_win32.h"
 
 namespace sn
 {

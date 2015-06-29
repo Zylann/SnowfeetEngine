@@ -1,4 +1,4 @@
-#include <core/app/ScriptableObject.hpp>
+#include <core/app/ScriptableObject.h>
 #include "../entities/Camera.hpp"
 #include "sq_render.hpp"
 

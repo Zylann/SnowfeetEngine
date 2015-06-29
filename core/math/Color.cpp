@@ -5,8 +5,8 @@ This file is part of the SnowfeetEngine project.
 */
 
 #include <sstream>
-#include <core/math/Color.hpp>
-#include <core/math/math.hpp>
+#include <core/math/Color.h>
+#include <core/math/math.h>
 
 namespace sn
 {

@@ -1,7 +1,7 @@
 #ifndef __HEADER_SNR_CONTEXTSETTINGS__
 #define __HEADER_SNR_CONTEXTSETTINGS__
 
-#include <core/types.hpp>
+#include <core/types.h>
 #include <cmath>
 #include <sstream>
 

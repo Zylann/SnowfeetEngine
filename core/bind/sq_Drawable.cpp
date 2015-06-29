@@ -1,4 +1,4 @@
-#include "../scene/Drawable.hpp"
+#include "../scene/Drawable.h"
 
 namespace sn
 {

@@ -1,10 +1,10 @@
 #ifndef __HEADER_TGUI_CONTROL__
 #define __HEADER_TGUI_CONTROL__
 
-#include <core/math/Rect.hpp>
-#include <core/scene/Entity.hpp>
-#include <core/scene/base/IDrawContext.hpp>
-#include <core/math/Vector2.hpp>
+#include <core/math/Rect.h>
+#include <core/scene/Entity.h>
+#include <core/scene/base/IDrawContext.h>
+#include <core/math/Vector2.h>
 
 #include "../Direction.h"
 #include "../theme/Theme.h"

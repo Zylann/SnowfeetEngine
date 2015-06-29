@@ -4,14 +4,14 @@ Copyright (C) 2014-2015 Marc GILLERON
 This file is part of the SnowfeetEngine project.
 */
 
-#include "AssetDatabase.hpp"
-#include <core/system/file/filesystem.hpp>
-#include <core/reflect/ObjectTypeDatabase.hpp>
-#include <core/util/Log.hpp>
-#include <core/util/stringutils.hpp>
+#include "AssetDatabase.h"
+#include <core/system/file/filesystem.h>
+#include <core/reflect/ObjectTypeDatabase.h>
+#include <core/util/Log.h>
+#include <core/util/stringutils.h>
 
 #ifdef SN_BUILD_DEBUG
-#include <core/system/time/Clock.hpp>
+#include <core/system/time/Clock.h>
 #endif
 
 namespace sn

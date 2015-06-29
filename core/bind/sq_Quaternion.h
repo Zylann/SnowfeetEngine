@@ -2,7 +2,7 @@
 #define __HEADER_SN_SQ_QUATERNION__
 
 #include <squirrel.h>
-#include <core/math/Quaternion.hpp>
+#include <core/math/Quaternion.h>
 
 namespace sn
 {

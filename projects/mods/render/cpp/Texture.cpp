@@ -1,5 +1,5 @@
-#include <core/asset/AssetDatabase.hpp>
-//#include <core/asset/base/ImageBase.hpp>
+#include <core/asset/AssetDatabase.h>
+//#include <core/asset/base/ImageBase.h>
 
 #include "gl_check.hpp"
 #include "Texture.hpp"

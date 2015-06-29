@@ -1,7 +1,7 @@
 #include "TextArea.h"
-#include <core/system/gui/SystemGUI.hpp>
-#include <core/scene/Scene.hpp>
-#include <core/util/stringutils.hpp>
+#include <core/system/gui/SystemGUI.h>
+#include <core/scene/Scene.h>
+#include <core/util/stringutils.h>
 #include <core/util/Profiler.h>
 
 using namespace sn;

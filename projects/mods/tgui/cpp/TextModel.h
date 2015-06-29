@@ -2,8 +2,8 @@
 #define __HEADER_TGUI_TEXTMODEL__
 
 #include <vector>
-#include <core/types.hpp>
-#include <core/asset/base/Font.hpp>
+#include <core/types.h>
+#include <core/asset/base/Font.h>
 
 namespace tgui
 {

@@ -4,26 +4,26 @@
 // This file is part of the SnowfeetEngine project.
 //
 
-#include "object_types.hpp"
+#include "object_types.h"
 
-#include "scene/Entity.hpp"
-#include "scene/Entity3D.hpp"
-#include "scene/Scene.hpp"
-#include "scene/VRHeadset.hpp"
-#include "scene/helpers/Rotate.hpp"
-#include "scene/helpers/KeyboardMove.hpp"
-#include "scene/Drawable.hpp"
+#include "scene/Entity.h"
+#include "scene/Entity3D.h"
+#include "scene/Scene.h"
+#include "scene/VRHeadset.h"
+#include "scene/helpers/Rotate.h"
+#include "scene/helpers/KeyboardMove.h"
+#include "scene/Drawable.h"
 
-#include "asset/Asset.hpp"
-#include "asset/AssetLoader.hpp"
-#include "asset/base/Mesh.hpp"
-#include "asset/base/Material.hpp"
-#include "asset/base/Image.hpp"
-#include "asset/base/TextureBase.hpp"
-#include "asset/base/Font.hpp"
+#include "asset/Asset.h"
+#include "asset/AssetLoader.h"
+#include "asset/base/Mesh.h"
+#include "asset/base/Material.h"
+#include "asset/base/Image.h"
+#include "asset/base/TextureBase.h"
+#include "asset/base/Font.h"
 
-#include "drivers/Driver.hpp"
-#include "drivers/VideoDriver.hpp"
+#include "drivers/Driver.h"
+#include "drivers/VideoDriver.h"
 
 namespace sn
 {

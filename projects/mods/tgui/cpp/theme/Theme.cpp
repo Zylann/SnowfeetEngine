@@ -1,6 +1,6 @@
-#include <core/util/stringutils.hpp>
-#include <core/util/typecheck.hpp>
-#include <core/asset/AssetDatabase.hpp>
+#include <core/util/stringutils.h>
+#include <core/util/typecheck.h>
+#include <core/asset/AssetDatabase.h>
 #include "Theme.h"
 
 using namespace sn;

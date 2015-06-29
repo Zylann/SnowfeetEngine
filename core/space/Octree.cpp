@@ -1,4 +1,4 @@
-#include "Octree.hpp"
+#include "Octree.h"
 
 namespace sn
 {

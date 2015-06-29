@@ -3,9 +3,9 @@
 #include <core/squirrel/VM.h>
 #include <core/squirrel/Class.h>
 #include <core/squirrel/Table.h>
-#include <core/app/ScriptableObject.hpp>
-#include <core/util/stringutils.hpp>
-#include <core/object_types.hpp>
+#include <core/app/ScriptableObject.h>
+#include <core/util/stringutils.h>
+#include <core/object_types.h>
 
 using namespace sn;
 

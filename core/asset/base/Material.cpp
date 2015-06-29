@@ -1,4 +1,4 @@
-#include "Material.hpp"
+#include "Material.h"
 
 namespace sn
 {

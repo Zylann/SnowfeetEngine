@@ -1,6 +1,6 @@
 #include "Profiler.h"
-#include "Log.hpp"
-#include "../util/assert.hpp"
+#include "Log.h"
+#include "../util/assert.h"
 #include <fstream>
 
 namespace sn

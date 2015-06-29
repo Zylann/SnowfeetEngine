@@ -3,7 +3,7 @@
 
 #include <JsonBox.h>
 #include <squirrel.h>
-#include <core/export.hpp>
+#include <core/export.h>
 
 namespace sn
 {

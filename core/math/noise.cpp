@@ -7,8 +7,8 @@ This file is part of the SnowfeetEngine project.
 #include <cmath>
 #include <iostream>
 
-#include <core/math/noise.hpp>
-#include <core/math/interpolation.hpp>
+#include <core/math/noise.h>
+#include <core/math/interpolation.h>
 
 // set at random
 #define RAND_SEQ_X 72699

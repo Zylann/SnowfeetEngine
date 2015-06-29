@@ -1,7 +1,7 @@
 #ifndef __HEADER_MOD_SN_VOXY__
 #define __HEADER_MOD_SN_VOXY__
 
-#include <core/app/ModuleArgs.hpp>
+#include <core/app/ModuleArgs.h>
 
 extern "C"
 {

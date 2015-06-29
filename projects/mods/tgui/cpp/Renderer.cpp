@@ -1,4 +1,4 @@
-#include <core/util/typecheck.hpp>
+#include <core/util/typecheck.h>
 
 #include "Renderer.h"
 #include "GUI.h"

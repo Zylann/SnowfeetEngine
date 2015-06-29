@@ -1,12 +1,12 @@
 ﻿/*
-Thread_win32.hpp
+Thread_win32.h
 Copyright (C) 2014-2015 Marc GILLERON
 This file is part of the SnowfeetEngine project.
 */
 
-#include "../Thread.hpp"
-#include <core/types.hpp>
-#include <core/util/assert.hpp>
+#include "../Thread.h"
+#include <core/types.h>
+#include <core/util/assert.h>
 
 #include <Windows.h>
 #include <process.h>

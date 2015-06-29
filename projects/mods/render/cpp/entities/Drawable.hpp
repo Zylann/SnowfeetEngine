@@ -1,9 +1,9 @@
 #ifndef __HEADER_SN_RENDER_DRAWABLE__
 #define __HEADER_SN_RENDER_DRAWABLE__
 
-#include <core/scene/Drawable.hpp>
-#include <core/util/SharedRef.hpp>
-#include <core/asset/base/Mesh.hpp>
+#include <core/scene/Drawable.h>
+#include <core/util/SharedRef.h>
+#include <core/asset/base/Mesh.h>
 
 #include "../Material.hpp"
 

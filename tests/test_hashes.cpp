@@ -1,6 +1,6 @@
 #include "tests.hpp"
 
-#include <core/math/Vector3.hpp>
+#include <core/math/Vector3.h>
 #include <set>
 
 void test_hashes()

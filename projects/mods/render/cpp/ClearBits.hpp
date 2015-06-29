@@ -1,7 +1,7 @@
 #ifndef __HEADER_SNR_CLEARBITS__
 #define __HEADER_SNR_CLEARBITS__
 
-#include <core/json/json_utils.hpp>
+#include <core/json/json_utils.h>
 
 namespace sn {
 namespace render {

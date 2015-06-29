@@ -4,8 +4,8 @@ Copyright (C) 2015-2015 Marc GILLERON
 This file is part of the SnowfeetEngine project.
 */
 
-#include "../scene/Entity.hpp"
-#include "../scene/Scene.hpp"
+#include "../scene/Entity.h"
+#include "../scene/Scene.h"
 #include "sq_core.h"
 #include <iostream>
 #include "../squirrel/bind_macros.h"

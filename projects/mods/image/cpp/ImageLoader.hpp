@@ -4,11 +4,11 @@
 #include <string>
 #include <vector>
 
-#include <core/types.hpp>
-#include <core/math/Vector2.hpp>
-#include <core/math/Color.hpp>
-#include <core/asset/AssetLoader.hpp>
-#include <core/asset/base/Image.hpp>
+#include <core/types.h>
+#include <core/math/Vector2.h>
+#include <core/math/Color.h>
+#include <core/asset/AssetLoader.h>
+#include <core/asset/base/Image.h>
 
 namespace sn
 {

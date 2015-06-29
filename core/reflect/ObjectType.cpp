@@ -1,11 +1,11 @@
 ﻿/*
-ObjectType.hpp
+ObjectType.h
 Copyright (C) 2014-2015 Marc GILLERON
 This file is part of the SnowfeetEngine project.
 */
 
-#include "ObjectType.hpp"
-#include "ObjectTypeDatabase.hpp"
+#include "ObjectType.h"
+#include "ObjectTypeDatabase.h"
 
 #include <sstream>
 

@@ -1,5 +1,5 @@
 #include "TextWrapper.h"
-#include <core/util/stringutils.hpp>
+#include <core/util/stringutils.h>
 
 using namespace sn;
 

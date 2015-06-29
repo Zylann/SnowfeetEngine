@@ -1,7 +1,7 @@
 #ifndef __HEADER_MOD_ASSIMP_MOD_ASSIMP__
 #define __HEADER_MOD_ASSIMP_MOD_ASSIMP__
 
-#include <core/app/ModuleArgs.hpp>
+#include <core/app/ModuleArgs.h>
 
 extern "C"
 {

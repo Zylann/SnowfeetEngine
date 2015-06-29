@@ -1,7 +1,7 @@
 #ifndef __HEADER_TGUI_RENDERER__
 #define __HEADER_TGUI_RENDERER__
 
-#include <core/scene/Drawable.hpp>
+#include <core/scene/Drawable.h>
 
 namespace tgui
 {

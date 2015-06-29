@@ -1,8 +1,8 @@
-#include <core/util/stringutils.hpp>
-#include <core/util/typecheck.hpp>
-#include <core/math/Vector2.hpp>
-#include <core/math/Vector3.hpp>
-#include <core/math/Color.hpp>
+#include <core/util/stringutils.h>
+#include <core/util/typecheck.h>
+#include <core/math/Vector2.h>
+#include <core/math/Vector3.h>
+#include <core/math/Color.h>
 
 #include "Material.hpp"
 

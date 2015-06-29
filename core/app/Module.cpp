@@ -7,14 +7,14 @@ This file is part of the SnowfeetEngine project.
 #include <JsonBox.h>
 #include <fstream>
 
-#include "Module.hpp"
-#include "Application.hpp"
+#include "Module.h"
+#include "Application.h"
 
-#include "../asset/AssetDatabase.hpp"
-#include "../util/stringutils.hpp"
-#include "../util/Exception.hpp"
-#include "../system/file/filesystem.hpp"
-#include "../system/time/Time.hpp"
+#include "../asset/AssetDatabase.h"
+#include "../util/stringutils.h"
+#include "../util/Exception.h"
+#include "../system/file/filesystem.h"
+#include "../system/time/Time.h"
 
 namespace sn
 {

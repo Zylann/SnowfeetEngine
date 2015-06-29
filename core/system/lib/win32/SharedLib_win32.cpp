@@ -4,8 +4,8 @@ Copyright (C) 2014-2015 Marc GILLERON
 This file is part of the SnowfeetEngine project.
 */
 
-#include "../SharedLib.hpp"
-#include "SharedLib_win32.hpp"
+#include "../SharedLib.h"
+#include "SharedLib_win32.h"
 
 namespace sn
 {

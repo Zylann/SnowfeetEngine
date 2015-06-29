@@ -1,10 +1,10 @@
 ﻿/*
-Mutex_win32.hpp
+Mutex_win32.h
 Copyright (C) 2014-2015 Marc GILLERON
 This file is part of the SnowfeetEngine project.
 */
 
-#include "../Mutex.hpp"
+#include "../Mutex.h"
 #include <Windows.h>
 
 namespace sn

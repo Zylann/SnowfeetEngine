@@ -2,10 +2,10 @@
 // Random tests targeting the core are put here.
 // In the future this project might be eligible for more advanced testing.
 
-#include <core/math/math.hpp>
+#include <core/math/math.h>
 
-#include <core/math/Vector3.hpp> // Needed fore NTree<3>
-#include <core/space/NTree.hpp>
+#include <core/math/Vector3.h> // Needed fore NTree<3>
+#include <core/space/NTree.h>
 
 #include "tests.hpp"
 

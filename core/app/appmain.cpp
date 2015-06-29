@@ -4,9 +4,9 @@ Copyright (C) 2014-2015 Marc GILLERON
 This file is part of the SnowfeetEngine project.
 */
 
-#include "appmain.hpp"
-#include "Application.hpp"
-#include "../system/console/console.hpp"
+#include "appmain.h"
+#include "Application.h"
+#include "../system/console/console.h"
 
 namespace sn
 {

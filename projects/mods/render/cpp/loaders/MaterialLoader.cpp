@@ -1,5 +1,5 @@
-#include <core/util/stringutils.hpp>
-#include <core/asset/AssetDatabase.hpp>
+#include <core/util/stringutils.h>
+#include <core/asset/AssetDatabase.h>
 
 #include "../Material.hpp"
 #include "MaterialLoader.hpp"

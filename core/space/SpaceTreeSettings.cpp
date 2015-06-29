@@ -1,6 +1,6 @@
-#include <core/util/Log.hpp>
-#include <core/math/math.hpp>
-#include "SpaceTreeSettings.hpp"
+#include <core/util/Log.h>
+#include <core/math/math.h>
+#include "SpaceTreeSettings.h"
 
 namespace sn
 {

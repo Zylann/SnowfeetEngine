@@ -1,5 +1,5 @@
-#include "FilePath.hpp"
-#include <core/util/stringutils.hpp>
+#include "FilePath.h"
+#include <core/util/stringutils.h>
 
 namespace sn
 {

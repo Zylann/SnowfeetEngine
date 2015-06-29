@@ -8,8 +8,8 @@ This file is part of the SnowfeetEngine project.
 #include <fstream>
 #include <cmath>
 
-#include <core/util/stringutils.hpp>
-#include <core/util/Log.hpp>
+#include <core/util/stringutils.h>
+#include <core/util/Log.h>
 
 namespace sn
 {

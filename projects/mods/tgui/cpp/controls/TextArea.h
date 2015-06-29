@@ -1,7 +1,7 @@
 #ifndef __HEADER_TGUI_TEXTAREA__
 #define __HEADER_TGUI_TEXTAREA__
 
-#include <core/system/time/Time.hpp>
+#include <core/system/time/Time.h>
 
 #include "Control.h"
 #include "../TextModel.h"

@@ -4,7 +4,7 @@ Copyright (C) 2015-2015 Marc GILLERON
 This file is part of the SnowfeetEngine project.
 */
 
-#include "Variant.hpp"
+#include "Variant.h"
 
 namespace sn
 {

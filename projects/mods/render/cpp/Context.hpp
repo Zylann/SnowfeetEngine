@@ -7,10 +7,10 @@ This file is part of the SnowfeetEngine project.
 #ifndef __HEADER_SN_CONTEXT__
 #define __HEADER_SN_CONTEXT__
 
-#include <core/system/gui/Window.hpp>
-#include <core/asset/base/Mesh.hpp>
+#include <core/system/gui/Window.h>
+#include <core/asset/base/Mesh.h>
 
-#include <core/util/NonCopyable.hpp>
+#include <core/util/NonCopyable.h>
 
 #include "ShaderProgram.hpp"
 #include "ContextSettings.hpp"

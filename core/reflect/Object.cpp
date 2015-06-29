@@ -4,11 +4,11 @@ Copyright (C) 2014-2015 Marc GILLERON
 This file is part of the SnowfeetEngine project.
 */
 
-#include "Object.hpp"
+#include "Object.h"
 
 #ifdef SN_BUILD_DEBUG
 #include <unordered_set>
-#include <core/system/thread/Mutex.hpp>
+#include <core/system/thread/Mutex.h>
 #endif
 
 namespace sn

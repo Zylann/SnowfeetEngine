@@ -6,8 +6,8 @@
 #include <ostream>
 #include <unordered_map>
 
-#include <core/system/time/Clock.hpp>
-#include <core/util/macros.hpp>
+#include <core/system/time/Clock.h>
+#include <core/util/macros.h>
 
 #ifdef SN_BUILD_NO_PROFILER
 	#define SN_PROFILE_LINE // 

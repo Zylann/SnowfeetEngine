@@ -1,4 +1,4 @@
-#include "TextureBase.hpp"
+#include "TextureBase.h"
 
 namespace sn
 {

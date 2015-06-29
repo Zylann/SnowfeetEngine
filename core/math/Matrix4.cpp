@@ -6,7 +6,7 @@ This file is part of the SnowfeetEngine project.
 
 #include <cstring> // For memcpy
 #include <cmath>
-#include "Matrix4.hpp"
+#include "Matrix4.h"
 
 namespace sn
 {

@@ -1,6 +1,6 @@
-#include <core/util/Log.hpp>
-#include <core/util/assert.hpp>
-#include <core/system/thread/Lock.hpp>
+#include <core/util/Log.h>
+#include <core/util/assert.h>
+#include <core/system/thread/Lock.h>
 
 #include "../GLExtensions.hpp"
 
@@ -11,7 +11,7 @@
 #include <GL/wglew.h>
 
 #include <tchar.h>
-#include <core/system/win32/helpers_win32.hpp>
+#include <core/system/win32/helpers_win32.h>
 
 namespace sn {
 namespace render {

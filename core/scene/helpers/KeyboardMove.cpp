@@ -1,6 +1,6 @@
-#include "KeyboardMove.hpp"
-#include "../Entity3D.hpp"
-#include "../Scene.hpp"
+#include "KeyboardMove.h"
+#include "../Entity3D.h"
+#include "../Scene.h"
 
 namespace sn
 {

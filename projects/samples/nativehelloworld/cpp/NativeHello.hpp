@@ -1,7 +1,7 @@
 #ifndef __HEADER_SN_SAMPLE_NATIVEHELLO__
 #define __HEADER_SN_SAMPLE_NATIVEHELLO__
 
-#include <core/scene/Entity.hpp>
+#include <core/scene/Entity.h>
 
 namespace hello
 {

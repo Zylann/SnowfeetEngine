@@ -4,10 +4,10 @@ Copyright (C) 2014-2015 Marc GILLERON
 This file is part of the SnowfeetEngine project.
 */
 
-#include "ScriptManager.hpp"
-#include "../util/assert.hpp"
-#include "../util/stringutils.hpp"
-#include "../util/Exception.hpp"
+#include "ScriptManager.h"
+#include "../util/assert.h"
+#include "../util/stringutils.h"
+#include "../util/Exception.h"
 #include "../bind/sq_core.h"
 #include "../squirrel/Script.h"
 #include <sqstdaux.h>

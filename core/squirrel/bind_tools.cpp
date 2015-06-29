@@ -1,6 +1,6 @@
 #include <iostream>
-#include "bind_tools.hpp"
-#include <core/util/Log.hpp>
+#include "bind_tools.h"
+#include <core/util/Log.h>
 
 namespace squirrel
 {

@@ -5,9 +5,9 @@ This file is part of the SnowfeetEngine project.
 */
 
 #include <list>
-#include <core/pcg/MazeGenerator.hpp>
-#include <core/math/Vector2.hpp>
-#include <core/util/Log.hpp>
+#include <core/pcg/MazeGenerator.h>
+#include <core/math/Vector2.h>
+#include <core/util/Log.h>
 
 namespace sn
 {

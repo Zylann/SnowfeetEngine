@@ -1,7 +1,7 @@
 #ifndef __HEADER_TGUI_POSITION__
 #define __HEADER_TGUI_POSITION__
 
-#include <core/json/json_utils.hpp>
+#include <core/json/json_utils.h>
 
 namespace tgui
 {

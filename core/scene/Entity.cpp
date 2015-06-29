@@ -4,13 +4,13 @@ Copyright (C) 2014-2015 Marc GILLERON
 This file is part of the SnowfeetEngine project.
 */
 
-#include <core/util/Log.hpp>
-#include <core/util/assert.hpp>
+#include <core/util/Log.h>
+#include <core/util/assert.h>
 #include <sstream>
 
-#include "Entity.hpp"
-#include "Scene.hpp"
-#include "../app/Application.hpp"
+#include "Entity.h"
+#include "Scene.h"
+#include "../app/Application.h"
 
 #define SN_JSON_ENTITY_CHILDREN_TAG "_children"
 

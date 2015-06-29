@@ -1,5 +1,5 @@
-#include "DriverManager.hpp"
-#include "../util/typecheck.hpp"
+#include "DriverManager.h"
+#include "../util/typecheck.h"
 
 namespace sn
 {

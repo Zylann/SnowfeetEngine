@@ -1,8 +1,8 @@
 #ifndef __HEADER_SNR_TEXTURE__
 #define __HEADER_SNR_TEXTURE__
 
-#include <core/asset/base/TextureBase.hpp>
-#include <core/math/Vector2.hpp>
+#include <core/asset/base/TextureBase.h>
+#include <core/math/Vector2.h>
 #include <GL/glew.h>
 
 namespace sn {

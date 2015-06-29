@@ -1,7 +1,7 @@
 #include "HeadTracker.hpp"
-#include <core/scene/Scene.hpp>
-#include <core/scene/Entity3D.hpp>
-#include <core/asset/AssetDatabase.hpp>
+#include <core/scene/Scene.h>
+#include <core/scene/Entity3D.h>
+#include <core/asset/AssetDatabase.h>
 
 #include <Kernel/OVR_Math.h>
 

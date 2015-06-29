@@ -1,12 +1,12 @@
 #ifndef __HEADER_SN_RENDER_CAMERA__
 #define __HEADER_SN_RENDER_CAMERA__
 
-#include <core/scene/Entity3D.hpp>
-#include <core/math/Vector2.hpp>
-#include <core/math/Rect.hpp>
-#include <core/util/WeakRef.hpp>
-#include <core/asset/base/Mesh.hpp>
-#include <core/system/gui/Window.hpp>
+#include <core/scene/Entity3D.h>
+#include <core/math/Vector2.h>
+#include <core/math/Rect.h>
+#include <core/util/WeakRef.h>
+#include <core/asset/base/Mesh.h>
+#include <core/system/gui/Window.h>
 
 #include "../ClearBits.hpp"
 #include "../Material.hpp"

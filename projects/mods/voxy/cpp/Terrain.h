@@ -3,7 +3,7 @@
 
 #include "VoxelArray.h"
 #include <unordered_map>
-#include <core/math/Vector3.hpp>
+#include <core/math/Vector3.h>
 
 namespace voxy
 {

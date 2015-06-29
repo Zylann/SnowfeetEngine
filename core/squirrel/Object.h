@@ -1,7 +1,7 @@
 #ifndef __HEADER_SQUIRREL_OBJECT__
 #define __HEADER_SQUIRREL_OBJECT__
 
-#include <core/squirrel/bind_tools.hpp>
+#include <core/squirrel/bind_tools.h>
 
 namespace squirrel
 {

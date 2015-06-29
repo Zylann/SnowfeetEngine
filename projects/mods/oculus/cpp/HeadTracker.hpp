@@ -4,10 +4,10 @@
 #include <OVR.h>
 #include <OVR_CAPI.h>
 
-#include <core/scene/VRHeadset.hpp>
-#include <core/asset/base/Mesh.hpp>
-#include <core/asset/base/Material.hpp>
-#include <core/util/SharedRef.hpp>
+#include <core/scene/VRHeadset.h>
+#include <core/asset/base/Mesh.h>
+#include <core/asset/base/Material.h>
+#include <core/util/SharedRef.h>
 
 namespace sn {
 namespace oculus {

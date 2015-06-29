@@ -2,7 +2,7 @@
 #define __HEADER_SQUIRREL_INSTANCE__
 
 #include <vector>
-#include <core/util/Variant.hpp>
+#include <core/util/Variant.h>
 #include <core/squirrel/Object.h>
 
 namespace squirrel

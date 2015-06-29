@@ -1,5 +1,5 @@
-﻿#include <core/util/stringutils.hpp>
-#include "Mesh.hpp"
+﻿#include <core/util/stringutils.h>
+#include "Mesh.h"
 
 namespace sn
 {

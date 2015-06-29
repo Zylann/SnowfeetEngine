@@ -7,7 +7,7 @@ This file is part of the SnowfeetEngine project.
 #ifndef __HEADER_SN_RENDER_SHADERPROGRAM__
 #define __HEADER_SN_RENDER_SHADERPROGRAM__
 
-#include <core/asset/Asset.hpp>
+#include <core/asset/Asset.h>
 #include <unordered_map>
 #include <GL/glew.h>
 

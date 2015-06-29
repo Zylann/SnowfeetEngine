@@ -1,7 +1,7 @@
 #ifndef __HEADER_TGUI_BORDER__
 #define __HEADER_TGUI_BORDER__
 
-#include <core/json/json_utils.hpp>
+#include <core/json/json_utils.h>
 
 namespace tgui
 {

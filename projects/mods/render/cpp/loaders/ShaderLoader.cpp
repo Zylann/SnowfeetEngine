@@ -1,6 +1,6 @@
 #include "ShaderLoader.h"
-#include <core/util/stringutils.hpp>
-#include <core/util/typecheck.hpp>
+#include <core/util/stringutils.h>
+#include <core/util/typecheck.h>
 
 namespace sn {
 namespace render {

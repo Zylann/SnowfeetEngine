@@ -1,4 +1,4 @@
-#include "ObjectProperty.hpp"
+#include "ObjectProperty.h"
 
 namespace sn
 {

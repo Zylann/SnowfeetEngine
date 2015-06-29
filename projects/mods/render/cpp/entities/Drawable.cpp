@@ -1,5 +1,5 @@
-#include <core/scene/Scene.hpp>
-#include <core/asset/AssetDatabase.hpp>
+#include <core/scene/Scene.h>
+#include <core/asset/AssetDatabase.h>
 #include "Drawable.hpp"
 #include "RenderManager.hpp"
 

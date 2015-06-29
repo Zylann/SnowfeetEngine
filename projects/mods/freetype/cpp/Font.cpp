@@ -1,6 +1,6 @@
 #include "Font.hpp"
-#include <core/asset/AssetDatabase.hpp>
-#include <core/app/Application.hpp>
+#include <core/asset/AssetDatabase.h>
+#include <core/app/Application.h>
 
 #include FT_GLYPH_H
 #include FT_OUTLINE_H

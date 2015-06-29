@@ -2,8 +2,8 @@
 #define __HEADER_VOXY_MESHBUILDER__
 
 #include "Terrain.h"
-#include <core/asset/base/Mesh.hpp>
-#include <core/math/Color.hpp>
+#include <core/asset/base/Mesh.h>
+#include <core/math/Color.h>
 
 namespace voxy
 {

@@ -1,7 +1,7 @@
 ﻿#ifndef __HEADER_SN_SNOWFEET_RENDER__
 #define __HEADER_SN_SNOWFEET_RENDER__
 
-#include <core/app/ModuleArgs.hpp>
+#include <core/app/ModuleArgs.h>
 
 extern "C"
 {

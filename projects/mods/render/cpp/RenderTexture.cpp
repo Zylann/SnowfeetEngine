@@ -1,5 +1,5 @@
-#include <core/util/stringutils.hpp>
-#include <core/json/json_utils.hpp>
+#include <core/util/stringutils.h>
+#include <core/json/json_utils.h>
 
 #include "RenderTexture.hpp"
 #include "gl_check.hpp"

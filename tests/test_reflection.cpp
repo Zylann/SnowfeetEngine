@@ -1,6 +1,6 @@
 #include "tests.hpp"
 
-#include <core/reflect/Object.hpp>
+#include <core/reflect/Object.h>
 
 using namespace sn;
 

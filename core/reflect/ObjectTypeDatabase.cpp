@@ -5,7 +5,7 @@ This file is part of the SnowfeetEngine project.
 */
 
 #include <cassert>
-#include "ObjectTypeDatabase.hpp"
+#include "ObjectTypeDatabase.h"
 
 namespace sn
 {

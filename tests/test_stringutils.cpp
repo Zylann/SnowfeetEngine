@@ -1,7 +1,7 @@
 #include "tests.hpp"
 
-#include <core/util/stringutils.hpp>
-#include <core/math/Vector3.hpp>
+#include <core/util/stringutils.h>
+#include <core/math/Vector3.h>
 
 void printVector(const std::vector<std::string> & vec)
 {

@@ -1,7 +1,7 @@
 #ifndef __HEADER_SNR_TEXTURELOADER__
 #define __HEADER_SNR_TEXTURELOADER__
 
-#include <core/asset/AssetLoader.hpp>
+#include <core/asset/AssetLoader.h>
 
 namespace sn {
 namespace render {

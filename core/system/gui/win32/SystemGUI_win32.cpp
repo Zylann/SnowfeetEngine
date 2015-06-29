@@ -1,5 +1,5 @@
-#include "../SystemGUI.hpp"
-#include "SystemGUI_win32.hpp"
+#include "../SystemGUI.h"
+#include "SystemGUI_win32.h"
 
 namespace sn
 {

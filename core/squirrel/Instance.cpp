@@ -1,6 +1,6 @@
 #include "Instance.h"
-#include "../app/Application.hpp"
-#include "../squirrel/bind_tools.hpp"
+#include "../app/Application.h"
+#include "../squirrel/bind_tools.h"
 
 namespace squirrel
 {

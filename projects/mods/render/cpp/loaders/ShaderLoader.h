@@ -1,7 +1,7 @@
 #ifndef __HEADER_SNR_SHADERLOADER__
 #define __HEADER_SNR_SHADERLOADER__
 
-#include <core/asset/AssetLoader.hpp>
+#include <core/asset/AssetLoader.h>
 #include "../ShaderProgram.hpp"
 
 namespace sn {

@@ -1,4 +1,4 @@
-﻿#include <core/util/Log.hpp>
+﻿#include <core/util/Log.h>
 
 #include "gl_check.hpp"
 #include "ShaderProgram.hpp"

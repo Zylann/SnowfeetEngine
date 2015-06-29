@@ -1,4 +1,4 @@
-#include <core/types.hpp>
+#include <core/types.h>
 #include "Vertex.hpp"
 
 namespace sn {

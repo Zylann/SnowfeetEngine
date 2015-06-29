@@ -1,5 +1,5 @@
-#include "FileWatcher.hpp"
-#include "FilePath.hpp"
+#include "FileWatcher.h"
+#include "FilePath.h"
 
 // http://stackoverflow.com/questions/931093/how-do-i-make-my-program-watch-for-file-modification-in-c
 

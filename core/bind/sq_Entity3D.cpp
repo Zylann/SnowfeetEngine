@@ -1,4 +1,4 @@
-#include "../scene/Entity3D.hpp"
+#include "../scene/Entity3D.h"
 #include "sq_core.h"
 #include "../squirrel/bind_macros.h"
 #include "sq_Vector.h"

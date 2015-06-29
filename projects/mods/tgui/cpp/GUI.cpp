@@ -1,5 +1,5 @@
-#include <core/system/gui/SystemGUI.hpp>
-#include <core/asset/AssetDatabase.hpp>
+#include <core/system/gui/SystemGUI.h>
+#include <core/asset/AssetDatabase.h>
 #include <core/util/Profiler.h>
 
 #include "GUI.h"

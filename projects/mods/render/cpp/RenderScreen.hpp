@@ -1,7 +1,7 @@
 #ifndef __HEADER_SNR_RENDERSCREEN__
 #define __HEADER_SNR_RENDERSCREEN__
 
-#include <core/system/gui/Window.hpp>
+#include <core/system/gui/Window.h>
 #include "Context.hpp"
 
 namespace sn {

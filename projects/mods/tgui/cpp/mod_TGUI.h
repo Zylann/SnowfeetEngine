@@ -1,7 +1,7 @@
 #ifndef __HEADER_TGUI_TGUI__
 #define __HEADER_TGUI_TGUI__
 
-#include <core/app/ModuleArgs.hpp>
+#include <core/app/ModuleArgs.h>
 
 extern "C"
 {

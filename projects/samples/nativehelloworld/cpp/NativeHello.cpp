@@ -1,5 +1,5 @@
 #include "NativeHello.hpp"
-#include <core/scene/Scene.hpp>
+#include <core/scene/Scene.h>
 
 namespace hello
 {

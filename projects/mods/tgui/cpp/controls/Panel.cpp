@@ -1,5 +1,5 @@
 #include <core/util/Profiler.h>
-#include <core/system/gui/SystemGUI.hpp>
+#include <core/system/gui/SystemGUI.h>
 
 #include "Panel.h"
 

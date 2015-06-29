@@ -1,6 +1,6 @@
-#include <core/scene/Scene.hpp>
-#include "Rotate.hpp"
-#include "../Entity3D.hpp"
+#include <core/scene/Scene.h>
+#include "Rotate.h"
+#include "../Entity3D.h"
 
 namespace sn
 {

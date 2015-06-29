@@ -1,5 +1,5 @@
 /*
-sq_Scene.hpp
+sq_Scene.h
 Copyright (C) 2015-2015 Marc GILLERON
 This file is part of the SnowfeetEngine project.
 */

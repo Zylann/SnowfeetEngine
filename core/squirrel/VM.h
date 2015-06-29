@@ -2,7 +2,7 @@
 #define __HEADER_SQUIRREL_VM__
 
 #include <core/squirrel/Script.h>
-#include <core/types.hpp>
+#include <core/types.h>
 
 namespace squirrel
 {

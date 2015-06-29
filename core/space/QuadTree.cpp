@@ -1,4 +1,4 @@
-#include "QuadTree.hpp"
+#include "QuadTree.h"
 
 namespace sn
 {

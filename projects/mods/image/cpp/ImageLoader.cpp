@@ -1,6 +1,6 @@
-#include <core/util/Log.hpp>
-#include <core/util/stringutils.hpp>
-#include <core/util/typecheck.hpp>
+#include <core/util/Log.h>
+#include <core/util/stringutils.h>
+#include <core/util/typecheck.h>
 
 #include "ImageLoader.hpp"
 

@@ -1,4 +1,4 @@
-#include "Entity3D.hpp"
+#include "Entity3D.h"
 
 namespace sn
 {

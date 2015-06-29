@@ -1,7 +1,7 @@
 #ifndef __HEADER_SNR_RENDERTEXTURE__
 #define __HEADER_SNR_RENDERTEXTURE__
 
-#include <core/asset/Asset.hpp>
+#include <core/asset/Asset.h>
 
 #include "Texture.hpp"
 //#include "RenderTarget.hpp"

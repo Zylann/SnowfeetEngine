@@ -1,7 +1,7 @@
 #ifndef __HEADER_VOXY_VOXEL__
 #define __HEADER_VOXY_VOXEL__
 
-#include <core/types.hpp>
+#include <core/types.h>
 
 namespace voxy
 {

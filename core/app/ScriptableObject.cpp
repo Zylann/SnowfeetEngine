@@ -1,4 +1,4 @@
-#include "ScriptableObject.hpp"
+#include "ScriptableObject.h"
 
 namespace sn
 {
