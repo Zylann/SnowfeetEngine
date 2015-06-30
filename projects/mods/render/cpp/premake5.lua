@@ -20,6 +20,7 @@ function commonGlewConfig()
 			"WIN32_LEAN_AND_MEAN",
 			"GLEW_STATIC"
 		}
+	filter {}
 end
 
 ------------------------------------------

@@ -32,16 +32,11 @@ project "LibAssimp"
 	links {
 		"zlib"
 	}
-
+    
     defines {
-    	
     	-- I use the zlib from SnowfeetEngine because the one included in Assimp
     	-- cannot be easily compiled with premake (because of generated files)
     	"ASSIMP_BUILD_NO_OWN_ZLIB",
-
-        -----------------------------------
-        "_CRT_SECURE_NO_WARNINGS",
-        "_SCL_SECURE_NO_WARNINGS",
         -----------------------------------
         "ASSIMP_BUILD_BOOST_WORKAROUND",
         "ASSIMP_BUILD_NO_X_IMPORTER",
@@ -83,6 +78,16 @@ project "LibAssimp"
         "ASSIMP_BUILD_NO_M3_IMPORTER",
         "ASSIMP_BUILD_NO_XGL_IMPORTER"
     }
+    
+    -- Windows-specific defines
+    filter "system:windows"
+        defines {
+            "_CRT_SECURE_NO_WARNINGS",
+            "_SCL_SECURE_NO_WARNINGS",
+        }
+    filter {}
+
+
     files {
         "assimp/code/**h",
         "assimp/code/**.cpp",
@@ -121,4 +126,5 @@ project "LibAssimp"
         defines { "NDEBUG", "_NDEBUG" }
         optimize "Full"
 
-		
+
+

@@ -23,6 +23,7 @@ project "SnowfeetCore"
 			"ws2_32"
 		}
 	}
+	filter {}
 
 	defines {
 		-- To allow modules to use bindings from the core

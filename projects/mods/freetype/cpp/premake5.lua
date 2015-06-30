@@ -87,6 +87,7 @@ project "LibFreetype"
         "freetype/src/winfonts/winfnt.c",
     }
 
+
     --[[
     files {
         "freetype/**.c",
@@ -111,15 +112,12 @@ project "LibFreetype"
         flags { "Symbols" }
         defines {
             "_DEBUG",
-            "WIN32",
             "_LIB",
-            "_CRT_SECURE_NO_WARNINGS",
             "FT_DEBUG_LEVEL_ERROR",
             "FT_DEBUG_LEVEL_TRACE",
             "FT2_BUILD_LIBRARY"
         }
         files {
-            -- TODO Windows only
             "freetype/builds/windows/ftdebug.c",
         }
 
@@ -128,8 +126,24 @@ project "LibFreetype"
         optimize "Full"
         defines {
             "NDEBUG",
-            "WIN32",
-            "_LIB",
-            "_CRT_SECURE_NO_WARNINGS",
             "FT2_BUILD_LIBRARY"
         }
+        
+    -- Windows-specific
+    filter "configuration:Debug and system:windows"
+        defines {
+            "WIN32",
+            "_CRT_SECURE_NO_WARNINGS",
+        }
+        files {
+            "freetype/builds/windows/ftdebug.c",
+        }
+    filter "configuration:Release and system:windows"
+        defines {
+            "WIN32",
+            "_CRT_SECURE_NO_WARNINGS",
+        }
+    
+    
+    
+    
