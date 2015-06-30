@@ -1,8 +1,12 @@
 --------------------------------------------
--- Solution
+-- Globals
 --------------------------------------------
 
 SnowfeetRoot = os.getcwd()
+
+--------------------------------------------
+-- Solution
+--------------------------------------------
 
 solution "SnowfeetEngine"
 	-- Global default configurations
@@ -48,7 +52,7 @@ solution "SnowfeetEngine"
 	-- Modules
 	--------------------------------------------
 
-	function commonLinks()
+	function commonModLinks()
 		links {
 			"SnowfeetCore",
 
@@ -59,11 +63,11 @@ solution "SnowfeetEngine"
 		}
 	end
 
-	function commonIncludes()
+	function commonModIncludes()
 		--
 	end
 
-	function commonDefines()
+	function commonModDefines()
 		-- Modules bindings have to include core bindings
 		-- if they want to interact with them
 		defines {
@@ -77,9 +81,9 @@ solution "SnowfeetEngine"
 		dependson { "SnowfeetCore" }
 		location "."
 		targetdir ".."
-		commonLinks()
-		commonIncludes()
-		commonDefines()
+		commonModLinks()
+		commonModIncludes()
+		commonModDefines()
 	end
 
 	-- Include modules:
