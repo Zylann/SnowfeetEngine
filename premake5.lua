@@ -5,9 +5,6 @@
 SnowfeetRoot = os.getcwd()
 
 solution "SnowfeetEngine"
-	platforms { "x32" }
-	--location "."
-
 	-- Global default configurations
 	configurations { "Debug", "Release" }
 	includedirs {
@@ -27,6 +24,11 @@ solution "SnowfeetEngine"
 		flags {
 			"LinkTimeOptimization"
 		}
+
+	-- Windows-specific
+	filter "system:windows" {
+		architecture "x86"
+	}
 
 	--------------------------------------------
 	-- Core

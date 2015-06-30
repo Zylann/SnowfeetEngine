@@ -3,14 +3,22 @@ project "zlib"
 	kind "SharedLib"
 	language "C"
 	location "."
-	-- TODO remove unusued links on win32
+
 	files {
 		"*.h",
 		"*.c"
 	}
+
 	filter "configurations:Debug"
 		targetdir "../_bin/debug"
 		objdir "../_obj/debug"
+
+	filter "configurations:Release"
+		targetdir "../_bin/release"
+		objdir "../_obj/release"
+
+	-- Windows-specific
+	filter "configurations:Debug and system:windows"
 		defines {
 			"WIN32",
 			"_CRT_NONSTDC_NO_DEPRECATE",
@@ -21,9 +29,7 @@ project "zlib"
 			-- "ASMV",
 			-- "ASMINF"
 		}
-	filter "configurations:Release"
-		targetdir "../_bin/release"
-		objdir "../_obj/release"
+	filter "configurations:Release and system:windows"
 		defines {
 			"WIN32",
 			"_CRT_NONSTDC_NO_DEPRECATE",

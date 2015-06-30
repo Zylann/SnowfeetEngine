@@ -1,8 +1,31 @@
 ------------------------------------------
+-- Common
+
+function commonGlewConfig()
+	-- Windows-specific
+	filter "configurations:Debug and system:windows"
+		defines {
+			-- glew (static)
+			"WIN32",
+			"_LIB",
+			"WIN32_LEAN_AND_MEAN",
+			"GLEW_STATIC"
+		}
+	filter "configurations:Release and system:windows"
+		defines {
+			-- glew (static)
+			"WIN32",
+			"NDEBUG",
+			"_LIB",
+			"WIN32_LEAN_AND_MEAN",
+			"GLEW_STATIC"
+		}
+end
+
+------------------------------------------
 project "ModRender"
-	platforms { "x32" }
 	commonModConfigCPP()
-	dependson { 
+	dependson {
 		"glew",
 	}
 	includedirs {
@@ -23,25 +46,13 @@ project "ModRender"
 		"glew",
 		"opengl32",
 	}
+
 	filter "configurations:Debug"
 		objdir "_obj/debug"
-		defines {
-			-- glew (static)
-			"WIN32",
-			"_LIB",
-			"WIN32_LEAN_AND_MEAN",
-			"GLEW_STATIC"
-		}
 	filter "configurations:Release"
 		objdir "_obj/release"
-		defines {
-			-- glew (static)
-			"WIN32",
-			"NDEBUG",
-			"_LIB",
-			"WIN32_LEAN_AND_MEAN",
-			"GLEW_STATIC"
-		}
+
+	commonGlewConfig()
 
 
 ------------------------------------------
@@ -60,20 +71,10 @@ project "glew"
 	includedirs {
 		"glew/include"
 	}
+
 	filter "configurations:Debug"
 		objdir "_obj/glew_debug"
-		defines {
-			"WIN32",
-			"_LIB",
-			"WIN32_LEAN_AND_MEAN",
-			"GLEW_STATIC"
-		}
 	filter "configurations:Release"
 		objdir "_obj/glew_release"
-		defines {
-			"WIN32",
-			"NDEBUG",
-			"_LIB",
-			"WIN32_LEAN_AND_MEAN",
-			"GLEW_STATIC"
-		}
+
+	commonGlewConfig()

@@ -1,5 +1,4 @@
 project "JsonBox"
-	platforms { "x32" }
 	kind "StaticLib"
 	language "C++"
 	location "." -- what the fuck premake5
@@ -17,5 +16,3 @@ project "JsonBox"
 	filter "configurations:Release"
 		targetdir "../_bin/release"
 		objdir "../_obj/release"
-
-
