@@ -1,5 +1,4 @@
 project "ModOculus"
-    platforms { "x32" }
     commonModConfigCPP()
     files {
         "*.h",

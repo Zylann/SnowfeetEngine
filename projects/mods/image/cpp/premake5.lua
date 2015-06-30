@@ -1,5 +1,4 @@
 project "ModImage"
-	platforms { "x32" }
 	commonModConfigCPP()
 	files {
 		"*.h",

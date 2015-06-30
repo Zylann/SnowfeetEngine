@@ -57,7 +57,6 @@ project "ModRender"
 
 ------------------------------------------
 project "glew"
-	platforms { "x32" }
 	kind "StaticLib"
 	location "."
 	targetdir ".."

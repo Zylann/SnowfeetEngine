@@ -1,5 +1,4 @@
 project "zlib"
-	platforms { "x32" }
 	kind "SharedLib"
 	language "C"
 	location "."

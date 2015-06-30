@@ -1,7 +1,6 @@
 ------------------------------------------
 -- Assimp library binding for Snowfeet Engine
 project "ModAssimp"
-    platforms { "x32" }
     commonModConfigCPP()
     files {
         "*.h",
@@ -21,7 +20,6 @@ project "ModAssimp"
 
 ------------------------------------------
 project "LibAssimp"
-	platforms { "x32" }
 	kind "StaticLib"
 	language "C++"
 	location "."

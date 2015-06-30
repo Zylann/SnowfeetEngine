@@ -1,5 +1,4 @@
 project "Squirrel"
-	platforms { "x32" }
 	kind "StaticLib"
 	language "C++"
 	location "." -- what the fuck premake5

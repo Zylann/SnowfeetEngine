@@ -1,5 +1,4 @@
 project "ModFreetype"
-    platforms { "x32" }
     commonModConfigCPP()
     files {
         "*.hpp",

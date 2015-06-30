@@ -1,5 +1,4 @@
 project "ModTGUI"
-    platforms { "x32" }
     commonModConfigCPP()
     files {
         "**.h",
