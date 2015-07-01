@@ -130,19 +130,16 @@ project "LibFreetype"
         }
         
     -- Windows-specific
-    filter {"configurations:Debug", "system:windows" }
+    filter {"system:windows"}
         defines {
             "WIN32",
             "_CRT_SECURE_NO_WARNINGS",
         }
+    filter {"configurations:Debug", "system:windows" }
         files {
             "freetype/builds/windows/ftdebug.c",
         }
-    filter {"configurations:Release", "system:windows"}
-        defines {
-            "WIN32",
-            "_CRT_SECURE_NO_WARNINGS",
-        }
+    --filter {"configurations:Release", "system:windows"}
     
     
     
