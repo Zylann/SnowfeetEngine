@@ -3,7 +3,7 @@
 
 function commonGlewConfig()
 	-- Windows-specific
-	filter "configurations:Debug and system:windows"
+	filter {"configurations:Debug", "system:windows"}
 		defines {
 			-- glew (static)
 			"WIN32",
@@ -11,7 +11,7 @@ function commonGlewConfig()
 			"WIN32_LEAN_AND_MEAN",
 			"GLEW_STATIC"
 		}
-	filter "configurations:Release and system:windows"
+	filter {"configurations:Release", "system:windows"}
 		defines {
 			-- glew (static)
 			"WIN32",

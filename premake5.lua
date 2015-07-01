@@ -30,9 +30,9 @@ solution "SnowfeetEngine"
 		}
 
 	-- Windows-specific
-	filter "system:windows" {
+	filter "system:windows"
 		architecture "x86"
-	}
+	filter {}
 
 	--------------------------------------------
 	-- Core

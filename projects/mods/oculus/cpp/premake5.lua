@@ -24,11 +24,11 @@ project "ModOculus"
         }
 
     -- Windows-specific
-    filter "configurations:Debug and system:windows"
+    filter {"configurations:Debug", "system:windows"}
         links {
             "../external/LibOVR/Lib/Win32/VS2013/libovrd.lib"
         }
-    filter "configurations:Release and system:windows"
+    filter {"configurations:Release", "system:windows"}
         links {
             "../external/LibOVR/Lib/Win32/VS2013/libovr.lib"
         }

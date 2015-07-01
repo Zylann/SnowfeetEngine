@@ -17,12 +17,11 @@ project "SnowfeetCore"
 		"JsonBox",
 	}
 	-- Windows-specific
-	filter "system:windows" {
+	filter "system:windows"
 		links {
 			-- winsock2
 			"ws2_32"
 		}
-	}
 	filter {}
 
 	defines {
