@@ -35,22 +35,34 @@ solution "SnowfeetEngine"
 	filter {}
 
 	--------------------------------------------
-	-- Core
+	-- Helpers
 	--------------------------------------------
 
-	-- Core stuff
-	include("json")
-	--include("angelscript")
-	include("squirrel")
-	include("core")
-	include("main")
-	include("zlib")
+	--! \brief Same as "files" command,
+	--! but appends all C++ extensions to match files,
+	--! so you don't have to specify all known C++ extensions.
+	function filesCPP(patternList)
+	    local t = {}
+	    for i,v in ipairs(patternList) do
+	        table.insert(t, v..".h")
+	        table.insert(t, v..".hpp")
+	        table.insert(t, v..".cpp")
+	    end
+	    files(t)
+	end
 
-	include("tests")
+	function commonModFilesCPP()
+		-- Only files at top-level
+	    filesCPP "*"
 
-	--------------------------------------------
-	-- Modules
-	--------------------------------------------
+	    filter "system:windows"
+			filesCPP "win32/*_win32"
+
+		filter "system:linux"
+			filesCPP "linux/*_linux"
+
+		--...
+	end
 
 	function commonModLinks()
 		links {
@@ -85,6 +97,24 @@ solution "SnowfeetEngine"
 		commonModIncludes()
 		commonModDefines()
 	end
+
+	--------------------------------------------
+	-- Core
+	--------------------------------------------
+
+	-- Core stuff
+	include("json")
+	--include("angelscript")
+	include("squirrel")
+	include("core")
+	include("main")
+	include("zlib")
+
+	include("tests")
+
+	--------------------------------------------
+	-- Modules
+	--------------------------------------------
 
 	-- Include modules:
 	-- Walks througth folders to include compliant premake5 projects
