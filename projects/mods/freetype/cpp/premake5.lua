@@ -1,5 +1,4 @@
 project "ModFreetype"
-    platforms { "x32" }
     commonModConfigCPP()
     files {
         "*.hpp",
@@ -88,6 +87,7 @@ project "LibFreetype"
         "freetype/src/winfonts/winfnt.c",
     }
 
+
     --[[
     files {
         "freetype/**.c",
@@ -112,15 +112,12 @@ project "LibFreetype"
         flags { "Symbols" }
         defines {
             "_DEBUG",
-            "WIN32",
             "_LIB",
-            "_CRT_SECURE_NO_WARNINGS",
             "FT_DEBUG_LEVEL_ERROR",
             "FT_DEBUG_LEVEL_TRACE",
             "FT2_BUILD_LIBRARY"
         }
         files {
-            -- TODO Windows only
             "freetype/builds/windows/ftdebug.c",
         }
 
@@ -129,8 +126,21 @@ project "LibFreetype"
         optimize "Full"
         defines {
             "NDEBUG",
-            "WIN32",
-            "_LIB",
-            "_CRT_SECURE_NO_WARNINGS",
             "FT2_BUILD_LIBRARY"
         }
+        
+    -- Windows-specific
+    filter {"system:windows"}
+        defines {
+            "WIN32",
+            "_CRT_SECURE_NO_WARNINGS",
+        }
+    filter {"configurations:Debug", "system:windows" }
+        files {
+            "freetype/builds/windows/ftdebug.c",
+        }
+    --filter {"configurations:Release", "system:windows"}
+    
+    
+    
+    

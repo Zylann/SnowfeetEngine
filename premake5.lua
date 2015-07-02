@@ -1,13 +1,14 @@
 --------------------------------------------
--- Solution
+-- Globals
 --------------------------------------------
 
 SnowfeetRoot = os.getcwd()
 
-solution "SnowfeetEngine"
-	platforms { "x32" }
-	--location "."
+--------------------------------------------
+-- Solution
+--------------------------------------------
 
+solution "SnowfeetEngine"
 	-- Global default configurations
 	configurations { "Debug", "Release" }
 	includedirs {
@@ -28,6 +29,75 @@ solution "SnowfeetEngine"
 			"LinkTimeOptimization"
 		}
 
+	-- Windows-specific
+	filter "system:windows"
+		architecture "x86"
+	filter {}
+
+	--------------------------------------------
+	-- Helpers
+	--------------------------------------------
+
+	--! \brief Same as "files" command,
+	--! but appends all C++ extensions to match files,
+	--! so you don't have to specify all known C++ extensions.
+	function filesCPP(patternList)
+	    local t = {}
+	    for i,v in ipairs(patternList) do
+	        table.insert(t, v..".h")
+	        table.insert(t, v..".hpp")
+	        table.insert(t, v..".cpp")
+	    end
+	    files(t)
+	end
+
+	function commonModFilesCPP()
+		-- Only files at top-level
+	    filesCPP "*"
+
+	    filter "system:windows"
+			filesCPP "win32/*_win32"
+
+		filter "system:linux"
+			filesCPP "linux/*_linux"
+
+		--...
+	end
+
+	function commonModLinks()
+		links {
+			"SnowfeetCore",
+
+			-- Note: I don't think both should be there,
+			-- because they already are statically linked to the core,
+			-- which in turn is linked to modules...
+			"JsonBox"
+		}
+	end
+
+	function commonModIncludes()
+		--
+	end
+
+	function commonModDefines()
+		-- Modules bindings have to include core bindings
+		-- if they want to interact with them
+		defines {
+			"SCRAT_IMPORT"
+		}
+	end
+
+	function commonModConfigCPP()
+		kind "SharedLib"
+		language "C++"
+		dependson { "SnowfeetCore" }
+		location "."
+		targetdir ".."
+		commonModLinks()
+		commonModIncludes()
+		commonModDefines()
+	end
+
 	--------------------------------------------
 	-- Core
 	--------------------------------------------
@@ -45,40 +115,6 @@ solution "SnowfeetEngine"
 	--------------------------------------------
 	-- Modules
 	--------------------------------------------
-
-	function commonLinks()
-		links {
-			"SnowfeetCore",
-
-			-- Note: I don't think both should be there,
-			-- because they already are statically linked to the core,
-			-- which in turn is linked to modules...
-			"JsonBox"
-		}
-	end
-
-	function commonIncludes()
-		--
-	end
-
-	function commonDefines()
-		-- Modules bindings have to include core bindings
-		-- if they want to interact with them
-		defines {
-			"SCRAT_IMPORT"
-		}
-	end
-
-	function commonModConfigCPP()
-		kind "SharedLib"
-		language "C++"
-		dependson { "SnowfeetCore" }
-		location "."
-		targetdir ".."
-		commonLinks()
-		commonIncludes()
-		commonDefines()
-	end
 
 	-- Include modules:
 	-- Walks througth folders to include compliant premake5 projects

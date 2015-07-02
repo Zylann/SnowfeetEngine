@@ -1,5 +1,4 @@
 project "Tests"
-	platforms { "x32" }
 	kind "ConsoleApp"
 	language "C++"
 	dependson {

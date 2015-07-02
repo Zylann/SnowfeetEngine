@@ -96,7 +96,7 @@ For Windows, the one I mostly use is premake_vs2013_debug.bat.
 
 Another thing to keep in mind:
 Never manage files and build options from IDEs, because sometimes they end up in the wrong place.
-You should create them by hand and re-run premake to update project files. 
+You should create them by hand and re-run premake to update project files.
 
 For any question or issues, PM me.
 
@@ -118,11 +118,8 @@ they can be private-source and/or paid if you want to.
 Premake5
 ========
 
-You can get the source from the premake-dev repo and build it yourself:
-https://bitbucket.org/premake/premake-dev/wiki/Building_Premake
-
-Or use a windows executable I built:
-http://zylannprods.fr/dl/premake5.exe
+You can get builds of the executable here:
+http://premake.github.io/download.html#v5
 
 There are also nightlies on SourceForge:
 http://sourceforge.net/projects/premake/files/Premake/nightlies/

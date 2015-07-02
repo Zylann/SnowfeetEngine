@@ -1,5 +1,4 @@
 project "ModVoxy"
-    platforms { "x32" }
     commonModConfigCPP()
     files {
         "**.h",
