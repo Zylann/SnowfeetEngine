@@ -29,5 +29,3 @@ project "SnowfeetCore"
 	filter "configurations:Release"
 		targetdir "../_bin/release"
 		objdir "../_obj/release"
-
-
