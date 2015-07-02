@@ -1,5 +1,6 @@
 ------------------------------------------
 -- Common
+------------------------------------------
 
 function commonGlewConfig()
 	-- Windows-specific
@@ -24,6 +25,9 @@ function commonGlewConfig()
 end
 
 ------------------------------------------
+-- Rendering module
+------------------------------------------
+
 project "ModRender"
 	commonModConfigCPP()
 	dependson {
@@ -32,21 +36,33 @@ project "ModRender"
 	includedirs {
 		"glew/include"
 	}
-	files {
-		"**.h",
-		"**.hpp",
-		"**.cpp",
-		-- TODO Move these to platform-specific filter
-		"win32/*.hpp",
-		"win32/*.cpp"
+
+	filesCPP {
+		"*",
+		"entities/**",
+		"loaders/**",
+		"bind/**"
 	}
 	excludes {
+		-- Glew is in another project so we exclude it
 		"glew/**"
 	}
+	-- Windows-specific
+	filter {"system:windows"}
+		filesCPP {
+			"win32/*"
+		}
+	filter {}
+
 	links {
 		"glew",
 		"opengl32",
 	}
+	filter "system:windows"
+		links {
+			"opengl32"
+		}
+	filter {}
 
 	filter "configurations:Debug"
 		objdir "_obj/debug"
@@ -57,6 +73,9 @@ project "ModRender"
 
 
 ------------------------------------------
+-- Glew
+------------------------------------------
+
 project "glew"
 	kind "StaticLib"
 	location "."

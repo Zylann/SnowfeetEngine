@@ -1,4 +1,9 @@
+---------------------------------------------------
+-- Snowfeet Core
+---------------------------------------------------
+
 project "SnowfeetCore"
+
 	kind "SharedLib"
 	language "C++"
 	dependson {
@@ -6,11 +11,50 @@ project "SnowfeetCore"
 		"JsonBox"
 	}
 	location "."
-	files {
-		"**.h",
-		"**.hpp",
-		"**.cpp"
+
+	---------------------------------------------------
+	-- Files
+	---------------------------------------------------
+
+	filesCPP {
+		"*",
+		"app/**",
+		"asset/**",
+		"bind/**",
+		"drivers/**",
+		"json/**",
+		"math/**",
+		"pcg/**",
+		"reflect/**",
+		"scene/**",
+		"space/**",
+		"squirrel/**",
+		"util/**",
+
+		"system/console/*",
+		"system/file/*",
+		"system/gui/*",
+		"system/lib/*",
+		"system/memory/*",
+		"system/network/*",
+		"system/thread/*",
+		"system/time/*"
 	}
+	-- Windows-specific
+	filter "system:windows"
+		filesCPP {
+			"system/**_win32"
+		}
+	-- Linux-specific
+	filter "system:linux"
+		filesCPP {
+			"system/**_linux"
+		}
+	filter {}
+
+	---------------------------------------------------
+	-- Links
+	---------------------------------------------------
 
 	links {
 		"Squirrel",
@@ -19,10 +63,14 @@ project "SnowfeetCore"
 	-- Windows-specific
 	filter "system:windows"
 		links {
-			-- winsock2
+			-- winsock2 for network
 			"ws2_32"
 		}
 	filter {}
+
+	---------------------------------------------------
+	-- Defines
+	---------------------------------------------------
 
 	defines {
 		-- To allow modules to use bindings from the core
@@ -30,6 +78,10 @@ project "SnowfeetCore"
 		-- To export core API (by default SN_API is set to import)
 		"SN_CORE_EXPORT"
 	}
+
+	---------------------------------------------------
+	-- Compiler output
+	---------------------------------------------------
 
 	filter "configurations:Debug"
 		targetdir "../_bin/debug"
