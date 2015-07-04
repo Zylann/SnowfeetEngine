@@ -81,8 +81,8 @@ inline void serialize(JsonBox::Value & o, const Range<T> & range)
 inline void unserialize(JsonBox::Value & o, Range<f32> & range)
 {
     range.set(
-        static_cast<u8>(o[(size_t)0].getDouble()), 
-        static_cast<u8>(o[1].getDouble())
+        sn::unserializeAsFloat(o[(size_t)0]), 
+        sn::unserializeAsFloat(o[1])
     );
 }
 
