@@ -127,11 +127,10 @@ bool Instance::hasMethod(const std::string & methodName)
         sq_pop(vm, -1);
         return false;
     }
-    else
-    {
-        sq_pop(vm, -1);
-        return true;
-    }
+
+    SQObjectType t = sq_gettype(vm, -1);
+    sq_pop(vm, -1);
+    return t == OT_CLOSURE || t == OT_NATIVECLOSURE;
 }
 
 //------------------------------------------------------------------------------
