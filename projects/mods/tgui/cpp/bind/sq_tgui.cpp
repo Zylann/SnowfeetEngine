@@ -8,6 +8,7 @@ void bindTGUI(HSQUIRRELVM vm)
     bindControl(vm);
     bindPanel(vm);
     bindButton(vm);
+    bindSlider(vm);
 }
 
 } // namespace tgui

@@ -9,6 +9,7 @@ namespace tgui
 void bindControl(HSQUIRRELVM vm);
 void bindButton(HSQUIRRELVM vm);
 void bindPanel(HSQUIRRELVM vm);
+void bindSlider(HSQUIRRELVM vm);
 
 void bindTGUI(HSQUIRRELVM vm);
 
