@@ -23,7 +23,7 @@ namespace sn
 				e->pushScriptObject(vm);
 			else
 				sq_pushnull(vm);
-			return 0;
+			return 1;
 		END_METHOD
 
 		BEGIN_METHOD(getEntitiesByTag)
