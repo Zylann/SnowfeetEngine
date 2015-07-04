@@ -136,20 +136,10 @@ bool Instance::hasMethod(const std::string & methodName)
 //------------------------------------------------------------------------------
 bool Instance::callMethod(const std::string & methodName)
 {
-    if (isNull())
+    if (!getMemberOnStack(methodName))
         return false;
 
     auto vm = m_vm;
-
-    sq_pushobject(vm, m_object);
-    sq_pushstring(vm, methodName.c_str(), methodName.size());
-
-    // Get the method
-    if (SQ_FAILED(sq_get(vm, -2)))
-    {
-        sq_pop(vm, -1);
-        return false;
-    }
 
     // Push this
     sq_pushobject(vm, m_object);
@@ -157,13 +147,33 @@ bool Instance::callMethod(const std::string & methodName)
     // Call the method
     if (SQ_FAILED(sq_call(vm, 1, SQFalse, SQTrue)))
     {
-        sq_pop(vm, 1);
+        sq_pop(vm, 2);
         SN_ERROR("Squirrel error on method call");
         return false;
     }
 
-    // Pop the function and the roottable
+    // Pop the function and the object
     sq_pop(vm, 2);
+
+    return true;
+}
+
+//------------------------------------------------------------------------------
+bool Instance::getMemberOnStack(const std::string & key)
+{
+    if (isNull())
+        return false;
+
+    auto vm = m_vm;
+
+    sq_pushobject(vm, m_object);
+    sq_pushstring(vm, key.c_str(), key.size());
+
+    if (SQ_FAILED(sq_get(vm, -2)))
+    {
+        sq_pop(vm, 1);
+        return false;
+    }
 
     return true;
 }

@@ -4,6 +4,7 @@
 #include <vector>
 #include <core/util/Variant.h>
 #include <core/squirrel/Object.h>
+#include <core/squirrel/push.h>
 
 namespace squirrel
 {
@@ -25,7 +26,36 @@ public:
 
     bool setMember(const char * name, HSQOBJECT obj);
     bool setMemberNull(const char * name);
-    
+
+    template <typename T>
+    bool callMethod(const std::string & methodName, T arg)
+    {
+        if (!getMemberOnStack(methodName))
+            return false;
+
+        // Push this
+        sq_pushobject(m_vm, m_object);
+
+        // Push argument
+        squirrel::push(m_vm, arg);
+
+        // Call the method
+        if (SQ_FAILED(sq_call(m_vm, 2, SQFalse, SQTrue)))
+        {
+            sq_pop(m_vm, 2);
+            SN_ERROR("Squirrel error on method call");
+            return false;
+        }
+
+        // Pop the function and the roottable
+        sq_pop(m_vm, 2);
+
+        return true;
+    }
+
+private:
+    bool getMemberOnStack(const std::string & key);
+
 };
 
 } // namespace squirrel
