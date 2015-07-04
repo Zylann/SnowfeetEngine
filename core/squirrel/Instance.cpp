@@ -158,7 +158,7 @@ bool Instance::callMethod(const std::string & methodName)
     // Call the method
     if (SQ_FAILED(sq_call(vm, 1, SQFalse, SQTrue)))
     {
-        sq_pop(vm, -1);
+        sq_pop(vm, 1);
         SN_ERROR("Squirrel error on method call");
         return false;
     }
