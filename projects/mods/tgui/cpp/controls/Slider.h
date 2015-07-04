@@ -14,10 +14,7 @@ class Slider : public Control
 public:
     SN_ENTITY(tgui::Slider, tgui::Control)
 
-    Slider() : Control(), 
-        m_value(0),
-        m_orientation(TGUI_HORIZONTAL)
-    {}
+    Slider();
 
     void setValue(sn::f32 v);
 
@@ -32,11 +29,15 @@ protected:
 	void onMouseRelease(Event & ev) override;
 
 private:
+    sn::f32 getValueFromPos(sn::Vector2i cursorPos);
     void setValueFromPos(sn::Vector2i cursorPos);
+
+    void notifyValueChanged();
 
 private:
     // TODO Step?
     sn::f32 m_value;
+    sn::Range<sn::f32> m_range;
     Orientation m_orientation;
 
 };

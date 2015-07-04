@@ -7,9 +7,21 @@ namespace tgui
 {
 
 //------------------------------------------------------------------------------
+Slider::Slider() : Control(), 
+    m_value(0),
+    m_range(0, 1),
+    m_orientation(TGUI_HORIZONTAL)
+{}
+
+//------------------------------------------------------------------------------
 void Slider::setValue(f32 v)
 {
-    m_value = math::clamp(v, 0.f, 1.f);
+    v = math::clamp(v, m_range.min(), m_range.max());
+    if (v != m_value)
+    {
+        m_value = v;
+        notifyValueChanged();
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -48,7 +60,8 @@ void Slider::onDrawSelf(DrawBatch & batch)
     {
         const auto & thumbTheme = theme->sliderThumbs;
         const IntRect & thumbImageRect = thumbTheme.statesUV[state];
-        s32 x = b.minX() + static_cast<s32>(m_value * static_cast<f32>(b.width() - thumbImageRect.width()));
+        f32 value = m_range.inverseLerp(m_value);
+        s32 x = b.minX() + static_cast<s32>(value * static_cast<f32>(b.width() - thumbImageRect.width()));
         s32 y = b.minY() + b.height() / 2 - thumbImageRect.height() / 2;
         batch.fillRect(
             IntRect::fromPositionSize(x, y, thumbImageRect.width(), thumbImageRect.height()),
@@ -85,7 +98,7 @@ void Slider::onMouseMove(Event & ev)
 }
 
 //------------------------------------------------------------------------------
-void Slider::setValueFromPos(sn::Vector2i cursorPos)
+f32 Slider::getValueFromPos(sn::Vector2i cursorPos)
 {
     Vector2i size = getSize();
 	s32 padding = 0;
@@ -96,23 +109,45 @@ void Slider::setValueFromPos(sn::Vector2i cursorPos)
 		padding = theme->sliderThumbs.statesUV[0].size()[m_orientation] / 2;
 	}
 	f32 rawValue = static_cast<f32>(cursorPos[m_orientation] - padding) / static_cast<f32>(size[m_orientation] - 2 * padding);
-    m_value = math::clamp(rawValue, 0.f, 1.f);
+    rawValue = math::clamp(rawValue, 0.f, 1.f);
+    return m_range.lerp(rawValue);
+}
+
+//------------------------------------------------------------------------------
+void Slider::setValueFromPos(sn::Vector2i cursorPos)
+{
+    f32 v = getValueFromPos(cursorPos);
+    setValue(v);
+}
+
+//------------------------------------------------------------------------------
+void Slider::notifyValueChanged()
+{
+    auto & s = getScript();
+    if (!s.isNull())
+    {
+        s.callMethod("onValueChanged", m_value);
+    }
 }
 
 //------------------------------------------------------------------------------
 void Slider::serializeState(JsonBox::Value & o, const sn::SerializationContext & ctx)
 {
     Control::serializeState(o, ctx);
-    tgui::serialize(o, m_orientation);
-    sn::serialize(o, m_value);
+    tgui::serialize(o["orientation"], m_orientation);
+    sn::serialize(o["value"], m_value);
+    sn::serialize(o["range"], m_range);
 }
 
 //------------------------------------------------------------------------------
 void Slider::unserializeState(JsonBox::Value & o, const sn::SerializationContext & ctx)
 {
     Control::unserializeState(o, ctx);
-    tgui::unserialize(o, m_orientation);
-    sn::unserialize(o, m_value);
+    tgui::unserialize(o["orientation"], m_orientation);
+    sn::unserialize(o["value"], m_value);
+    sn::unserialize(o["range"], m_range);
+
+    m_value = math::clamp(m_value, m_range.min(), m_range.max());
 }
 
 } // namespace tgui
