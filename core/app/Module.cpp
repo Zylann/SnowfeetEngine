@@ -303,7 +303,6 @@ bool Module::compileScripts()
 
         if (!compiled)
         {
-            throw Exception("Script compilation error");
             return false;
         }
     }
