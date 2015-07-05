@@ -14,7 +14,7 @@
 
 #define BEGIN_METHOD(_name) \
 	SQInteger _name(HSQUIRRELVM vm) { \
-		auto * self = getNativeInstance<__sn_CurrentClass>(vm, 1); \
+		auto * self = squirrel::getNativeInstance<__sn_CurrentClass>(vm, 1); \
 		if(self) {
 		
 		// Insert function code here
