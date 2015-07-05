@@ -179,23 +179,30 @@ private:
 /// - The module where the class of 'self' is defined (if provided)
 /// - If still fails, returns nullptr.
 ///
-/// \param type: type name of the asset
-/// \param locationString: string representing the location of the asset (see AssetLocation)
-/// \param contextModule: name of the module where the serialization is taking place
-/// \param self (optional): object needing to store the asset (typically the caller)
+/// \param type:                    type name of the asset
+/// \param locationString:          string representing the location of the asset (see AssetLocation)
+/// \param contextModule:           name of the module where the serialization is taking place
+/// \param self (optional):         object needing to store the asset (typically the caller)
+/// \param raiseError (optional):   if true, an error will be displayed if the asset can't be found.
+///
 SN_API Asset * getAssetBySerializedLocation(
     const std::string & type, 
     const std::string & locationString, 
     const std::string & contextModule,
-    const Object * self = nullptr
+    const Object * self = nullptr,
+    bool raiseError = false
 );
 
-// Template version
+/// \brief Template version of the function having the same name.
 template <class Asset_T>
-Asset_T * getAssetBySerializedLocation(const std::string & locationString, const std::string & contextModule, const Object * self=nullptr)
+Asset_T * getAssetBySerializedLocation(
+    const std::string & locationString, 
+    const std::string & contextModule, 
+    const Object * self = nullptr,
+    bool raiseError = false)
 {
     // Note: use SN_ASSET in your asset class
-    Asset * a = getAssetBySerializedLocation(Asset_T::__sGetClassName(), locationString, contextModule, self);
+    Asset * a = getAssetBySerializedLocation(Asset_T::__sGetClassName(), locationString, contextModule, self, raiseError);
     if (a)
         return checked_cast<Asset_T*>(a);
     else

@@ -442,7 +442,8 @@ Asset * getAssetBySerializedLocation(
     const std::string & type, 
     const std::string & locationString, 
     const std::string & contextModule, 
-    const Object * self)
+    const Object * self,
+    bool raiseError)
 {
     AssetLocation location(locationString);
     if (!location.isEmpty())
@@ -471,6 +472,11 @@ Asset * getAssetBySerializedLocation(
             if (asset)
                 return asset;
         }
+    }
+
+    if (raiseError)
+    {
+        SN_ERROR("Asset not found: " << location.getFullName());
     }
 
     // Asset not found
