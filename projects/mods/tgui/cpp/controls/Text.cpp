@@ -9,6 +9,18 @@ namespace tgui
 {
 
 //------------------------------------------------------------------------------
+void Text::setSource(const std::string & str)
+{
+    m_model.setSource(str);
+}
+
+//------------------------------------------------------------------------------
+void Text::getSource(std::string & out)
+{
+    m_model.getSource(out);
+}
+
+//------------------------------------------------------------------------------
 void Text::onDrawSelf(DrawBatch & batch)
 {
     const Theme * theme = getTheme();

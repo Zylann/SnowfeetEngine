@@ -15,6 +15,9 @@ public:
 
     void onDrawSelf(DrawBatch & batch) override;
 
+    void setSource(const std::string & str);
+    void getSource(std::string & out);
+
     //--------------------------------
     // Serialization
     //--------------------------------
