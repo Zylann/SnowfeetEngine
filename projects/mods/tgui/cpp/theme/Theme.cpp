@@ -86,9 +86,11 @@ bool ThemeLoader::load(std::ifstream & ifs, sn::Asset & asset) const
         SN_WERROR(L"No material specified in theme " << asset.getAssetMetadata().path);
 
     // Get font
-    Font * font = sn::getAssetBySerializedLocation<sn::Font>(o["font"].getString(), ctx.getModule(), this);
+    Font * font = sn::getAssetBySerializedLocation<sn::Font>(o["font"].getString(), ctx.getModule(), this, true);
     if (font)
         theme->setFont(*font);
+    else
+        SN_WERROR(L"Font not found in theme " << asset.getAssetMetadata().path);
 
     // TODO This can be picked from the material now
     // Get texture size
