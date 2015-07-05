@@ -25,6 +25,12 @@ void Slider::setValue(f32 v)
 }
 
 //------------------------------------------------------------------------------
+sn::f32 Slider::getValue()
+{
+    return m_value;
+}
+
+//------------------------------------------------------------------------------
 void Slider::onDrawSelf(DrawBatch & batch)
 {
     const Theme * theme = getTheme();

@@ -17,6 +17,7 @@ public:
     Slider();
 
     void setValue(sn::f32 v);
+    sn::f32 getValue();
 
     void serializeState(JsonBox::Value & o, const sn::SerializationContext & ctx) override;
     void unserializeState(JsonBox::Value & o, const sn::SerializationContext & ctx) override;
