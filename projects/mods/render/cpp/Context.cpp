@@ -1,6 +1,6 @@
-﻿#include "gl_check.hpp"
+﻿#include "gl_check.h"
 #include <GL/glew.h>
-#include "Context.hpp"
+#include "Context.h"
 
 namespace sn {
 namespace render {

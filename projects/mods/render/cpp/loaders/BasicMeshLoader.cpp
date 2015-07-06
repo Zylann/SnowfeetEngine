@@ -2,8 +2,8 @@
 #include <core/util/stringutils.h>
 #include <core/util/typecheck.h>
 
-#include "BasicMeshLoader.hpp"
-#include "ply/PLYLoader.hpp"
+#include "BasicMeshLoader.h"
+#include "ply/PLYLoader.h"
 
 namespace sn {
 namespace render {

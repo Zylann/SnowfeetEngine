@@ -1,4 +1,4 @@
-#include "PLYLoader.hpp"
+#include "PLYLoader.h"
 
 namespace sn  {
 namespace render {

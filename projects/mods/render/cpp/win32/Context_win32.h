@@ -1,7 +1,7 @@
 #ifndef __HEADER_SN_CONTEXT_WIN32__
 #define __HEADER_SN_CONTEXT_WIN32__
 
-#include "../Context.hpp"
+#include "../Context.h"
 #include <Windows.h>
 
 namespace sn {

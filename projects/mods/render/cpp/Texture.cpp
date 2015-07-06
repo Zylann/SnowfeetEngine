@@ -1,8 +1,8 @@
 #include <core/asset/AssetDatabase.h>
 //#include <core/asset/base/ImageBase.h>
 
-#include "gl_check.hpp"
-#include "Texture.hpp"
+#include "gl_check.h"
+#include "Texture.h"
 
 namespace sn {
 namespace render {

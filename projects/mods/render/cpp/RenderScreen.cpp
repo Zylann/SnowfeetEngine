@@ -1,4 +1,4 @@
-#include "RenderScreen.hpp"
+#include "RenderScreen.h"
 
 namespace sn {
 namespace render {

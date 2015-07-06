@@ -5,9 +5,9 @@
 #include <core/util/typecheck.h>
 #include <core/util/Profiler.h>
 
-#include "RenderManager.hpp"
-#include "Drawable.hpp"
-#include "Camera.hpp"
+#include "RenderManager.h"
+#include "Drawable.h"
+#include "Camera.h"
 
 namespace sn {
 namespace render {

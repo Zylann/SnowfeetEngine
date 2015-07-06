@@ -5,9 +5,9 @@
 #include <core/util/SharedRef.h>
 #include <core/math/Vector4.h>
 
-#include "ShaderProgram.hpp"
-#include "RenderTexture.hpp"
-#include "BlendMode.hpp"
+#include "ShaderProgram.h"
+#include "RenderTexture.h"
+#include "BlendMode.h"
 
 namespace sn {
 namespace render {

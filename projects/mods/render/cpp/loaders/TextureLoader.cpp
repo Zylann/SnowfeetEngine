@@ -1,8 +1,8 @@
 #include <core/asset/base/TextureBase.h>
 #include <core/asset/AssetDatabase.h>
 
-#include "TextureLoader.hpp"
-#include "../Texture.hpp"
+#include "TextureLoader.h"
+#include "../Texture.h"
 
 namespace sn {
 namespace render {

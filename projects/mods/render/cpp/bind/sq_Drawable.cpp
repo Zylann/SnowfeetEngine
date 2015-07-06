@@ -1,6 +1,6 @@
 #include <core/app/ScriptableObject.h>
-#include "../entities/Drawable.hpp"
-#include "sq_render.hpp"
+#include "../entities/Drawable.h"
+#include "sq_render.h"
 
 namespace sn {
 namespace render {

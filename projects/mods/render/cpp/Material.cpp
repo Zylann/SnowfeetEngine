@@ -4,7 +4,7 @@
 #include <core/math/Vector3.h>
 #include <core/math/Color.h>
 
-#include "Material.hpp"
+#include "Material.h"
 
 namespace sn {
 namespace render {

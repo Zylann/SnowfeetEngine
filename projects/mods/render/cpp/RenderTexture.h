@@ -3,8 +3,8 @@
 
 #include <core/asset/Asset.h>
 
-#include "Texture.hpp"
-//#include "RenderTarget.hpp"
+#include "Texture.h"
+//#include "RenderTarget.h"
 
 namespace sn {
 namespace render {

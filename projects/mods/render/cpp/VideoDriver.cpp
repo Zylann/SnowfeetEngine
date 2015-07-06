@@ -1,5 +1,5 @@
-#include "VideoDriver.hpp"
-#include "Texture.hpp"
+#include "VideoDriver.h"
+#include "Texture.h"
 
 namespace sn {
 namespace render {

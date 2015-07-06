@@ -1,8 +1,8 @@
 #include <core/system/gui/SystemGUI.h>
 #include <core/asset/AssetDatabase.h>
 
-#include "Drawable.hpp"
-#include "Camera.hpp"
+#include "Drawable.h"
+#include "Camera.h"
 
 namespace sn {
 namespace render {

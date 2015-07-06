@@ -1,7 +1,7 @@
 #include <core/scene/Scene.h>
 #include <core/asset/AssetDatabase.h>
-#include "Drawable.hpp"
-#include "RenderManager.hpp"
+#include "Drawable.h"
+#include "RenderManager.h"
 
 namespace sn {
 namespace render {

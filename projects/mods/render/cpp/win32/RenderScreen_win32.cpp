@@ -1,5 +1,5 @@
-#include "../RenderScreen.hpp"
-#include "Context_win32.hpp"
+#include "../RenderScreen.h"
+#include "Context_win32.h"
 
 namespace sn {
 namespace render {

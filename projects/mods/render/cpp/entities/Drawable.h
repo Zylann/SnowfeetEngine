@@ -5,7 +5,7 @@
 #include <core/util/SharedRef.h>
 #include <core/asset/base/Mesh.h>
 
-#include "../Material.hpp"
+#include "../Material.h"
 
 namespace sn {
 namespace render {

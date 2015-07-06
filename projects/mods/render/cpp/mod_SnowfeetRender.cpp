@@ -2,22 +2,22 @@
 
 #include "mod_SnowfeetRender.h"
 
-#include "Material.hpp"
-#include "ShaderProgram.hpp"
+#include "Material.h"
+#include "ShaderProgram.h"
 
-#include "entities/RenderManager.hpp"
-#include "entities/Camera.hpp"
-#include "entities/Drawable.hpp"
+#include "entities/RenderManager.h"
+#include "entities/Camera.h"
+#include "entities/Drawable.h"
 
-#include "loaders/BasicMeshLoader.hpp"
-#include "loaders/MaterialLoader.hpp"
-#include "loaders/TextureLoader.hpp"
+#include "loaders/BasicMeshLoader.h"
+#include "loaders/MaterialLoader.h"
+#include "loaders/TextureLoader.h"
 #include "loaders/RenderTextureLoader.h"
 #include "loaders/ShaderLoader.h"
 
-#include "VideoDriver.hpp"
+#include "VideoDriver.h"
 
-#include "bind/sq_render.hpp"
+#include "bind/sq_render.h"
 
 
 namespace sn {

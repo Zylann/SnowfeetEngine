@@ -8,9 +8,9 @@
 #include <core/asset/base/Mesh.h>
 #include <core/system/gui/Window.h>
 
-#include "../ClearBits.hpp"
-#include "../Material.hpp"
-#include "../RenderTexture.hpp"
+#include "../ClearBits.h"
+#include "../Material.h"
+#include "../RenderTexture.h"
 
 namespace sn {
 namespace render {

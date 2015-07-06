@@ -12,10 +12,10 @@ This file is part of the SnowfeetEngine project.
 
 #include <core/util/NonCopyable.h>
 
-#include "ShaderProgram.hpp"
-#include "ContextSettings.hpp"
-#include "ClearBits.hpp"
-#include "BlendMode.hpp"
+#include "ShaderProgram.h"
+#include "ContextSettings.h"
+#include "ClearBits.h"
+#include "BlendMode.h"
 
 namespace sn {
 namespace render {
