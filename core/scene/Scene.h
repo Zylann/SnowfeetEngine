@@ -42,9 +42,12 @@ public:
     // Registers
     //------------------------------------
 
+    // TODO UpdateManager
     void registerUpdatableEntity(Entity & e, s16 order, s16 layer);
     void unregisterUpdatableEntity(Entity & e);
+    bool getEntityUpdateOrder(Entity & e, s16 & out_order, s16 & out_layer) const;
 
+    // TODO TagManager
     void registerTaggedEntity(Entity & e, const std::string & tag);
     void unregisterTaggedEntity(Entity & e, const std::string & tag);
 

@@ -42,7 +42,6 @@ class Scene;
 class SN_API Entity : public ScriptableObject
 {
 public:
-
     SN_ENTITY(sn::Entity, sn::ScriptableObject)
 
     /// \brief Just constructs the entity.
@@ -213,7 +212,8 @@ public:
     // Integrated callbacks
     //---------------------------------------------
 
-    /// \brief Called when the entity is ready to perform in the Scene
+    // TODO This should be renamed
+    /// \brief Called when the entity enters the scene
     virtual void onReady();
 
     /// \brief Called when the entity is marked (or scheduled) as destroyed.
@@ -262,6 +262,8 @@ private:
     void removeChildAtIndex(u32 index);
 
     void releaseScript();
+
+    void onSceneChanged(Scene * oldScene, Scene * newScene);
 
 private:
     /// \brief Flags of the entity.

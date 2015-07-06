@@ -41,6 +41,23 @@ void Scene::unregisterUpdatableEntity(Entity & e)
 }
 
 //------------------------------------------------------------------------------
+bool Scene::getEntityUpdateOrder(Entity & e, s16 & out_order, s16 & out_layer) const
+{
+    for (auto it = m_updatableEntities.begin(); it != m_updatableEntities.end(); ++it)
+    {
+        const std::unordered_set<Entity*> & entities = it->second;
+        if (entities.find(&e) != entities.end())
+        {
+            s32 n = it->first;
+            out_order = n & 0x0000ffff;
+            out_layer = (n >> 16) & 0x0000ffff;
+            return true;
+        }
+    }
+    return false;
+}
+
+//------------------------------------------------------------------------------
 void Scene::registerEventListener(Entity & e)
 {
 	auto it = m_eventListenerEntities.find(&e);
@@ -165,7 +182,7 @@ void Scene::onUpdate()
         }
     }
 
-	// TODO Destroy entities with flag DESTROYED set
+	// TODO Destroy entities with flag DESTROY_LATE set
 }
 
 //------------------------------------------------------------------------------

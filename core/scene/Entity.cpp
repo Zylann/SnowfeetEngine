@@ -172,10 +172,12 @@ std::string Entity::toString() const
 //------------------------------------------------------------------------------
 void Entity::setParent(Entity * newParent)
 {
-    // TODO FIXME Scene registrations such as update or tags must be notified too if the scene changes!
+    Scene * oldScene = getScene();
 
+    // Update parent
     if (r_parent != nullptr && newParent == nullptr)
     {
+        // Unparented
         r_parent->removeChild(this);
         r_parent = newParent;
     }
@@ -183,29 +185,83 @@ void Entity::setParent(Entity * newParent)
     {
         if (r_parent == nullptr)
         {
+            // Parented for the first time
             r_parent = newParent;
             r_parent->addChild(this);
-
-            if (newParent->isInstanceOf<Scene>() && r_scene == nullptr)
-            {
-                r_scene = static_cast<Scene*>(newParent);
-
-                // TODO have a setScene() function performing all registration stuff
-                for (auto it = m_tags.begin(); it != m_tags.end(); ++it)
-                {
-                    r_scene->registerTaggedEntity(*this, *it);
-                }
-
-                propagateOnReady();
-            }
         }
         else
         {
+            // Parent changed
+
             // Just swap ownership
             r_parent->removeChild(this);
             r_parent = newParent;
             r_parent->addChild(this);
         }
+    }
+
+    // Update scene
+    r_scene = getScene();
+    if (oldScene != r_scene)
+    {
+        onSceneChanged(oldScene, r_scene);
+    }
+}
+
+//------------------------------------------------------------------------------
+void Entity::onSceneChanged(Scene * oldScene, Scene * newScene)
+{
+    if (newScene == oldScene)
+        return;
+
+    // Register to the new scene
+    if (newScene)
+    {
+        // Update subscription
+        if (getFlag(SN_EF_UPDATABLE))
+        {
+            s16 order=0, layer=0;
+            if (oldScene)
+                oldScene->getEntityUpdateOrder(*this, order, layer);
+            newScene->registerUpdatableEntity(*this, order, layer);
+        }
+
+        // System events subscription
+        if (getFlag(SN_EF_SYSTEM_EVENT_LISTENER))
+            newScene->registerEventListener(*this);
+
+        // Tags registering
+        for (auto it = m_tags.begin(); it != m_tags.end(); ++it)
+        {
+            newScene->registerTaggedEntity(*this, *it);
+        }
+    }
+
+    // Unregister from the old scene
+    if (oldScene)
+    {
+        if (getFlag(SN_EF_UPDATABLE))
+            oldScene->unregisterUpdatableEntity(*this);
+
+        if (getFlag(SN_EF_SYSTEM_EVENT_LISTENER))
+            oldScene->unregisterEventListener(*this);
+
+        for (auto it = m_tags.begin(); it != m_tags.end(); ++it)
+        {
+            oldScene->unregisterTaggedEntity(*this, *it);
+        }
+    }
+
+    r_scene = newScene;
+
+    if (r_scene)
+        onReady();
+
+    // Notify children
+    for (auto it = m_children.begin(); it != m_children.end(); ++it)
+    {
+        Entity * child = *it;
+        child->onSceneChanged(oldScene, newScene);
     }
 }
 
