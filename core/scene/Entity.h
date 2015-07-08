@@ -247,9 +247,6 @@ public:
     /// \warning Don't use directly, use setParent() instead.
     u32 removeChild(Entity * child);
 
-    /// \brief No-params overload for script binding
-    Entity * createChildNoParams() { return createChild(); }
-
 protected:
     virtual ~Entity();
 
