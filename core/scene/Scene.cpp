@@ -229,7 +229,8 @@ void Scene::loadFromFile(const std::string & filePath, const SerializationContex
     {
         // Note: the returned child will be automatically added to the children list,
         // as soon as setParent() is called
-        Entity::unserialize(docEntities[i], this, context);
+        Entity * e = Entity::unserialize(docEntities[i], this, context);
+		e->propagateOnReady();
     }
 }
 

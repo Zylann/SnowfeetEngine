@@ -117,6 +117,13 @@ void Control::setParent(Entity * newParent)
 }
 
 //------------------------------------------------------------------------------
+void Control::onReady()
+{
+	layoutChildren();
+	Entity::onReady();
+}
+
+//------------------------------------------------------------------------------
 const Theme * Control::getTheme() const
 {
     GUI * gui = getGUI();
@@ -148,6 +155,8 @@ Control * Control::getChildControlAt(sn::Vector2i position) const
 //------------------------------------------------------------------------------
 void Control::layoutChildren()
 {
+	// TODO Have a dirty flag to avoid calculating layouts when nothing changed
+
     std::vector<Control*> children;
     getChildrenOfType<Control>(children);
 
