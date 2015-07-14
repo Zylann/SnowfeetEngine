@@ -47,20 +47,20 @@ void test_reflection()
     // Register
 
     ObjectType & ot = otb.registerType<ReflectedClass>();
-    ot.addProperty("name", &ReflectedClass::getName, &ReflectedClass::setName);
-    ot.addProperty("counter", &ReflectedClass::getCounter);
+    //ot.addProperty("name", &ReflectedClass::getName, &ReflectedClass::setName);
+    //ot.addProperty("counter", &ReflectedClass::getCounter);
 
     // Use
 
     Object * obj = ot.instantiate();
     
-    const ObjectProperty & property = *ot.getProperty("counter");
-    if (!property.is<bool>())
-        SN_LOG("Hmm, property " << property.getName() << " is not a boolean.");
-    s32 counter = ot.getProperty("counter")->getValue<s32>(obj);
-    SN_LOG("Counter value is " << counter);
+    //const ObjectProperty & property = *ot.getProperty("counter");
+    //if (!property.is<bool>())
+    //    SN_LOG("Hmm, property " << property.getName() << " is not a boolean.");
+    //s32 counter = ot.getProperty("counter")->getValue<s32>(obj);
+    //SN_LOG("Counter value is " << counter);
 
-    ot.getProperty("name")->setValue(obj, std::string("It works!"));
+    //ot.getProperty("name")->setValue(obj, std::string("It works!"));
 
     // Cleanup
 

@@ -12,7 +12,6 @@ This file is part of the SnowfeetEngine project.
 #include <unordered_map>
 
 #include <core/types.h>
-#include <core/reflect/ObjectProperty.h>
 
 namespace sn
 {
@@ -29,40 +28,6 @@ public:
         const std::string & p_name,
         const std::string & p_baseName
     );
-
-    ~ObjectType()
-    {
-        for (auto it = m_properties.begin(); it != m_properties.end(); ++it)
-            delete it->second;
-    }
-
-    // TODO Handle setters returning *this for chaining
-    template <class C, typename T>
-    ObjectType & addProperty(const std::string & name, T(C::*getterMethod)(), void(C::*setterMethod)(T))
-    {
-        SN_ASSERT(!hasProperty(name), "Property " << name << " registered twice on ObjectType " << toString());
-        ObjectProperty * property = new ObjectProperty(name);
-        if (getterMethod)
-            property->setGetterMethod(getterMethod);
-        if (setterMethod)
-            property->setSetterMethod(setterMethod);
-        m_properties[name] = property;
-        return *this;
-    }
-
-    template <class C, typename T>
-    ObjectType & addProperty(const std::string & name, T(C::*getterMethod)())
-    {
-        SN_ASSERT(!hasProperty(name), "Property " << name << " registered twice on ObjectType " << toString());
-        ObjectProperty * property = new ObjectProperty(name);
-        if (getterMethod)
-            property->setGetterMethod(getterMethod);
-        m_properties[name] = property;
-        return *this;
-    }
-
-    bool hasProperty(const std::string & name) const;
-    const ObjectProperty * getProperty(const std::string & name) const;
 
     bool is(const std::string & typeName, bool includeInheritance=true) const;
     bool is(const ObjectType & other, bool includeInheritance=true) const;
@@ -119,8 +84,6 @@ private:
 
     /// \brief Closure responsible for object instances creation
     std::function<Object*()> m_factory;
-
-    std::unordered_map<std::string, ObjectProperty*> m_properties;
 
 };
 

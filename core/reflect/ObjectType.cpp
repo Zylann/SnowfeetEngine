@@ -90,22 +90,6 @@ bool ObjectType::derivesFrom(const ObjectType & other) const
 }
 
 //------------------------------------------------------------------------------
-bool ObjectType::hasProperty(const std::string & name) const
-{
-    return m_properties.find(name) != m_properties.end();
-}
-
-//------------------------------------------------------------------------------
-const ObjectProperty * ObjectType::getProperty(const std::string & name) const
-{
-    auto it = m_properties.find(name);
-    if (it != m_properties.end())
-        return it->second;
-    else
-        return nullptr;
-}
-
-//------------------------------------------------------------------------------
 Object * ObjectType::instantiate() const
 {
     Object * obj = m_factory();
