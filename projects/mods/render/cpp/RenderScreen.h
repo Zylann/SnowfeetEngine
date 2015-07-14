@@ -2,7 +2,7 @@
 #define __HEADER_SNR_RENDERSCREEN__
 
 #include <core/system/gui/Window.h>
-#include "Context.hpp"
+#include "Context.h"
 
 namespace sn {
 namespace render {

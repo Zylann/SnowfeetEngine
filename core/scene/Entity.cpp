@@ -254,9 +254,6 @@ void Entity::onSceneChanged(Scene * oldScene, Scene * newScene)
 
     r_scene = newScene;
 
-    if (r_scene)
-        onReady();
-
     // Notify children
     for (auto it = m_children.begin(); it != m_children.end(); ++it)
     {
@@ -553,7 +550,9 @@ Entity * Entity::unserialize(JsonBox::Value & o, Entity * parent, const Serializ
         if (obj)
         {
             Entity * e((Entity*)obj);
+            e->setParent(parent);
             e->unserializeState(o, context);
+
             if (o[SN_JSON_ENTITY_CHILDREN_TAG].isArray())
             {
                 JsonBox::Value & a = o[SN_JSON_ENTITY_CHILDREN_TAG];
@@ -563,7 +562,7 @@ Entity * Entity::unserialize(JsonBox::Value & o, Entity * parent, const Serializ
                     Entity::unserialize(a[i], e, context);
                 }
             }
-            e->setParent(parent);
+
             return e;
         }
         // Error message already handled by the instantiate helper

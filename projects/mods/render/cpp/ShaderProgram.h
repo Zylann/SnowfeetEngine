@@ -11,8 +11,8 @@ This file is part of the SnowfeetEngine project.
 #include <unordered_map>
 #include <GL/glew.h>
 
-#include "Vertex.hpp"
-#include "Texture.hpp"
+#include "Vertex.h"
+#include "Texture.h"
 
 namespace sn {
 namespace render {

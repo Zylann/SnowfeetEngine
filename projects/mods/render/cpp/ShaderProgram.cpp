@@ -1,7 +1,7 @@
 ﻿#include <core/util/Log.h>
 
-#include "gl_check.hpp"
-#include "ShaderProgram.hpp"
+#include "gl_check.h"
+#include "ShaderProgram.h"
 
 namespace sn {
 namespace render {

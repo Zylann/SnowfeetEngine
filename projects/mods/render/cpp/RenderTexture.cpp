@@ -1,8 +1,8 @@
 #include <core/util/stringutils.h>
 #include <core/json/json_utils.h>
 
-#include "RenderTexture.hpp"
-#include "gl_check.hpp"
+#include "RenderTexture.h"
+#include "gl_check.h"
 
 namespace sn {
 namespace render {

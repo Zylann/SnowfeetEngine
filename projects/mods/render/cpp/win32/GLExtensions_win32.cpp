@@ -1,4 +1,4 @@
-#include "../GLExtensions.hpp"
+#include "../GLExtensions.h"
 #include <core/util/Log.h>
 #include <GL/glew.h>
 #include <Windows.h>

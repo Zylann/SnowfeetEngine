@@ -1,5 +1,5 @@
 #include <core/types.h>
-#include "Vertex.hpp"
+#include "Vertex.h"
 
 namespace sn {
 namespace render {

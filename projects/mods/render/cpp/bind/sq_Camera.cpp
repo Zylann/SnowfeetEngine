@@ -1,6 +1,6 @@
 #include <core/app/ScriptableObject.h>
-#include "../entities/Camera.hpp"
-#include "sq_render.hpp"
+#include "../entities/Camera.h"
+#include "sq_render.h"
 
 namespace sn {
 namespace render {

@@ -1,4 +1,4 @@
-#include "BlendMode.hpp"
+#include "BlendMode.h"
 
 namespace sn {
 namespace render {

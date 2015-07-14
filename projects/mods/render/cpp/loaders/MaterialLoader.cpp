@@ -1,8 +1,8 @@
 #include <core/util/stringutils.h>
 #include <core/asset/AssetDatabase.h>
 
-#include "../Material.hpp"
-#include "MaterialLoader.hpp"
+#include "../Material.h"
+#include "MaterialLoader.h"
 
 namespace sn {
 namespace render {

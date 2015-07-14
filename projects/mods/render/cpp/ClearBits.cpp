@@ -1,4 +1,4 @@
-#include "ClearBits.hpp"
+#include "ClearBits.h"
 
 namespace sn {
 namespace render {

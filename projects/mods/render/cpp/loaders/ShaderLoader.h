@@ -2,7 +2,7 @@
 #define __HEADER_SNR_SHADERLOADER__
 
 #include <core/asset/AssetLoader.h>
-#include "../ShaderProgram.hpp"
+#include "../ShaderProgram.h"
 
 namespace sn {
 namespace render {

@@ -1,4 +1,4 @@
-#include "sq_render.hpp"
+#include "sq_render.h"
 
 namespace sn {
 namespace render {

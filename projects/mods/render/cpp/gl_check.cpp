@@ -1,5 +1,5 @@
 #include <core/util/Log.h>
-#include "gl_check.hpp"
+#include "gl_check.h"
 #include <GL/glew.h>
 #include <string>
 

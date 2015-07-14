@@ -151,7 +151,7 @@ void Slider::unserializeState(JsonBox::Value & o, const sn::SerializationContext
     Control::unserializeState(o, ctx);
     tgui::unserialize(o["orientation"], m_orientation);
     sn::unserialize(o["value"], m_value);
-    sn::unserialize(o["range"], m_range);
+    sn::unserialize(o["range"], m_range, m_range);
 
     m_value = math::clamp(m_value, m_range.min(), m_range.max());
 }

@@ -330,6 +330,7 @@ void Module::createServices(Scene & scene)
             {
                 SerializationContext context(m_info.name);
                 e->unserializeState(serviceInfo.args, context);
+				e->propagateOnReady();
             }
         }
     }

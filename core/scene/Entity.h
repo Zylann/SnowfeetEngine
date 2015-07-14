@@ -212,8 +212,8 @@ public:
     // Integrated callbacks
     //---------------------------------------------
 
-    // TODO This should be renamed
-    /// \brief Called when the entity enters the scene
+    /// \brief Called when the entity and all its children entered the scene.
+	/// The calling order on children is undefined.
     virtual void onReady();
 
     /// \brief Called when the entity is marked (or scheduled) as destroyed.
@@ -247,8 +247,7 @@ public:
     /// \warning Don't use directly, use setParent() instead.
     u32 removeChild(Entity * child);
 
-    /// \brief No-params overload for script binding
-    Entity * createChildNoParams() { return createChild(); }
+    void propagateOnReady();
 
 protected:
     virtual ~Entity();
@@ -258,7 +257,6 @@ private:
     /// \return the index, or the size of the container if not found.
     u32 indexOfChild(const Entity * child) const;
 
-    void propagateOnReady();
     void removeChildAtIndex(u32 index);
 
     void releaseScript();

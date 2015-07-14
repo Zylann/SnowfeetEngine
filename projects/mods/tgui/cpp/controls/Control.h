@@ -93,6 +93,12 @@ public:
     void setFocus(bool isFocused);
 
     //--------------------------------
+    // Event handlers
+    //--------------------------------
+
+	virtual void onReady() override;
+
+    //--------------------------------
     // Helpers
     //--------------------------------
 

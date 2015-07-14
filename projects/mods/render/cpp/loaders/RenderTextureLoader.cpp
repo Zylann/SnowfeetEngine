@@ -1,5 +1,5 @@
 #include "RenderTextureLoader.h"
-#include "../RenderTexture.hpp"
+#include "../RenderTexture.h"
 #include <core/util/stringutils.h>
 #include <core/util/typecheck.h>
 

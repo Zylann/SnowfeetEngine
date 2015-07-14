@@ -2,10 +2,10 @@
 #include <core/util/assert.h>
 #include <core/system/thread/Lock.h>
 
-#include "../GLExtensions.hpp"
+#include "../GLExtensions.h"
 
-//#include "../gl_check.hpp"
-#include "Context_win32.hpp"
+//#include "../gl_check.h"
+#include "Context_win32.h"
 
 #include <GL/glew.h>
 #include <GL/wglew.h>
