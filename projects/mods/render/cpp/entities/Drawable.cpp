@@ -57,6 +57,7 @@ void Drawable::onDraw(IDrawContext & dc)
 void Drawable::serializeState(JsonBox::Value & o, const SerializationContext & context)
 {
     sn::Drawable::serializeState(o, context);
+
     sn::serialize(o["drawOrder"], m_drawOrder);
 
     // TODO Upgrade saving of asset references
@@ -74,6 +75,7 @@ void Drawable::serializeState(JsonBox::Value & o, const SerializationContext & c
 void Drawable::unserializeState(JsonBox::Value & o, const SerializationContext & context)
 {
     sn::Drawable::unserializeState(o, context);
+
     sn::unserialize(o["drawOrder"], m_drawOrder);
 
     m_mesh.set(getAssetBySerializedLocation<Mesh>(         o["mesh"].getString(),     context.getModule(), this));
