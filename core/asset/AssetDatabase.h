@@ -55,6 +55,13 @@ public:
     /// \brief Registers all asset loader classes in the specified reflected module.
     void addLoadersFromModule(const std::string & moduleName);
 
+    /// \brief Registers one loader explicitely.
+    template <class AssetLoader_T>
+    void addLoader()
+    {
+        addLoader(new AssetLoader_T());
+    }
+
     /// \brief Unregisters all asset loader classes from the specified reflected module.
     void releaseLoadersFromModule(const std::string & moduleName = "");
 
@@ -117,6 +124,7 @@ public:
 #endif
 
 private:
+    /// \brief Adds a new loader. The database will take ownership of it.
     void addLoader(AssetLoader * loader);
 
     /// \brief Finds loaders associated to the given asset metadata.

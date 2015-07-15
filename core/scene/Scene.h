@@ -97,13 +97,6 @@ public:
 	Time getDeltaTime() const { return m_deltaTime; }
 	Time getTimeSinceStartup() const;
 
-    //------------------------------------
-    // Serialization
-    //------------------------------------
-
-    void loadFromFile(const std::string & filePath, const SerializationContext & context);
-    void saveToFile(const std::string & filePath, const SerializationContext & context);
-
 private:
     std::unordered_map<std::string, std::unordered_set<Entity*>> m_taggedEntities;
     std::map<s32, std::unordered_set<Entity*>> m_updatableEntities;

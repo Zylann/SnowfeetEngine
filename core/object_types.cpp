@@ -13,6 +13,8 @@
 #include "scene/helpers/Rotate.h"
 #include "scene/helpers/KeyboardMove.h"
 #include "scene/Drawable.h"
+#include "scene/PackedEntity.h"
+#include "scene/PackedEntityLoader.h"
 
 #include "asset/Asset.h"
 #include "asset/AssetLoader.h"
@@ -55,6 +57,8 @@ void registerObjectTypes(ObjectTypeDatabase & otb)
     otb.registerType<Image>();
     otb.registerType<TextureBase>();
     otb.registerType<Font>();
+    otb.registerType<PackedEntity>();
+    otb.registerType<PackedEntityLoader>();
 
 }
 

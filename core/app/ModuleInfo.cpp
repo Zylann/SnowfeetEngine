@@ -42,7 +42,7 @@ bool ModuleInfo::loadFromFile(const String & pathToProjects, const String & modP
     scriptNamespace = v["namespace"].getString();
 
     // Get startup scene if any
-    startupScene = toWideString(v["startupScene"].getString());
+    startupScene = v["startupScene"].getString();
 
     // Get services if any
     parseServices(v["services"]);

@@ -183,18 +183,6 @@ public:
     // Serialization
     //---------------------------------------------
 
-    /// \brief Serializes an entity inside a JSON node.
-    /// \param o: JSON node to fill
-    /// \param e: entity to serialize
-    /// \param context: context.
-    static void serialize(JsonBox::Value & o, Entity & e, const SerializationContext & context);
-    /// \brief Deserializes an entity from a JSON node.
-    /// \param o: JSON node to read as an entity
-    /// \param e: parent entity where the deserialized entity has to be placed as child
-    /// \param context: context.
-    /// \return New deserialized entity, or null if an error occurred.
-    static Entity * unserialize(JsonBox::Value & o, Entity * parent, const SerializationContext & context);
-
     /// \brief Serializes the state of the entity inside a JSON node.
     /// This method is intented to be overrided in sub-classes to add specialized datas.
     /// (don't forget to call the base's version!)

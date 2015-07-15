@@ -30,7 +30,9 @@ public:
     String modFilePath;
     std::string scriptNamespace;
     std::vector<String> dependencies;
-    String startupScene;
+
+    /// \brief Name of the startup scene asset.
+    std::string startupScene;
 
     /// \brief List of global entities to create in the main scene when the module is loaded
     std::vector<Service> services;

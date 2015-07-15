@@ -53,7 +53,7 @@ This file is part of the SnowfeetEngine project.
 // _baseName: inherited class name with full namespace
 #define SN_OBJECT(_name, _baseName)                                            \
     _SN_OBJECT(_name, _baseName)                                               \
-    static sn::Object * instantiate() {                                        \
+    static sn::Object * instantiateObject() {                                  \
         return sn::instantiateOrNull<_name>();                                 \
     }
 
@@ -62,7 +62,7 @@ This file is part of the SnowfeetEngine project.
 // but musn't be instantiated using reflection (or has a private constructor).
 #define SN_ABSTRACT_OBJECT(_name, _baseName)                                   \
     _SN_OBJECT(_name, _baseName)                                               \
-    static sn::Object * instantiate() {                                        \
+    static sn::Object * instantiateObject() {                                  \
         return nullptr;                                                        \
     }
 
@@ -110,7 +110,7 @@ public:
     virtual ~Object() {}
 #endif
 
-    static sn::Object * instantiate()
+    static sn::Object * instantiateObject()
     {
         // Object is abstract from reflection point of view
         return nullptr;

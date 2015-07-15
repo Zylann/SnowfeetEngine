@@ -52,7 +52,7 @@ public:
         type->m_ID = m_nextID++;
 
         // Register factory function
-        type->m_factory = Object_T::instantiate;
+        type->m_factory = Object_T::instantiateObject;
 
 		type->m_isAbstract = std::is_abstract<Object_T>();
 

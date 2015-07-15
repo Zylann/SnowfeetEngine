@@ -13,6 +13,8 @@ This file is part of the SnowfeetEngine project.
 #include "../system/gui/SystemGUI.h"
 #include "../asset/AssetDatabase.h"
 #include "../util/Profiler.h"
+#include "../scene/PackedEntity.h"
+#include "../scene/PackedEntityLoader.h"
 
 namespace sn
 {
@@ -92,6 +94,7 @@ int Application::executeEx()
 
 	// Initialize AssetDatabase
 	AssetDatabase::get().setRoot(m_pathToProjects);
+    AssetDatabase::get().addLoader<PackedEntityLoader>();
 
     // Consider the app to be running from now
     m_runFlag = true;
@@ -99,7 +102,7 @@ int Application::executeEx()
     // Corelib is the only module to always be loaded
     loadModule(L"mods/corelib/corelib.mod.json");
 
-    // Load the main module
+    // Load the main module (including dependencies)
     Module * mainModule = loadModule(m_pathToMainMod);
 
     // If a startup scene has been specified
@@ -107,8 +110,12 @@ int Application::executeEx()
     if (!mainModuleInfo.startupScene.empty())
     {
         // Load the scene
-        String filePath = m_pathToProjects + L"/" + mainModuleInfo.directory + L"/" + mainModuleInfo.startupScene;
-        m_scene->loadFromFile(toString(filePath), SerializationContext(mainModuleInfo.name));
+        SerializationContext serializationContext(mainModuleInfo.name);
+        PackedEntity * packedScene = AssetDatabase::get().getAsset<PackedEntity>(mainModuleInfo.name, mainModuleInfo.startupScene);
+        if (packedScene)
+        {
+            packedScene->instantiate(*m_scene, serializationContext);
+        }
     }
 
     // Configure time stepper (at last, to minimize the "startup lag")
