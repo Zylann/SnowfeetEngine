@@ -11,6 +11,7 @@ This file is part of the SnowfeetEngine project.
 #include <core/util/RefCounted.h>
 #include <core/system/gui/Event.h>
 #include <core/system/time/Clock.h>
+#include <core/scene/TagManager.h>
 #include <map>
 
 namespace sn
@@ -28,8 +29,9 @@ namespace sn
 class SN_API Scene : public Entity
 {
 public:
+	SN_ENTITY(sn::Scene, sn::Entity)
 
-    SN_ENTITY(sn::Scene, sn::Entity)
+	typedef TagManager<Entity*> TagManager;
 
     Scene() : 
         Entity(), 
@@ -47,12 +49,14 @@ public:
     void unregisterUpdatableEntity(Entity & e);
     bool getEntityUpdateOrder(Entity & e, s16 & out_order, s16 & out_layer) const;
 
-    // TODO TagManager
-    void registerTaggedEntity(Entity & e, const std::string & tag);
-    void unregisterTaggedEntity(Entity & e, const std::string & tag);
-
 	void registerEventListener(Entity & e);
 	void unregisterEventListener(Entity & e);
+
+	const TagManager & getTagManager() const { return m_tagManager; }
+
+    u32 registerTaggedEntity(Entity & e, const std::string & tag);
+    u32 unregisterTaggedEntity(Entity & e, const std::string & tag);
+    void unregisterTaggedEntity(Entity & e, u32 tagIndex);
 
     /// \brief Returns the first encountered entity having the given tag.
     /// \param tag: tag to search
@@ -98,7 +102,7 @@ public:
 	Time getTimeSinceStartup() const;
 
 private:
-    std::unordered_map<std::string, std::unordered_set<Entity*>> m_taggedEntities;
+	TagManager m_tagManager;
     std::map<s32, std::unordered_set<Entity*>> m_updatableEntities;
 	std::unordered_set<Entity*> m_eventListenerEntities;
     bool m_quitFlag;

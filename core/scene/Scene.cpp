@@ -81,60 +81,71 @@ void Scene::unregisterEventListener(Entity & e)
 }
 
 //------------------------------------------------------------------------------
-void Scene::registerTaggedEntity(Entity & e, const std::string & tag)
+u32 Scene::registerTaggedEntity(Entity & e, const std::string & tag)
 {
 #ifdef SN_BUILD_DEBUG
-    auto it = m_taggedEntities.find(tag);
-    if (it != m_taggedEntities.end())
+    if (m_tagManager.isObjectTagged(&e, tag))
     {
-        if (it->second.find(&e) != it->second.end())
-        {
-            SN_ERROR("Scene::registerTaggedEntity: entity " << e.toString() << " already registered with tag " << tag);
-            return;
-        }
+        SN_ERROR("Scene::registerTaggedEntity: entity " << e.toString() << " already registered with tag " << tag);
+        return m_tagManager.getTagIndex(tag);
     }
 #endif
-    m_taggedEntities[tag].insert(&e);
+	return m_tagManager.add(tag, &e);
 }
 
 //------------------------------------------------------------------------------
-void Scene::unregisterTaggedEntity(Entity & e, const std::string & tag)
+u32 Scene::unregisterTaggedEntity(Entity & e, const std::string & tag)
 {
-    if (m_taggedEntities[tag].erase(&e) == 0)
-        SN_WARNING("Scene::unregisterTaggedEntity: entity " << e.toString() << " was not registered with tag " << tag);
+	u32 tagIndex = m_tagManager.getTagIndex(tag);
+	if (tagIndex != TagManager::INVALID_INDEX)
+		unregisterTaggedEntity(e, tagIndex);
+	else
+		SN_WARNING("Scene::unregisterTaggedEntity: tag '" << tag << "' doesn't exists");
+	return tagIndex;
+}
+
+//------------------------------------------------------------------------------
+void Scene::unregisterTaggedEntity(Entity & e, u32 tagIndex)
+{
+	if (!m_tagManager.remove(tagIndex, &e))
+	{
+		std::string tagName = "<undefined>";
+		m_tagManager.getTagName(tagIndex, tagName);
+		SN_WARNING("Scene::unregisterTaggedEntity: entity " << e.toString() << " was not registered with tag " << tagName);
+	}
 }
 
 //------------------------------------------------------------------------------
 Entity * Scene::getTaggedEntity(const std::string & tag)
 {
-    auto it = m_taggedEntities.find(tag);
-    if (it != m_taggedEntities.end())
-    {
-        if (it->second.empty())
-            return nullptr;
-        else
-            return *(it->second.begin());
-    }
-    else
-    {
-        return nullptr;
-    }
+	u32 tagIndex = m_tagManager.getTagIndex(tag);
+	if (tagIndex == TagManager::INVALID_INDEX)
+		return nullptr;
+
+	const std::unordered_set<Entity*> taggedEntities = m_tagManager.getObjectsByTag(tagIndex);
+	if (taggedEntities.empty())
+		return nullptr;
+
+	return *taggedEntities.begin();
 }
 
 //------------------------------------------------------------------------------
 std::vector<Entity*> Scene::getTaggedEntities(const std::string & tag)
 {
-    std::vector<Entity*> entities;
-    auto it = m_taggedEntities.find(tag);
-    if (it != m_taggedEntities.end())
-    {
-        if (!it->second.empty())
-        {
-            const auto & taggedEntities = it->second;
-            for (auto it2 = taggedEntities.begin(); it2 != taggedEntities.end(); ++it2)
-                entities.push_back(*it2);
-        }
-    }
+	std::vector<Entity*> entities;
+
+	u32 tagIndex = m_tagManager.getTagIndex(tag);
+	if (tagIndex == TagManager::INVALID_INDEX)
+		return entities;
+
+	const std::unordered_set<Entity*> taggedEntities = m_tagManager.getObjectsByTag(tagIndex);
+	if (taggedEntities.empty())
+		return entities;	
+
+	entities.reserve(taggedEntities.size());
+    for (auto it = taggedEntities.begin(); it != taggedEntities.end(); ++it)
+        entities.push_back(*it);
+
     return entities;
 }
 

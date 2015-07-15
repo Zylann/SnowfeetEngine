@@ -125,43 +125,70 @@ void Entity::listenToSystemEvents(bool enable)
 //------------------------------------------------------------------------------
 void Entity::addTag(const std::string & tag)
 {
-    if (m_tags.insert(tag).second)
-    {
-        Scene * scene = getScene();
-        if (scene)
-            scene->registerTaggedEntity(*this, tag);
-        else
-            SN_ERROR("Entity::addTag: scene not found from entity " << toString());
-    }
-    else
-    {
-        SN_WARNING("Entity::addTag: tag " << tag << " already set on entity " << toString());
-    }
+	Scene * scene = getScene();
+	if (scene)
+	{
+		u32 tagIndex = scene->registerTaggedEntity(*this, tag);
+		if (tagIndex != Scene::TagManager::INVALID_INDEX)
+			m_tags.set(tagIndex, true);
+	}
+	else
+	{
+		SN_ERROR("Entity::addTag: scene not found from entity " << toString());
+	}
 }
 
 //------------------------------------------------------------------------------
 void Entity::removeTag(const std::string tag)
 {
-    if (m_tags.erase(tag))
-    {
-        Scene * scene = getScene();
-        if (scene)
-            scene->unregisterTaggedEntity(*this, tag);
-        else
-            SN_ERROR("Entity::removeTag: scene not found from entity " << toString());
-    }
-    else
-    {
-        SN_WARNING("Entity::addTag: tag " << tag << " already set on entity " << toString());
-    }
+	Scene * scene = getScene();
+	if (scene)
+	{
+        u32 tagIndex = scene->unregisterTaggedEntity(*this, tag);
+		if (tagIndex != Scene::TagManager::INVALID_INDEX)
+			m_tags.set(tagIndex, false);
+	}
+	else
+	{
+		SN_ERROR("Entity::removeTag: scene not found from entity " << toString());
+	}
 }
 
 //------------------------------------------------------------------------------
 void Entity::removeAllTags()
 {
-    // We need to iterate this way because removeTag() modifies m_tags
-    while (!m_tags.empty())
-        removeTag(*m_tags.begin());
+	Scene * scene = getScene();
+	if (scene)
+	{
+		for (u32 i = 0; i < MAX_TAGS; ++i)
+		{
+			if (m_tags.test(i))
+			{
+				scene->unregisterTaggedEntity(*this, i);
+				m_tags.set(i, false);
+			}
+		}
+	}
+	else
+	{
+		if (m_tags.count() != 0)
+			SN_ERROR("Entity::removeAllTags: scene not found from entity " << toString());
+	}
+}
+
+//------------------------------------------------------------------------------
+inline bool Entity::hasTag(const std::string & tag) const
+{
+	Scene * scene = getScene();
+	if (scene)
+	{
+		u32 tagIndex = scene->getTagManager().getTagIndex(tag);
+		if (tagIndex == Scene::TagManager::INVALID_INDEX)
+			return false;
+		return m_tags.test(tagIndex);
+	}
+	SN_ERROR("Coudln't query entity tag, the scene is not found");
+	return false;
 }
 
 //------------------------------------------------------------------------------
@@ -173,6 +200,22 @@ std::string Entity::toString() const
     else
         ss << m_name;
     return ss.str();
+}
+
+//------------------------------------------------------------------------------
+void Entity::getTags(std::vector<std::string> & tags)
+{
+	Scene * scene = getScene();
+	if (scene)
+	{
+		const Scene::TagManager & tagManager = scene->getTagManager();
+		for (u32 i = 0; i < m_tags.size(); ++i)
+		{
+			std::string tagName;
+			if (tagManager.getTagName(i, tagName))
+				tags.push_back(tagName);
+		}
+	}
 }
 
 //------------------------------------------------------------------------------
@@ -220,6 +263,8 @@ void Entity::onSceneChanged(Scene * oldScene, Scene * newScene)
     if (newScene == oldScene)
         return;
 
+	std::vector<std::string> tagList;
+
     // Register to the new scene
     if (newScene)
     {
@@ -237,11 +282,26 @@ void Entity::onSceneChanged(Scene * oldScene, Scene * newScene)
             newScene->registerEventListener(*this);
 
         // Tags registering
-        for (auto it = m_tags.begin(); it != m_tags.end(); ++it)
-        {
-            newScene->registerTaggedEntity(*this, *it);
-        }
+		if (oldScene)
+		{
+			// Get tags by name
+			getTags(tagList);
+
+			// Register them
+			for (auto it = tagList.begin(); it != tagList.end(); ++it)
+			{
+				const std::string & tagName = *it;
+				u32 tagIndex = newScene->registerTaggedEntity(*this, tagName);
+				if (tagIndex != Scene::TagManager::INVALID_INDEX)
+					m_tags.set(tagIndex, true);
+			}
+		}
     }
+	else
+	{
+		SN_ERROR("No new scene, tag information will be lost!");
+		m_tags.reset();
+	}
 
     // Unregister from the old scene
     if (oldScene)
@@ -252,7 +312,7 @@ void Entity::onSceneChanged(Scene * oldScene, Scene * newScene)
         if (getFlag(SN_EF_SYSTEM_EVENT_LISTENER))
             oldScene->unregisterEventListener(*this);
 
-        for (auto it = m_tags.begin(); it != m_tags.end(); ++it)
+        for (auto it = tagList.begin(); it != tagList.end(); ++it)
         {
             oldScene->unregisterTaggedEntity(*this, *it);
         }
@@ -532,7 +592,10 @@ void Entity::serializeState(JsonBox::Value & o, const SerializationContext & con
 {
     o["name"] = m_name;
     o["enabled"] = isEnabledSelf();
-    sn::serialize(o["tags"], m_tags);
+
+	std::vector<std::string> tags;
+	getTags(tags);
+    sn::serialize(o["tags"], tags);
 
     // TODO Serialize script
 

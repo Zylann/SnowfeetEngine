@@ -42,7 +42,9 @@ class Scene;
 class SN_API Entity : public ScriptableObject
 {
 public:
-    SN_ENTITY(sn::Entity, sn::ScriptableObject)
+	SN_ENTITY(sn::Entity, sn::ScriptableObject)
+
+	static const u32 MAX_TAGS = 32;
 
     /// \brief Just constructs the entity.
     /// \note As most of serialized classes in the engine, 
@@ -80,7 +82,7 @@ public:
 
     /// \brief Tests if the entity has a tag set on it
     /// \param tag: tag name to test
-    inline bool hasTag(const std::string & tag) const { return m_tags.find(tag) != m_tags.end(); }
+	inline bool hasTag(const std::string & tag) const;
     /// \brief Adds a tag on the entity by its name
     /// \param tag: name of the tag to add
     void addTag(const std::string & tag);
@@ -253,6 +255,8 @@ private:
 
     void removeAllTags();
 
+	void getTags(std::vector<std::string> & tags);
+
 private:
     /// \brief Flags of the entity.
     /// These are like internal tags used on the engine's core side.
@@ -270,9 +274,9 @@ private:
     /// \brief Scene this entity is included into. Can be null.
     mutable Scene * r_scene;
 
-    // TODO Make this list lighter than a list of strings?
     /// \brief User-defined tags currently set on this entity.
-    std::unordered_set<std::string> m_tags;
+	/// Each bit corresponds to a tag in the scene this entity is registered.
+	std::bitset<MAX_TAGS> m_tags;
 
     // TODO Components.
     /// \brief Script behaviour attached to this entity. Can be unset.
