@@ -1,5 +1,5 @@
 {
-	"startupScene":"main.scene",
+	"startupScene":"main",
 	"dependencies":[
 		"mods/render/render.mod.json",
 		"mods/image/image.mod.json"
