@@ -251,6 +251,8 @@ private:
 
     void onSceneChanged(Scene * oldScene, Scene * newScene);
 
+    void removeAllTags();
+
 private:
     /// \brief Flags of the entity.
     /// These are like internal tags used on the engine's core side.

@@ -32,9 +32,7 @@ Entity::~Entity()
         r_parent->removeChild(this);
     destroyChildren();
 
-    // We need to iterate this way because removeTag() modifies m_tags
-    while (!m_tags.empty())
-        removeTag(*m_tags.begin());
+    removeAllTags();
 
 	// Unregister update callback
     if (getFlag(SN_EF_UPDATABLE))
@@ -156,6 +154,14 @@ void Entity::removeTag(const std::string tag)
     {
         SN_WARNING("Entity::addTag: tag " << tag << " already set on entity " << toString());
     }
+}
+
+//------------------------------------------------------------------------------
+void Entity::removeAllTags()
+{
+    // We need to iterate this way because removeTag() modifies m_tags
+    while (!m_tags.empty())
+        removeTag(*m_tags.begin());
 }
 
 //------------------------------------------------------------------------------
@@ -535,14 +541,25 @@ void Entity::serializeState(JsonBox::Value & o, const SerializationContext & con
 //------------------------------------------------------------------------------
 void Entity::unserializeState(JsonBox::Value & o, const SerializationContext & context)
 {
+    // Name
     m_name = o["name"].getString();
     
+    // Enabled flag
     bool bEnabled = false;
     sn::unserialize(o["enabled"], bEnabled, true);
     setFlag(SN_EF_ENABLED, bEnabled);
 
-    sn::unserialize(o["tags"], m_tags);
+    // Deserialize tags
+    removeAllTags();
+    std::unordered_set<std::string> tags;
+    sn::unserialize(o["tags"], tags);
+    for (auto it = tags.begin(); it != tags.end(); ++it)
+    {
+        const std::string & tagName = *it;
+        addTag(tagName);
+    }
 
+    // Script
     auto & script = o["script"];
     if (script.isObject())
     {
@@ -569,7 +586,7 @@ void Entity::unserializeState(JsonBox::Value & o, const SerializationContext & c
         }
     }
 
-    // TODO Unserialize script
+    // TODO Unserialize script members
 
 }
 
