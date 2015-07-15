@@ -30,6 +30,7 @@ AS_DEBUG/
 *.ipch
 *.vsp
 *.psess
+*.lastcodeanalysissucceeded
 
 # Code::Blocks
 *.depend
