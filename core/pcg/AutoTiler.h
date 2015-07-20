@@ -13,7 +13,8 @@ This file is part of the SnowfeetEngine project.
 #include <unordered_set>
 
 #include <core/util/Array2D.h>
-#include <core/json/json_utils.h>
+
+#include <JsonBox.h>
 
 namespace sn
 {

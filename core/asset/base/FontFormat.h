@@ -3,7 +3,7 @@
 
 #include <string>
 #include <core/types.h>
-#include <core/json/json_utils.h>
+#include <core/json/json_serialize.h>
 
 namespace sn
 {

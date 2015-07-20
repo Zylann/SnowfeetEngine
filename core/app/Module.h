@@ -13,6 +13,7 @@ This file is part of the SnowfeetEngine project.
 #include <core/system/lib/SharedLib.h>
 
 #include <set>
+#include <unordered_set>
 #include <list>
 #include <map>
 

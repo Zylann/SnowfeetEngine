@@ -7,6 +7,7 @@ This file is part of the SnowfeetEngine project.
 #include "ModuleInfo.h"
 #include "../json/json_utils.h"
 #include "../util/stringutils.h"
+#include "../util/Log.h"
 #include <fstream>
 
 namespace sn

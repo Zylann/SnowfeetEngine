@@ -6,6 +6,7 @@ This file is part of the SnowfeetEngine project.
 
 #include <core/pcg/AutoTiler.h>
 #include <core/util/Log.h>
+#include <core/json/json_serialize.h>
 
 namespace sn
 {

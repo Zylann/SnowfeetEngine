@@ -1,5 +1,6 @@
 #include "WindowParams.h"
 #include <core/math/Vector2.h>
+#include <core/json/json_serialize.h>
 
 namespace sn
 {

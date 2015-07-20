@@ -8,7 +8,7 @@ This file is part of the SnowfeetEngine project.
 #define __HEADER_SN_ENTITY__
 
 #include <core/types.h>
-#include <core/json/json_utils.h>
+#include <core/json/json_serialize.h>
 #include <core/app/ScriptableObject.h>
 #include <core/system/gui/Event.h>
 #include <core/squirrel/Instance.h>

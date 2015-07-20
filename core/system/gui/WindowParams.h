@@ -4,7 +4,7 @@
 #include <core/types.h>
 #include <core/math/Rect.h>
 #include <string>
-#include <core/json/json_utils.h>
+#include <JsonBox.h>
 
 namespace sn
 {

@@ -1,4 +1,5 @@
 #include "Position.h"
+#include <core/util/Log.h>
 
 namespace tgui
 {

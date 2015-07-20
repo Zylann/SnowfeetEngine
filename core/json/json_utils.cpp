@@ -7,6 +7,7 @@ This file is part of the SnowfeetEngine project.
 #include <fstream>
 #include <core/json/json_utils.h>
 #include <core/util/Log.h>
+#include <core/util/assert.h>
 
 namespace sn
 {
