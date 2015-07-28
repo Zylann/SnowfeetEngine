@@ -31,6 +31,21 @@ inline void push(HSQUIRRELVM vm, const std::string & str)
     sq_pushstring(vm, str.c_str(), str.size());
 }
 
+inline void push(HSQUIRRELVM vm, HSQOBJECT obj)
+{
+	sq_pushobject(vm, obj);
+}
+
+inline void push(HSQUIRRELVM vm, const Object & obj)
+{
+	sq_pushobject(vm, obj.getObject());
+}
+
+inline void push(HSQUIRRELVM vm, SQFUNCTION f)
+{
+	sq_newclosure(vm, f, 0);
+}
+
 } // namespace squirrel
 
 #endif // __HEADER_SQUIRREL_PUSH__

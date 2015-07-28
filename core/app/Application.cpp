@@ -386,6 +386,9 @@ Module * Application::loadModule(const String & path)
     }
 #endif
 
+	std::vector<Module*> mods;
+	mods.reserve(modulesToLoad.size());
+
     // Load main module and all its dependencies
     for (auto it = modulesToLoad.begin(); it != modulesToLoad.end(); ++it)
     {
@@ -414,12 +417,8 @@ Module * Application::loadModule(const String & path)
 
             m_drivers.loadDriversFromModule(info.name);
 
-            if (m_scene)
-            {
-                mod->createServices(*m_scene);
-            }
-
             m_modules.insert(std::make_pair(info.directory, mod));
+			mods.push_back(mod);
             lastModule = mod;
         }
         catch (std::exception & ex)
@@ -430,6 +429,22 @@ Module * Application::loadModule(const String & path)
             return false;
         }
     }
+
+	// Rebuild class mapping once all script classes have been defined
+	m_scriptEngine.rebuildClassMapping();
+
+	// Create services
+	if (m_scene)
+	{
+		size_t i = 0;
+		for (auto it = modulesToLoad.begin(); it != modulesToLoad.end(); ++it)
+		{
+			// Load static assets
+			const ModuleInfo & info = *it;
+			Module* mod = mods[i++];
+			mod->createServices(*m_scene);
+		}
+	}
 
     SN_LOG("-------------");
 

@@ -12,6 +12,7 @@ This file is part of the SnowfeetEngine project.
 #include <string>
 #include <core/util/String.h>
 #include <core/squirrel/bind_tools.h>
+#include <core/squirrel/Table.h>
 
 namespace sn
 {
@@ -33,12 +34,19 @@ public:
 
     bool compileSquirrelModule(const std::string & modName, const std::string & modNamespace, const std::vector<String> & files);
 
+	/// \brief Walk through the root table and find classes in order to map them by name.
+	/// (This is because Squirrel classes don't have a name)
+	void rebuildClassMapping();
+
+	bool getClassName(HSQOBJECT classObject, std::string & out_className);
+
 private:
 
     void registerCoreAPI();
 
     Application & r_app;
     HSQUIRRELVM m_squirrelVM;
+	squirrel::Table m_classToName;
 
 };
 

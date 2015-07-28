@@ -1,5 +1,4 @@
 #include "Table.h"
-#include <core/util/assert.h>
 
 namespace squirrel
 {
@@ -8,6 +7,19 @@ namespace squirrel
 Table & Table::setObject(const char * name, Object & obj)
 {
     return setObject(name, obj.getObject());
+}
+
+//------------------------------------------------------------------------------
+void Table::create(HSQUIRRELVM vm)
+{
+	releaseObject();
+	
+	m_vm = vm;
+
+	sq_newtable(vm);
+	sq_getstackobj(vm, -1, &m_object);
+	sq_addref(vm, &m_object);
+	sq_pop(vm, 1);
 }
 
 //------------------------------------------------------------------------------
@@ -41,6 +53,35 @@ Table & Table::setFunction(const char * name, SQFUNCTION cb_func)
     sq_pop(m_vm, 1);
 
     return *this;
+}
+
+//------------------------------------------------------------------------------
+bool Table::getString(HSQOBJECT keyObject, std::string & out_str)
+{
+	if (isNull())
+		return false;
+	
+	auto vm = m_vm;
+
+	sq_pushobject(vm, m_object);
+	sq_pushobject(vm, keyObject);
+
+	if (SQ_FAILED(sq_rawget(vm, -2)))
+	{
+		sq_pop(vm, 1);
+		return false;
+	}
+	else
+	{
+		const char * str = nullptr;
+		sq_getstring(vm, -1, &str);
+		if (str)
+		{
+			out_str = str;
+		}
+		sq_pop(vm, 2);
+		return str != nullptr;
+	}
 }
 
 //------------------------------------------------------------------------------
