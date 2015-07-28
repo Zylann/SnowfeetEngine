@@ -16,6 +16,11 @@ inline void push(HSQUIRRELVM vm, SQInteger v)
     sq_pushinteger(vm, v);
 }
 
+inline void push(HSQUIRRELVM vm, SQUnsignedInteger v)
+{
+	sq_pushinteger(vm, v);
+}
+
 inline void push(HSQUIRRELVM vm, SQFloat v)
 {
     sq_pushfloat(vm, v);

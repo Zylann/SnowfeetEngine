@@ -139,5 +139,15 @@ private:
 
 } // namespace sn
 
+namespace squirrel
+{
+
+	inline void push(HSQUIRRELVM vm, sn::ScriptableObject * obj)
+	{
+		obj->pushScriptObject(vm, false);
+	}
+
+} // namespace squirrel
+
 #endif // __HEADER_SN_SCRIPTABLEOBJECT__
 
