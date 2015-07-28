@@ -25,7 +25,10 @@ void SN_API setGlobalFunction(HSQUIRRELVM vm, const char * name, SQFUNCTION cb_f
 /// \brief Gets the last error generated in the given VM.
 std::string SN_API getLastError(HSQUIRRELVM vm);
 
+// TODO Most of the following functions are out of date, check their use and remove them
+
 //------------------------------------------------------------------------------
+/// \deprecated
 /// \brief Creates a new C++ instance and assigns it as the instance userpointer
 /// of the last element on the Squirrel stack.
 template <typename T>
@@ -38,6 +41,7 @@ SQInteger createClassInstance(HSQUIRRELVM vm)
 }
 
 //------------------------------------------------------------------------------
+/// \deprecated
 /// \brief (internal use) Destroys/releases a C++ instance.
 /// This function is used in the Squirrel release hook.
 template <typename T>
@@ -49,6 +53,7 @@ SQInteger releaseClassInstance(SQUserPointer ptr, SQInteger size)
 }
 
 //------------------------------------------------------------------------------
+/// \deprecated
 /// \brief Gets the associated userpointer of an instance at the given index on the stack of a Squirrel VM.
 /// In a custom Squirrel callback bound as a method, you can use it to retrieve your C++ instance at index 1.
 template <typename T>
@@ -102,6 +107,7 @@ inline bool getFloat(HSQUIRRELVM vm, SQInteger i)
 //------------------------------------------------------------------------------
 namespace priv
 {
+	/// \deprecated
     template<class T>
     void destroyClassInstance_checkRefCounted(std::true_type, T * p)
     {
@@ -110,6 +116,7 @@ namespace priv
         p->release();
     }
 
+	/// \deprecated
     template<class T>
     void destroyClassInstance_checkRefCounted(std::false_type, T * p)
     {
@@ -117,6 +124,7 @@ namespace priv
         delete p;
     }
 
+	/// \deprecated
     template<class T>
     void destroyClassInstance(T * p)
     {
