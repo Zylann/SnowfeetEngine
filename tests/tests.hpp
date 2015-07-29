@@ -7,6 +7,7 @@ void test_hashes();
 void test_fileWatcher();
 void test_variant();
 void test_squirrelBinding();
+void test_sparseArrayPerformance();
 
 #endif // __HEADER_TEST_REFLECTION__
 
