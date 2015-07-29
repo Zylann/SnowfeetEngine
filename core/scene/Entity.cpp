@@ -452,6 +452,14 @@ Entity * Entity::addChild(Entity * child)
     }
 #endif
     m_children.push_back(child);
+    //if (childIndex == -1)
+    //    m_children.push_back(child);
+    //else
+    //{
+    //    if (childIndex >= m_children.size())
+    //        m_children.resize(childIndex + 1, nullptr);
+    //    m_children[childIndex] = child;
+    //}
     return child;
 }
 

@@ -6,17 +6,20 @@
 namespace sn
 {
 
+//------------------------------------------------------------------------------
 const ObjectType & PackedEntityLoader::getBaseAssetType() const
 {
     return sn::getObjectType<PackedEntity>();
 }
 
+//------------------------------------------------------------------------------
 bool PackedEntityLoader::canLoad(const AssetMetadata & meta) const
 {
     String ext = getFileExtension(meta.path);
     return ext == L".scene" || ext == L".entity";
 }
 
+//------------------------------------------------------------------------------
 bool PackedEntityLoader::load(std::ifstream & ifs, Asset & asset) const
 {
     sn::PackedEntity * packedEntity = checked_cast<PackedEntity*>(&asset);

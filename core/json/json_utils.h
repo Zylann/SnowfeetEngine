@@ -41,6 +41,8 @@ bool loadFromFile(JsonBox::Value & document, const std::string & filePath, s32 c
 
 bool saveToFile(JsonBox::Value & document, const std::string & filePath);
 
+// TODO Put the following in another file
+
 //------------------------------------------------------------------------------
 // Get any JSON number into a float, zero if not a number
 inline f32 unserializeAsFloat(const JsonBox::Value & v)

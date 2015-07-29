@@ -1,22 +1,30 @@
 #include "PackedEntity.h"
-
-#define SN_JSON_ENTITY_CHILDREN_TAG "_children"
+#include <core/asset/AssetDatabase.h>
+#include "helpers/DumpToObjectDBConverter.h"
 
 namespace sn
 {
 
 //------------------------------------------------------------------------------
-bool PackedEntity::loadFromStream(std::istream & is)
+const char * PackedEntity::CHILDREN_TAG = "_children";
+
+//------------------------------------------------------------------------------
+bool PackedEntity::loadFromJSON(JsonBox::Value & doc)
 {
-    m_jsonData.loadFromStream(is);
-    return true;
+    std::string format = doc[ObjectDB::FORMAT_KEY].getString();
+    if (format == ObjectDB::FORMAT_VALUE)
+        return ObjectDB::loadFromJSON(doc);
+    else
+        return loadFromLegacyDump(doc);
 }
 
 //------------------------------------------------------------------------------
-bool PackedEntity::saveToStream(std::ostream & os)
+bool PackedEntity::loadFromLegacyDump(JsonBox::Value & input)
 {
-    m_jsonData.writeToStream(os, false);
-    return true;
+    DumpToObjectDBConverter converter;
+    converter.convert(input);
+    //converter.output.writeToFile("dump.json", true);
+    return ObjectDB::loadFromJSON(converter.output);
 }
 
 //------------------------------------------------------------------------------
@@ -34,74 +42,135 @@ void PackedEntity::loadFromInstance(const Entity & entity)
 }
 
 //------------------------------------------------------------------------------
-void PackedEntity::instantiate(Entity & a_parent, const SerializationContext & context)
+void PackedEntity::instantiate(Entity & a_parent, const std::string & contextModuleName)
 {
-    JsonBox::Value & docEntities = m_jsonData["entities"];
+    SerializationContext context(contextModuleName);
 
-    if (docEntities.isArray())
+    // TODO Flatten before?
+
+    auto & objects = getObjects();
+
+    // TODO Entity order inside children vector is not guaranteed!
+
+    const ObjectType & entityT = sn::getObjectType<Entity>();
+    std::unordered_map<u32, sn::Object*> & entities = context.getObjectMap();
+
+    // Create instances first
+    for (auto it = objects.begin(); it != objects.end(); ++it)
     {
-        u32 len = docEntities.getArray().size();
-        for (u32 i = 0; i < len; ++i)
-        {
-            // Note: the returned child will be automatically added to the children list,
-            // as soon as setParent() is called
-            Entity * e = PackedEntity::unserialize(docEntities[i], &a_parent, context);
-		    e->propagateOnReady();
-        }
-    }
-}
+        u32 id = it->first;
+        JsonBox::Value & o = it->second.data;
 
-//------------------------------------------------------------------------------
-// Static
-Entity * PackedEntity::unserialize(JsonBox::Value & o, Entity * parent, const SerializationContext & context)
-{
-    std::string typeName = o[SN_JSON_TYPE_TAG].getString();
-    ObjectType * ot = ObjectTypeDatabase::get().getType(typeName);
-    if (ot)
-    {
-        Object * obj = instantiateDerivedObject(typeName, Entity::__sGetClassName());
-        if (obj)
+        std::string typeName = o[SN_JSON_TYPE_TAG].getString();
+        ObjectType * ot = ObjectTypeDatabase::get().getType(typeName);
+        if (ot)
         {
-            Entity * e((Entity*)obj);
-            e->setParent(parent);
-            e->unserializeState(o, context);
-
-            if (o[SN_JSON_ENTITY_CHILDREN_TAG].isArray())
+            sn::Object * obj = instantiateDerivedObject(*ot, entityT);
+            if (obj)
             {
-                JsonBox::Value & a = o[SN_JSON_ENTITY_CHILDREN_TAG];
-                u32 len = a.getArray().size();
-                for (u32 i = 0; i < len; ++i)
-                {
-                    PackedEntity::unserialize(a[i], e, context);
-                }
+                entities[id] = (Entity*)obj;
             }
-
-            return e;
         }
-        // Error message already handled by the instantiate helper
+        else
+        {
+            SN_ERROR("Unknown object object type from JSON (name=" << typeName << ")");
+        }
     }
-    else
+
+    // Rebuild children hierarchy
+    for (auto it = entities.begin(); it != entities.end(); ++it)
     {
-        SN_ERROR("Unknown object object type from JSON (name=" << typeName << ")");
+        // For each entity
+        Entity * e = (Entity*)it->second;
+        JsonBox::Value * o = getObject(it->first);
+        SN_ASSERT(o != nullptr, "Invalid state");
+
+        // Get children array
+        JsonBox::Value & childrenValue = (*o)[CHILDREN_TAG];
+        if (childrenValue.isArray())
+        {
+            // For each child element
+            size_t count = childrenValue.getArray().size();
+            for (size_t i = 0; i < count; ++i)
+            {
+                JsonBox::Value & childValue = childrenValue[i];
+                u32 parentID = 0;
+                if (ObjectDB::getRef(childValue, parentID))
+                {
+                    auto childIt = entities.find(parentID);
+                    if (childIt != entities.end())
+                    {
+                        // Set child parent
+                        Entity * child = (Entity*)childIt->second;
+                        child->setParent(e);
+                    }
+                }
+                //else
+                //{
+                //    // The element is not a reference...
+                //}
+            }
+        }
+
+        //JsonBox::Value & parentValue = (*o)["parent"];
+        //
+        //u32 parentIndex = -1;
+        //JsonBox::Value & parentIndexValue = (*o)["parentIndex"];
+        //if (parentIndexValue.isInteger())
+        //{
+        //    parentIndexValue = parentIndexValue.getInt();
+        //}
+
+        //if (parentValue.isNull())
+        //{
+        //    e->setParent(&a_parent, parentIndex);
+        //    rootEntities.push_back(e);
+        //}
+        //else
+        //{
+        //    u32 parentID = 0;
+        //    if (ObjectDB::getRef(parentValue, parentID))
+        //    {
+        //        auto it = entities.find(parentID);
+        //        if (it != entities.end())
+        //        {
+        //            Entity * parent = (Entity*)it->second;
+        //            e->setParent(parent, parentIndex);
+        //        }
+        //    }
+        //}
     }
-    return nullptr;
+    std::vector<Entity*> rootEntities;
+    for (auto it = entities.begin(); it != entities.end(); ++it)
+    {
+        Entity * e = (Entity*)it->second;
+        if (e->getParent() == nullptr)
+        {
+            e->setParent(&a_parent);
+            rootEntities.push_back(e);
+        }
+    }
+
+    // Deserialize states
+    for (auto it = entities.begin(); it != entities.end(); ++it)
+    {
+        Entity * e = (Entity*)it->second;
+        JsonBox::Value * o = getObject(it->first);
+        e->unserializeState(*o, context);
+    }
+
+    // Trigger onReady() event
+    for (auto it = rootEntities.begin(); it != rootEntities.end(); ++it)
+    {
+        Entity * e = *it;
+        e->propagateOnReady();
+    }
 }
 
 //------------------------------------------------------------------------------
-// Static
-void PackedEntity::serialize(JsonBox::Value & o, Entity & e, const SerializationContext & context)
+ObjectDB * PackedEntity::getFromAssetDatabase(const std::string & location) const
 {
-    o[SN_JSON_TYPE_TAG] = Entity::__sGetClassName();
-    e.serializeState(o, context);
-    if (e.getChildCount() != 0)
-    {
-        JsonBox::Value & a = o[SN_JSON_ENTITY_CHILDREN_TAG];
-        for (u32 i = 0; i < e.getChildCount(); ++i)
-        {
-            Entity * child = e.getChildByIndex(i);
-            PackedEntity::serialize(a[i], *child, context);
-        }
-    }
+    return AssetDatabase::get().getAsset<PackedEntity>(AssetLocation(location));
 }
 
 } // namespace sn
