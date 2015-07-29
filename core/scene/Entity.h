@@ -232,7 +232,7 @@ public:
 
     /// \brief Adds a child to this entity without checks or notifications.
     /// \warning Don't use directly, use setParent() instead.
-    Entity * addChild(Entity * child); 
+    Entity * addChild(Entity * child);
     /// \brief Removes a child from this entity without checks or notifications.
     /// \warning Don't use directly, use setParent() instead.
     u32 removeChild(Entity * child);

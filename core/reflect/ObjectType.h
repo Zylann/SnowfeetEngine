@@ -29,6 +29,10 @@ public:
         const std::string & p_baseName
     );
 
+    //--------------------------------------------
+    // Type
+    //--------------------------------------------
+
     bool is(const std::string & typeName, bool includeInheritance=true) const;
     bool is(const ObjectType & other, bool includeInheritance=true) const;
 
@@ -56,6 +60,12 @@ public:
 
     void setScriptName(const std::string & fullClassName) { m_scriptName = fullClassName; }
     const std::string & getScriptName() const { return m_scriptName; }
+
+    //--------------------------------------------
+    // Members
+    //--------------------------------------------
+
+    // TODO
 
 private:
 	friend class ObjectTypeDatabase;

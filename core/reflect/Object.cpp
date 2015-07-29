@@ -14,6 +14,7 @@ This file is part of the SnowfeetEngine project.
 namespace sn
 {
 
+//-----------------------------------------------------------------------------
 #ifdef SN_BUILD_DEBUG
     
     namespace
@@ -58,6 +59,7 @@ namespace sn
 
 #endif
 
+//-----------------------------------------------------------------------------
 Object * instantiateDerivedObject(const std::string & typeName, const std::string & derivedTypeName)
 {
     ObjectTypeDatabase & otb = ObjectTypeDatabase::get();
@@ -66,23 +68,40 @@ Object * instantiateDerivedObject(const std::string & typeName, const std::strin
     {
         ObjectType * derived = otb.getType(derivedTypeName);
         if (derived)
-        {
-            if (type->is(*derived))
-            {
-                Object * obj = type->instantiate();
-                if (obj)
-                    return obj;
-                else
-                    SN_ERROR("Cannot instantiate object type '" << type->toString() << "'");
-            }
-            else
-                SN_ERROR("Type '" << type->toString() << "' doesn't derives from '" << derived->toString() << "'");
-        }
+            return instantiateDerivedObject(*type, *derived);
         else
             SN_ERROR("Cannot instantiate object type '" << type->toString() << "', derived type '" << derivedTypeName << "' is not registered");
     }
     else
         SN_ERROR("Cannot instantiate unregistered type '" << typeName << "'");
+    return nullptr;
+}
+
+//-----------------------------------------------------------------------------
+Object * instantiateDerivedObject(const std::string & typeName, const ObjectType & derivedType)
+{
+    ObjectTypeDatabase & otb = ObjectTypeDatabase::get();
+    ObjectType * type = otb.getType(typeName);
+    if (type)
+        return instantiateDerivedObject(*type, derivedType);
+    else
+        SN_ERROR("Cannot instantiate unregistered type '" << typeName << "'");
+    return nullptr;
+}
+
+//-----------------------------------------------------------------------------
+Object * instantiateDerivedObject(const ObjectType & type, const ObjectType & derivedType)
+{
+    if (type.is(derivedType))
+    {
+        Object * obj = type.instantiate();
+        if (obj)
+            return obj;
+        else
+            SN_ERROR("Cannot instantiate object type '" << type.toString() << "'");
+    }
+    else
+        SN_ERROR("Type '" << type.toString() << "' doesn't derives from '" << derivedType.toString() << "'");
     return nullptr;
 }
 

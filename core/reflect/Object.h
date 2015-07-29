@@ -116,6 +116,22 @@ public:
         return nullptr;
     }
 
+    /// \brief Casts the given object pointer to another Object-derived type known at compile-time.
+    /// \param obj: pointer to the object instance to cast. If nullptr, the cast will fail.
+    /// \return casted object on success, nullptr on fail
+    template <class T>
+    static T * cast(Object * obj)
+    {
+        if (obj == nullptr)
+            return nullptr;
+        const ObjectType & ot = obj->getObjectType();
+        const ObjectType & otherType = sn::getObjectType<T>();
+        if (ot.is(otherType, true))
+            return static_cast<T*>(this);
+        else
+            return nullptr;
+    }
+
     //static void registerReflectedMembers(ObjectType & ot);
 
 };
@@ -123,7 +139,7 @@ public:
 //------------------------------------------------------------------------------
 // Helpers
 
-/// \brief Gets the metaclass of an object.
+/// \brief Gets the metaclass of an object class.
 /// \note The goal of this function is to encapsulate the way the metaclass is stored.
 template <class Object_T>
 inline const ObjectType & getObjectType()
@@ -131,7 +147,17 @@ inline const ObjectType & getObjectType()
     return Object_T::__sGetObjectType();
 }
 
+/// \brief Gets the name of an object class.
+/// \note The goal of this function is to encapsulate the way the metaclass is stored.
+template <class Object_T>
+inline const char * getClassName()
+{
+    return Object_T::__sGetClassName();
+}
+
 Object * instantiateDerivedObject(const std::string & typeName, const std::string & derivedTypeName);
+Object * instantiateDerivedObject(const std::string & typeName, const ObjectType & derivedType);
+Object * instantiateDerivedObject(const ObjectType & type, const ObjectType & derivedType);
 
 } // namespace sn
 

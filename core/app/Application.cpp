@@ -111,11 +111,10 @@ int Application::executeEx()
     if (!mainModuleInfo.startupScene.empty())
     {
         // Load the scene
-        SerializationContext serializationContext(mainModuleInfo.name);
         PackedEntity * packedScene = AssetDatabase::get().getAsset<PackedEntity>(mainModuleInfo.name, mainModuleInfo.startupScene);
         if (packedScene)
         {
-            packedScene->instantiate(*m_scene, serializationContext);
+            packedScene->instantiate(*m_scene, mainModuleInfo.name);
         }
     }
 
