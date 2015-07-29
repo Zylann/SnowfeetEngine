@@ -6,7 +6,9 @@ This file is part of the SnowfeetEngine project.
 
 #include "appmain.h"
 #include "Application.h"
-#include "../system/console/console.h"
+#if SN_BUILD_DEBUG
+#include <core/system/console.h>
+#endif
 
 namespace sn
 {

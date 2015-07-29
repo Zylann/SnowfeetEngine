@@ -10,7 +10,7 @@ This file is part of the SnowfeetEngine project.
 #include <core/types.h>
 #include <core/json/json_serialize.h>
 #include <core/app/ScriptableObject.h>
-#include <core/system/gui/Event.h>
+#include <core/system/Event.h>
 #include <core/squirrel/Instance.h>
 #include <core/asset/SerializationContext.h>
 

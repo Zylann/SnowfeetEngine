@@ -6,7 +6,7 @@
 #include <core/math/Rect.h>
 #include <core/util/WeakRef.h>
 #include <core/asset/base/Mesh.h>
-#include <core/system/gui/Window.h>
+#include <core/system/Window.h>
 
 #include "../ClearBits.h"
 #include "../Material.h"

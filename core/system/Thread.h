@@ -8,7 +8,7 @@ This file is part of the SnowfeetEngine project.
 #define __HEADER_SN_THREAD__
 
 #include <core/util/NonCopyable.h>
-#include <core/system/time/Time.h>
+#include <core/system/Time.h>
 #include <functional>
 
 namespace sn

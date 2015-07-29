@@ -1,8 +1,8 @@
 #ifndef __HEADER_SN_FILEWATCHER_WIN32__
 #define __HEADER_SN_FILEWATCHER_WIN32__
 
-#include <core/system/file/FileWatcher.h>
-#include <core/system/thread/Thread.h>
+#include <core/system/FileWatcher.h>
+#include <core/system/Thread.h>
 
 #include <Windows.h>
 

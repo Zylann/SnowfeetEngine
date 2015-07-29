@@ -1,7 +1,7 @@
 #ifndef __HEADER_SN_MEMORY_OPERATORS__
 #define __HEADER_SN_MEMORY_OPERATORS__
 
-#include <core/system/memory/MemoryManager.h>
+#include <core/system/MemoryManager.h>
 #include <core/types.h>
 
 //inline void* operator new(size_t size, const char* file, int line)

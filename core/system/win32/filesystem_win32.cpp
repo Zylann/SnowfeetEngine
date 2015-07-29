@@ -4,8 +4,9 @@ Copyright (C) 2012-2015 Marc GILLERON
 This file is part of the SnowfeetEngine project.
 */
 
+#include <core/util/Log.h>
 #include "../filesystem.h"
-#include "../../../util/Log.h"
+
 #include <Windows.h>
 
 namespace sn

@@ -8,7 +8,7 @@ This file is part of the SnowfeetEngine project.
 
 #ifdef SN_BUILD_DEBUG
 #include <unordered_set>
-#include <core/system/thread/Mutex.h>
+#include <core/system/Mutex.h>
 #endif
 
 namespace sn

@@ -1,7 +1,7 @@
 #include <core/util/Log.h>
-#include <core/system/file/FilePath.h>
+#include <core/system/FilePath.h>
 #include "FileWatcher_win32.h"
-#include "../../win32/helpers_win32.h"
+#include "../win32/helpers_win32.h"
 
 // Based on this code
 // https://developersarea.wordpress.com/2014/09/26/win32-file-watcher-api-to-monitor-directory-changes/

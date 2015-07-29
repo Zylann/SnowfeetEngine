@@ -4,8 +4,8 @@ Copyright (C) 2014-2015 Marc GILLERON
 This file is part of the SnowfeetEngine project.
 */
 
-#include "../../util/assert.h"
-#include "../../util/typecheck.h"
+#include <core/util/assert.h>
+#include <core/util/typecheck.h>
 #include "Window.h"
 //#include "WindowContainer.h"
 #include "SystemGUI.h"

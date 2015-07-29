@@ -8,8 +8,8 @@ This file is part of the SnowfeetEngine project.
 #define __HEADER_SN_EVENT__
 
 #include <core/types.h>
-#include <core/system/gui/Mouse.h>
-#include <core/system/gui/Keyboard.h>
+#include <core/system/Mouse.h>
+#include <core/system/Keyboard.h>
 #include <cstring> // For memset
 
 namespace sn

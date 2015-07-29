@@ -1,9 +1,9 @@
 #include "tests.hpp"
 
 #include <core/util/Log.h>
-#include <core/system/file/FileWatcher.h>
-#include <core/system/thread/Thread.h>
-#include <core/system/gui/Keyboard.h>
+#include <core/system/FileWatcher.h>
+#include <core/system/Thread.h>
+#include <core/system/Keyboard.h>
 
 void test_fileWatcher()
 {

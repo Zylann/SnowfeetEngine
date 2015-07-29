@@ -7,11 +7,11 @@ This file is part of the SnowfeetEngine project.
 #ifndef __HEADER_SYSTEM_GUI__
 #define __HEADER_SYSTEM_GUI__
 
-#include <core/system/gui/Window.h>
+#include <core/system/Window.h>
 #include <core/util/NonCopyable.h>
-#include <core/system/gui/Event.h>
+#include <core/system/Event.h>
 #include <core/math/Vector2.h>
-#include <core/system/gui/Cursor.h>
+#include <core/system/Cursor.h>
 
 #include <vector>
 #include <map>

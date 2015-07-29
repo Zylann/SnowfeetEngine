@@ -10,11 +10,11 @@ This file is part of the SnowfeetEngine project.
 #include "Module.h"
 #include "Application.h"
 
-#include "../asset/AssetDatabase.h"
-#include "../util/stringutils.h"
-#include "../util/Exception.h"
-#include "../system/file/filesystem.h"
-#include "../system/time/Time.h"
+#include <core/asset/AssetDatabase.h>
+#include <core/util/stringutils.h>
+#include <core/util/Exception.h>
+#include <core/system/filesystem.h>
+#include <core/system/Time.h>
 
 namespace sn
 {

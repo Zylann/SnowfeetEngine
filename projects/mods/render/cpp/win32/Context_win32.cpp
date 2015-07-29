@@ -1,6 +1,6 @@
 #include <core/util/Log.h>
 #include <core/util/assert.h>
-#include <core/system/thread/Lock.h>
+#include <core/system/Lock.h>
 
 #include "../GLExtensions.h"
 

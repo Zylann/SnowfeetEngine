@@ -6,7 +6,7 @@ This file is part of the SnowfeetEngine project.
 
 #include "Log.h"
 #include "stringutils.h"
-#include "../system/console/console.h"
+#include <core/system/console.h>
 
 #ifdef _MSC_VER
 #include <Windows.h> // For OutputDebugString on Windows

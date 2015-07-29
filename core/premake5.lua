@@ -30,15 +30,8 @@ project "SnowfeetCore"
 		"space/**",
 		"squirrel/**",
 		"util/**",
-
-		"system/console/*",
-		"system/file/*",
-		"system/gui/*",
-		"system/lib/*",
-		"system/memory/*",
-		"system/network/*",
-		"system/thread/*",
-		"system/time/*"
+		
+		"system/*"
 	}
 	-- Windows-specific
 	filter "system:windows"

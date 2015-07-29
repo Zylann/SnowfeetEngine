@@ -6,7 +6,7 @@
 #include <ostream>
 #include <unordered_map>
 
-#include <core/system/time/Clock.h>
+#include <core/system/Clock.h>
 #include <core/util/macros.h>
 
 #ifdef SN_BUILD_NO_PROFILER

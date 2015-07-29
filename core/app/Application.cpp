@@ -4,17 +4,18 @@ Copyright (C) 2014-2015 Marc GILLERON
 This file is part of the SnowfeetEngine project.
 */
 
+#include <core/util/Log.h>
+#include <core/system/Thread.h>
+#include <core/system/console.h>
+#include <core/system/SystemGUI.h>
+#include <core/object_types.h>
+#include <core/asset/AssetDatabase.h>
+#include <core/util/Profiler.h>
+#include <core/scene/PackedEntity.h>
+#include <core/scene/PackedEntityLoader.h>
+
 #include "Application.h"
 #include "Module.h"
-#include "../util/Log.h"
-#include "../system/thread/Thread.h"
-#include "../system/console/console.h"
-#include "../object_types.h"
-#include "../system/gui/SystemGUI.h"
-#include "../asset/AssetDatabase.h"
-#include "../util/Profiler.h"
-#include "../scene/PackedEntity.h"
-#include "../scene/PackedEntityLoader.h"
 
 namespace sn
 {

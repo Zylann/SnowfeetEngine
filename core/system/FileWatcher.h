@@ -3,8 +3,8 @@
 
 #include <string>
 #include <queue>
-#include <core/system/thread/Lock.h>
-#include <core/system/time/Clock.h>
+#include <core/system/Lock.h>
+#include <core/system/Clock.h>
 #include <core/util/NonCopyable.h>
 
 namespace sn

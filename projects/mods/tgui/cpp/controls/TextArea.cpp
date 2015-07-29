@@ -1,5 +1,5 @@
 #include "TextArea.h"
-#include <core/system/gui/SystemGUI.h>
+#include <core/system/SystemGUI.h>
 #include <core/scene/Scene.h>
 #include <core/util/stringutils.h>
 #include <core/util/Profiler.h>

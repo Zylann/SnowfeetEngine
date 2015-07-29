@@ -1,5 +1,5 @@
 #include "DrawBatch.h"
-#include <core/system/gui/SystemGUI.h>
+#include <core/system/SystemGUI.h>
 #include <core/util/stringutils.h>
 
 using namespace sn;

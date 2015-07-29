@@ -9,7 +9,7 @@ This file is part of the SnowfeetEngine project.
 
 #include <core/types.h>
 #include <core/util/NonCopyable.h>
-#include <core/system/thread/Lock.h>
+#include <core/system/Lock.h>
 #include <iostream>
 #include <cassert>
 #include <fstream>

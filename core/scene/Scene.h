@@ -9,8 +9,8 @@ This file is part of the SnowfeetEngine project.
 
 #include <core/scene/Entity.h>
 #include <core/util/RefCounted.h>
-#include <core/system/gui/Event.h>
-#include <core/system/time/Clock.h>
+#include <core/system/Event.h>
+#include <core/system/Clock.h>
 #include <core/scene/TagManager.h>
 #include <map>
 

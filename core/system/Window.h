@@ -9,8 +9,8 @@ This file is part of the SnowfeetEngine project.
 
 #include <core/util/NonCopyable.h>
 #include <core/math/Vector2.h>
-#include <core/system/gui/WindowParams.h>
-#include <core/system/gui/Cursor.h>
+#include <core/system/WindowParams.h>
+#include <core/system/Cursor.h>
 
 #include <string>
 

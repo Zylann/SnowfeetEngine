@@ -1,7 +1,7 @@
 ﻿#ifndef __HEADER_SN_LOCK__
 #define __HEADER_SN_LOCK__
 
-#include <core/system/thread/Mutex.h>
+#include <core/system/Mutex.h>
 
 namespace sn
 {

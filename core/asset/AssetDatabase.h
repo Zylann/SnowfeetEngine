@@ -12,7 +12,7 @@ This file is part of the SnowfeetEngine project.
 #include <core/asset/AssetMetadata.h>
 #include <core/asset/SerializationContext.h>
 #include <core/app/ModuleInfo.h>
-#include <core/system/file/FileWatcher.h>
+#include <core/system/FileWatcher.h>
 
 #include <unordered_map>
 

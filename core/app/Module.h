@@ -9,8 +9,8 @@ This file is part of the SnowfeetEngine project.
 
 #include <core/app/ModuleArgs.h>
 #include <core/app/ModuleInfo.h>
-#include <core/system/time/Time.h>
-#include <core/system/lib/SharedLib.h>
+#include <core/system/Time.h>
+#include <core/system/SharedLib.h>
 
 #include <set>
 #include <unordered_set>

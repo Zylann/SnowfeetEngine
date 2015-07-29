@@ -4,7 +4,7 @@
 #include <core/scene/Drawable.h>
 #include <core/scene/base/IDrawContext.h>
 #include <core/util/SharedRef.h>
-#include <core/system/gui/Event.h>
+#include <core/system/Event.h>
 
 #include "controls/Control.h"
 #include "theme/Theme.h"

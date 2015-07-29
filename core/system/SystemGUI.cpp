@@ -5,7 +5,7 @@ This file is part of the SnowfeetEngine project.
 */
 
 #include "SystemGUI.h"
-#include "../../util/assert.h"
+#include "../util/assert.h"
 
 namespace sn
 {

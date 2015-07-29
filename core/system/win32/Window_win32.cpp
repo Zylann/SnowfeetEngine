@@ -4,7 +4,7 @@ Copyright (C) 2014-2015 Marc GILLERON
 This file is part of the SnowfeetEngine project.
 */
 
-#include "../../../util/assert.h"
+#include <core/util/assert.h>
 #include "../Window.h"
 #include "../SystemGUI.h"
 #include "../Event.h"

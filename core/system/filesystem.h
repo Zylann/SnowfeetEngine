@@ -9,7 +9,7 @@ This file is part of the SnowfeetEngine project.
 
 #include <core/util/String.h>
 #include <vector>
-#include <core/system/file/FilePath.h>
+#include <core/system/FilePath.h>
 
 namespace sn
 {

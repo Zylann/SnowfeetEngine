@@ -1,4 +1,4 @@
-#include <core/system/gui/SystemGUI.h>
+#include <core/system/SystemGUI.h>
 #include <core/scene/Scene.h>
 #include <core/asset/AssetDatabase.h> // TODO Remove?
 #include <core/scene/VRHeadset.h>

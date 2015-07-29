@@ -2,7 +2,7 @@
 #include "../GUI.h"
 
 #include <core/util/typecheck.h>
-#include <core/system/gui/SystemGUI.h>
+#include <core/system/SystemGUI.h>
 #include <functional>
 
 using namespace sn;

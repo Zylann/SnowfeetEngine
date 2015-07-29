@@ -7,7 +7,7 @@ This file is part of the SnowfeetEngine.
 #ifndef __HEADER_SN_CLOCK__
 #define __HEADER_SN_CLOCK__
 
-#include <core/system/time/Time.h>
+#include <core/system/Time.h>
 
 namespace sn
 {

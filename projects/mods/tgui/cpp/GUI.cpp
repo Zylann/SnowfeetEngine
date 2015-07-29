@@ -1,4 +1,4 @@
-#include <core/system/gui/SystemGUI.h>
+#include <core/system/SystemGUI.h>
 #include <core/asset/AssetDatabase.h>
 #include <core/util/Profiler.h>
 

@@ -7,7 +7,7 @@ This file is part of the SnowfeetEngine project.
 #ifndef __HEADER_SN_TIME_STEPPER__
 #define __HEADER_SN_TIME_STEPPER__
 
-#include <core/system/time/Clock.h>
+#include <core/system/Clock.h>
 #include <vector>
 
 namespace sn
