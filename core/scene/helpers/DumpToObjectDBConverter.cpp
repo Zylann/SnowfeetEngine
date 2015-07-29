@@ -3,7 +3,7 @@
 #include "../PackedEntity.h"
 
 #ifdef SN_BUILD_DEBUG
-#include <core/system/time/Clock.h>
+#include <core/system/Clock.h>
 #endif
 
 namespace sn
