@@ -20,15 +20,6 @@ This file is part of the SnowfeetEngine project.
 namespace sn
 {
 
-namespace CallbackName
-{
-    extern const char * CREATE;
-    extern const char * START;
-    extern const char * EVENT;
-    extern const char * UPDATE;
-    extern const char * DESTROY;
-}
-
 class Application;
 class ScriptManager;
 class Scene;
@@ -53,11 +44,6 @@ public:
         std::set<String> * openSet = nullptr
     );
 
-    //bool hasUpdateFunction();
-
-    //void callVoidCallback(std::string cbName);
-    //void onUpdate(Time delta);
-
     inline const ModuleInfo & getInfo() const { return m_info; }
 
 private:
@@ -73,9 +59,7 @@ private:
     void unloadNativeBindings();
     void unloadNativeBindingsImpl();
 
-    //void referenceCallbacks();
-    //void clearCallbacks();
-
+private:
     const ModuleInfo m_info;
     Application & r_app;
     std::vector<SharedLib*> m_sharedLibs;

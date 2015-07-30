@@ -273,16 +273,6 @@ int Application::executeEx()
 }
 
 //------------------------------------------------------------------------------
-//void Application::callVoidCallback(const std::string & cbName)
-//{
-//    for (auto it = m_modules.begin(); it != m_modules.end(); ++it)
-//    {
-//        Module & m = *(it->second);
-//        m.callVoidCallback(cbName);
-//    }
-//}
-
-//------------------------------------------------------------------------------
 void Application::update(Time delta)
 {
     if (m_scene)
@@ -291,11 +281,6 @@ void Application::update(Time delta)
         if (m_scene->getQuitFlag())
             m_runFlag = false;
     }
-    //for (auto it = m_modules.begin(); it != m_modules.end(); ++it)
-    //{
-    //    Module & m = *(it->second);
-    //    m.onUpdate(delta);
-    //}
 }
 
 //------------------------------------------------------------------------------
