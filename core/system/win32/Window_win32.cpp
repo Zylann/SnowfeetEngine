@@ -19,7 +19,10 @@ namespace sn
 // Global
 //==============================================================================
 
-const char * g_classNameA = "SnowfeetWindowA";
+	namespace
+	{
+		const char * g_classNameA = "SnowfeetWindowA";
+	}
 
 //------------------------------------------------------------------------------
 void registerWindowClass()

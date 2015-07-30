@@ -10,12 +10,15 @@ This file is part of the SnowfeetEngine project.
 namespace sn
 {
 
-LARGE_INTEGER getFrequency()
-{
-    LARGE_INTEGER frequency;
-    QueryPerformanceFrequency(&frequency);
-    return frequency;
-}
+	namespace
+	{
+		LARGE_INTEGER getFrequency()
+		{
+			LARGE_INTEGER frequency;
+			QueryPerformanceFrequency(&frequency);
+			return frequency;
+		}
+	}
 
 // static
 Time Time::getCurrent()
