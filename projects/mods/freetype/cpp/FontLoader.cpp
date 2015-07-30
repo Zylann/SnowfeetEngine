@@ -62,7 +62,7 @@ bool FontLoader::load(std::ifstream & ifs, sn::Asset & asset) const
 
     // Read the whole stream
     ifs.seekg(0, ifs.end);
-    size_t len = ifs.tellg();
+    size_t len = static_cast<size_t>(ifs.tellg());
     ifs.seekg(0, ifs.beg);
     char * fileData = new char[len];
     ifs.read(fileData, len);
