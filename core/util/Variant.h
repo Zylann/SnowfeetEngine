@@ -115,6 +115,24 @@ public:
     const Array & getArray() const;
     const Dictionary & getDictionary() const;
 
+	Variant::String & Variant::getString()
+	{
+		assertType(SN_VT_STRING);
+		return *m_data.pString;
+	}
+
+	Variant::Array & Variant::getArray()
+	{
+		assertType(SN_VT_ARRAY);
+		return *m_data.pArray;
+	}
+
+	Variant::Dictionary & Variant::getDictionary()
+	{
+		assertType(SN_VT_DICTIONARY);
+		return *m_data.pDictionary;
+	}
+
     void setBool(bool b);
     void setInt(s32 n);
     void setFloat(f32 f);
