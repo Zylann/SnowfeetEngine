@@ -20,7 +20,7 @@ This file is part of the SnowfeetEngine project.
 namespace sn
 {
 
-enum VariantType
+enum VariantTypeID
 {
     SN_VT_NIL = 0,
 
@@ -35,6 +35,24 @@ enum VariantType
 
     SN_VT_COUNT // Keep last
 };
+
+struct VariantType
+{
+	VariantType(VariantTypeID a_id): id(a_id), extra(0) {}
+
+	bool operator==(u32 a_id) const { return id == a_id; }
+	bool operator!=(u32 a_id) const { return id != a_id; }
+
+	/// \brief First-order type ID
+	u16 id;
+	/// \brief Additional type information, mostly usage-dependant
+	u16 extra;
+};
+
+class Variant;
+
+std::string SN_API toString(VariantType vt);
+std::string SN_API toString(const Variant & v);
 
 /// \brief Template-free implementation of a variant type
 class SN_API Variant
@@ -66,6 +84,7 @@ public:
     Variant(const String & s) :       m_type(SN_VT_STRING)      { m_data.pString = new String(s); }
     Variant(const Array & o) :        m_type(SN_VT_ARRAY)       { m_data.pArray = new Array(o); }
     Variant(const Dictionary & o) :   m_type(SN_VT_DICTIONARY)  { m_data.pDictionary = new Dictionary(o); }
+	// TODO C++11 Move constructor
 
     Variant(const Variant & other);
 
@@ -83,7 +102,10 @@ public:
 
     inline VariantType getType() const { return m_type; }
 
-    void assertType(VariantType t) const;
+	void Variant::assertType(VariantType t) const
+	{
+		SN_ASSERT(m_type.id == t.id, "Variant " << toString(t) << " expected, got " << toString(*this));
+	}
 
     bool getBool() const;
     s32 getInt() const;
@@ -138,22 +160,19 @@ public:
     /// \brief If the variant is not a dictionary, it is changed to an empty one.
     void setDictionary();
 
-    inline bool isNil() const         { return m_type == SN_VT_NIL; }
-    inline bool isBool() const        { return m_type == SN_VT_BOOL; }
-    inline bool isInt() const         { return m_type == SN_VT_INT; }
-    inline bool isFloat() const       { return m_type == SN_VT_FLOAT; }
-    inline bool isString() const      { return m_type == SN_VT_STRING; }
-    inline bool isArray() const       { return m_type == SN_VT_ARRAY; }
-    inline bool isDictionary() const  { return m_type == SN_VT_DICTIONARY; }
+    inline bool isNil() const         { return m_type.id == SN_VT_NIL; }
+    inline bool isBool() const        { return m_type.id == SN_VT_BOOL; }
+    inline bool isInt() const         { return m_type.id == SN_VT_INT; }
+    inline bool isFloat() const       { return m_type.id == SN_VT_FLOAT; }
+    inline bool isString() const      { return m_type.id == SN_VT_STRING; }
+    inline bool isArray() const       { return m_type.id == SN_VT_ARRAY; }
+    inline bool isDictionary() const  { return m_type.id == SN_VT_DICTIONARY; }
 
 private:
 
     VariantType m_type;
     VariantData m_data;
 };
-
-std::string SN_API toString(VariantType vt);
-std::string SN_API toString(const Variant & v);
 
 } // namespace sn
 

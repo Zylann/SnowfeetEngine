@@ -25,7 +25,7 @@ Variant::~Variant()
 //-----------------------------------------------------------------------------
 void Variant::reset()
 {
-    switch (m_type)
+    switch (m_type.id)
     {
     case SN_VT_STRING:      delete m_data.pString; break;
     case SN_VT_ARRAY:       delete m_data.pArray; break;
@@ -41,7 +41,7 @@ void Variant::reset(VariantType t)
 {
     reset();
     m_type = t;
-    switch (m_type)
+    switch (m_type.id)
     {
     case SN_VT_BOOL:
     case SN_VT_INT:
@@ -52,12 +52,6 @@ void Variant::reset(VariantType t)
     case SN_VT_DICTIONARY:  m_data.pDictionary = new Dictionary(); break;
     default: break;
     }
-}
-
-//-----------------------------------------------------------------------------
-void Variant::assertType(VariantType t) const
-{
-    SN_ASSERT(m_type == t, "Variant " << toString(t) << " expected, got " << toString(*this));
 }
 
 //-----------------------------------------------------------------------------
@@ -216,7 +210,7 @@ void Variant::grab(Variant & other)
 Variant & Variant::operator=(const Variant & other)
 {
     reset();
-    switch (other.m_type)
+    switch (other.m_type.id)
     {
     // Objects need proper handling
     case SN_VT_STRING:      setString(*other.m_data.pString); break;
@@ -234,12 +228,12 @@ Variant & Variant::operator=(const Variant & other)
 //-----------------------------------------------------------------------------
 bool Variant::operator==(const Variant & other) const
 {
-    if (m_type != other.m_type)
+    if (m_type.id != other.m_type.id)
         return false;
-    if (m_type == SN_VT_NIL)
+    if (m_type.id == SN_VT_NIL)
         return true;
 
-    switch (m_type)
+    switch (m_type.id)
     {
     case SN_VT_BOOL:        return m_data.vBool == other.m_data.vBool; break;
     case SN_VT_INT:         return m_data.vInt == other.m_data.vInt; break;
@@ -298,7 +292,7 @@ union MarshallFloat
 
 size_t Variant::getHash() const
 {
-    switch (m_type)
+    switch (m_type.id)
     {
     case SN_VT_NIL:
         return 0;
@@ -337,7 +331,7 @@ size_t Variant::getHash() const
 //-----------------------------------------------------------------------------
 std::string toString(VariantType vt)
 {
-    switch (vt)
+    switch (vt.id)
     {
     case SN_VT_NIL:         return "nil"; break;
     case SN_VT_BOOL:        return "bool"; break;
@@ -357,7 +351,7 @@ std::string toString(const Variant & v)
         return "Variant(nil)";
     std::stringstream ss;
     ss << toString(v.getType()) << "(";
-    switch (v.getType())
+    switch (v.getType().id)
     {
     case SN_VT_BOOL:        ss << v.getBool(); break;
     case SN_VT_INT:         ss << v.getInt(); break;
