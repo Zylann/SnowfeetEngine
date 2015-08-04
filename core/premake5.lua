@@ -23,6 +23,7 @@ project "SnowfeetCore"
 		"bind/**",
 		"drivers/**",
 		"json/**",
+		"sml/**",
 		"math/**",
 		"pcg/**",
 		"reflect/**",
