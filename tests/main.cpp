@@ -17,7 +17,8 @@ void testNTree()
 
 int main(int argc, char * argv[])
 {
-    test_squirrelBinding();
+    test_sml();
+    //test_squirrelBinding();
 	//test_variant();
     //test_fileWatcher();
     //test_stringSplit();
@@ -25,6 +26,7 @@ int main(int argc, char * argv[])
     //testNTree();
     //return sn::appMain(argc, argv);
 
+    std::cout << std::endl << "End of test. Press a key to dismiss...";
 	getchar();
 }
 
