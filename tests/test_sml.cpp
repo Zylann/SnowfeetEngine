@@ -37,6 +37,8 @@ void test_sml()
     const std::string inputFileName = "test_data/scene.sml";
     const std::string outputPrettyFileName = "test_data/scene_output_pretty.sml";
     const std::string outputPrettyFileName2 = "test_data/scene_output_pretty2.sml";
+    const std::string inputJsonFileName = "test_data/scene.json";
+    const std::string outputPrettyFileName3 = "test_data/scene_output_pretty3.sml";
 
     SmlParser parser;
     SmlWriter writer(true);
@@ -44,7 +46,7 @@ void test_sml()
     Variant doc;
 
     // Parse file
-    SN_LOG("Parsing file...");
+    SN_LOG("Reading SML file...");
     if (!readValue(inputFileName, parser, doc))
         return;
 
@@ -62,5 +64,15 @@ void test_sml()
     // Write again to see if it matches
     SN_LOG("Writing file again...");
     writeValue(outputPrettyFileName2, writer, doc2);
+
+    // Read JSON file
+    SN_LOG("Reading JSON file...");
+    Variant doc3;
+    if (!readValue(inputJsonFileName, parser, doc3))
+        return;
+
+    // Write result
+    SN_LOG("Writing JSON parsing result in file...");
+    writeValue(outputPrettyFileName3, writer, doc3);
 }
 
