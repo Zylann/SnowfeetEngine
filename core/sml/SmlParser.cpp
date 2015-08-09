@@ -154,7 +154,7 @@ void SmlParser::parseObject(std::istream & input, Variant::Dictionary & out_valu
 	{
 		const char c = input.peek();
 
-		if (isalpha(c) || c == '"')
+		if (isalpha(c) || c == '"' || c == '_')
 		{
 			// Parse key
 			std::string key;
