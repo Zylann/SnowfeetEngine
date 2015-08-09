@@ -46,7 +46,34 @@ void SmlWriter::writeBool(std::ostream & os, bool v)
 
 void SmlWriter::writeString(std::ostream & os, const Variant::String & s)
 {
-	os << '"' << s << '"';
+    u32 i_start = 0;
+    for (u32 i = 0; i < s.size(); ++i)
+    {
+        char c = s[i];
+        if (isWhitespace(c))
+        {
+            if (c == '\n')
+            {
+                os << s.substr(i_start, i);
+                os << "\\n";
+                i_start = i + 1;
+            }
+            else if (c == '\r')
+            {
+                os << s.substr(i_start, i);
+                os << "\\r";
+                i_start = i + 1;
+            }
+            else if (c == '\t')
+            {
+                os << s.substr(i_start, i);
+                os << "\\t";
+                i_start = i + 1;
+            }
+        }
+    }
+    if (i_start != s.size())
+        os << s.substr(i_start, s.size() - i_start);
 }
 
 void SmlWriter::writeArray(std::ostream & os, const Variant::Array & a)
