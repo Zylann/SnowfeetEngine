@@ -19,6 +19,8 @@ private:
 	//void writeTypedObject(std::ostream & os, const TypedObject & to);
 	void writeSeparator(std::ostream & os);
 
+    bool isWhitespace(char c) const { return !!isspace(c); }
+
 	// TODO Bindings to VariantType::extra
 };
 
