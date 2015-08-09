@@ -24,7 +24,7 @@ bool SmlParser::parseValue(std::istream & input, Variant & out_value)
 		case '/':
 		case '#':
 			parseComment(input);
-			found = true;
+			//found = true;
 			break;
 
 		case '{':
@@ -139,9 +139,11 @@ void SmlParser::parseComment(std::istream & input)
 	}
 	while (!input.eof())
 	{
-		char c = input.get();
-		if (c != '\n' && c != '\r')
-			break;
+		char c = input.peek();
+        if (c != '\n' && c != '\r')
+            break;
+        else
+            input.get();
 	}
 }
 
