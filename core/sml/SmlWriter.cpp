@@ -3,6 +3,7 @@
 namespace sn
 {
 
+//------------------------------------------------------------------------------
 void SmlWriter::writeValue(std::ostream & os, const Variant & value)
 {
 	switch (value.getType().id)
@@ -36,6 +37,7 @@ void SmlWriter::writeValue(std::ostream & os, const Variant & value)
 	}
 }
 
+//------------------------------------------------------------------------------
 void SmlWriter::writeBool(std::ostream & os, bool v)
 {
 	if (v)
@@ -44,6 +46,7 @@ void SmlWriter::writeBool(std::ostream & os, bool v)
 		os << "false";
 }
 
+//------------------------------------------------------------------------------
 void SmlWriter::writeString(std::ostream & os, const Variant::String & s)
 {
     u32 i_start = 0;
@@ -76,6 +79,7 @@ void SmlWriter::writeString(std::ostream & os, const Variant::String & s)
         os << s.substr(i_start, s.size() - i_start);
 }
 
+//------------------------------------------------------------------------------
 void SmlWriter::writeArray(std::ostream & os, const Variant::Array & a)
 {
 	os << "[";
@@ -92,6 +96,7 @@ void SmlWriter::writeArray(std::ostream & os, const Variant::Array & a)
 	os << "]";
 }
 
+//------------------------------------------------------------------------------
 void SmlWriter::writeObject(std::ostream & os, const Variant::Dictionary & o)
 {
 	os << "{";
@@ -113,12 +118,14 @@ void SmlWriter::writeObject(std::ostream & os, const Variant::Dictionary & o)
 	os << "}";
 }
 
+//------------------------------------------------------------------------------
 //void Writer::writeTypedObject(std::ostream & os, const TypedObject & to)
 //{
 //	os << to.typeName;
 //	writeValue(os, to.value);
 //}
 
+//------------------------------------------------------------------------------
 void SmlWriter::writeSeparator(std::ostream & os)
 {
 	os << ',';
