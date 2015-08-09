@@ -3,6 +3,8 @@
 
 #include <core/util/Variant.h>
 #include <core/math/Range.h>
+#include <core/math/Color.h>
+#include <core/math/Area.h>
 #include <vector>
 #include <unordered_set>
 
@@ -13,7 +15,7 @@ namespace sn
 // Get any JSON number into a float, zero if not a number
 inline f32 unserializeAsFloat(const Variant & v)
 {
-	switch (v.getType())
+	switch (v.getType().id)
 	{
 	case SN_VT_INT: return static_cast<f32>(v.getInt());
 	case SN_VT_FLOAT: return static_cast<f32>(v.getFloat());
