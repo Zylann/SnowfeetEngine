@@ -154,7 +154,7 @@ void SmlParser::parseObject(std::istream & input, Variant::Dictionary & out_valu
 	{
 		const char c = input.peek();
 
-		if (isalpha(c) || c == '"' || c == '_')
+		if (isalpha(c) || c == '"' || c == '_' || c == '@')
 		{
 			// Parse key
 			std::string key;
@@ -375,7 +375,7 @@ bool SmlParser::isWhiteSpace(char c)
 //------------------------------------------------------------------------------
 bool SmlParser::isKeyChar(char c)
 {
-	return isalpha(c) || isdigit(c) || c == '_' || c == '.';
+	return isalpha(c) || isdigit(c) || c == '_' || c == '.' || c == '@';
 }
 
 //------------------------------------------------------------------------------
