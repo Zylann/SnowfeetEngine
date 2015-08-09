@@ -9,6 +9,11 @@ namespace sn
 class SN_API SmlWriter
 {
 public:
+    SmlWriter(bool pretty=false);
+
+    bool isPretty() const { return m_pretty; }
+    void setPretty(bool pretty) { m_pretty = pretty; }
+
 	void writeValue(std::ostream & os, const Variant & value);
 
 private:
@@ -21,7 +26,18 @@ private:
 
     bool isWhitespace(char c) const { return !!isspace(c); }
 
+    void writeIndent(std::ostream & os);
+
+    void openBlock(std::ostream & os, char c);
+    void closeBlock(std::ostream & os, char c);
+
 	// TODO Bindings to VariantType::extra
+
+private:
+    bool m_pretty;
+    u32 m_level;
+    std::string m_indent;
+
 };
 
 } // namespace sn

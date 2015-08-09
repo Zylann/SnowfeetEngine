@@ -4,6 +4,14 @@ namespace sn
 {
 
 //------------------------------------------------------------------------------
+SmlWriter::SmlWriter(bool pretty):
+    m_pretty(pretty),
+    m_level(0),
+    m_indent("    ")
+{
+}
+
+//------------------------------------------------------------------------------
 void SmlWriter::writeValue(std::ostream & os, const Variant & value)
 {
 	switch (value.getType().id)
@@ -82,7 +90,7 @@ void SmlWriter::writeString(std::ostream & os, const Variant::String & s)
 //------------------------------------------------------------------------------
 void SmlWriter::writeArray(std::ostream & os, const Variant::Array & a)
 {
-	os << "[";
+    openBlock(os, '[');
 
 	for (unsigned int i = 0; i < a.size(); ++i)
 	{
@@ -106,13 +114,13 @@ void SmlWriter::writeArray(std::ostream & os, const Variant::Array & a)
 		}
 	}
 
-	os << "]";
+    closeBlock(os, ']');
 }
 
 //------------------------------------------------------------------------------
 void SmlWriter::writeObject(std::ostream & os, const Variant::Dictionary & o)
 {
-	os << "{";
+    openBlock(os, '{');
 
 	bool sep = false;
 	for (auto it = o.begin(); it != o.end(); ++it)
@@ -140,7 +148,7 @@ void SmlWriter::writeObject(std::ostream & os, const Variant::Dictionary & o)
 		sep = true;
 	}
 
-	os << "}";
+    closeBlock(os, '}');
 }
 
 //------------------------------------------------------------------------------
@@ -153,7 +161,46 @@ void SmlWriter::writeObject(std::ostream & os, const Variant::Dictionary & o)
 //------------------------------------------------------------------------------
 void SmlWriter::writeSeparator(std::ostream & os)
 {
-	os << ',';
+    if (m_pretty)
+    {
+        os << std::endl;
+        writeIndent(os);
+    }
+    else
+    {
+    	os << ',';
+    }
+}
+
+//------------------------------------------------------------------------------
+void SmlWriter::openBlock(std::ostream & os, char c)
+{
+    os << c;
+    if (m_pretty)
+    {
+        ++m_level;
+        os << std::endl;
+        writeIndent(os);
+    }
+}
+
+//------------------------------------------------------------------------------
+void SmlWriter::closeBlock(std::ostream & os, char c)
+{
+    if (m_pretty)
+    {
+        --m_level;
+        os << std::endl;
+        writeIndent(os);
+    }
+    os << c;
+}
+
+//------------------------------------------------------------------------------
+void SmlWriter::writeIndent(std::ostream & os)
+{
+    for (u32 i = 0; i < m_level; ++i)
+        os << m_indent;
 }
 
 } // namespace sn
