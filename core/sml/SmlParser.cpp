@@ -346,10 +346,9 @@ void SmlParser::parseString(std::istream & input, Variant::String & out_value)
 				case 'n': c = '\n'; break;
 				case 'r': c = '\r'; break;
 				case 't': c = '\t'; break;
-                default: 
-                    escaping = false; 
-                    break;
+                default: break;
 				}
+                escaping = false; 
 			}
 			out_value += c;
 			break;
