@@ -110,7 +110,19 @@ void SmlWriter::writeObject(std::ostream & os, const Variant::Dictionary & o)
 		}
 
 		os << it->first << ":";
-		writeValue(os, it->second);
+
+        const Variant & v = it->second;
+        if (v.isString())
+        {
+            // String values are quoted
+            os << '"';
+    		writeValue(os, it->second);
+            os << '"';
+        }
+        else
+        {
+    		writeValue(os, it->second);
+        }
 
 		sep = true;
 	}
