@@ -6,6 +6,7 @@
 namespace sn
 {
 
+/// \brief Writes SML byte stream from a Variant.
 class SN_API SmlWriter
 {
 public:
