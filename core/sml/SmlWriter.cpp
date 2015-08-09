@@ -57,19 +57,19 @@ void SmlWriter::writeString(std::ostream & os, const Variant::String & s)
         {
             if (c == '\n')
             {
-                os << s.substr(i_start, i);
+                os << s.substr(i_start, i - i_start);
                 os << "\\n";
                 i_start = i + 1;
             }
             else if (c == '\r')
             {
-                os << s.substr(i_start, i);
+                os << s.substr(i_start, i - i_start);
                 os << "\\r";
                 i_start = i + 1;
             }
             else if (c == '\t')
             {
-                os << s.substr(i_start, i);
+                os << s.substr(i_start, i - i_start);
                 os << "\\t";
                 i_start = i + 1;
             }
