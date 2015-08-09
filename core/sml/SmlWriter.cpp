@@ -86,7 +86,20 @@ void SmlWriter::writeArray(std::ostream & os, const Variant::Array & a)
 
 	for (unsigned int i = 0; i < a.size(); ++i)
 	{
-		writeValue(os, a[i]);
+        const Variant & v = a[i];
+
+        if (v.isString())
+        {
+            // String values are quoted
+            os << '"';
+            writeValue(os, v);
+            os << '"';
+        }
+        else
+        {
+    		writeValue(os, v);
+        }
+
 		if (i != a.size() - 1)
 		{
 			writeSeparator(os);
@@ -116,12 +129,12 @@ void SmlWriter::writeObject(std::ostream & os, const Variant::Dictionary & o)
         {
             // String values are quoted
             os << '"';
-    		writeValue(os, it->second);
+    		writeValue(os, v);
             os << '"';
         }
         else
         {
-    		writeValue(os, it->second);
+    		writeValue(os, v);
         }
 
 		sep = true;
