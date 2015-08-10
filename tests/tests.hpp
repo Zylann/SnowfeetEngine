@@ -8,6 +8,7 @@ void test_fileWatcher();
 void test_variant();
 void test_squirrelBinding();
 void test_sparseArrayPerformance();
+void test_sml();
 
 #endif // __HEADER_TEST_REFLECTION__
 

@@ -24,7 +24,7 @@ bool SmlParser::parseValue(std::istream & input, Variant & out_value)
 		case '/':
 		case '#':
 			parseComment(input);
-			found = true;
+			//found = true;
 			break;
 
 		case '{':
@@ -139,9 +139,11 @@ void SmlParser::parseComment(std::istream & input)
 	}
 	while (!input.eof())
 	{
-		char c = input.get();
-		if (c != '\n' && c != '\r')
-			break;
+		char c = input.peek();
+        if (c != '\n' && c != '\r')
+            break;
+        else
+            input.get();
 	}
 }
 
@@ -152,7 +154,7 @@ void SmlParser::parseObject(std::istream & input, Variant::Dictionary & out_valu
 	{
 		const char c = input.peek();
 
-		if (isalpha(c) || c == '"')
+		if (isalpha(c) || c == '"' || c == '_' || c == '@')
 		{
 			// Parse key
 			std::string key;
@@ -344,8 +346,9 @@ void SmlParser::parseString(std::istream & input, Variant::String & out_value)
 				case 'n': c = '\n'; break;
 				case 'r': c = '\r'; break;
 				case 't': c = '\t'; break;
-				default: break;
+                default: break;
 				}
+                escaping = false; 
 			}
 			out_value += c;
 			break;
@@ -372,7 +375,7 @@ bool SmlParser::isWhiteSpace(char c)
 //------------------------------------------------------------------------------
 bool SmlParser::isKeyChar(char c)
 {
-	return isalpha(c) || isdigit(c) || c == '_' || c == '.';
+	return isalpha(c) || isdigit(c) || c == '_' || c == '.' || c == '@';
 }
 
 //------------------------------------------------------------------------------

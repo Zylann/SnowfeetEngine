@@ -7,6 +7,8 @@
 namespace sn
 {
 
+/// \brief Parses SML byte stream into Variants.
+/// The input can be either JSON or SML.
 class SN_API SmlParser
 {
 public:

@@ -19,7 +19,7 @@ Engine structure
 
 The engine is made of a core and any number of modules.
 The core is written in C++ and includes only common functionnality.
-Modules are dynamic and you can adjust what you need for any project.
+Modules are dynamic and you can adjust what you need for any project, without the need to recompile (or re-run) the whole thing.
 
 For more info about how modules work, see documentation files.
 
