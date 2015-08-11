@@ -585,18 +585,18 @@ void RenderManager::serializeState(JsonBox::Value & o, const SerializationContex
 }
 
 //------------------------------------------------------------------------------
-void RenderManager::unserializeState(JsonBox::Value & o, const SerializationContext & ctx)
+void RenderManager::unserializeState(const Variant & o, const SerializationContext & ctx)
 {
     Entity::unserializeState(o, ctx);
-    if (o.isObject())
+    if (o.isDictionary())
     {
-        JsonBox::Value & screensValue = o["screens"];
+        const Variant & screensValue = o["screens"];
         if (screensValue.isArray())
         {
-            const JsonBox::Array & a = screensValue.getArray();
+            const Variant::Array & a = screensValue.getArray();
             for (u32 i = 0; i < a.size(); ++i)
             {
-                JsonBox::Value & screenValue = screensValue[i];
+                const Variant & screenValue = a[i];
                 WindowParams params;
                 sn::unserialize(screenValue, params);
                 addScreen(i, &params);

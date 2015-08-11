@@ -10,7 +10,7 @@ namespace sn
 {
 
 //------------------------------------------------------------------------------
-void DumpToObjectDBConverter::convert(JsonBox::Value & input)
+void DumpToObjectDBConverter::convert(const Variant & input)
 {
 #ifdef SN_BUILD_DEBUG
     Clock profileClock;
@@ -18,23 +18,26 @@ void DumpToObjectDBConverter::convert(JsonBox::Value & input)
 
     // Initialize
     m_nextID = 0;
-    output.setObject(JsonBox::Object());
+    output.setDictionary();
 
-    JsonBox::Array objects;
+    if (!input.isDictionary())
+        return;
 
-    JsonBox::Value & inputEntitiesValue = input["entities"];
+    Variant::Array objects;
+
+    const Variant & inputEntitiesValue = input["entities"];
     if (!inputEntitiesValue.isArray())
         return;
 
     // Root objects
-    size_t count = inputEntitiesValue.getArray().size();
-    for (size_t i = 0; i < count; ++i)
+    const Variant::Array & inputEntitiesArray = inputEntitiesValue.getArray();
+    for (size_t i = 0; i < inputEntitiesArray.size(); ++i)
     {
-        JsonBox::Value & srcObj = inputEntitiesValue[i];
-        if (!srcObj.isObject())
+        const Variant & srcObj = inputEntitiesArray[i];
+        if (!srcObj.isDictionary())
             continue;
 
-        JsonBox::Value dstObj = srcObj;
+        Variant dstObj = srcObj;
         extractChildren(dstObj, objects);
 
         objects.push_back(static_cast<s32>(makeID()));
@@ -57,35 +60,37 @@ u32 DumpToObjectDBConverter::makeID()
 }
 
 //------------------------------------------------------------------------------
-void DumpToObjectDBConverter::extractChildren(JsonBox::Value & obj, JsonBox::Array & objectsArray)
+void DumpToObjectDBConverter::extractChildren(Variant & inout_obj, Variant::Array & out_objectsArray)
 {
-    SN_ASSERT(obj.isObject(), "Expected JSON object");
-    auto childIt = obj.getObject().find(PackedEntity::CHILDREN_TAG);
-    if (childIt == obj.getObject().end())
+    SN_ASSERT(inout_obj.isDictionary(), "Expected Variant object type");
+    auto childIt = inout_obj.getDictionary().find(PackedEntity::CHILDREN_TAG);
+    if (childIt == inout_obj.getDictionary().end())
         return;
-    JsonBox::Value & childrenValue = obj[PackedEntity::CHILDREN_TAG];
+    Variant & childrenValue = inout_obj[PackedEntity::CHILDREN_TAG];
     if (!childrenValue.isArray())
         return;
 
-    size_t count = childrenValue.getArray().size();
-    for (size_t i = 0; i < count; ++i)
+    Variant::Array & childrenArray = childrenValue.getArray();
+    for (size_t i = 0; i < childrenArray.size(); ++i)
     {
-        JsonBox::Value & child = childrenValue[i];
-        if (!child.isObject())
+        Variant & child = childrenArray[i];
+        if (!child.isDictionary())
             continue;
 
         // Extract children first so we won't copy unnecessary child data
-        extractChildren(child, objectsArray);
+        extractChildren(child, out_objectsArray);
 
         // Place the child in the objects array
         u32 childID = makeID();
-        objectsArray.push_back(static_cast<s32>(childID));
-        objectsArray.push_back(child.getObject()); // copy
+        out_objectsArray.push_back(static_cast<s32>(childID));
+        out_objectsArray.push_back(child.getDictionary()); // copy
 
         // Replace the child by a reference
-        JsonBox::Object childRef;
+        // TODO Refs should be represented by integers with one bit set in Variant type extra data
+        Variant childRef;
+        childRef.setDictionary();
         childRef[ObjectDB::REF_TAG].setInt(childID);
-        childrenValue[i] = childRef;
+        childrenArray[i] = childRef;
     }
 }
 

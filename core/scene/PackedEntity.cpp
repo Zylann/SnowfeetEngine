@@ -9,22 +9,24 @@ namespace sn
 const char * PackedEntity::CHILDREN_TAG = "_children";
 
 //------------------------------------------------------------------------------
-bool PackedEntity::loadFromJSON(JsonBox::Value & doc)
+bool PackedEntity::loadFromVariant(Variant & doc)
 {
-    std::string format = doc[ObjectDB::FORMAT_KEY].getString();
-    if (format == ObjectDB::FORMAT_VALUE)
-        return ObjectDB::loadFromJSON(doc);
+    if (!doc.isDictionary())
+        return false;
+    const Variant & formatElem = doc[ObjectDB::FORMAT_KEY];
+    if (formatElem.isString() && formatElem.getString() == ObjectDB::FORMAT_VALUE)
+        return ObjectDB::loadFromVariant(doc);
     else
         return loadFromLegacyDump(doc);
 }
 
 //------------------------------------------------------------------------------
-bool PackedEntity::loadFromLegacyDump(JsonBox::Value & input)
+bool PackedEntity::loadFromLegacyDump(Variant & input)
 {
     DumpToObjectDBConverter converter;
     converter.convert(input);
     //converter.output.writeToFile("dump.json", true);
-    return ObjectDB::loadFromJSON(converter.output);
+    return ObjectDB::loadFromVariant(converter.output);
 }
 
 //------------------------------------------------------------------------------
@@ -42,13 +44,13 @@ void PackedEntity::loadFromInstance(const Entity & entity)
 }
 
 //------------------------------------------------------------------------------
-void PackedEntity::instantiate(Entity & a_parent, const std::string & contextModuleName)
+void PackedEntity::instantiate(Entity & a_parent, const std::string & contextModuleName) const
 {
     SerializationContext context(contextModuleName);
 
     // TODO Flatten before?
 
-    auto & objects = getObjects();
+    const auto & objects = getObjects();
 
     // TODO Entity order inside children vector is not guaranteed!
 
@@ -59,7 +61,7 @@ void PackedEntity::instantiate(Entity & a_parent, const std::string & contextMod
     for (auto it = objects.begin(); it != objects.end(); ++it)
     {
         u32 id = it->first;
-        JsonBox::Value & o = it->second.data;
+        const Variant & o = it->second.data;
 
         std::string typeName = o[SN_JSON_TYPE_TAG].getString();
         ObjectType * ot = ObjectTypeDatabase::get().getType(typeName);
@@ -82,18 +84,18 @@ void PackedEntity::instantiate(Entity & a_parent, const std::string & contextMod
     {
         // For each entity
         Entity * e = (Entity*)it->second;
-        JsonBox::Value * o = getObject(it->first);
+        const Variant * o = getObject(it->first);
         SN_ASSERT(o != nullptr, "Invalid state");
 
         // Get children array
-        JsonBox::Value & childrenValue = (*o)[CHILDREN_TAG];
+        const Variant & childrenValue = (*o)[CHILDREN_TAG];
         if (childrenValue.isArray())
         {
             // For each child element
-            size_t count = childrenValue.getArray().size();
-            for (size_t i = 0; i < count; ++i)
+            const Variant::Array & childrenArray = childrenValue.getArray();
+            for (size_t i = 0; i < childrenArray.size(); ++i)
             {
-                JsonBox::Value & childValue = childrenValue[i];
+                const Variant & childValue = childrenArray[i];
                 u32 parentID = 0;
                 if (ObjectDB::getRef(childValue, parentID))
                 {
@@ -155,7 +157,7 @@ void PackedEntity::instantiate(Entity & a_parent, const std::string & contextMod
     for (auto it = entities.begin(); it != entities.end(); ++it)
     {
         Entity * e = (Entity*)it->second;
-        JsonBox::Value * o = getObject(it->first);
+        const Variant * o = getObject(it->first);
         e->unserializeState(*o, context);
     }
 

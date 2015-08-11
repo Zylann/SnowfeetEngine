@@ -21,8 +21,10 @@ void serialize(JsonBox::Value & o, ScaleMode m)
 }
 
 //------------------------------------------------------------------------------
-void unserialize(JsonBox::Value & o, ScaleMode & m)
+void unserialize(const Variant & o, ScaleMode & m)
 {
+    if (!o.isString())
+        return;
     std::string s = o.getString();
     if (s == "adapted")
         m = SNR_SCALEMODE_ADAPTED;
@@ -377,7 +379,7 @@ void Camera::serializeState(JsonBox::Value & o, const SerializationContext & con
 }
 
 //------------------------------------------------------------------------------
-void Camera::unserializeState(JsonBox::Value & o, const SerializationContext & context)
+void Camera::unserializeState(const sn::Variant & o, const SerializationContext & context)
 {
     Entity3D::unserializeState(o, context);
 
@@ -393,18 +395,18 @@ void Camera::unserializeState(JsonBox::Value & o, const SerializationContext & c
     sn::unserialize<u32>(o["targetWindow"], m_targetWindowID, 0);
     sn::unserialize(o["visibilityTag"], m_visibilityTag, m_visibilityTag);
 
-    if (!o["viewport"].isNull())
+    if (!o["viewport"].isNil())
     {
         FloatRect viewport;
         sn::unserialize(o["viewport"], viewport, FloatRect(0,0,1,1));
         setViewport(viewport);
     }
 
-    auto & effects = o["effects"];
+    const auto & effects = o["effects"];
     if (effects.isArray())
     {
-        u32 count = effects.getArray().size();
-        for (u32 i = 0; i < count; ++i)
+        size_t count = effects.getArray().size();
+        for (size_t i = 0; i < count; ++i)
         {
             if (effects[i].isString())
             {
@@ -418,9 +420,9 @@ void Camera::unserializeState(JsonBox::Value & o, const SerializationContext & c
                     SN_ERROR("Effect material not found: '" << effects[i].getString() << "'");
                 }
             }
-            else if (effects[i].isObject())
+            else if (effects[i].isDictionary())
             {
-                JsonBox::Value & o = effects[i];
+                const Variant & o = effects[i];
                 Material * mat = getAssetBySerializedLocation<Material>(o["material"].getString(), context.getModule(), this);
                 Mesh * mesh = getAssetBySerializedLocation<Mesh>(o["mesh"].getString(), context.getModule(), this);
                 if (mat)

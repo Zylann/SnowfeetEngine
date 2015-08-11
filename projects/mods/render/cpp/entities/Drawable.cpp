@@ -72,14 +72,19 @@ void Drawable::serializeState(JsonBox::Value & o, const SerializationContext & c
 }
 
 //------------------------------------------------------------------------------
-void Drawable::unserializeState(JsonBox::Value & o, const SerializationContext & context)
+void Drawable::unserializeState(const sn::Variant & o, const SerializationContext & context)
 {
     sn::Drawable::unserializeState(o, context);
 
     sn::unserialize(o["drawOrder"], m_drawOrder);
 
-    m_mesh.set(getAssetBySerializedLocation<Mesh>(         o["mesh"].getString(),     context.getModule(), this));
-    m_material.set(getAssetBySerializedLocation<Material>( o["material"].getString(), context.getModule(), this));
+    std::string meshLocation;
+    sn::unserialize(o["mesh"], meshLocation);
+    m_mesh.set(getAssetBySerializedLocation<Mesh>(         meshLocation,     context.getModule(), this));
+
+    std::string materialLocation;
+    sn::unserialize(o["material"], materialLocation]);
+    m_material.set(getAssetBySerializedLocation<Material>( materialLocation, context.getModule(), this));
 
     // TODO
 }

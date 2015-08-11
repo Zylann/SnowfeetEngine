@@ -25,6 +25,8 @@ private:
 	//void writeTypedObject(std::ostream & os, const TypedObject & to);
 	void writeSeparator(std::ostream & os);
 
+    bool stringNeedsQuotes(const Variant::String & s);
+
     bool isWhitespace(char c) const { return !!isspace(c); }
 
     void writeIndent(std::ostream & os);

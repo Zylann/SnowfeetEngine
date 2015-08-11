@@ -122,7 +122,7 @@ public:
     //-----------------------------------------
 
     void serializeState(JsonBox::Value & o, const SerializationContext & context) override;
-    void unserializeState(JsonBox::Value & o, const SerializationContext & context) override;
+    void unserializeState(const sn::Variant & o, const SerializationContext & context) override;
 
     // TODO Don't leave this public, it should be automated (for target textures resizing)
     void updateEffectBuffers(const Vector2u * overrideResolution = nullptr);

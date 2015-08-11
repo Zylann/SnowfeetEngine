@@ -1,6 +1,7 @@
 #include "ObjectDB.h"
 #include "../util/Log.h"
 #include "../asset/AssetDatabase.h"
+#include <core/sml/SmlParser.h>
 
 #define VALIDATION_ERROR(msg)\
     SN_ERROR("Invalid " << ObjectDB::FORMAT_VALUE << " format: " << msg)
@@ -32,13 +33,14 @@ ObjectDB::ObjectDB():
 //------------------------------------------------------------------------------
 bool ObjectDB::loadFromStream(std::istream & is)
 {
-    JsonBox::Value doc;
-    doc.loadFromStream(is);
-    return loadFromJSON(doc);
+    Variant doc;
+    SmlParser parser;
+    parser.parseValue(is, doc);
+    return loadFromVariant(doc);
 }
 
 //------------------------------------------------------------------------------
-bool ObjectDB::loadFromJSON(JsonBox::Value & doc)
+bool ObjectDB::loadFromVariant(Variant & doc)
 {
 	// Validate
 	if (!validate(doc, &m_nextID))
@@ -49,8 +51,8 @@ bool ObjectDB::loadFromJSON(JsonBox::Value & doc)
     clear();
 
     // Get root ID
-    JsonBox::Value rootIDElem = doc[ROOT_ID_TAG];
-    if (rootIDElem.isInteger())
+    Variant rootIDElem = doc[ROOT_ID_TAG];
+    if (rootIDElem.isInt())
     {
         m_rootID = rootIDElem.getInt();
     }
@@ -58,18 +60,18 @@ bool ObjectDB::loadFromJSON(JsonBox::Value & doc)
     // TODO Allow single-object storage to ease configuration files
 
     // Store data
-    JsonBox::Value & objects = doc[OBJECTS_TAG];
-    size_t objectCount = objects.getArray().size();
-    for (size_t i = 0; i < objectCount; i += 2)
+    const Variant & objects = doc[OBJECTS_TAG];
+    const Variant::Array & objectsArray = objects.getArray();
+    for (size_t i = 0; i < objectsArray.size(); i += 2)
     {
         // Get ID
-        JsonBox::Value & idElem = objects[i];
+        const Variant & idElem = objectsArray[i];
         u32 id = static_cast<u32>(idElem.getInt());
 
         // Store object
-        JsonBox::Value objElem = objects[i + 1];
-        JsonBox::Value srcElem = objElem[SRC_TAG];
-        if (srcElem.isNull())
+        const Variant::Dictionary & objElem = objectsArray[i + 1].getDictionary();
+        auto srcIt = objElem.find(SRC_TAG);
+        if (srcIt == objElem.end())
         {
             Object & obj = m_objects[id];
             obj.data = objElem;
@@ -77,8 +79,12 @@ bool ObjectDB::loadFromJSON(JsonBox::Value & doc)
         else
         {
             OverrideObject & obj = m_overridedObjects[id];
-            obj.src = srcElem.getString();
-            parseModifications(objElem[CHANGES_TAG], obj.overrides);
+            obj.src = srcIt->second.getString();
+            auto changesIt = objElem.find(CHANGES_TAG);
+            if (changesIt != objElem.end())
+            {
+                parseModifications(changesIt->second, obj.overrides);
+            }
         }
     }
 
@@ -98,16 +104,16 @@ bool ObjectDB::loadFromJSON(JsonBox::Value & doc)
 
 //------------------------------------------------------------------------------
 // Static
-bool ObjectDB::getRef(const JsonBox::Value & o, u32 & out_ref)
+bool ObjectDB::getRef(const Variant & o, u32 & out_ref)
 {
-    if (o.isObject())
+    if (o.isDictionary())
     {
-        const JsonBox::Object & obj = o.getObject();
+        const Variant::Dictionary & obj = o.getDictionary();
         auto it = obj.find(REF_TAG);
         if (it != obj.end())
         {
-            const JsonBox::Value & v = it->second;
-            if (v.isInteger())
+            const Variant & v = it->second;
+            if (v.isInt())
             {
                 out_ref = v.getInt();
                 return true;
@@ -118,7 +124,7 @@ bool ObjectDB::getRef(const JsonBox::Value & o, u32 & out_ref)
 }
 
 //------------------------------------------------------------------------------
-void ObjectDB::parseModifications(JsonBox::Value & o, std::vector<ObjectDB::Modification> & out_modifications)
+void ObjectDB::parseModifications(const Variant & o, std::vector<ObjectDB::Modification> & out_modifications)
 {
     size_t elemCount = o.getArray().size();
     if (elemCount % 3 != 0)
@@ -148,20 +154,20 @@ void ObjectDB::parseModifications(JsonBox::Value & o, std::vector<ObjectDB::Modi
 }
 
 //------------------------------------------------------------------------------
-void ObjectDB::parsePath(JsonBox::Value & o, std::vector<std::string> & out_path)
+void ObjectDB::parsePath(const Variant & o, std::vector<std::string> & out_path)
 {
-    if (o.getType() == JsonBox::Value::STRING)
+    if (o.getType() == SN_VT_STRING)
     {
         const std::string & s = o.getString();
         out_path.push_back(s);
     }
-    else if (o.getType() == JsonBox::Value::ARRAY)
+    else if (o.getType() == SN_VT_ARRAY)
     {
-        size_t len = o.getArray().size();
-        out_path.reserve(out_path.size() + len);
-        for (size_t i = 0; i < len; ++i)
+        const Variant::Array & a = o.getArray();
+        out_path.reserve(out_path.size() + a.size());
+        for (size_t i = 0; i < a.size(); ++i)
         {
-            const std::string & elem = o[i].getString();
+            const std::string & elem = a[i].getString();
             if (elem.empty())
                 SN_ERROR("A part of the path is empty!");
             out_path.push_back(elem);
@@ -190,43 +196,55 @@ void ObjectDB::clearInstances()
 }
 
 //------------------------------------------------------------------------------
-bool ObjectDB::validate(JsonBox::Value & doc, u32 * out_nextID)
+bool ObjectDB::validate(Variant & a_doc, u32 * out_nextID)
 {
+    if (!a_doc.isDictionary())
+    {
+        VALIDATION_ERROR("Expected object type");
+        return false;
+    }
+
     // Check format string
-	if (doc[FORMAT_KEY] != FORMAT_VALUE)
+    const Variant & formatElem = a_doc[FORMAT_KEY];
+    if (!formatElem.isString())
+    {
+        VALIDATION_ERROR("Expected string for field " << FORMAT_KEY);
+        return false;
+    }
+	if (formatElem.getString() != FORMAT_VALUE)
 	{
 		SN_ERROR("Invalid JSON format, expected " << FORMAT_VALUE);
 		return false;
 	}
 
     // Check objects array
-	JsonBox::Value & objects = doc[OBJECTS_TAG];
-	if (!objects.isArray())
+	const Variant & objectsElem = a_doc[OBJECTS_TAG];
+	if (!objectsElem.isArray())
 	{
-		VALIDATION_ERROR("expected array");
+		VALIDATION_ERROR("expected array in " << OBJECTS_TAG);
 		return false;
 	}
 
-    size_t objectCount = objects.getArray().size();
+    const Variant::Array & objectsArray = objectsElem.getArray();
     size_t maxID = 0;
     std::unordered_set<u32> ids;
 
-    if (objectCount % 2 != 0)
+    if (objectsArray.size() % 2 != 0)
     {
-        VALIDATION_ERROR("Expected even number of elements in " << OBJECTS_TAG << " array, found " << objectCount);
+        VALIDATION_ERROR("Expected even number of elements in " << OBJECTS_TAG << " array, found " << objectsArray.size());
         return false;
     }
 
     // Check objects
-    for (size_t i = 0; i < objectCount; ++i)
+    for (size_t i = 0; i < objectsArray.size(); ++i)
     {
-        JsonBox::Value & elem = objects[i];
+        const Variant & elem = objectsArray[i];
 
         bool isID = i % 2 == 0;
 
         if (isID)
         {
-            if (!elem.isInteger())
+            if (!elem.isInt())
             {
                 VALIDATION_ERROR("expected integer ID");
                 return false;
@@ -252,7 +270,7 @@ bool ObjectDB::validate(JsonBox::Value & doc, u32 * out_nextID)
         }
         else
         {
-            if (!elem.isObject())
+            if (!elem.isDictionary())
             {
                 VALIDATION_ERROR("expected object");
                 return false;
@@ -262,8 +280,8 @@ bool ObjectDB::validate(JsonBox::Value & doc, u32 * out_nextID)
     
     // Check nextID
     u32 calculatedNextID = maxID + 1;
-    JsonBox::Value & nextIDElem = doc[NEXT_ID_TAG];
-    if (nextIDElem.isInteger())
+    Variant & nextIDElem = a_doc[NEXT_ID_TAG];
+    if (nextIDElem.isInt())
     {
         if (nextIDElem.getInt() < 0 || static_cast<u32>(nextIDElem.getInt()) <= maxID)
         {
@@ -284,7 +302,7 @@ bool ObjectDB::validate(JsonBox::Value & doc, u32 * out_nextID)
 }
 
 //------------------------------------------------------------------------------
-JsonBox::Value * ObjectDB::getObject(u32 id)
+const Variant * ObjectDB::getObject(u32 id) const
 {
     auto it = m_objects.find(id);
     if (it == m_objects.end())
@@ -293,7 +311,16 @@ JsonBox::Value * ObjectDB::getObject(u32 id)
 }
 
 //------------------------------------------------------------------------------
-JsonBox::Value * ObjectDB::getRootObject()
+Variant * ObjectDB::getObject(u32 index)
+{
+    auto it = m_objects.find(index);
+    if (it == m_objects.end())
+        return nullptr;
+    return &it->second.data;
+}
+
+//------------------------------------------------------------------------------
+const Variant * ObjectDB::getRootObject() const
 {
     if (m_rootID == NO_ROOT)
         return nullptr;
@@ -373,7 +400,7 @@ bool ObjectDB::flattenObject(OverrideObject & overrideObj, u32 id, std::vector<O
     }
 
     // Get its root object
-    JsonBox::Value * srcObj = src->getRootObject();
+    const Variant * srcObj = src->getRootObject();
     if (srcObj == nullptr)
     {
         SN_ERROR("No root object found in source '" << overrideObj.src << "', cannot instantiate data.");
@@ -407,7 +434,7 @@ bool ObjectDB::flattenObject(OverrideObject & overrideObj, u32 id, std::vector<O
         const Modification & change = *it;
             
         u32 targetID = srcToInstanceID[targetID];
-        JsonBox::Value * targetObj = getObject(targetID);
+        Variant * targetObj = getObject(targetID);
         if (targetObj == nullptr)
         {
             SN_ERROR("Cannot apply override change: target object not found (in src: " << targetID << ")");
@@ -422,10 +449,10 @@ bool ObjectDB::flattenObject(OverrideObject & overrideObj, u32 id, std::vector<O
 }
 
 //------------------------------------------------------------------------------
-void ObjectDB::applyChange(JsonBox::Value & obj, Modification change)
+void ObjectDB::applyChange(Variant & obj, Modification change)
 {
     // Get or create value
-    JsonBox::Value * tobj = &obj;
+    Variant * tobj = &obj;
     for (size_t i = 0; i < change.path.size(); ++i)
     {
         const std::string & pathElem = change.path[i];
@@ -437,37 +464,37 @@ void ObjectDB::applyChange(JsonBox::Value & obj, Modification change)
 }
 
 //------------------------------------------------------------------------------
-void ObjectDB::mapReferences(JsonBox::Value & obj, std::unordered_map<u32, u32> refMap)
+void ObjectDB::mapReferences(Variant & obj, std::unordered_map<u32, u32> refMap)
 {
-    if (obj.isObject())
+    if (obj.isDictionary())
     {
         // For each member
-        const JsonBox::Object objMap = obj.getObject();
+        const Variant::Dictionary objMap = obj.getDictionary();
         for (auto it = objMap.begin(); it != objMap.end(); ++it)
         {
-            JsonBox::Value & elem = obj[it->first];
+            Variant & elem = obj[it->first];
             mapReference(elem, refMap);
         }
     }
     else if (obj.isArray())
     {
         // For each item
-        size_t count = obj.getArray().size();
-        for (size_t i = 0; i < count; ++i)
+        Variant::Array & a = obj.getArray();
+        for (size_t i = 0; i < a.size(); ++i)
         {
-            JsonBox::Value & elem = obj[i];
+            Variant & elem = a[i];
             mapReference(elem, refMap);
         }
     }
 }
 
 //------------------------------------------------------------------------------
-void ObjectDB::mapReference(JsonBox::Value & obj, std::unordered_map<u32, u32> refMap)
+void ObjectDB::mapReference(Variant & obj, std::unordered_map<u32, u32> refMap)
 {
     // If the value is an object
-    if (obj.isObject())
+    if (obj.isDictionary())
     {
-        const JsonBox::Object & v = obj.getObject();
+        const Variant::Dictionary & v = obj.getDictionary();
         auto tagIt = v.find(REF_TAG);
 
         // If the value represents a reference

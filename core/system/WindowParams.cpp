@@ -5,15 +5,15 @@
 namespace sn
 {
 
-void serialize(JsonBox::Value & o, const WindowParams & params)
+void serialize(Variant & o, const WindowParams & params)
 {
     // TODO serialize WindowParams
     SN_WARNING("WindowParams serialization not implemented yet");
 }
 
-void unserialize(JsonBox::Value & o, WindowParams & params)
+void unserialize(const Variant & o, WindowParams & params)
 {
-    if (o.isObject())
+    if (o.isDictionary())
     {
         Vector2i size;
         sn::unserialize(o["size"], size, params.rect.size());
@@ -21,13 +21,13 @@ void unserialize(JsonBox::Value & o, WindowParams & params)
 
         sn::unserialize(o["title"], params.title, params.title);
 
-        JsonBox::Value & styleValues = o["style"];
+        const Variant & styleValues = o["style"];
         if (styleValues.isArray())
         {
-            u32 size = styleValues.getArray().size();
-            for (u32 i = 0; i < size; ++i)
+            const Variant::Array & styleArray = styleValues.getArray();
+            for (u32 i = 0; i < styleArray.size(); ++i)
             {
-                const std::string & s = styleValues[i].getString();
+                const std::string & s = styleArray[i].getString();
                 if (s == "fullscreen")
                 {
                     params.style |= SN_WS_FULLSCREEN;

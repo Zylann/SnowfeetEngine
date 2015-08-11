@@ -2,6 +2,7 @@
 #define __HEADER_SNR_CLEARBITS__
 
 #include <core/json/json_serialize.h>
+#include <core/sml/variant_serialize.h>
 
 namespace sn {
 namespace render {
@@ -20,7 +21,7 @@ enum ClearBits
 typedef u32 ClearMask;
 
 void serialize(JsonBox::Value & o, ClearMask m);
-void unserialize(JsonBox::Value & o, ClearMask & m);
+void unserialize(const sn::Variant & o, ClearMask & m);
 
 } // namespace render
 } // namespace sn

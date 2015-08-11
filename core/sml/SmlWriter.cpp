@@ -55,6 +55,22 @@ void SmlWriter::writeBool(std::ostream & os, bool v)
 }
 
 //------------------------------------------------------------------------------
+bool SmlWriter::stringNeedsQuotes(const Variant::String & s)
+{
+    // Optim: don't check too long strings
+    if (s.size() > 32)
+        return true;
+
+    for (u32 i = 0; i < s.size(); ++i)
+    {
+        char c = s[i];
+        if (isWhitespace(c) || c == ':')
+            return true;
+    }
+    return false;
+}
+
+//------------------------------------------------------------------------------
 void SmlWriter::writeString(std::ostream & os, const Variant::String & s)
 {
     u32 i_start = 0;

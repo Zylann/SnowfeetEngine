@@ -370,15 +370,16 @@ void Control::onSetCursor(Event & e)
 void Control::serializeState(JsonBox::Value & o, const SerializationContext & ctx)
 {
     Entity::serializeState(o, ctx);
-    sn::serialize(o["bounds"], m_localBounds);
-    sn::serialize(o["hostWindow"], m_windowID);
-    tgui::serialize(o["margins"], m_margins);
-    tgui::serialize(o["padding"], m_padding);
-    tgui::serializeAnchors(o["anchors"], m_anchors);
+    // TODO Convert to Variant
+    //sn::serialize(o["bounds"], m_localBounds);
+    //sn::serialize(o["hostWindow"], m_windowID);
+    //tgui::serialize(o["margins"], m_margins);
+    //tgui::serialize(o["padding"], m_padding);
+    //tgui::serializeAnchors(o["anchors"], m_anchors);
 }
 
 //------------------------------------------------------------------------------
-void Control::unserializeState(JsonBox::Value & o, const SerializationContext & ctx)
+void Control::unserializeState(const sn::Variant & o, const SerializationContext & ctx)
 {
     Entity::unserializeState(o, ctx);
     sn::unserialize(o["bounds"], m_localBounds, IntRect(0,0,300,200));

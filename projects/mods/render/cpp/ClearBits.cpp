@@ -20,10 +20,12 @@ void serialize(JsonBox::Value & o, ClearMask m)
 }
 
 //------------------------------------------------------------------------------
-void unserialize(JsonBox::Value & o, ClearMask & m)
+void unserialize(const sn::Variant & o, ClearMask & m)
 {
     m = SNR_CLEAR_NONE;
-    const JsonBox::Array & a = o.getArray();
+    if (!o.isArray())
+        return;
+    const sn::Variant::Array & a = o.getArray();
     for (u32 i = 0; i < a.size(); ++i)
     {
         const std::string & s = o[i].getString();

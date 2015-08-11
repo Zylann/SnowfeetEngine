@@ -4,7 +4,7 @@
 #include <core/types.h>
 #include <core/math/Rect.h>
 #include <string>
-#include <JsonBox.h>
+#include <core/sml/variant_serialize.h>
 
 namespace sn
 {
@@ -56,8 +56,8 @@ struct SN_API WindowParams
     u32 style;
 };
 
-void SN_API serialize(JsonBox::Value & o, const WindowParams & params);
-void SN_API unserialize(JsonBox::Value & o, WindowParams & params);
+void SN_API serialize(Variant & o, const WindowParams & params);
+void SN_API unserialize(const Variant & o, WindowParams & params);
 
 } // namespace sn
 

@@ -51,12 +51,12 @@ public:
     /// \brief Loads the database from a stream (Expects JSON)
 	virtual bool loadFromStream(std::istream & is);
     /// \brief Loads the database from a JSON document
-    virtual bool loadFromJSON(JsonBox::Value & doc);
+    virtual bool loadFromVariant(Variant & doc);
 
     /// \brief Gets one object's data by its ID in the database
-	JsonBox::Value * getObject(u32 index);
+	const Variant * getObject(u32 id) const;
     /// \brief Gets the root object in this database, if defined. Can be null.
-    JsonBox::Value * getRootObject();
+    const Variant * getRootObject() const;
 
     //---------------------------------------------
     // Public static helpers
@@ -66,42 +66,44 @@ public:
     /// \param o: variant representing the reference
     /// \param out_ref: retrieved object ID. Will not be modified if it is not found.
     /// \return true if the variant represented a reference, false otherwise
-    static bool getRef(const JsonBox::Value & o, u32 & out_ref);
+    static bool getRef(const Variant & o, u32 & out_ref);
 
 protected:
     struct Object
     {
         // Object state
-        JsonBox::Value data;
+        Variant data;
     };
 
     /// \brief Called when the PackedObject needs to recalculate overriding results.
     /// Depending on the type of PackedObject, another asset type might be looked up.
     virtual ObjectDB * getFromAssetDatabase(const std::string & location) const;
 
-    std::unordered_map<u32, ObjectDB::Object> & getObjects() { return m_objects; }
+    const std::unordered_map<u32, ObjectDB::Object> & getObjects() const { return m_objects; }
 
 private:
     struct Modification;
     struct OverrideObject;
 
-	static bool validate(JsonBox::Value & doc, u32 * out_nextID=nullptr);
-    static void parseModifications(JsonBox::Value & doc, std::vector<Modification> & out_modifications);
-    static void parsePath(JsonBox::Value & o, std::vector<std::string> & out_path);
+	static bool validate(Variant & a_doc, u32 * out_nextID=nullptr);
+    static void parseModifications(const Variant & doc, std::vector<Modification> & out_modifications);
+    static void parsePath(const Variant & o, std::vector<std::string> & out_path);
 
 	bool isFlattened();
 	void flatten();
 	void flatten(std::vector<ObjectDB*> & stack);
     bool flattenObject(OverrideObject & overrideObj, u32 id, std::vector<ObjectDB*> & stack);
 
-    static void applyChange(JsonBox::Value & obj, Modification change);
-    static void mapReferences(JsonBox::Value & obj, std::unordered_map<u32, u32> refMap);
-    static void mapReference(JsonBox::Value & obj, std::unordered_map<u32, u32> refMap);
+    static void applyChange(Variant & obj, Modification change);
+    static void mapReferences(Variant & obj, std::unordered_map<u32, u32> refMap);
+    static void mapReference(Variant & obj, std::unordered_map<u32, u32> refMap);
 
     void clear();
     void clearInstances();
 
     u32 makeID();
+
+    Variant * getObject(u32 id);
 
 private:
     //---------------------------------------------
@@ -115,7 +117,7 @@ private:
         // Path to the member
         std::vector<std::string> path;
         // New value of the member
-        JsonBox::Value value;
+        Variant value;
     };
 
     struct OverrideObject

@@ -28,7 +28,7 @@ public:
 	bool onSystemEvent(const sn::Event & event) override;
     
     void serializeState(JsonBox::Value & o, const SerializationContext & ctx) override;
-    void unserializeState(JsonBox::Value & o, const SerializationContext & ctx) override;
+    void unserializeState(const sn::Variant & o, const SerializationContext & ctx) override;
 
 private:
     void render();

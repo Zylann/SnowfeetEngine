@@ -16,12 +16,12 @@ public:
 
     static const char * CHILDREN_TAG;
 
-    bool loadFromJSON(JsonBox::Value & doc) override;
-    bool loadFromLegacyDump(JsonBox::Value & doc);
+    bool loadFromVariant(Variant & doc) override;
+    bool loadFromLegacyDump(Variant & doc);
 
     void loadFromInstance(const Entity & entity);
 
-    void instantiate(Entity & a_parent, const std::string & contextModuleName);
+    void instantiate(Entity & a_parent, const std::string & contextModuleName) const;
 
 protected:
     ObjectDB * getFromAssetDatabase(const std::string & location) const override;
