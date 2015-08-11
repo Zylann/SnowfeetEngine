@@ -17,7 +17,7 @@ public:
     void onUpdate() override;
 
     void serializeState(JsonBox::Value & o, const SerializationContext & context) override;
-    void unserializeState(JsonBox::Value & o, const SerializationContext & context) override;
+    void unserializeState(const Variant & o, const SerializationContext & context) override;
 
 private:
     void onKey(KeyCode key, bool isDown);

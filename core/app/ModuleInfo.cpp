@@ -5,13 +5,32 @@ This file is part of the SnowfeetEngine project.
 */
 
 #include "ModuleInfo.h"
-#include "../json/json_utils.h"
+#include "../sml/SmlParser.h"
 #include "../util/stringutils.h"
 #include "../util/Log.h"
 #include <fstream>
 
 namespace sn
 {
+	namespace
+	{
+		void unserialize(const Variant & in, std::vector<String> & out)
+		{
+			if (in.isArray())
+			{
+				const Variant::Array & a = in.getArray();
+				for (u32 i = 0; i < a.size(); ++i)
+				{
+					const Variant & elem = a[i];
+					if (elem.isString())
+					{
+						std::string str = elem.getString();
+						out.push_back(toWideString(str));
+					}
+				}
+			}
+		}
+	}
 
 //------------------------------------------------------------------------------
 bool ModuleInfo::loadFromFile(const String & pathToProjects, const String & modPath)
@@ -29,15 +48,19 @@ bool ModuleInfo::loadFromFile(const String & pathToProjects, const String & modP
     // Get full path
     String fullPath = pathToProjects + L'/' + modPath;
 
-    // Parse JSON module
-    JsonBox::Value v;
+    // Parse module
+    Variant v;
     std::ifstream ifs(toString(fullPath), std::ios::in | std::ios::binary);
     if (!ifs.good())
     {
         return false;
     }
-    v.loadFromStream(ifs);
+	SmlParser parser;
+    parser.parseValue(ifs, v);
     ifs.close();
+
+	if (!v.isDictionary())
+		return false;
 
     // Get namespace
     scriptNamespace = v["namespace"].getString();
@@ -49,49 +72,29 @@ bool ModuleInfo::loadFromFile(const String & pathToProjects, const String & modP
     parseServices(v["services"]);
 
     // Get bindings
-    {
-        const JsonBox::Array & a = v["bindings"].getArray();
-        if (a.size() > 0)
-        {
-            for (u32 i = 0; i < a.size(); ++i)
-            {
-                std::string bindingName = a[i].getString();
-                bindings.push_back(toWideString(bindingName));
-            }
-        }
-    }
+	unserialize(v["bindings"], bindings);
 
     // Get dependencies
-    {
-        const JsonBox::Array & a = v["dependencies"].getArray();
-        if (a.size() > 0)
-        {
-            for (u32 i = 0; i < a.size(); ++i)
-            {
-                std::string bindingName = a[i].getString();
-                dependencies.push_back(toWideString(bindingName));
-            }
-        }
-    }
+	unserialize(v["dependencies"], dependencies);
 
     return true;
 }
 
-void ModuleInfo::parseServices(JsonBox::Value & o)
+void ModuleInfo::parseServices(const Variant & o)
 {
     if (o.isArray())
     {
-        const JsonBox::Array & a = o.getArray();
+        const Variant::Array & a = o.getArray();
         for (u32 i = 0; i < a.size(); ++i)
         {
-            JsonBox::Value & serviceValue = o[i];
+            const Variant & serviceValue = o[i];
             if (serviceValue.isString())
             {
                 Service s;
                 s.type = serviceValue.getString();
                 services.push_back(s);
             }
-            else if (serviceValue.isObject())
+            else if (serviceValue.isDictionary())
             {
                 if (services.size() >= 1)
                 {

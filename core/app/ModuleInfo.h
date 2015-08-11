@@ -8,8 +8,8 @@ This file is part of the SnowfeetEngine project.
 #define __HEADER_MODULE_INFO__
 
 #include <core/util/String.h>
+#include <core/util/Variant.h>
 #include <vector>
-#include <core/json/json_utils.h>
 
 namespace sn
 {
@@ -22,7 +22,7 @@ public:
     struct Service
     {
         std::string type;
-        JsonBox::Value args;
+        Variant args;
     };
 
     std::string name;
@@ -42,7 +42,7 @@ public:
     std::vector<String> bindings;
 
 private:
-    void parseServices(JsonBox::Value & o);
+    void parseServices(const Variant & o);
 
 };
 

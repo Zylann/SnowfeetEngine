@@ -197,7 +197,7 @@ public:
     /// (don't forget to call the base's version!)
     /// \param o: JSON node to fill
     /// \param context: context
-    virtual void unserializeState(JsonBox::Value & o, const SerializationContext & context);
+    virtual void unserializeState(const Variant & o, const SerializationContext & context);
 
     //---------------------------------------------
     // Integrated callbacks

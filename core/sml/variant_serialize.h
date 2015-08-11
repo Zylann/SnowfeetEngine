@@ -12,7 +12,7 @@ namespace sn
 {
 
 //------------------------------------------------------------------------------
-// Get any JSON number into a float, zero if not a number
+// Get any Variant number type into a float, zero if not a number
 inline f32 unserializeAsFloat(const Variant & v)
 {
 	switch (v.getType().id)
@@ -382,6 +382,16 @@ inline void unserialize(const Variant & o, Quaternion & q)
 	{
 		SN_ERROR("Expected array of size 3 or 4 to unserialize Quaternion");
 	}
+}
+
+//------------------------------------------------------------------------------
+template <typename T>
+inline void unserialize(const Variant & o, T & v, const T defaultValue)
+{
+	if (o.isNil())
+		v = defaultValue;
+	else
+		unserialize(o, v);
 }
 
 } // namespace sn

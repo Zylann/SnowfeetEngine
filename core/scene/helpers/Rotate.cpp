@@ -28,12 +28,12 @@ void Rotate::onUpdate()
 
 void Rotate::serializeState(JsonBox::Value & o, const SerializationContext & context)
 {
-	Entity::unserializeState(o, context);
+	Entity::serializeState(o, context);
 	
 	sn::serialize(o["angularSpeed"], m_angularSpeed);
 }
 
-void Rotate::unserializeState(JsonBox::Value & o, const SerializationContext & context)
+void Rotate::unserializeState(const Variant & o, const SerializationContext & context)
 {
 	Entity::unserializeState(o, context);
 

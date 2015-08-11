@@ -71,7 +71,7 @@ public:
     //--------------------------------
 
     virtual void serializeState(JsonBox::Value & o, const SerializationContext & context) override;
-    virtual void unserializeState(JsonBox::Value & o, const SerializationContext & context) override;
+    virtual void unserializeState(const Variant & o, const SerializationContext & context) override;
 
 protected:
     virtual void onPositionChanged();
