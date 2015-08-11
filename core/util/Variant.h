@@ -22,7 +22,7 @@ namespace sn
 
 enum VariantTypeID
 {
-    SN_VT_NIL = 0,
+    SN_VT_NIL = 0, // TODO Change to NULL for naming coherence
 
     SN_VT_BOOL,
     SN_VT_INT,

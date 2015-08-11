@@ -300,7 +300,7 @@ void Module::createServices(Scene & scene)
 {
     for (auto it = m_info.services.begin(); it != m_info.services.end(); ++it)
     {
-        ModuleInfo::Service serviceInfo = *it; // Copy because m_info is const
+        const ModuleInfo::Service & serviceInfo = *it;
 
         std::string typeName = serviceInfo.type;
         if (scene.getChildByType(typeName))
@@ -311,7 +311,7 @@ void Module::createServices(Scene & scene)
         {
             SN_LOG("Creating service " << typeName);
             Entity * e = scene.createChild(typeName);
-            if (e && !it->args.isNull())
+            if (e && it->args.isDictionary())
             {
                 SerializationContext context(m_info.name);
                 e->unserializeState(serviceInfo.args, context);

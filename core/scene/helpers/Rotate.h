@@ -18,7 +18,7 @@ public:
 	void onReady() override;
 
 	void serializeState(JsonBox::Value & o, const SerializationContext & context) override;
-	void unserializeState(JsonBox::Value & o, const SerializationContext & context) override;
+	void unserializeState(const Variant & o, const SerializationContext & context) override;
 
 private:
 	Quaternion m_angularSpeed;

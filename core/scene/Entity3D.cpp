@@ -268,7 +268,7 @@ void Entity3D::serializeState(JsonBox::Value & o, const SerializationContext & c
 }
 
 //------------------------------------------------------------------------------
-void Entity3D::unserializeState(JsonBox::Value & o, const SerializationContext & context)
+void Entity3D::unserializeState(const Variant & o, const SerializationContext & context)
 {
     Entity::unserializeState(o, context);
     sn::unserialize(o["position"], m_position, Vector3f());

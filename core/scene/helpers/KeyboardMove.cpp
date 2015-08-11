@@ -142,7 +142,7 @@ void KeyboardMove::serializeState(JsonBox::Value & o, const SerializationContext
     sn::serialize(o["speed"], m_speed);
 }
 
-void KeyboardMove::unserializeState(JsonBox::Value & o, const SerializationContext & context)
+void KeyboardMove::unserializeState(const Variant & o, const SerializationContext & context)
 {
     Entity::unserializeState(o, context);
     sn::unserialize(o["speed"], m_speed, 1.f);

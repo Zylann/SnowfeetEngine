@@ -610,7 +610,7 @@ void Entity::serializeState(JsonBox::Value & o, const SerializationContext & con
 }
 
 //------------------------------------------------------------------------------
-void Entity::unserializeState(JsonBox::Value & o, const SerializationContext & context)
+void Entity::unserializeState(const Variant & o, const SerializationContext & context)
 {
     // Name
     m_name = o["name"].getString();
@@ -632,7 +632,7 @@ void Entity::unserializeState(JsonBox::Value & o, const SerializationContext & c
 
     // Script
     auto & script = o["script"];
-    if (script.isObject())
+    if (script.isDictionary())
     {
         std::string classPath = script["class"].getString();
         if (!classPath.empty())
