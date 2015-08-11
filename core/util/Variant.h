@@ -36,6 +36,25 @@ enum VariantTypeID
     SN_VT_COUNT // Keep last
 };
 
+/*enum VariantExtra
+{
+    SN_VE_NONE = 0,
+
+    SN_VE_REF = 1,
+
+    SN_VE_VECTOR2 = 2,
+    SN_VE_VECTOR3 = 3,
+    SN_VE_VECTOR4 = 4,
+
+    SN_VE_COLOR = 5,
+    SN_VE_FILEPATH = 6,
+    SN_VE_RANGE = 7,
+    SN_VE_TIME = 8,
+    SN_VE_BINARY = 9,
+
+    SN_VE_USERTYPE_START = 100,
+};*/
+
 struct VariantType
 {
 	VariantType(VariantTypeID a_id): id(a_id), extra(0) {}
