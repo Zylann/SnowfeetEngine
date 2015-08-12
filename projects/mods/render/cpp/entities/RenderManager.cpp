@@ -578,7 +578,7 @@ void RenderManager::renderCamera(Camera & camera)
 }
 
 //------------------------------------------------------------------------------
-void RenderManager::serializeState(JsonBox::Value & o, const SerializationContext & ctx)
+void RenderManager::serializeState(sn::Variant & o, const SerializationContext & ctx)
 {
     Entity::serializeState(o, ctx);
     // TODO serialize RenderManager settings

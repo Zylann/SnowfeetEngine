@@ -4,7 +4,7 @@
 namespace tgui
 {
 
-void serialize(JsonBox::Value & o, Position p)
+void serialize(sn::Variant & o, Position p)
 {
     switch (p)
     {
@@ -14,7 +14,7 @@ void serialize(JsonBox::Value & o, Position p)
     }
 }
 
-void unserialize(JsonBox::Value & o, Position & p)
+void unserialize(const sn::Variant & o, Position & p)
 {
     const std::string & s = o.getString();
     if (s == "layout")

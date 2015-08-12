@@ -16,7 +16,7 @@ public:
 
     bool isResizing() const { return m_resizeDirections.any(); }
 
-    void serializeState(JsonBox::Value & o, const sn::SerializationContext & ctx) override;
+    void serializeState(sn::Variant & o, const sn::SerializationContext & ctx) override;
 	void unserializeState(const sn::Variant & o, const sn::SerializationContext & ctx) override;
 
 protected:

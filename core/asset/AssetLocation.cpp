@@ -37,7 +37,7 @@ bool AssetLocation::isEmpty() const
     return name.empty();
 }
 
-void unserialize(JsonBox::Value & o, AssetLocation & loc)
+void unserialize(const Variant & o, AssetLocation & loc)
 {
     if (o.isString())
     {
@@ -45,7 +45,7 @@ void unserialize(JsonBox::Value & o, AssetLocation & loc)
     }
 }
 
-void serialize(JsonBox::Value & o, AssetLocation & loc)
+void serialize(Variant & o, AssetLocation & loc)
 {
     o = loc.getFullName();
 }

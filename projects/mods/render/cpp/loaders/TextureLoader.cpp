@@ -30,7 +30,7 @@ bool TextureLoader::canLoad(const AssetMetadata & meta) const
 //-----------------------------------------------------------------------------
 bool TextureLoader::isDirect(const AssetMetadata & meta) const
 {
-    JsonBox::Value args = meta.json;
+    const Variant & args = meta.variantData;
     const std::string usage = args["usage"].getString();
     return usage == "texture" || usage == "both";
 }
@@ -67,10 +67,10 @@ bool TextureLoader::load(std::ifstream & ifs, Asset & asset) const
     }
 
     // Set texture flags
-    JsonBox::Value metaArgs = meta.json;
-    texture->setKeepSourceInMemory(metaArgs["keepInMemory"].getBoolean());
-    texture->setSmooth(metaArgs["smooth"].getBoolean());
-    texture->setRepeated(metaArgs["repeated"].getBoolean());
+    const Variant & metaArgs = meta.variantData;
+    texture->setKeepSourceInMemory(metaArgs["keepInMemory"].getBool());
+    texture->setSmooth(metaArgs["smooth"].getBool());
+    texture->setRepeated(metaArgs["repeated"].getBool());
 
     return texture->uploadToVRAM();
 }

@@ -7,7 +7,7 @@ namespace tgui
 {
 
 //------------------------------------------------------------------------------
-void serialize(JsonBox::Value & o, TextWrapMode m)
+void serialize(Variant & o, TextWrapMode m)
 {
     switch (m)
     {
@@ -18,7 +18,7 @@ void serialize(JsonBox::Value & o, TextWrapMode m)
 }
 
 //------------------------------------------------------------------------------
-void unserialize(JsonBox::Value & o, TextWrapMode & m)
+void unserialize(const Variant & o, TextWrapMode & m)
 {
     const std::string & s = o.getString();
     if (s == "word")

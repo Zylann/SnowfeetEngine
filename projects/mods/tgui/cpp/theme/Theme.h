@@ -33,7 +33,7 @@ struct ControlTheme
     Border slicing;
     sn::IntRect statesUV[STATE_COUNT];
 
-    void serialize(JsonBox::Value & o) const;
+    void serialize(sn::Variant & o) const;
     void unserialize(const sn::Variant & o);
 
     //sn::IntRect getStateUV(u32 state);

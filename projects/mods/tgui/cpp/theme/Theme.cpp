@@ -12,11 +12,11 @@ namespace tgui
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 
-void ControlTheme::serialize(JsonBox::Value & o) const
+void ControlTheme::serialize(sn::Variant & o) const
 {
     tgui::serialize(o["slicing"], slicing);
 
-    JsonBox::Value & statesUVData = o["statesUV"];
+    Variant & statesUVData = o["statesUV"];
     for (u32 i = 0; i < STATE_COUNT; ++i)
     {
         sn::serialize(statesUVData[i], statesUV[i]);

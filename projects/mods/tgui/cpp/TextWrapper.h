@@ -2,6 +2,8 @@
 #define __HEADER_TGUI_TEXTWRAPPER__
 
 #include <core/asset/base/Font.h>
+#include <core/util/Variant.h>
+
 #include "TextModel.h"
 
 namespace tgui
@@ -14,8 +16,8 @@ enum TextWrapMode
     TGUI_WRAP_CHARACTERS
 };
 
-void serialize(JsonBox::Value & o, TextWrapMode m);
-void unserialize(JsonBox::Value & o, TextWrapMode & m);
+void serialize(sn::Variant & o, TextWrapMode m);
+void unserialize(const sn::Variant & o, TextWrapMode & m);
 
 /// \brief Stores a view of a TextModel with a line wrapping algorithm.
 /// Text edition and display should use this view rather than TextModel directly.

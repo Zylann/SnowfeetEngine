@@ -1,7 +1,7 @@
 #ifndef __HEADER_TGUI_POSITION__
 #define __HEADER_TGUI_POSITION__
 
-#include <core/json/json_utils.h>
+#include <core/sml/variant_serialize.h>
 
 namespace tgui
 {
@@ -13,8 +13,8 @@ enum Position
     TGUI_LAYOUT = 2
 };
 
-void serialize(JsonBox::Value & o, Position p);
-void unserialize(JsonBox::Value & o, Position & p);
+void serialize(sn::Variant & o, Position p);
+void unserialize(const sn::Variant & o, Position & p);
 
 } // namespace tgui
 

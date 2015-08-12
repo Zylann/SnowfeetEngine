@@ -1,6 +1,7 @@
 #include "ShaderLoader.h"
 #include <core/util/stringutils.h>
 #include <core/util/typecheck.h>
+#include <unordered_map>
 
 namespace sn {
 namespace render {
@@ -59,7 +60,7 @@ bool ShaderLoader::loadMergedShaderFromStream(ShaderProgram & shaderProgram, std
     std::string sources[SNR_ST_COUNT];
     bool openSection[SNR_ST_COUNT] = { false };
     
-    std::map<std::string, ShaderType> commandToShaderType;
+    std::unordered_map<std::string, ShaderType> commandToShaderType;
     commandToShaderType["msh_vertex"] = SNR_ST_VERTEX;
     commandToShaderType["msh_fragment"] = SNR_ST_FRAGMENT;
     commandToShaderType["msh_geometry"] = SNR_ST_GEOMETRY;

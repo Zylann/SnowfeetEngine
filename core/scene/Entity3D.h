@@ -70,7 +70,7 @@ public:
     // Serialization
     //--------------------------------
 
-    virtual void serializeState(JsonBox::Value & o, const SerializationContext & context) override;
+    virtual void serializeState(Variant & o, const SerializationContext & context) override;
     virtual void unserializeState(const Variant & o, const SerializationContext & context) override;
 
 protected:

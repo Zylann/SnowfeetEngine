@@ -3,7 +3,7 @@
 namespace tgui
 {
 
-void serialize(JsonBox::Value & o, TextAlignment align)
+void serialize(sn::Variant & o, TextAlignment align)
 {
     switch (align)
     {

@@ -596,7 +596,7 @@ void Entity::releaseScript()
 }
 
 //------------------------------------------------------------------------------
-void Entity::serializeState(JsonBox::Value & o, const SerializationContext & context)
+void Entity::serializeState(Variant & o, const SerializationContext & context)
 {
     o["name"] = m_name;
     o["enabled"] = isEnabledSelf();

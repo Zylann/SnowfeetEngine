@@ -25,7 +25,7 @@ bool ImageLoader::canLoad(const AssetMetadata & meta) const
 
 bool ImageLoader::isDirect(const AssetMetadata & meta) const
 {
-    JsonBox::Value args = meta.json;
+    const Variant & args = meta.variantData;
     const std::string & usage = args["usage"].getString();
     return usage == "image" || usage == "both";
 }

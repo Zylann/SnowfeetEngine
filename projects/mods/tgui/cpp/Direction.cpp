@@ -3,7 +3,7 @@
 namespace tgui
 {
 
-void serialize(JsonBox::Value & o, Direction d)
+void serialize(sn::Variant & o, Direction d)
 {
     switch (d)
     {

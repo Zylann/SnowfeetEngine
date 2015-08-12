@@ -26,7 +26,7 @@ void Rotate::onUpdate()
 	}
 }
 
-void Rotate::serializeState(JsonBox::Value & o, const SerializationContext & context)
+void Rotate::serializeState(Variant & o, const SerializationContext & context)
 {
 	Entity::serializeState(o, context);
 	

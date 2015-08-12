@@ -1,7 +1,7 @@
 #ifndef __HEADER_SN_ASSETLOCATION__
 #define __HEADER_SN_ASSETLOCATION__
 
-#include <core/json/json_utils.h>
+#include <core/sml/variant_serialize.h>
 
 namespace sn
 {
@@ -27,8 +27,8 @@ struct AssetLocation
     std::string module;
 };
 
-void unserialize(JsonBox::Value & o, AssetLocation & loc);
-void serialize(JsonBox::Value & o, AssetLocation & loc);
+void unserialize(const Variant & o, AssetLocation & loc);
+void serialize(Variant & o, AssetLocation & loc);
 
 } // namespace sn
 

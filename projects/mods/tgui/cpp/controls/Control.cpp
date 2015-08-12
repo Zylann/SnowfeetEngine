@@ -367,7 +367,7 @@ void Control::onSetCursor(Event & e)
 }
 
 //------------------------------------------------------------------------------
-void Control::serializeState(JsonBox::Value & o, const SerializationContext & ctx)
+void Control::serializeState(sn::Variant & o, const SerializationContext & ctx)
 {
     Entity::serializeState(o, ctx);
     // TODO Convert to Variant

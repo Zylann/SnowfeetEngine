@@ -26,8 +26,8 @@ enum ScaleMode
     SNR_SCALEMODE_PIXELPERFECT
 };
 
-void serialize(JsonBox::Value & o, ScaleMode m);
-void unserialize(JsonBox::Value & o, ScaleMode & m);
+void serialize(sn::Variant & o, ScaleMode m);
+void unserialize(const sn::Variant & o, ScaleMode & m);
 
 //------------------------------------------------------------------------------
 /// \brief Point of view on the scene, from which things can be rendered.
@@ -121,7 +121,7 @@ public:
     // Serialization
     //-----------------------------------------
 
-    void serializeState(JsonBox::Value & o, const SerializationContext & context) override;
+    void serializeState(sn::Variant & o, const SerializationContext & context) override;
     void unserializeState(const sn::Variant & o, const SerializationContext & context) override;
 
     // TODO Don't leave this public, it should be automated (for target textures resizing)

@@ -54,7 +54,7 @@ void Drawable::onDraw(IDrawContext & dc)
 }
 
 //------------------------------------------------------------------------------
-void Drawable::serializeState(JsonBox::Value & o, const SerializationContext & context)
+void Drawable::serializeState(sn::Variant & o, const SerializationContext & context)
 {
     sn::Drawable::serializeState(o, context);
 

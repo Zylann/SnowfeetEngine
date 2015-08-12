@@ -17,7 +17,7 @@ enum Direction
     TGUI_DIRECTION_COUNT
 };
 
-void serialize(JsonBox::Value & o, Direction d);
+void serialize(sn::Variant & o, Direction d);
 void unserialize(const sn::Variant & o, Direction & d);
 
 } // namespace tgui

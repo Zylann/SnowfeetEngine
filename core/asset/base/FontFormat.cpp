@@ -18,7 +18,7 @@ std::string toString(FontFormat format)
     return ss.str();
 }
 
-void serialize(JsonBox::Value & o, const FontFormat & format)
+void serialize(Variant & o, const FontFormat & format)
 {
     sn::serialize(o["size"], format.size);
 

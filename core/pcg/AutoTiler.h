@@ -13,8 +13,7 @@ This file is part of the SnowfeetEngine project.
 #include <unordered_set>
 
 #include <core/util/Array2D.h>
-
-#include <JsonBox.h>
+#include <core/util/Variant.h>
 
 namespace sn
 {
@@ -120,7 +119,7 @@ public:
     Out_T processTile(const Array2D<In_T> & inputGrid, u32 x, u32 y) const;
 
     // Loads pattern data from a JSON file
-    void unserialize(JsonBox::Value & o);
+    void unserialize(const sn::Variant & o);
 
     static void stringToCaseKey(const std::string & s, ConnectionMask & conMask, u8 & dontCareMask);
 

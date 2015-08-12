@@ -7,7 +7,7 @@ This file is part of the SnowfeetEngine project.
 #ifndef __HEADER_SN_ASSET_METADATA__
 #define __HEADER_SN_ASSET_METADATA__
 
-#include <core/json/json_serialize.h>
+#include <core/util/Variant.h>
 #include <core/util/String.h>
 
 namespace sn
@@ -39,7 +39,7 @@ public:
     String path; // File path
     std::string name;
     AssetLoadingMode loadingMode;
-    JsonBox::Value json;
+    Variant variantData;
 };
 
 } // namespace sn

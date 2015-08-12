@@ -444,7 +444,7 @@ void TextArea::updateWrap()
 }
 
 //------------------------------------------------------------------------------
-void TextArea::serializeState(JsonBox::Value & o, const sn::SerializationContext & ctx)
+void TextArea::serializeState(sn::Variant & o, const sn::SerializationContext & ctx)
 {
     Control::serializeState(o, ctx);
 

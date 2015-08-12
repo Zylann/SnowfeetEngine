@@ -29,7 +29,7 @@ public:
     void setMaterial(Material * material);
     inline Material * getMaterial() const { return m_material.get(); }
 
-    virtual void serializeState(JsonBox::Value & o, const SerializationContext & context) override;
+    virtual void serializeState(sn::Variant & o, const SerializationContext & context) override;
     virtual void unserializeState(const sn::Variant & o, const SerializationContext & context) override;
 
 private:

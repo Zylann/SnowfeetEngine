@@ -10,7 +10,7 @@ namespace render {
 const std::string Camera::TAG = "Camera";
 
 //------------------------------------------------------------------------------
-void serialize(JsonBox::Value & o, ScaleMode m)
+void serialize(sn::Variant & o, ScaleMode m)
 {
     switch (m)
     {
@@ -355,7 +355,7 @@ void Camera::updateEffectBuffers(const Vector2u * overrideResolution)
 }
 
 //------------------------------------------------------------------------------
-void Camera::serializeState(JsonBox::Value & o, const SerializationContext & context)
+void Camera::serializeState(sn::Variant & o, const SerializationContext & context)
 {
     Entity3D::serializeState(o, context);
 

@@ -10,7 +10,7 @@ namespace tgui
 
 typedef std::bitset<TGUI_DIRECTION_COUNT> Anchors;
 
-void serializeAnchors(JsonBox::Value & o, const Anchors & anchors);
+void serializeAnchors(sn::Variant & o, const Anchors & anchors);
 void unserializeAnchors(const sn::Variant & o, Anchors & anchors);
 
 } // namespace tgui

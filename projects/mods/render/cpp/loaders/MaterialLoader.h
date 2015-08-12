@@ -2,6 +2,7 @@
 #define __HEADER_SNR_MATERIALLOADER__
 
 #include <core/asset/AssetLoader.h>
+#include <core/util/Variant.h>
 
 namespace sn {
 namespace render {
@@ -15,6 +16,9 @@ public:
     const ObjectType & getAssetInstanceType() const override;
     bool canLoad(const AssetMetadata & meta) const override;
     bool load(std::ifstream & ifs, Asset & asset) const override;
+
+private:
+    bool loadFromVariant(const sn::Variant & doc, sn::render::Material & mat) const;
 
 };
 

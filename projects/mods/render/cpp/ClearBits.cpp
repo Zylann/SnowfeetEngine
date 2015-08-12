@@ -4,9 +4,9 @@ namespace sn {
 namespace render {
 
 //------------------------------------------------------------------------------
-void serialize(JsonBox::Value & o, ClearMask m)
+void serialize(sn::Variant & o, ClearMask m)
 {
-    JsonBox::Array a;
+    sn::Variant::Array a;
     if (m & SNR_CLEAR_ALL)
         a.push_back("all");
     else

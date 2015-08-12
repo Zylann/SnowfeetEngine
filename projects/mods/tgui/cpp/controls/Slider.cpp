@@ -137,7 +137,7 @@ void Slider::notifyValueChanged()
 }
 
 //------------------------------------------------------------------------------
-void Slider::serializeState(JsonBox::Value & o, const sn::SerializationContext & ctx)
+void Slider::serializeState(sn::Variant & o, const sn::SerializationContext & ctx)
 {
     Control::serializeState(o, ctx);
     tgui::serialize(o["orientation"], m_orientation);

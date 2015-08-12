@@ -8,7 +8,6 @@ This file is part of the SnowfeetEngine project.
 #define __HEADER_SN_ENTITY__
 
 #include <core/types.h>
-#include <core/json/json_serialize.h>
 #include <core/sml/variant_serialize.h>
 #include <core/app/ScriptableObject.h>
 #include <core/system/Event.h>
@@ -191,7 +190,7 @@ public:
     /// (don't forget to call the base's version!)
     /// \param o: JSON node to fill
     /// \param context: context
-    virtual void serializeState(JsonBox::Value & o, const SerializationContext & context);
+    virtual void serializeState(Variant & o, const SerializationContext & context);
     /// \brief Serializes the state of the entity inside a JSON node.
     /// This method is intented to be overrided in sub-classes to read specialized datas.
     /// (don't forget to call the base's version!)

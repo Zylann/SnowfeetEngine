@@ -136,7 +136,7 @@ void KeyboardMove::onUpdate()
     }
 }
 
-void KeyboardMove::serializeState(JsonBox::Value & o, const SerializationContext & context)
+void KeyboardMove::serializeState(Variant & o, const SerializationContext & context)
 {
     Entity::serializeState(o, context);
     sn::serialize(o["speed"], m_speed);

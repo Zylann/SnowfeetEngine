@@ -130,7 +130,7 @@ bool GUI::onSystemEvent(const sn::Event & systemEvent)
 }
 
 //------------------------------------------------------------------------------
-void GUI::serializeState(JsonBox::Value & o, const sn::SerializationContext & ctx)
+void GUI::serializeState(sn::Variant & o, const sn::SerializationContext & ctx)
 {
     Control::serializeState(o, ctx);
     // TODO Serialize theme location

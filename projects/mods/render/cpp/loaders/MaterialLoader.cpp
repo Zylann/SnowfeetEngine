@@ -1,5 +1,6 @@
 #include <core/util/stringutils.h>
 #include <core/asset/AssetDatabase.h>
+#include <core/sml/SmlParser.h>
 
 #include "../Material.h"
 #include "MaterialLoader.h"
@@ -35,10 +36,17 @@ bool MaterialLoader::load(std::ifstream & ifs, Asset & asset) const
     sn::render::Material * materialPtr = checked_cast<sn::render::Material*>(&asset);
     sn::render::Material & mat = *materialPtr;
 
-    const AssetMetadata & meta = mat.getAssetMetadata();
+    SmlParser parser;
+    Variant doc;
+    parser.parseValue(ifs, doc);
 
-    JsonBox::Value doc;
-    doc.loadFromStream(ifs);
+    return loadFromVariant(doc, mat);
+}
+
+//------------------------------------------------------------------------------
+bool MaterialLoader::loadFromVariant(const sn::Variant & doc, sn::render::Material & mat) const
+{
+    const AssetMetadata & meta = mat.getAssetMetadata();
 
     // Shader
     mat.setShader(getAssetBySerializedLocation<ShaderProgram>(doc["shader"].getString(), meta.module, &mat));
@@ -54,18 +62,17 @@ bool MaterialLoader::load(std::ifstream & ifs, Asset & asset) const
     mat.setBlendMode(blendMode);
 
     // Params
-    JsonBox::Value params = doc["params"].getObject();
-    if (params.isObject())
+    const Variant::Dictionary params = doc["params"].getDictionary();
+    if (!params.empty())
     {
-        auto paramsObject = params.getObject();
-        for (auto it = paramsObject.begin(); it != paramsObject.end(); ++it)
+        for (auto it = params.begin(); it != params.end(); ++it)
         {
             auto & v = it->second;
             // {"@type":"texture|rendertexture", "value":"foobar"}
-            if (v.isObject())
+            if (v.isDictionary())
             {
-                auto a = it->second.getObject();
-                auto typeTag = a[SN_JSON_TYPE_TAG];
+                auto a = it->second.getDictionary();
+                auto typeTag = a["@type"];
                 auto valueTag = a["value"];
 
                 if (typeTag.isString() && valueTag.isString())
@@ -116,9 +123,9 @@ bool MaterialLoader::load(std::ifstream & ifs, Asset & asset) const
                 }
                 // ...
             }
-            else if (v.isDouble())
+            else if (v.isFloat())
             {
-                mat.setParam(it->first, static_cast<f32>(v.getDouble()));
+                mat.setParam(it->first, static_cast<f32>(v.getFloat()));
             }
             // TODO Handle other param types
         }

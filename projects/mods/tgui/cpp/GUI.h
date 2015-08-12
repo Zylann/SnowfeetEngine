@@ -35,7 +35,7 @@ public:
     // Serialization
     //--------------------------------
 
-    void serializeState(JsonBox::Value & o, const sn::SerializationContext & ctx) override;
+    void serializeState(sn::Variant & o, const sn::SerializationContext & ctx) override;
     void unserializeState(const sn::Variant & o, const sn::SerializationContext & ctx) override;
 
 protected:

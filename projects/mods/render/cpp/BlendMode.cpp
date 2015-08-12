@@ -3,7 +3,7 @@
 namespace sn {
 namespace render {
 
-void serialize(JsonBox::Value & o, BlendMode m)
+void serialize(sn::Variant & o, BlendMode m)
 {
     switch (m)
     {
@@ -12,7 +12,7 @@ void serialize(JsonBox::Value & o, BlendMode m)
     }
 }
 
-void unserialize(JsonBox::Value & o, BlendMode & m)
+void unserialize(const sn::Variant & o, BlendMode & m)
 {
     const std::string & s = o.getString();
     if (s == "alpha")

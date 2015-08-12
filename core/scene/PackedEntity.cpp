@@ -63,7 +63,7 @@ void PackedEntity::instantiate(Entity & a_parent, const std::string & contextMod
         u32 id = it->first;
         const Variant & o = it->second.data;
 
-        std::string typeName = o[SN_JSON_TYPE_TAG].getString();
+        std::string typeName = o["@type"].getString();
         ObjectType * ot = ObjectTypeDatabase::get().getType(typeName);
         if (ot)
         {

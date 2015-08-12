@@ -51,7 +51,7 @@ void Button::onDrawSelf(DrawBatch & batch)
 }
 
 //------------------------------------------------------------------------------
-void Button::serializeState(JsonBox::Value & o, const SerializationContext & ctx)
+void Button::serializeState(sn::Variant & o, const SerializationContext & ctx)
 {
     Control::serializeState(o, ctx);
 

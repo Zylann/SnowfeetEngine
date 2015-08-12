@@ -169,7 +169,7 @@ bool Panel::checkResizing(Vector2i cursorPos, std::bitset<TGUI_DIRECTION_COUNT> 
 }
 
 //------------------------------------------------------------------------------
-void Panel::serializeState(JsonBox::Value & o, const sn::SerializationContext & ctx)
+void Panel::serializeState(sn::Variant & o, const sn::SerializationContext & ctx)
 {
     Control::serializeState(o, ctx);
     sn::serialize(o["isResizeable"], m_isResizeable);

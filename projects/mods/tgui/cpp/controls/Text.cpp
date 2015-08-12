@@ -52,7 +52,7 @@ void Text::onDrawSelf(DrawBatch & batch)
 }
 
 //------------------------------------------------------------------------------
-void Text::serializeState(JsonBox::Value & o, const sn::SerializationContext & ctx)
+void Text::serializeState(sn::Variant & o, const sn::SerializationContext & ctx)
 {
     Control::serializeState(o, ctx);
     

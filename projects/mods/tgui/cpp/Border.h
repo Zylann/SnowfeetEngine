@@ -1,7 +1,6 @@
 #ifndef __HEADER_TGUI_BORDER__
 #define __HEADER_TGUI_BORDER__
 
-#include <core/json/json_utils.h>
 #include <core/sml/variant_serialize.h>
 
 namespace tgui
@@ -18,7 +17,7 @@ struct Border
     Border() { memset(this, 0, sizeof(Border)); }
 };
 
-inline void serialize(JsonBox::Value & o, const Border & b)
+inline void serialize(sn::Variant & o, const Border & b)
 {
     sn::serialize(o["left"], b.left);
     sn::serialize(o["right"], b.right);

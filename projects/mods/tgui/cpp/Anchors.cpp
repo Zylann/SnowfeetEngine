@@ -5,15 +5,15 @@ using namespace sn;
 namespace tgui
 {
 
-void serializeAnchors(JsonBox::Value & o, const Anchors & anchors)
+void serializeAnchors(sn::Variant & o, const Anchors & anchors)
 {
-    JsonBox::Array a;
+    Variant::Array a;
     for (u32 d = 0; d < TGUI_DIRECTION_COUNT; ++d)
     {
         if (anchors[d])
         {
-            JsonBox::Value v;
-            serialize(v, (Direction)d);
+            Variant v;
+            tgui::serialize(v, (Direction)d);
             a.push_back(v);
         }
     }
@@ -28,7 +28,7 @@ void unserializeAnchors(const sn::Variant & o, Anchors & anchors)
         for (u32 i = 0; i < a.size(); ++i)
         {
             Direction d = TGUI_DIRECTION_COUNT;
-            unserialize(o[i], d);
+            tgui::unserialize(o[i], d);
             if (d != TGUI_DIRECTION_COUNT)
             {
                 anchors[d] = true;

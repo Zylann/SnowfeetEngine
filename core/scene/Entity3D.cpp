@@ -259,7 +259,7 @@ Vector3f Entity3D::getForwardVector() const
 }
 
 //------------------------------------------------------------------------------
-void Entity3D::serializeState(JsonBox::Value & o, const SerializationContext & context)
+void Entity3D::serializeState(Variant & o, const SerializationContext & context)
 {
     Entity::serializeState(o, context);
     sn::serialize(o["position"], m_position);
