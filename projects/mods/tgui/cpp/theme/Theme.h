@@ -34,7 +34,7 @@ struct ControlTheme
     sn::IntRect statesUV[STATE_COUNT];
 
     void serialize(JsonBox::Value & o) const;
-    void unserialize(JsonBox::Value & o);
+    void unserialize(const sn::Variant & o);
 
     //sn::IntRect getStateUV(u32 state);
 };

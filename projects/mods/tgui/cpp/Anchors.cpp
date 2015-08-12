@@ -20,11 +20,11 @@ void serializeAnchors(JsonBox::Value & o, const Anchors & anchors)
     o = a;
 }
 
-void unserializeAnchors(JsonBox::Value & o, Anchors & anchors)
+void unserializeAnchors(const sn::Variant & o, Anchors & anchors)
 {
     if (o.isArray())
     {
-        const JsonBox::Array & a = o.getArray();
+        const Variant::Array & a = o.getArray();
         for (u32 i = 0; i < a.size(); ++i)
         {
             Direction d = TGUI_DIRECTION_COUNT;

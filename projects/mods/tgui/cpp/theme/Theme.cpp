@@ -1,6 +1,7 @@
 #include <core/util/stringutils.h>
 #include <core/util/typecheck.h>
 #include <core/asset/AssetDatabase.h>
+#include <core/sml/SmlParser.h>
 #include "Theme.h"
 
 using namespace sn;
@@ -22,11 +23,11 @@ void ControlTheme::serialize(JsonBox::Value & o) const
     }
 }
 
-void ControlTheme::unserialize(JsonBox::Value & o)
+void ControlTheme::unserialize(const sn::Variant & o)
 {
     tgui::unserialize(o["slicing"], slicing);
 
-    JsonBox::Value & statesUVData = o["statesUV"];
+    const Variant & statesUVData = o["statesUV"];
     if (statesUVData.isArray())
     {
         u32 n = statesUVData.getArray().size();
@@ -53,8 +54,9 @@ bool ThemeLoader::load(std::ifstream & ifs, sn::Asset & asset) const
     Theme * theme = checked_cast<Theme*>(&asset);
     SN_ASSERT(theme != nullptr, "Invalid state");
 
-    JsonBox::Value o;
-    o.loadFromStream(ifs);
+    Variant o;
+	SmlParser parser;
+	parser.parseValue(ifs, o);
 
     SerializationContext ctx(asset.getAssetMetadata().module);
 
@@ -64,15 +66,15 @@ bool ThemeLoader::load(std::ifstream & ifs, sn::Asset & asset) const
     theme->controlTheme.unserialize(o["controlTheme"]);
     theme->panelTheme.unserialize(o["panelTheme"]);
 
-    JsonBox::Value & sliderData = o["sliderTheme"];
-    if (sliderData.isObject())
+    const Variant & sliderData = o["sliderTheme"];
+    if (sliderData.isDictionary())
     {
         theme->sliderBar.unserialize(sliderData["bar"]);
         theme->sliderThumbs.unserialize(sliderData["thumb"]);
     }
 
-    JsonBox::Value & textAreaData = o["textAreaTheme"];
-    if (textAreaData.isObject())
+    const Variant & textAreaData = o["textAreaTheme"];
+    if (textAreaData.isDictionary())
     {
         theme->textAreaBackground.unserialize(textAreaData["background"]);
         theme->textAreaCaret.unserialize(textAreaData["caret"]);

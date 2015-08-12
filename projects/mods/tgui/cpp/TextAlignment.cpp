@@ -14,7 +14,7 @@ void serialize(JsonBox::Value & o, TextAlignment align)
     }
 }
 
-void unserialize(JsonBox::Value & o, TextAlignment & align)
+void unserialize(const sn::Variant & o, TextAlignment & align)
 {
     const std::string & str = o.getString();
     if (str == "left")

@@ -454,7 +454,7 @@ void TextArea::serializeState(JsonBox::Value & o, const sn::SerializationContext
 }
 
 //------------------------------------------------------------------------------
-void TextArea::unserializeState(JsonBox::Value & o, const sn::SerializationContext & ctx)
+void TextArea::unserializeState(const Variant & o, const sn::SerializationContext & ctx)
 {
     Control::unserializeState(o, ctx);
 

@@ -4,6 +4,7 @@
 #include <string>
 #include <core/types.h>
 #include <core/json/json_serialize.h>
+#include <core/sml/variant_serialize.h>
 
 namespace sn
 {
@@ -34,7 +35,7 @@ struct FontFormat
 std::string SN_API toString(FontFormat format);
 
 void SN_API serialize(JsonBox::Value & o, const FontFormat & format);
-void SN_API unserialize(JsonBox::Value & o, FontFormat & format);
+void SN_API unserialize(const Variant & o, FontFormat & format);
 
 } // namespace sn
 

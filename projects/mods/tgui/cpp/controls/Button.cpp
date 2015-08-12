@@ -58,7 +58,7 @@ void Button::serializeState(JsonBox::Value & o, const SerializationContext & ctx
 }
 
 //------------------------------------------------------------------------------
-void Button::unserializeState(JsonBox::Value & o, const SerializationContext & ctx)
+void Button::unserializeState(const sn::Variant & o, const SerializationContext & ctx)
 {
     Control::unserializeState(o, ctx);
 

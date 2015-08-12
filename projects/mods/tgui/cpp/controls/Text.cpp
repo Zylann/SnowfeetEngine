@@ -64,7 +64,7 @@ void Text::serializeState(JsonBox::Value & o, const sn::SerializationContext & c
 }
 
 //------------------------------------------------------------------------------
-void Text::unserializeState(JsonBox::Value & o, const sn::SerializationContext & ctx)
+void Text::unserializeState(const sn::Variant & o, const sn::SerializationContext & ctx)
 {
     Control::unserializeState(o, ctx);
 

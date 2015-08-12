@@ -176,7 +176,7 @@ void Panel::serializeState(JsonBox::Value & o, const sn::SerializationContext & 
 }
 
 //------------------------------------------------------------------------------
-void Panel::unserializeState(JsonBox::Value & o, const sn::SerializationContext & ctx)
+void Panel::unserializeState(const sn::Variant & o, const sn::SerializationContext & ctx)
 {
     Control::unserializeState(o, ctx);
     sn::unserialize(o["isResizeable"], m_isResizeable);

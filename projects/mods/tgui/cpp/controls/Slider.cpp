@@ -146,7 +146,7 @@ void Slider::serializeState(JsonBox::Value & o, const sn::SerializationContext &
 }
 
 //------------------------------------------------------------------------------
-void Slider::unserializeState(JsonBox::Value & o, const sn::SerializationContext & ctx)
+void Slider::unserializeState(const sn::Variant & o, const sn::SerializationContext & ctx)
 {
     Control::unserializeState(o, ctx);
     tgui::unserialize(o["orientation"], m_orientation);
