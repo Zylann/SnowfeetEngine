@@ -57,43 +57,61 @@ void Variant::reset(VariantType t)
 //-----------------------------------------------------------------------------
 bool Variant::getBool() const
 {
-    assertType(SN_VT_BOOL);
-    return m_data.vBool;
+    if (m_type.id == SN_VT_BOOL)
+        return m_data.vBool;
+    return false;
 }
 
 //-----------------------------------------------------------------------------
 s32 Variant::getInt() const
 {
-    assertType(SN_VT_INT);
-    return m_data.vInt;
+    if (m_type.id == SN_VT_INT)
+        return m_data.vInt;
+    return 0;
 }
 
 //-----------------------------------------------------------------------------
 f32 Variant::getFloat() const
 {
-    assertType(SN_VT_FLOAT);
-    return m_data.vFloat;
+    if (m_type.id == SN_VT_FLOAT)
+        return m_data.vFloat;
+    return 0;
 }
 
 //-----------------------------------------------------------------------------
 const Variant::String & Variant::getString() const
 {
-    assertType(SN_VT_STRING);
-    return *m_data.pString;
+    if (m_type.id == SN_VT_STRING)
+        return *m_data.pString;
+    else
+    {
+        static String s_defaultString;
+        return s_defaultString;
+    }
 }
 
 //-----------------------------------------------------------------------------
 const Variant::Array & Variant::getArray() const
 {
-    assertType(SN_VT_ARRAY);
-    return *m_data.pArray;
+    if (m_type.id == SN_VT_ARRAY)
+        return *m_data.pArray;
+    else
+    {
+        static Array s_defaultArray;
+        return s_defaultArray;
+    }
 }
 
 //-----------------------------------------------------------------------------
 const Variant::Dictionary & Variant::getDictionary() const
 {
-    assertType(SN_VT_DICTIONARY);
-    return *m_data.pDictionary;
+    if (m_type.id == SN_VT_DICTIONARY)
+        return *m_data.pDictionary;
+    else
+    {
+        static Dictionary s_defaultDictionary;
+        return s_defaultDictionary;
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -257,8 +275,13 @@ Variant & Variant::operator[](size_t index)
 //-----------------------------------------------------------------------------
 const Variant & Variant::operator[](size_t index) const
 {
-    assertType(SN_VT_ARRAY);
-    return (*m_data.pArray)[index];
+    if (m_type.id == SN_VT_ARRAY)
+        return (*m_data.pArray)[index];
+    else
+    {
+        static Variant s_defaultVariant;
+        return s_defaultVariant;
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -271,16 +294,15 @@ Variant & Variant::operator[](const String & fieldName)
 //-----------------------------------------------------------------------------
 const Variant & Variant::operator[](const String & fieldName) const
 {
-    assertType(SN_VT_DICTIONARY);
-    const Dictionary & dict = *m_data.pDictionary;
-    auto it = dict.find(fieldName);
-    if (it != dict.end())
-        return it->second;
-    else
+    if (m_type.id == SN_VT_DICTIONARY)
     {
-        static const Variant s_defaultVariant;
-        return s_defaultVariant;
+        const Dictionary & dict = *m_data.pDictionary;
+        auto it = dict.find(fieldName);
+        if (it != dict.end())
+            return it->second;
     }
+    static Variant s_defaultVariant;
+    return s_defaultVariant;
 }
 
 //-----------------------------------------------------------------------------
