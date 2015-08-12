@@ -59,6 +59,12 @@ bool ModuleInfo::loadFromFile(const String & pathToProjects, const String & modP
     parser.parseValue(ifs, v);
     ifs.close();
 
+    return setDataFromVariant(v);
+}
+
+//------------------------------------------------------------------------------
+bool ModuleInfo::setDataFromVariant(const Variant & v)
+{
 	if (!v.isDictionary())
 		return false;
 
@@ -80,6 +86,7 @@ bool ModuleInfo::loadFromFile(const String & pathToProjects, const String & modP
     return true;
 }
 
+//------------------------------------------------------------------------------
 void ModuleInfo::parseServices(const Variant & o)
 {
     if (o.isArray())

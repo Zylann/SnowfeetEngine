@@ -42,6 +42,7 @@ public:
     std::vector<String> bindings;
 
 private:
+    bool setDataFromVariant(const Variant & v);
     void parseServices(const Variant & o);
 
 };
