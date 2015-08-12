@@ -12,6 +12,10 @@ class Button : public Control
 public:
     SN_ENTITY(tgui::Button, tgui::Control)
 
+    //--------------------------------
+    // Event implementations
+    //--------------------------------
+
     virtual void onMousePress(Event & e) override;
     virtual void onMouseRelease(Event & e) override;
 
