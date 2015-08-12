@@ -2,6 +2,7 @@
 #define __HEADER_TGUI_DIRECTION__
 
 #include <core/json/json_serialize.h>
+#include <core/sml/variant_serialize.h>
 
 namespace tgui
 {
@@ -17,7 +18,7 @@ enum Direction
 };
 
 void serialize(JsonBox::Value & o, Direction d);
-void unserialize(JsonBox::Value & o, Direction & d);
+void unserialize(const sn::Variant & o, Direction & d);
 
 } // namespace tgui
 

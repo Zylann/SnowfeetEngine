@@ -3,6 +3,7 @@
 
 #include "Control.h"
 #include "../TextModel.h"
+#include "../TextAlignment.h"
 
 namespace tgui
 {
@@ -23,7 +24,7 @@ public:
     //--------------------------------
 
     void serializeState(JsonBox::Value & o, const sn::SerializationContext & ctx) override;
-    void unserializeState(JsonBox::Value & o, const sn::SerializationContext & ctx) override;
+    void unserializeState(const sn::Variant & o, const sn::SerializationContext & ctx) override;
 
 private:
     TextModel m_model;

@@ -187,13 +187,13 @@ inline void unserialize(const Variant & o, Vector<s32, N> & vec)
         if (a.size() == N)
         {
 	        for (size_t i = 0; i < N; ++i)
-		        unserialize(a[i].getInt(), vec[i]);
+		        unserialize(a[i], vec[i]);
         }
         else
         {
             u32 count = std::min(a.size(), N);
 	        for (size_t i = 0; i < count; ++i)
-		        unserialize(a[i].getInt(), vec[i]);
+		        unserialize(a[i], vec[i]);
         }
     }
 }
@@ -209,7 +209,7 @@ inline u32 unserializeFlooredU32(const Variant o)
 
 //------------------------------------------------------------------------------
 template <unsigned int N>
-inline void unserialize(const JsonBox::Value & o, Vector<u32, N> & vec)
+inline void unserialize(const Variant & o, Vector<u32, N> & vec)
 {
     if (o.isArray())
     {

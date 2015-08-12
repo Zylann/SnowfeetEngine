@@ -31,7 +31,7 @@ public:
     //--------------------------------
 
     void serializeState(JsonBox::Value & o, const sn::SerializationContext & ctx) override;
-    void unserializeState(JsonBox::Value & o, const sn::SerializationContext & ctx) override;
+    void unserializeState(const sn::Variant & o, const sn::SerializationContext & ctx) override;
 
 protected:
     void onDrawSelf(DrawBatch & batch) override;

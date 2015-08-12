@@ -15,7 +15,7 @@ void serialize(JsonBox::Value & o, Direction d)
     }
 }
 
-void unserialize(JsonBox::Value & o, Direction & d)
+void unserialize(const sn::Variant & o, Direction & d)
 {
     const std::string & s = o.getString();
     if (s == "left")

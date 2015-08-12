@@ -20,7 +20,7 @@ inline void serialize(JsonBox::Value & o, Orientation v)
         o = "horizontal";
 }
 
-inline void unserialize(JsonBox::Value & o, Orientation v)
+inline void unserialize(const sn::Variant & o, Orientation v)
 {
     const std::string & s = o.getString();
     if (s == "vertical")

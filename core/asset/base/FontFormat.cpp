@@ -28,13 +28,13 @@ void serialize(JsonBox::Value & o, const FontFormat & format)
         o["italic"] = true;
 }
 
-void unserialize(JsonBox::Value & o, FontFormat & format)
+void unserialize(const Variant & o, FontFormat & format)
 {
     sn::unserialize(o["size"], format.size, format.size);
     
-    if (o["bold"].getBoolean())
+    if (o["bold"].getBool())
         format.style |= FontFormat::STYLE_BOLD;
-    if (o["italic"].getBoolean())
+    if (o["italic"].getBool())
         format.style |= FontFormat::STYLE_ITALIC;
 }
 

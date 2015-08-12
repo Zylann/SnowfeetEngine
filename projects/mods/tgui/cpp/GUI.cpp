@@ -137,10 +137,13 @@ void GUI::serializeState(JsonBox::Value & o, const sn::SerializationContext & ct
 }
 
 //------------------------------------------------------------------------------
-void GUI::unserializeState(JsonBox::Value & o, const sn::SerializationContext & ctx)
+void GUI::unserializeState(const Variant & o, const sn::SerializationContext & ctx)
 {
     Control::unserializeState(o, ctx);
-    m_theme.set(getAssetBySerializedLocation<Theme>(o["theme"].getString(), ctx.getModule(), this));
+
+	std::string themeLocation;
+	sn::unserialize(o["theme"], themeLocation);
+    m_theme.set(getAssetBySerializedLocation<Theme>(themeLocation, ctx.getModule(), this));
 }
 
 } // namespace tgui
