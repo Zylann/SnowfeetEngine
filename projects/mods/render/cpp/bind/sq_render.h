@@ -8,6 +8,7 @@ namespace render {
 
 void bindDrawable(HSQUIRRELVM vm);
 void bindCamera(HSQUIRRELVM vm);
+void bindMaterial(HSQUIRRELVM vm);
 
 void bindRenderModule(HSQUIRRELVM vm);
 
