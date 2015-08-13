@@ -13,7 +13,6 @@ solution "SnowfeetEngine"
 	configurations { "Debug", "Release" }
 	includedirs {
 		"squirrel",
-		"json",
 		"." -- core
 	}
 	filter "configurations:Debug"
@@ -67,11 +66,6 @@ solution "SnowfeetEngine"
 	function commonModLinks()
 		links {
 			"SnowfeetCore",
-
-			-- Note: I don't think both should be there,
-			-- because they already are statically linked to the core,
-			-- which in turn is linked to modules...
-			"JsonBox"
 		}
 	end
 
@@ -105,7 +99,6 @@ solution "SnowfeetEngine"
 	--------------------------------------------
 
 	-- Core stuff
-	include("json")
 	--include("angelscript")
 	include("squirrel")
 	include("core")

@@ -7,8 +7,7 @@ project "SnowfeetCore"
 	kind "SharedLib"
 	language "C++"
 	dependson {
-		"Squirrel",
-		"JsonBox"
+		"Squirrel"
 	}
 	location "."
 
@@ -22,7 +21,6 @@ project "SnowfeetCore"
 		"asset/**",
 		"bind/**",
 		"drivers/**",
-		"json/**",
 		"sml/**",
 		"math/**",
 		"pcg/**",
@@ -52,7 +50,6 @@ project "SnowfeetCore"
 
 	links {
 		"Squirrel",
-		"JsonBox",
 	}
 	-- Windows-specific
 	filter "system:windows"

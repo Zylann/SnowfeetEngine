@@ -11,7 +11,7 @@ class DumpToObjectDBConverter
 {
 public:
     /// \brief Converts input JSON. Last output is cleared.
-    /// \param input: dump data. Won't be modified (not const for convenience because of JsonBox's design).
+    /// \param input: dump data.
     void convert(const Variant & input);
 
     /// \brief The result of the conversion will be stored here.

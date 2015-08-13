@@ -6,8 +6,6 @@
 #include <unordered_map>
 #include <core/asset/Asset.h>
 
-#include <JsonBox.h>
-
 namespace sn
 {
 
