@@ -15,6 +15,8 @@ void bindCore(HSQUIRRELVM vm)
     bindDrawable(vm);
 
     bindAsset(vm);
+    bindMaterialBase(vm);
+
 }
 
 } // namespace sn

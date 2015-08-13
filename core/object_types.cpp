@@ -54,7 +54,7 @@ void registerObjectTypes(ObjectTypeDatabase & otb)
     otb.registerType<AssetLoader>();
     otb.registerType<ObjectDB>();
     otb.registerType<Mesh>();
-    otb.registerType<Material>();
+    otb.registerType<Material>("MaterialBase");
     otb.registerType<Image>();
     otb.registerType<TextureBase>();
     otb.registerType<Font>();
