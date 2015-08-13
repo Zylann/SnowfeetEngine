@@ -14,6 +14,7 @@ void bindCore(HSQUIRRELVM vm)
     bindScene(vm);
     bindDrawable(vm);
 
+    bindAsset(vm);
 }
 
 } // namespace sn

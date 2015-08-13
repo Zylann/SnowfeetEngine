@@ -20,6 +20,7 @@ void bindEntity3D(HSQUIRRELVM vm);
 void bindScene(HSQUIRRELVM vm);
 void bindDrawable(HSQUIRRELVM vm);
 
+void bindAsset(HSQUIRRELVM vm);
 /// \brief Binds all classes of the engine's core to a Squirrel VM.
 void bindCore(HSQUIRRELVM vm);
 
