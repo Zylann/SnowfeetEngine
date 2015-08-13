@@ -67,10 +67,12 @@ project "SnowfeetCore"
 	---------------------------------------------------
 
 	defines {
-		-- To allow modules to use bindings from the core
-		"SCRAT_EXPORT",
 		-- To export core API (by default SN_API is set to import)
 		"SN_CORE_EXPORT"
+
+		-- Was used back in the old days when I used Sqrat...
+		-- To allow modules to use bindings from the core
+		--"SCRAT_EXPORT",
 	}
 
 	---------------------------------------------------

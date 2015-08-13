@@ -82,9 +82,11 @@ solution "SnowfeetEngine"
 	function commonModDefines()
 		-- Modules bindings have to include core bindings
 		-- if they want to interact with them
-		defines {
-			"SCRAT_IMPORT"
-		}
+
+		-- Was used for Sqrat but is no longer in the core
+		-- defines {
+		-- 	"SCRAT_IMPORT"
+		-- }
 	end
 
 	function commonModConfigCPP()
