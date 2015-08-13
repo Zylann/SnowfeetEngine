@@ -46,7 +46,9 @@ Features
 - Dynamic module system
 - Multi-screens
 - GUI (WIP)
-- Scenes described with JSON
+- Scenes described with human-readable text files
+- Javascript/Lua-like scripting (Squirrel)
+- JSON-superset data format
 
 
 Web export
