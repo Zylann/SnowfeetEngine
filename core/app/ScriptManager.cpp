@@ -32,6 +32,7 @@ namespace sn
         //------------------------------------------------------------------------------
         void sqPrintfunc(HSQUIRRELVM v, const SQChar *s, ...)
         {
+            // Get the message in a string
             char buffer[2048];
             va_list vl;
             va_start(vl, s);
@@ -39,12 +40,15 @@ namespace sn
             //printf(s, vl);
             //scvprintf(s, vl);
             va_end(vl);
-            SN_LOG(buffer);
+
+            // Print
+            sn::Log::get().print(SN_LTM_INFO, buffer);
         }
 
         //------------------------------------------------------------------------------
         void sqErrorfunc(HSQUIRRELVM v, const SQChar *s, ...)
         {
+            // Get the message in a string
             char buffer[2048];
             va_list vl;
 	        va_start(vl, s);
@@ -52,7 +56,14 @@ namespace sn
             //printf(s, vl);
 	        //scvprintf(s, vl);
 	        va_end(vl);
-            SN_ERROR(buffer);
+
+            // Remove the \n Squirrel puts for us in its default error handler
+            size_t len = strlen(buffer);
+            buffer[len - 1] = '\0';
+
+            // Print
+            sn::Log::get().print(SN_LTM_ERROR, buffer);
+            //SN_ERROR(buffer);
         }
 
 		//------------------------------------------------------------------------------
