@@ -34,6 +34,7 @@ private:
     void setValueFromPos(sn::Vector2i cursorPos);
 
     void notifyValueChanged();
+    void notifyReleased();
 
 private:
     // TODO Step?

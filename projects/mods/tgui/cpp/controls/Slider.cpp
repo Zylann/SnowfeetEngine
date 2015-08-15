@@ -91,6 +91,7 @@ void Slider::onMousePress(Event & ev)
 void Slider::onMouseRelease(Event & e)
 {
 	endCapture();
+    notifyReleased();
 }
 
 //------------------------------------------------------------------------------
@@ -133,6 +134,16 @@ void Slider::notifyValueChanged()
     if (!s.isNull())
     {
         s.callMethod("onValueChanged", m_value);
+    }
+}
+
+//------------------------------------------------------------------------------
+void Slider::notifyReleased()
+{
+    auto & s = getScript();
+    if (!s.isNull())
+    {
+        s.callMethod("onRelease");
     }
 }
 
