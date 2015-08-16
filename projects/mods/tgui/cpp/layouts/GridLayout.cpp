@@ -54,10 +54,12 @@ void GridLayout::update()
     std::vector<Control*> children;
     r_control.getChildrenOfType<Control>(children);
 
+    const Border & padding = r_control.getPadding();
+
     u32 rowCount = children.size() / m_columns.size() + 1;
 
     u32 childIndex = 0;
-    u32 rowY = 0;
+    u32 rowY = padding.top;
 
     for (u32 rowIndex = 0; rowIndex < rowCount; ++rowIndex)
     {
@@ -113,8 +115,9 @@ void GridLayout::recalculateColumnSizes()
         return;
 
     IntRect clientBounds = r_control.getLocalClientBounds();
+    Border padding = r_control.getPadding();
 
-    f32 ratio = clientBounds.width();
+    f32 ratio = clientBounds.width() - padding.left - padding.right;
 
     // Normalize column scales
     f32 scaleSum = 0;
@@ -125,7 +128,7 @@ void GridLayout::recalculateColumnSizes()
     if (scaleSum > math::ROUNDING_ERROR_F32)
         ratio /= scaleSum;
 
-    s32 x = 0;
+    s32 x = padding.left;
     for (u32 i = 0; i < m_columns.size(); ++i)
     {
         Column & col = m_columns[i];
