@@ -2,9 +2,12 @@
 #define __HEADER_SN_SERIALIZATIONCONTEXT__
 
 #include <string>
+#include <unordered_map>
 
 namespace sn
 {
+
+class Object;
 
 /// \brief Contains data global to a serialization process.
 class SN_API SerializationContext

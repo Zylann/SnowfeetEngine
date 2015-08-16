@@ -13,6 +13,7 @@ This file is part of the SnowfeetEngine project.
 #include <core/system/Event.h>
 #include <core/squirrel/Instance.h>
 #include <core/asset/SerializationContext.h>
+#include <core/util/typecheck.h>
 
 #include <vector>
 #include <string>
