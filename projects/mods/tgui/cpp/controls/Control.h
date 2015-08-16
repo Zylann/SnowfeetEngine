@@ -38,6 +38,7 @@ struct Event
 };
 
 class GUI;
+class Layout;
 
 class Control : public sn::Entity
 {
@@ -71,7 +72,7 @@ public:
     const Border & getPadding() const { return m_padding; }
     Position getPositionMode() const { return m_positionMode; }
 
-    void layoutChildren();
+    virtual void layoutChildren();
 
     //--------------------------------
     // State
@@ -117,6 +118,8 @@ public:
     void unserializeState(const sn::Variant & o, const sn::SerializationContext & ctx) override;
 
 protected:
+    virtual ~Control();
+
     void dispatchEventToChildren(Event & ev);
     
     virtual void onDraw(DrawBatch & batch);
@@ -131,6 +134,8 @@ protected:
     virtual void onControlResized() {}
     virtual void onSetCursor(Event & e);
     virtual void onSizeChanged() {}
+
+    bool hasLayout() const { return m_layout != nullptr; }
 
 	//--------------------------------
     // Helpers
@@ -147,6 +152,8 @@ private:
 
     void setControlFlag(sn::u32 i, bool value);
 
+    void setLayout(Layout * newLayout);
+
 private:
     sn::IntRect m_localBounds;
     std::bitset<TGUI_CF_COUNT> m_controlFlags;
@@ -155,6 +162,7 @@ private:
     Border m_padding;
     Anchors m_anchors;
     Position m_positionMode;
+    Layout * m_layout; // TODO Layout should be a Component in future design
 };
 
 } // namespace tgui

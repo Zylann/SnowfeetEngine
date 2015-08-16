@@ -25,6 +25,12 @@ public:
     void onDrawSelf(DrawBatch & batch) override;
 
     //--------------------------------
+    // Overrides
+    //--------------------------------
+
+    void layoutChildren() override;
+
+    //--------------------------------
     // Serialization
     //--------------------------------
 

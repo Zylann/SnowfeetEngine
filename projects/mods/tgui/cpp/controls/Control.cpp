@@ -1,5 +1,6 @@
 #include "Control.h"
 #include "../GUI.h"
+#include "../layouts/ListLayout.h"
 
 #include <core/util/typecheck.h>
 #include <core/system/SystemGUI.h>
@@ -14,8 +15,18 @@ namespace tgui
 Control::Control() : sn::Entity(),
     m_controlFlags((1 << TGUI_CF_ENABLED) | (1 << TGUI_CF_VISIBLE)),
     m_windowID(0),
-    m_positionMode(TGUI_LAYOUT)
+    m_positionMode(TGUI_LAYOUT),
+    m_layout(nullptr)
 {
+}
+
+//------------------------------------------------------------------------------
+Control::~Control()
+{
+    if (m_layout)
+    {
+        delete m_layout;
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -55,6 +66,14 @@ bool Control::getControlFlag(sn::u32 i) const
 void Control::setControlFlag(sn::u32 i, bool value)
 {
     m_controlFlags[i] = value;
+}
+
+//------------------------------------------------------------------------------
+void Control::setLayout(Layout * newLayout)
+{
+    if (m_layout)
+        delete m_layout;
+    m_layout = newLayout;
 }
 
 //------------------------------------------------------------------------------
@@ -155,41 +174,9 @@ Control * Control::getChildControlAt(sn::Vector2i position) const
 //------------------------------------------------------------------------------
 void Control::layoutChildren()
 {
-	// TODO Have a dirty flag to avoid calculating layouts when nothing changed
-
-    std::vector<Control*> children;
-    getChildrenOfType<Control>(children);
-
-    // Default vertical layout
-    Vector2i pos(0, m_padding.top);
-    for (auto it = children.begin(); it != children.end(); ++it)
+    if (m_layout)
     {
-        Control & child = **it;
-        if (child.getPositionMode() == TGUI_LAYOUT)
-        {
-            IntRect childBounds = child.m_localBounds;
-            const Anchors & anchors = child.getAnchors();
-            const Border & margin = child.getMargin();
-
-            childBounds.origin() = pos;
-
-            //if (anchors[TGUI_LEFT])
-            childBounds.x() = margin.left + m_padding.left;
-
-            if (anchors[TGUI_TOP])
-                childBounds.y() = margin.top + m_padding.top;
-
-            if (anchors[TGUI_RIGHT])
-                childBounds.width() = m_localBounds.width() - margin.left - margin.right - childBounds.x() - m_padding.right;
-
-            if (anchors[TGUI_BOTTOM])
-                childBounds.height() = m_localBounds.height() - margin.top - margin.bottom - childBounds.y() - m_padding.bottom;
-
-            child.setLocalClientBounds(childBounds);
-            child.layoutChildren();
-
-            pos.y() += childBounds.height() + margin.top + margin.bottom;
-        }
+        m_layout->update();
     }
 }
 
@@ -387,6 +374,34 @@ void Control::unserializeState(const sn::Variant & o, const SerializationContext
     tgui::unserialize(o["margins"], m_margins);
     tgui::unserialize(o["padding"], m_padding);
     tgui::unserializeAnchors(o["anchors"], m_anchors);
+
+    const Variant & layoutData = o["layout"];
+    if (layoutData.isDictionary())
+    {
+        std::string layoutType;
+        sn::unserialize(layoutData["@type"], layoutType);
+
+        if (!layoutType.empty())
+        {
+            Layout * layout = nullptr;
+
+            if (layoutType == "tgui::ListLayout")
+            {
+                layout = new ListLayout(*this);
+            }
+            else
+            {
+                SN_ERROR("Unrecognized TGUI layout type '" << layoutType << "'");
+            }
+
+            if (layout)
+            {
+                layout->unserializeState(layoutData, ctx);
+            }
+
+            setLayout(layout);
+        }
+    }
 }
 
 } // namespace tgui

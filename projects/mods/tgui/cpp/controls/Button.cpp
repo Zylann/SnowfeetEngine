@@ -51,6 +51,47 @@ void Button::onDrawSelf(DrawBatch & batch)
 }
 
 //------------------------------------------------------------------------------
+void Button::layoutChildren()
+{
+    if (hasLayout())
+        Control::layoutChildren();
+    else
+    {
+        // Center the first child
+
+        std::vector<Control*> children;
+        getChildrenOfType<Control>(children);
+
+        if (!children.empty())
+        {
+            Control & child = *children[0];
+            IntRect childBounds = child.getLocalClientBounds();
+            const Anchors & anchors = child.getAnchors();
+            const Border & margin = child.getMargin();
+
+            Vector2i pos(0, getPadding().top);
+
+            childBounds.origin() = pos;
+
+            //if (anchors[TGUI_LEFT])
+            childBounds.x() = margin.left + getPadding().left;
+
+            if (anchors[TGUI_TOP])
+                childBounds.y() = margin.top + getPadding().top;
+
+            if (anchors[TGUI_RIGHT])
+                childBounds.width() = getLocalClientBounds().width() - margin.left - margin.right - childBounds.x() - getPadding().right;
+
+            if (anchors[TGUI_BOTTOM])
+                childBounds.height() = getLocalClientBounds().height() - margin.top - margin.bottom - childBounds.y() - getPadding().bottom;
+
+            child.setLocalClientBounds(childBounds);
+            child.layoutChildren();
+        }
+    }
+}
+
+//------------------------------------------------------------------------------
 void Button::serializeState(sn::Variant & o, const SerializationContext & ctx)
 {
     Control::serializeState(o, ctx);
