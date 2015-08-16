@@ -370,7 +370,7 @@ void Control::serializeState(sn::Variant & o, const SerializationContext & ctx)
 void Control::unserializeState(const sn::Variant & o, const SerializationContext & ctx)
 {
     Entity::unserializeState(o, ctx);
-    sn::unserialize(o["bounds"], m_localBounds, IntRect(0,0,300,200));
+    sn::unserialize(o["bounds"], m_localBounds, IntRect(0,0,100,50));
     sn::unserialize(o["hostWindow"], m_windowID);
     tgui::unserialize(o["margins"], m_margins);
     tgui::unserialize(o["padding"], m_padding);
