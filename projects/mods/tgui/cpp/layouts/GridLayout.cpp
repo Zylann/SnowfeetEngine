@@ -75,10 +75,13 @@ void GridLayout::update()
 
                 Control & child = *children[i];
                 IntRect childBounds = child.getLocalClientBounds();
+                Border childMargin = child.getMargin();
 
-                u32 h = static_cast<u32>(childBounds.height());
-                if (rowHeight < h)
-                    rowHeight = h;
+                s32 h = childBounds.height() + childMargin.top + childMargin.bottom;
+                if (h < 0)
+                    h = 0;
+                if (rowHeight < static_cast<u32>(h))
+                    rowHeight = static_cast<u32>(h);
             }
         }
 
@@ -91,13 +94,14 @@ void GridLayout::update()
 
             Control & child = *children[i];
             IntRect childBounds = child.getLocalClientBounds();
+            Border childMargin = child.getMargin();
 
             const Column & col = m_columns[columnIndex];
 
-            childBounds.x() = col.x;
-            childBounds.y() = rowY;
-            childBounds.width() = col.size;
-            childBounds.height() = rowHeight;
+            childBounds.x() = col.x + childMargin.left;
+            childBounds.y() = rowY + childMargin.top;
+            childBounds.width() = col.size - childMargin.left - childMargin.right;
+            childBounds.height() = rowHeight - childMargin.top - childMargin.bottom;
 
             child.setLocalClientBounds(childBounds);
             child.layoutChildren();
