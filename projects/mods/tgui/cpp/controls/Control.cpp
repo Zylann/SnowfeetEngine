@@ -1,6 +1,7 @@
 #include "Control.h"
 #include "../GUI.h"
 #include "../layouts/ListLayout.h"
+#include "../layouts/GridLayout.h"
 
 #include <core/util/typecheck.h>
 #include <core/system/SystemGUI.h>
@@ -388,6 +389,10 @@ void Control::unserializeState(const sn::Variant & o, const SerializationContext
             if (layoutType == "tgui::ListLayout")
             {
                 layout = new ListLayout(*this);
+            }
+            else if (layoutType == "tgui::GridLayout")
+            {
+                layout = new GridLayout(*this);
             }
             else
             {
