@@ -114,7 +114,16 @@ void GridLayout::recalculateColumnSizes()
 
     IntRect clientBounds = r_control.getLocalClientBounds();
 
-    f32 ratio = static_cast<f32>(clientBounds.width()) / static_cast<f32>(m_columns.size());
+    f32 ratio = clientBounds.width();
+
+    // Normalize column scales
+    f32 scaleSum = 0;
+    for (u32 i = 0; i < m_columns.size(); ++i)
+    {
+        scaleSum += m_columns[i].scale;
+    }
+    if (scaleSum > math::ROUNDING_ERROR_F32)
+        ratio /= scaleSum;
 
     s32 x = 0;
     for (u32 i = 0; i < m_columns.size(); ++i)
