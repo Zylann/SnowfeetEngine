@@ -130,7 +130,7 @@ void HeadTracker::onReady()
     else
     {
         SN_ERROR("Couldn't create OVR HMD.");
-        getScene()->quit();
+        //getScene()->quit();
     }
 
     const char* err = ovrHmd_GetLastError(m_ovrHmd);
@@ -218,6 +218,8 @@ void HeadTracker::onRenderEye(Entity * sender, VRHeadset::EyeIndex abstractEyeIn
 // TODO Use a callback from a rendering module instead of onUpdate
 void HeadTracker::onUpdate()
 {
+    if (m_ovrHmd == nullptr)
+        return;
     // At this point we assume the headset is plugged and working
 
     if (m_isFirstUpdate)
