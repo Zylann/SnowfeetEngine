@@ -9,6 +9,12 @@ namespace tgui
 {
 
 //------------------------------------------------------------------------------
+Text::Text():
+    m_align(TGUI_ALIGN_LEFT)
+{
+}
+
+//------------------------------------------------------------------------------
 void Text::setSource(const std::string & str)
 {
     m_model.setSource(str);

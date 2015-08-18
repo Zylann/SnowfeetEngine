@@ -14,6 +14,8 @@ class Text : public Control
 public:
     SN_ENTITY(tgui::Text, tgui::Control)
 
+    Text();
+
     void onDrawSelf(DrawBatch & batch) override;
 
     void setSource(const std::string & str);
