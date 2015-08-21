@@ -13,4 +13,3 @@ bool showFileDialog(const FileOpenParams & params, std::vector<std::string> & fi
 }
 
 } // namespace systemdialog
-
