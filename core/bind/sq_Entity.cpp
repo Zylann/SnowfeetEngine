@@ -149,7 +149,8 @@ namespace sn
 			if (argType == OT_STRING)
 			{
 				const SQChar * typeName = nullptr;
-				child = self->createChild(typeName);
+				if(SQ_SUCCEEDED(sq_getstring(vm, 2, &typeName)))
+					child = self->createChild(typeName);
 			}
 			else
 			{
