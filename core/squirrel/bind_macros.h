@@ -25,6 +25,14 @@
 		} \
 	}
 
+// If you prefer writing the function in plain C++ instead of the macros above, 
+// Put this macro at the beginning to get the "self" local variable.
+// The function will generate an error if self is null.
+#define GET_SELF() \
+	auto * self = squirrel::getNativeInstance<__sn_CurrentClass>(vm, 1);\
+	if (self == nullptr)\
+		return sq_throwerror(vm, "Attempt to call native method '" SN_FUNCNAME "' on destroyed instance")
+
 #endif // __HEADER_SQUIRREL_BIND_MACROS__
 
 
