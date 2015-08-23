@@ -18,6 +18,10 @@ void SN_API pushValue(HSQUIRRELVM vm, const Variant & v);
 /// \param objectIndex: stack index of the target Squirrel object
 void SN_API applyProperties(HSQUIRRELVM vm, const Variant & o, SQInteger objectIndex);
 
+void SN_API getVariant(HSQUIRRELVM vm, Variant & out_v, SQInteger index);
+void SN_API getArray(HSQUIRRELVM vm, Variant & out_v, SQInteger index);
+void SN_API getTable(HSQUIRRELVM vm, Variant & out_v, SQInteger index);
+
 } // namespace sn
 
 #endif // __HEADER_SN_VARIANT_SQUIRREL__
