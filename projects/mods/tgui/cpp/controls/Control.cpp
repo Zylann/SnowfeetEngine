@@ -173,6 +173,14 @@ Control * Control::getChildControlAt(sn::Vector2i position) const
 }
 
 //------------------------------------------------------------------------------
+Control * Control::getChildControlByIndex(u32 i) const
+{
+    Entity * e = getChildByIndex(i);
+    Control * c = Object::cast<Control>(e);
+    return c;
+}
+
+//------------------------------------------------------------------------------
 void Control::layoutChildren()
 {
     if (m_layout)

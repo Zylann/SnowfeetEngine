@@ -72,6 +72,31 @@
 							"text":"This is not a sample text\nAnother line\nLorem ipsum dolor sit amet, consectetur adipiscing elit.\nThis is not a sample text\nAnother line\nLorem ipsum dolor sit amet, consectetur adipiscing elit."
 						}
 					]
+				},
+				{
+					"@type":"tgui::Docker",
+					"name":"docker",
+					"bounds":{"x":200, "y":10, "w":200, "h":300},
+					"split":[
+						"v",
+						0,
+						[
+							"h",
+							1,
+							2
+						]
+					],
+					"_children":[
+						{
+							"@type":"tgui::Panel"
+						},
+						{
+							"@type":"tgui::Panel"
+						},
+						{
+							"@type":"tgui::Panel"
+						}
+					]
 				}
 			]
 		}

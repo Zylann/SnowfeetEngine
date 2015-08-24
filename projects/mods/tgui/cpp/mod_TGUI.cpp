@@ -9,6 +9,7 @@
 #include "controls/Panel.h"
 #include "controls/Slider.h"
 #include "controls/TextArea.h"
+#include "controls/Docker.h"
 
 #include "theme/Theme.h"
 
@@ -27,6 +28,7 @@ namespace tgui
         otb.registerType<Panel>();
         otb.registerType<Slider>();
         otb.registerType<TextArea>();
+        otb.registerType<Docker>();
 
         // Assets
         otb.registerType<Theme>();

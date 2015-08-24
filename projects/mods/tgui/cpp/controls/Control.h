@@ -62,6 +62,7 @@ public:
     void setLocalClientBounds(sn::IntRect bounds);
 
     Control * getChildControlAt(sn::Vector2i position) const;
+    Control * getChildControlByIndex(sn::u32 i) const;
 
     //--------------------------------
     // Layout
@@ -114,8 +115,8 @@ public:
     // Serialization
     //--------------------------------
 
-    void serializeState(sn::Variant & o, const sn::SerializationContext & ctx) override;
-    void unserializeState(const sn::Variant & o, const sn::SerializationContext & ctx) override;
+    virtual void serializeState(sn::Variant & o, const sn::SerializationContext & ctx) override;
+    virtual void unserializeState(const sn::Variant & o, const sn::SerializationContext & ctx) override;
 
 protected:
     virtual ~Control();
