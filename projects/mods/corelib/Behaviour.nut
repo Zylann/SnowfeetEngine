@@ -9,4 +9,3 @@ class Behaviour
 		return entity.getScene()
 	}
 }
-

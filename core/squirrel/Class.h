@@ -28,6 +28,14 @@ public:
     Class & setPrivateConstructor();
 
     /// \brief Sets a native method callable from scripts
+	/// \param methodName: name of the method in scripts
+	/// \param cb_method: C-style Squirrel function to execute
+	/// \param nparams: (optional) fixes the number of parameter required by the function. 
+	///                 Negative value -X means "at least X params". 
+	///                 0 means no param checking.
+	/// \param a_paramsMask: (optional) parameters type mask for checking.
+	///                 For syntax details see http://squirrel-lang.org/doc/squirrel3.html#sq_setparamscheck
+	/// \return Object itself for chaining
     Class & setMethod(
         const char * methodName, 
         SQFUNCTION cb_method, 
