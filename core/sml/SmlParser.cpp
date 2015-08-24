@@ -277,20 +277,23 @@ void SmlParser::parseArray(std::istream & input, Variant::Array & out_value)
 		{
 		case ']':
 		case ')':
+            // Check for the end of the array
 			next = false;
 			m_lastCharacter = input.get();
 			break;
 
-		case '[':
-		case '(':
-			m_lastCharacter = input.get();
-			break;
+		//case '[':
+		//case '(':
+		//	m_lastCharacter = input.get();
+		//	break;
 
 		case ',':
+            // Next element separator
 			m_lastCharacter = input.get();
 			break;
 
 		default:
+            // A value?
 			if (!isWhiteSpace(c))
 			{
 				out_value.push_back(Variant());
