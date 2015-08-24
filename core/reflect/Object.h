@@ -127,7 +127,7 @@ public:
         const ObjectType & ot = obj->getObjectType();
         const ObjectType & otherType = sn::getObjectType<T>();
         if (ot.is(otherType, true))
-            return static_cast<T*>(this);
+            return static_cast<T*>(obj);
         else
             return nullptr;
     }
