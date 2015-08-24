@@ -1,4 +1,5 @@
 #include "variant_squirrel.h"
+#include <core/squirrel/bind_tools.h>
 
 namespace sn
 {
@@ -68,6 +69,107 @@ void applyProperties(HSQUIRRELVM vm, const Variant & o, SQInteger objectIndex)
 			SN_WARNING("Variant => Squirrel: failed to set key " << key);
 		}
 	}
+}
+
+//------------------------------------------------------------------------------
+void SN_API getVariant(HSQUIRRELVM vm, Variant & out_v, SQInteger index)
+{
+	SQObjectType t = sq_gettype(vm, index);
+	switch (t)
+	{
+	case OT_BOOL:
+		out_v.setBool(squirrel::getBool(vm, index));
+		break;
+
+	case OT_INTEGER:
+		out_v.setInt(squirrel::getInt(vm, index));
+		break;
+
+	case OT_FLOAT:
+		out_v.setFloat(squirrel::getFloat(vm, index));
+		break;
+
+	case OT_STRING:
+		out_v.setString(squirrel::getString(vm, index));
+		break;
+
+	case OT_ARRAY:
+		getArray(vm, out_v, index);
+		break;
+
+	case OT_TABLE:
+		getTable(vm, out_v, index);
+		break;
+
+	case OT_INSTANCE:
+		SN_ERROR("Instance type is not supported by sn::getVariant");
+		break;
+
+	default:
+		out_v.reset();
+		break;
+	}
+}
+
+//------------------------------------------------------------------------------
+void SN_API getArray(HSQUIRRELVM vm, Variant & out_v, SQInteger index)
+{
+	out_v.setArray();
+	Variant::Array & a = out_v.getArray();
+
+	SQInteger len = sq_getsize(vm, index);
+	SN_ASSERT(len >= 0, "Invalid array size");
+	
+	if (len > 0)
+	{
+		a.resize(len);
+		s32 i = 0;
+
+		sq_push(vm, index);
+		sq_pushnull(vm);
+
+		while (SQ_SUCCEEDED(sq_next(vm, -2)))
+		{
+			// -1 is the value and -2 is the key
+
+			sq_getinteger(vm, -2, &i);
+			Variant & val = a[i];
+			getVariant(vm, val, -1);
+
+			sq_pop(vm, 2); //pops key and val before the next iteration
+		}
+
+		sq_pop(vm, 2); // Pop the null iterator and array
+	}
+}
+
+//------------------------------------------------------------------------------
+void SN_API getTable(HSQUIRRELVM vm, Variant & out_v, SQInteger index)
+{
+	out_v.setDictionary();
+	Variant::Dictionary & d = out_v.getDictionary();
+
+	sq_push(vm, index);
+	sq_pushnull(vm);
+
+	while (SQ_SUCCEEDED(sq_next(vm, -2)))
+	{
+		if (sq_gettype(vm, -2) == OT_STRING)
+		{
+			const SQChar * key = nullptr;
+			sq_getstring(vm, -2, &key);
+			Variant & val = d[key];
+			getVariant(vm, val, -1);
+		}
+		else
+		{
+			SN_WARNING("non-string keys in tables are not supported by getVariant");
+		}
+
+		sq_pop(vm, 2);
+	}
+
+	sq_pop(vm, 2); // Pop iterator and table
 }
 
 } // namespace sn

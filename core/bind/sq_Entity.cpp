@@ -141,6 +141,28 @@ namespace sn
             return 1;
         END_METHOD
 
+		SQInteger createChild(HSQUIRRELVM vm)
+		{
+			GET_SELF();
+			SQInteger argType = sq_gettype(vm, 2);
+			ScriptableObject * child = nullptr;
+			if (argType == OT_STRING)
+			{
+				const SQChar * typeName = nullptr;
+				if(SQ_SUCCEEDED(sq_getstring(vm, 2, &typeName)))
+					child = self->createChild(typeName);
+			}
+			else
+			{
+				child = self->createChild();
+			}
+			if (child)
+				child->pushScriptObject(vm);
+			else
+				sq_pushnull(vm);
+			return 1;
+		}
+
 	}
 
 void bindEntity(HSQUIRRELVM vm)
@@ -158,9 +180,11 @@ void bindEntity(HSQUIRRELVM vm)
 		.setMethod("addTag", addTag, 1, "s")
 		.setMethod("removeTag", removeTag)
         .setMethod("getScript", getScript)
-        .setMethod("setUpdatable", setUpdatable, -1, "b");
+        .setMethod("setUpdatable", setUpdatable, -1, "b")
+		.setMethod("createChild", createChild, -1, "s")
+	;
 }
-    
+
 } // namespace sn
 
 
