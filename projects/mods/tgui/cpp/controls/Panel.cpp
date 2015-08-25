@@ -14,7 +14,6 @@ Panel::Panel() : Control(),
     m_sideResizerSize(4), // Default
     m_cornerResizerSize(8) // Default
 {
-    m_isResizeable = true;
 }
 
 //------------------------------------------------------------------------------
