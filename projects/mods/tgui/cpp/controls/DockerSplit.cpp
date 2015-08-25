@@ -8,9 +8,10 @@ namespace tgui
 
 //------------------------------------------------------------------------------
 DockerSplit::DockerSplit(DockerSplit * parent, Control * c):
-    m_position(0),
+    m_position(0.5f),
     m_orientation(TGUI_HORIZONTAL),
     r_control(c),
+	r_sizer(nullptr),
     r_parent(parent)
 {
     m_children[0] = nullptr;
@@ -79,10 +80,10 @@ u8 DockerSplit::getIndex()
 void DockerSplit::split(Control * dockContent, Direction direction)
 {
     SN_ASSERT(isLeaf(), "Cannot split non-leaf splitter!");
-        
+    
     u32 a, b;
     Orientation o;
-        
+    
     switch(direction)
     {
     case TGUI_RIGHT:
@@ -110,10 +111,7 @@ void DockerSplit::split(Control * dockContent, Direction direction)
     m_children[a] = new DockerSplit(this, r_control);
     m_children[b] = new DockerSplit(this, dockContent);
     m_orientation = o;
-    if (o == TGUI_VERTICAL)
-        m_position = r_control->getSize().x() / 2;
-    else
-        m_position = r_control->getSize().y() / 2;
+    m_position = 0.5f;
     r_control = nullptr;
 }
 
@@ -193,13 +191,15 @@ void DockerSplit::layout(const IntRect & bounds)
 
         if (m_orientation == TGUI_HORIZONTAL)
         {
-            a.layout(IntRect::fromPositionSize(bounds.minX(), bounds.minY(), m_position, bounds.height()));
-            b.layout(IntRect::fromPositionSize(m_position, bounds.minY(), bounds.width() - m_position, bounds.height()));
+			s32 splitPos = static_cast<s32>(m_position * static_cast<f32>(bounds.width()));
+            a.layout(IntRect::fromPositionSize(bounds.minX(), bounds.minY(), splitPos, bounds.height()));
+            b.layout(IntRect::fromPositionSize(splitPos, bounds.minY(), bounds.width() - splitPos, bounds.height()));
         }
         else
         {
-            a.layout(IntRect::fromPositionSize(bounds.minX(), bounds.minY(), bounds.width(), m_position));
-            b.layout(IntRect::fromPositionSize(bounds.minX(), m_position, bounds.width(), bounds.height() - m_position));
+			s32 splitPos = static_cast<s32>(m_position * static_cast<f32>(bounds.height()));
+			a.layout(IntRect::fromPositionSize(bounds.minX(), bounds.minY(), bounds.width(), splitPos));
+            b.layout(IntRect::fromPositionSize(bounds.minX(), splitPos, bounds.width(), bounds.height() - splitPos));
         }
     }
 }
@@ -257,23 +257,25 @@ void DockerSplit::unserializeTree(const Docker & docker, const Variant & o, cons
                 m_orientation = splitDir;
                 clearChildren();
 
-                if (splitArray.size() == 3)
+                if (splitArray.size() == 4)
                 {
+					sn::unserialize(splitArray[1], m_position, m_position);
+
                     for (u32 i = 0; i < 2; ++i)
                     {
                         m_children[i] = new DockerSplit(this);
-                        m_children[i]->unserializeTree(docker, splitArray[i+1], ctx);
+                        m_children[i]->unserializeTree(docker, splitArray[i+2], ctx);
                     }
 
                     // TODO Serialize splitter position as well
-                    if (m_orientation == TGUI_HORIZONTAL)
-                        m_position = m_children[0]->getSize().x() / 2;
-                    else
-                        m_position = m_children[0]->getSize().y() / 2;
+                    //if (m_orientation == TGUI_HORIZONTAL)
+                    //    m_position = m_children[0]->getSize().x() / 2;
+                    //else
+                    //    m_position = m_children[0]->getSize().y() / 2;
                 }
                 else
                 {
-                    SN_ERROR("Expected two values for split dock layout");
+                    SN_ERROR("Expected [type,position,first,second] for split dock layout");
                 }
             }
         }

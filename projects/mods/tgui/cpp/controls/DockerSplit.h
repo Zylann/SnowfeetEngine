@@ -46,7 +46,7 @@ private:
 	void clearChildren();
 
 private:
-	sn::s32 m_position;
+	sn::f32 m_position;
 	Orientation m_orientation;
 	Control * r_control;
 	Control * r_sizer;

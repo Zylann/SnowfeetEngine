@@ -74,27 +74,44 @@
 					]
 				},
 				{
-					"@type":"tgui::Docker",
-					"name":"docker",
-					"bounds":{"x":200, "y":10, "w":200, "h":300},
-					"split":[
-						"v",
-						0,
-						[
-							"h",
-							1,
-							2
-						]
-					],
+					"@type":"tgui::Panel",
+					"name":"docker_container",
+					"bounds":{"x":300, "y":10, "w":200, "h":300},
+					"padding":{"left":4, "right":4, "top":4, "bottom":4},
+					"isResizeable":true,
+					"layout":{
+						"@type":"tgui::ListLayout"
+					},
 					"_children":[
 						{
-							"@type":"tgui::Panel"
-						},
-						{
-							"@type":"tgui::Panel"
-						},
-						{
-							"@type":"tgui::Panel"
+							"@type":"tgui::Docker",
+							"name":"docker",
+							"anchors":["left", "right", "top", "bottom"],
+							"split":[
+								"v",
+								0.5,
+								0,
+								[
+									"h",
+									0.5,
+									1,
+									2
+								]
+							],
+							"_children":[
+								{
+									"@type":"tgui::Panel",
+									"name":"first"
+								},
+								{
+									"@type":"tgui::Panel",
+									"name":"second"
+								},
+								{
+									"@type":"tgui::Panel",
+									"name":"third"
+								}
+							]
 						}
 					]
 				}
