@@ -2,6 +2,7 @@
 #define __HEADER_TGUI_DOCKER__
 
 #include "DockerSplit.h"
+#include "Control.h"
 
 namespace tgui
 {
