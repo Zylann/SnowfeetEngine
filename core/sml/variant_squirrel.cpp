@@ -25,12 +25,11 @@ void pushValue(HSQUIRRELVM vm, const Variant & v)
 		break;
 
 	case SN_VT_DICTIONARY:
-		// TODO Handle objects
-		// TODO Handle special objects (color, vectors, matrix, instances etc)
+		pushTable(vm, v.getDictionary());
 		break;
 
 	case SN_VT_ARRAY:
-		// TODO Handle arrays
+		pushArray(vm, v.getArray());
 		break;
 
 	case SN_VT_BOOL:
@@ -42,24 +41,63 @@ void pushValue(HSQUIRRELVM vm, const Variant & v)
 		break;
 
 	default:
+		// TODO Handle special objects (color, vectors, matrix, instances etc)
 		// UNKNOWN
 		break;
 	}
 }
 
 //------------------------------------------------------------------------------
-void applyProperties(HSQUIRRELVM vm, const Variant & o, SQInteger objectIndex)
+void SN_API pushTable(HSQUIRRELVM vm, const Variant::Dictionary & d)
 {
-	SN_ASSERT(o.isDictionary(), "Variant is not a dictionary");
-
-	const Variant::Dictionary & obj = o.getDictionary();
-	for (auto it = obj.begin(); it != obj.end(); ++it)
+	sq_newtable(vm);
+	for (auto it = d.begin(); it != d.end(); ++it)
 	{
 		// Push key
 		const std::string & key = it->first;
 		sq_pushstring(vm, key.c_str(), key.size());
 
 		// Push value
+		const Variant & value = it->second;
+		pushValue(vm, value);
+
+		// Set or create
+		if (SQ_FAILED(sq_newslot(vm, -3, SQFalse)))
+		{
+			SN_WARNING("Variant => Squirrel: failed to set key " << key);
+		}
+	}
+}
+
+//------------------------------------------------------------------------------
+void SN_API pushArray(HSQUIRRELVM vm, const Variant::Array & a)
+{
+	sq_newarray(vm, a.size());
+	for (size_t i = 0; i < a.size(); ++i)
+	{
+		sq_pushinteger(vm, i);
+		pushValue(vm, a[i]);
+		if (SQ_FAILED(sq_set(vm, -3)))
+		{
+			SN_WARNING("Variant => Squirrel: failed to set array index " << i);
+		}
+	}
+}
+
+//------------------------------------------------------------------------------
+void applyProperties(HSQUIRRELVM vm, const Variant::Dictionary & o, SQInteger objectIndex)
+{
+	if (objectIndex < 0)
+		objectIndex -= 2; // Key + value stack offset
+
+	for (auto it = o.begin(); it != o.end(); ++it)
+	{
+		// Push key
+		const std::string & key = it->first;
+		sq_pushstring(vm, key.c_str(), key.size());
+
+		// Push value
+		// TODO If the value is a table, go recursively instead of overwriting the previous value
 		const Variant & value = it->second;
 		pushValue(vm, value);
 
