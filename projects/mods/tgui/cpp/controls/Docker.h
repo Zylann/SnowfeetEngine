@@ -13,12 +13,15 @@ public:
     SN_ENTITY(tgui::Docker, tgui::Control)
 
     void layoutChildren() override;
+	DockerSplit * getDockLayout() { return &m_split; }
+
+	void onReady() override;
 
     void serializeState(sn::Variant & o, const sn::SerializationContext & ctx) override;
     void unserializeState(const sn::Variant & o, const sn::SerializationContext & ctx) override;
 
 private:
-    void unserializeSplit(DockerSplit & split, const sn::Variant & o, const sn::SerializationContext & ctx);
+	void createSizers();
 
 private:
     DockerSplit m_split;

@@ -1,5 +1,6 @@
 #include "DockerSplit.h"
 #include "Docker.h"
+#include "DockSizer.h"
 
 using namespace sn;
 
@@ -38,15 +39,17 @@ bool DockerSplit::isRoot() const
 }
     
 //------------------------------------------------------------------------------
-DockPath DockerSplit::getPath()
+DockPath DockerSplit::getPath(const DockerSplit ** root) const
 {
     DockPath path;
     if(r_parent == nullptr)
         return path;
-    auto parent = this;
-    while(parent)
+    const DockerSplit * parent = this;
+    while(parent->r_parent)
     {
         path.push_back(parent->getIndex());
+		if (root)
+			*root = parent;
         parent = parent->r_parent;
     }
     std::reverse(path.begin(), path.end());
@@ -66,7 +69,7 @@ DockerSplit * DockerSplit::getFromPath(const DockPath & path)
 }
 
 //------------------------------------------------------------------------------
-u8 DockerSplit::getIndex()
+u8 DockerSplit::getIndex() const
 {
     if(r_parent == nullptr)
         return -1;
@@ -149,10 +152,67 @@ Vector2i DockerSplit::getSize() const
         {
             s.y() += m_children[1]->getSize().y();
             if (r_sizer)
-                s.x() += r_sizer->getSize().y();
+                s.y() += r_sizer->getSize().y();
         }
         return s;
     }
+}
+
+//------------------------------------------------------------------------------
+void DockerSplit::setSplitPosition(const DockPath & path, sn::s32 pixelPos)
+{
+	// Get target split
+	DockerSplit * target = getFromPath(path);
+	SN_ASSERT(target != nullptr, "Invalid path was provided");
+
+	// Calculate offset from the root
+	DockerSplit * split = this;
+	s32 offset = 0;
+	for (u32 i = 0; i < path.size(); ++i)
+	{
+		u8 childIndex = path[i];
+		DockerSplit * parent = split;
+		split = split->m_children[childIndex];
+		// TODO This might be biased by margins
+		// If the child is placed at +X or +Y and is oriented the same, add offset
+		if (childIndex != 0 && split->m_orientation == parent->m_orientation)
+		{
+			offset += parent->getLocalSplitPosition();
+		}
+	}
+
+	// Set sizer position
+	target->setLocalSplitPosition(pixelPos - offset);
+}
+
+//------------------------------------------------------------------------------
+void DockerSplit::setLocalSplitPosition(sn::s32 pixelPos)
+{
+	Vector2i size = getSize();
+	if (m_orientation == TGUI_HORIZONTAL)
+	{
+		if (size.x() != 0)
+			m_position = static_cast<f32>(pixelPos) / static_cast<f32>(size.x());
+	}
+	else
+	{
+		if (size.y() != 0)
+			m_position = static_cast<f32>(pixelPos) / static_cast<f32>(size.y());
+	}
+}
+
+//------------------------------------------------------------------------------
+sn::s32 DockerSplit::getLocalSplitPosition() const
+{
+	Vector2i size = getSize();
+	if (m_orientation == TGUI_HORIZONTAL)
+	{
+		return static_cast<s32>(static_cast<f32>(size.x()) * m_position);
+	}
+	else
+	{
+		return static_cast<s32>(static_cast<f32>(size.y()) * m_position);
+	}
 }
 
 //------------------------------------------------------------------------------
@@ -189,19 +249,77 @@ void DockerSplit::layout(const IntRect & bounds)
         // TODO Apply docker padding
         // TODO Apply splitters size
 
+		s32 sizerSize = 4;
+
         if (m_orientation == TGUI_HORIZONTAL)
         {
-			s32 splitPos = static_cast<s32>(m_position * static_cast<f32>(bounds.width()));
-            a.layout(IntRect::fromPositionSize(bounds.minX(), bounds.minY(), splitPos, bounds.height()));
-            b.layout(IntRect::fromPositionSize(splitPos, bounds.minY(), bounds.width() - splitPos, bounds.height()));
+			s32 localSplitPos = bounds.minX() + static_cast<s32>(m_position * static_cast<f32>(bounds.width()));
+			if (r_sizer)
+				r_sizer->setLocalClientBounds(IntRect::fromPositionSize(
+					bounds.minX() + localSplitPos - sizerSize / 2,
+					bounds.minY(), 
+					sizerSize, 
+					bounds.height()
+				));
+			else
+				sizerSize = 0;
+			a.layout(IntRect::fromPositionSize(
+				bounds.minX(), 
+				bounds.minY(), 
+				localSplitPos - sizerSize / 2,
+				bounds.height()
+			));
+            b.layout(IntRect::fromPositionSize(
+				bounds.minX() + localSplitPos + sizerSize / 2,
+				bounds.minY(), 
+				bounds.width() - localSplitPos - sizerSize / 2,
+				bounds.height()
+			));
         }
         else
         {
-			s32 splitPos = static_cast<s32>(m_position * static_cast<f32>(bounds.height()));
-			a.layout(IntRect::fromPositionSize(bounds.minX(), bounds.minY(), bounds.width(), splitPos));
-            b.layout(IntRect::fromPositionSize(bounds.minX(), splitPos, bounds.width(), bounds.height() - splitPos));
+			s32 localSplitPos = static_cast<s32>(m_position * static_cast<f32>(bounds.height()));
+			if (r_sizer)
+				r_sizer->setLocalClientBounds(IntRect::fromPositionSize(
+					bounds.minX(), 
+					bounds.minY() + localSplitPos - sizerSize / 2,
+					bounds.width(), 
+					sizerSize
+				));
+			else
+				sizerSize = 0;
+			a.layout(IntRect::fromPositionSize(
+				bounds.minX(), 
+				bounds.minY(), 
+				bounds.width(), 
+				localSplitPos - sizerSize / 2
+			));
+			b.layout(IntRect::fromPositionSize(
+				bounds.minX(), 
+				bounds.minY() + localSplitPos + sizerSize / 2,
+				bounds.width(), 
+				bounds.height() - localSplitPos - sizerSize / 2
+			));
         }
     }
+}
+
+//------------------------------------------------------------------------------
+void DockerSplit::createSizers(Control & container)
+{
+	if (!isLeaf() && r_sizer == nullptr)
+	{
+		r_sizer = container.createChild<DockSizer>();
+		r_sizer->setPath(getPath());
+		r_sizer->setOrientation(m_orientation);
+
+		for (u32 i = 0; i < 2; ++i)
+		{
+			DockerSplit * child = m_children[i];
+			if (child)
+				child->createSizers(container);
+		}
+	}
 }
 
 //------------------------------------------------------------------------------
@@ -234,9 +352,9 @@ void DockerSplit::unserializeTree(const Docker & docker, const Variant & o, cons
             const Variant::String & splitType = splitArray[0].getString();
             Orientation splitDir;
             bool isTab = false;
-            if (splitType == "v")
+            if (splitType == "h")
                 splitDir = TGUI_HORIZONTAL;
-            else if (splitType == "h")
+            else if (splitType == "v")
                 splitDir = TGUI_VERTICAL;
             else
                 isTab = true;

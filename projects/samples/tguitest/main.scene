@@ -17,7 +17,7 @@
 				{
 					"@type":"tgui::Panel",
 					"name":"lolpanel",
-					"bounds":{"x":10, "y":10, "w":300, "h":200},
+					"bounds":{"x":300, "y":10, "w":300, "h":200},
 					"padding":{"left":4, "right":4, "top":4, "bottom":4},
 					"isResizeable":true,
 					"layout":{
@@ -76,7 +76,7 @@
 				{
 					"@type":"tgui::Panel",
 					"name":"docker_container",
-					"bounds":{"x":300, "y":10, "w":200, "h":300},
+					"bounds":{"x":10, "y":10, "w":200, "h":300},
 					"padding":{"left":4, "right":4, "top":4, "bottom":4},
 					"isResizeable":true,
 					"layout":{
@@ -88,11 +88,11 @@
 							"name":"docker",
 							"anchors":["left", "right", "top", "bottom"],
 							"split":[
-								"v",
+								"h",
 								0.5,
 								0,
 								[
-									"h",
+									"v",
 									0.5,
 									1,
 									2

@@ -15,6 +15,7 @@ typedef std::vector<sn::u8> DockPath;
 
 class Docker;
 class Control;
+class DockSizer;
 
 class DockerSplit
 {
@@ -25,18 +26,21 @@ public:
 	bool isLeaf() const;
 	bool isRoot() const;
 
-	DockPath getPath();
+	DockPath getPath(const DockerSplit ** parent=nullptr) const;
 
 	DockerSplit * getFromPath(const DockPath & path);
-
-	sn::u8 DockerSplit::getIndex();
 
 	void split(Control * dockContent, Direction direction);
 	void join(sn::u8 i);
 
-	sn::Vector2i getSize() const;
+	/// \brief Sets the split position.
+	/// \param path: path to the split of which the sizer has to be moved
+	/// \param pixelPos: position in pixels relative to the root of the provided path.
+	void setSplitPosition(const DockPath & path, sn::s32 pixelPos);
 
 	void layout(const sn::IntRect & bounds);
+
+	void createSizers(Control & container);
 
 	void serializeTree(sn::Variant & o, const sn::SerializationContext & ctx);
 	void unserializeTree(const Docker & docker, const sn::Variant & o, const sn::SerializationContext & ctx);
@@ -45,11 +49,21 @@ private:
 	void setLeaf(Control * c);
 	void clearChildren();
 
+	/// \brief Gets the size of the split area containing the control/children.
+	/// It is based on the controls, so if layout() has not being performed before,
+	/// the returned size will be wrong.
+	sn::Vector2i getSize() const;
+
+	sn::u8 DockerSplit::getIndex() const;
+
+	sn::s32 getLocalSplitPosition() const;
+	void setLocalSplitPosition(sn::s32 pixelPos);
+
 private:
 	sn::f32 m_position;
 	Orientation m_orientation;
 	Control * r_control;
-	Control * r_sizer;
+	DockSizer * r_sizer;
 	DockerSplit * r_parent;
 	DockerSplit * m_children[2];
 };

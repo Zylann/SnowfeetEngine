@@ -11,6 +11,12 @@ void Docker::layoutChildren()
     m_split.layout(IntRect::fromPositionSize(0,0,size.x(), size.y()));
 }
 
+void Docker::onReady()
+{
+	m_split.createSizers(*this);
+	Control::onReady();
+}
+
 void Docker::serializeState(sn::Variant & o, const sn::SerializationContext & ctx)
 {
     Control::serializeState(o, ctx);
@@ -26,7 +32,6 @@ void Docker::unserializeState(const sn::Variant & o, const sn::SerializationCont
     m_split.unserializeTree(*this, o["split"], ctx);
 
 }
-
 
 } // namespace tgui
 
