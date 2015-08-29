@@ -11,7 +11,9 @@ namespace tgui
 class ListLayout : public Layout
 {
 public:
-    ListLayout(Control & control);
+	SN_OBJECT(tgui::ListLayout, tgui::Layout)
+
+    ListLayout(Control * control = nullptr);
 
     void setOrientation(Orientation newOrientation);
     void setSpacing(sn::s32 newSpacing);

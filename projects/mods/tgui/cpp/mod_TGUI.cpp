@@ -12,6 +12,9 @@
 #include "controls/Docker.h"
 #include "controls/DockSizer.h"
 
+#include "layouts/ListLayout.h"
+#include "layouts/GridLayout.h"
+
 #include "theme/Theme.h"
 
 #include "bind/sq_tgui.h"
@@ -20,7 +23,7 @@ namespace tgui
 {
     void registerObjectTypes(sn::ObjectTypeDatabase & otb)
     {
-        // Entities
+        // Controls
         otb.registerType<Control>();
         otb.registerType<GUI>();
         otb.registerType<Button>();
@@ -31,6 +34,12 @@ namespace tgui
         otb.registerType<TextArea>();
         otb.registerType<Docker>();
 		otb.registerType<DockSizer>();
+
+		// Layouts
+		otb.registerType<Layout>();
+		otb.registerType<ListLayout>();
+		otb.registerType<GridLayout>();
+		otb.registerType<SplitLayout>();
 
         // Assets
         otb.registerType<Theme>();

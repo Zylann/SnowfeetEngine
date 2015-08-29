@@ -9,7 +9,7 @@ namespace tgui
 enum Orientation
 {
     TGUI_HORIZONTAL = 0,
-    TGUI_VERTICAL    
+    TGUI_VERTICAL
 };
 
 inline void serialize(sn::Variant & o, Orientation v)

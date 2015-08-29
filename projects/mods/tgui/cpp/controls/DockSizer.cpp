@@ -1,8 +1,8 @@
 #include <core/system/SystemGUI.h>
 
 #include "DockSizer.h"
-#include "DockerSplit.h"
 #include "Docker.h"
+#include "../layouts/SplitLayout.h"
 
 using namespace sn;
 
@@ -45,16 +45,24 @@ void DockSizer::onMouseMove(Event & e)
 {
 	if (getControlFlag(TGUI_CF_CAPTURED))
 	{
+		// Get parent origin
 		Control * parent = getParentControl();
-		Vector2i origin = parent ? parent->getPosition() : Vector2i();
+		IntRect parentBounds;
+		if (parent)
+		{
+			parentBounds = parent->getClientBounds();
+			parent->getPadding().crop(parentBounds);
+		}
 
+		// Calculate drag split position
 		s32 splitPos;
 		if (m_orientation == TGUI_HORIZONTAL)
-			splitPos = e.value.mouse.x - origin.x();
+			splitPos = e.value.mouse.x - parentBounds.minX();
 		else
-			splitPos = e.value.mouse.y - origin.y();
+			splitPos = e.value.mouse.y - parentBounds.minY();
 
-		DockerSplit * layout = getDockLayout();
+		// Set split position
+		SplitLayout * layout = getLayout();
 		if (layout)
 		{
 			layout->setSplitPosition(m_path, splitPos);
@@ -74,17 +82,11 @@ void DockSizer::onMouseRelease(Event & e)
 	endCapture();
 }
 
-DockerSplit * DockSizer::getDockLayout() const
+SplitLayout * DockSizer::getLayout() const
 {
 	Control * c = getParentControl();
 	if (c)
-	{
-		Docker * docker = Object::cast<Docker>(c);
-		if (docker)
-		{
-			return docker->getDockLayout();
-		}
-	}
+		return Object::cast<SplitLayout>(c->getLayout());
 	return nullptr;
 }
 

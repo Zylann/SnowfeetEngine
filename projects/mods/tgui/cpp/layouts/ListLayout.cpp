@@ -7,7 +7,7 @@ namespace tgui
 {
 
 //------------------------------------------------------------------------------
-ListLayout::ListLayout(Control & control):
+ListLayout::ListLayout(Control * control):
     Layout(control),
     m_spacing(0),
     m_orientation(TGUI_VERTICAL)
@@ -29,6 +29,9 @@ void ListLayout::setSpacing(sn::s32 newSpacing)
 //------------------------------------------------------------------------------
 void ListLayout::update()
 {
+	Control * container = getContainer();
+	SN_ASSERT(container != nullptr, "ListLayout container is null!");
+
     if (m_orientation == TGUI_HORIZONTAL)
     {
         SN_WARNING("Vertical ListLayout orientation is not implemented yet");
@@ -38,14 +41,14 @@ void ListLayout::update()
 	// TODO Have a dirty flag to avoid calculating layouts when nothing changed
 
     std::vector<Control*> children;
-    r_control.getChildrenOfType<Control>(children);
+	container->getChildrenOfType<Control>(children);
 
     // Default vertical layout
     
-    const Border & padding = r_control.getPadding();
+	const Border & padding = container->getPadding();
     Vector2i pos(0, padding.top);
 
-    const sn::IntRect & localBounds = r_control.getLocalClientBounds();
+	const sn::IntRect & localBounds = container->getLocalClientBounds();
 
     for (auto it = children.begin(); it != children.end(); ++it)
     {

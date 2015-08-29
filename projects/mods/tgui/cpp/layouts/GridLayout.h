@@ -10,6 +10,8 @@ namespace tgui
 class GridLayout : public Layout
 {
 public:
+	SN_OBJECT(tgui::GridLayout, tgui::Layout)
+
     struct Column
     {
         sn::f32 scale;
@@ -17,7 +19,7 @@ public:
         sn::s32 size; // Computed
     };
 
-    GridLayout(Control & control);
+    GridLayout(Control * control = nullptr);
 
     void setColumnCount(sn::u32 newCount);
     void setColumnScale(sn::u32 i, sn::f32 scale);
@@ -34,7 +36,7 @@ public:
     void unserializeState(const sn::Variant & o, const sn::SerializationContext & ctx) override;
 
 private:
-    void recalculateColumnSizes();
+    void recalculateColumnSizes(const Control & container);
 
 private:
     std::vector<Column> m_columns;

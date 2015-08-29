@@ -1,6 +1,5 @@
-#include "DockerSplit.h"
-#include "Docker.h"
-#include "DockSizer.h"
+#include "SplitLayout.h"
+#include "../controls/DockSizer.h"
 
 using namespace sn;
 
@@ -8,7 +7,8 @@ namespace tgui
 {
 
 //------------------------------------------------------------------------------
-DockerSplit::DockerSplit(DockerSplit * parent, Control * c):
+SplitLayout::SplitLayout(Control * container, SplitLayout * parent, Control * c) :
+	Layout(container),
     m_position(0.5f),
     m_orientation(TGUI_HORIZONTAL),
     r_control(c),
@@ -20,31 +20,31 @@ DockerSplit::DockerSplit(DockerSplit * parent, Control * c):
 }
     
 //------------------------------------------------------------------------------
-DockerSplit::~DockerSplit()
+SplitLayout::~SplitLayout()
 {
     clearChildren();
 }
     
 //------------------------------------------------------------------------------
-bool DockerSplit::isLeaf() const
+bool SplitLayout::isLeaf() const
 {
     return m_children[0] == nullptr 
         && m_children[1] == nullptr;
 }
     
 //------------------------------------------------------------------------------
-bool DockerSplit::isRoot() const
+bool SplitLayout::isRoot() const
 {
     return r_parent == nullptr;
 }
     
 //------------------------------------------------------------------------------
-DockPath DockerSplit::getPath(const DockerSplit ** root) const
+DockPath SplitLayout::getPath(const SplitLayout ** root) const
 {
     DockPath path;
     if(r_parent == nullptr)
         return path;
-    const DockerSplit * parent = this;
+    const SplitLayout * parent = this;
     while(parent->r_parent)
     {
         path.push_back(parent->getIndex());
@@ -57,9 +57,9 @@ DockPath DockerSplit::getPath(const DockerSplit ** root) const
 }
     
 //------------------------------------------------------------------------------
-DockerSplit * DockerSplit::getFromPath(const DockPath & path)
+SplitLayout * SplitLayout::getFromPath(const DockPath & path)
 {
-    DockerSplit * s = this;
+    SplitLayout * s = this;
     for(size_t j = 0; j < path.size() && s != nullptr; ++j)
     {
         u8 i = path[j];
@@ -69,7 +69,7 @@ DockerSplit * DockerSplit::getFromPath(const DockPath & path)
 }
 
 //------------------------------------------------------------------------------
-u8 DockerSplit::getIndex() const
+u8 SplitLayout::getIndex() const
 {
     if(r_parent == nullptr)
         return -1;
@@ -80,9 +80,11 @@ u8 DockerSplit::getIndex() const
 }
     
 //------------------------------------------------------------------------------
-void DockerSplit::split(Control * dockContent, Direction direction)
+void SplitLayout::split(Control * dockContent, Direction direction)
 {
     SN_ASSERT(isLeaf(), "Cannot split non-leaf splitter!");
+	Control * container = getContainer();
+	SN_ASSERT(container != nullptr, "Layout container is null!");
     
     u32 a, b;
     Orientation o;
@@ -111,15 +113,15 @@ void DockerSplit::split(Control * dockContent, Direction direction)
         break;
     }
 
-    m_children[a] = new DockerSplit(this, r_control);
-    m_children[b] = new DockerSplit(this, dockContent);
+    m_children[a] = new SplitLayout(container, this, r_control);
+    m_children[b] = new SplitLayout(container, this, dockContent);
     m_orientation = o;
     m_position = 0.5f;
     r_control = nullptr;
 }
 
 //------------------------------------------------------------------------------
-void DockerSplit::join(u8 i)
+void SplitLayout::join(u8 i)
 {
     SN_ASSERT(!isLeaf(), "Cannot join leaf splitter!");
         
@@ -128,14 +130,14 @@ void DockerSplit::join(u8 i)
 }
 
 //------------------------------------------------------------------------------
-void DockerSplit::setLeaf(Control * c)
+void SplitLayout::setLeaf(Control * c)
 {
     SN_ASSERT(isLeaf(), "Cannot set control of non-leaf splitter!");
     r_control = c;
 }
 
 //------------------------------------------------------------------------------
-Vector2i DockerSplit::getSize() const
+Vector2i SplitLayout::getSize() const
 {
     if (isLeaf())
         return r_control->getSize();
@@ -159,19 +161,19 @@ Vector2i DockerSplit::getSize() const
 }
 
 //------------------------------------------------------------------------------
-void DockerSplit::setSplitPosition(const DockPath & path, sn::s32 pixelPos)
+void SplitLayout::setSplitPosition(const DockPath & path, sn::s32 pixelPos)
 {
 	// Get target split
-	DockerSplit * target = getFromPath(path);
+	SplitLayout * target = getFromPath(path);
 	SN_ASSERT(target != nullptr, "Invalid path was provided");
 
 	// Calculate offset from the root
-	DockerSplit * split = this;
+	SplitLayout * split = this;
 	s32 offset = 0;
 	for (u32 i = 0; i < path.size(); ++i)
 	{
 		u8 childIndex = path[i];
-		DockerSplit * parent = split;
+		SplitLayout * parent = split;
 		split = split->m_children[childIndex];
 		// TODO This might be biased by margins
 		// If the child is placed at +X or +Y and is oriented the same, add offset
@@ -186,7 +188,7 @@ void DockerSplit::setSplitPosition(const DockPath & path, sn::s32 pixelPos)
 }
 
 //------------------------------------------------------------------------------
-void DockerSplit::setLocalSplitPosition(sn::s32 pixelPos)
+void SplitLayout::setLocalSplitPosition(sn::s32 pixelPos)
 {
 	Vector2i size = getSize();
 	if (m_orientation == TGUI_HORIZONTAL)
@@ -202,7 +204,7 @@ void DockerSplit::setLocalSplitPosition(sn::s32 pixelPos)
 }
 
 //------------------------------------------------------------------------------
-sn::s32 DockerSplit::getLocalSplitPosition() const
+sn::s32 SplitLayout::getLocalSplitPosition() const
 {
 	Vector2i size = getSize();
 	if (m_orientation == TGUI_HORIZONTAL)
@@ -216,20 +218,38 @@ sn::s32 DockerSplit::getLocalSplitPosition() const
 }
 
 //------------------------------------------------------------------------------
-void DockerSplit::clearChildren()
+void SplitLayout::clearChildren()
 {
     for (u32 i = 0; i < 2; ++i)
     {
-        if (m_children[0])
+        if (m_children[i])
         {
-            delete m_children[0];
+            delete m_children[i];
             m_children[i] = nullptr;
         }
     }
 }
 
 //------------------------------------------------------------------------------
-void DockerSplit::layout(const IntRect & bounds)
+void SplitLayout::update()
+{
+	Control * container = getContainer();
+	SN_ASSERT(container != nullptr, "SplitLayout container is null!");
+	IntRect bounds = container->getLocalClientBounds();
+	container->getPadding().crop(bounds);
+	layout(bounds);
+}
+
+//------------------------------------------------------------------------------
+void SplitLayout::onReady()
+{
+	Control * container = getContainer();
+	SN_ASSERT(container != nullptr, "SplitLayout container is null!");
+	createSizers(*container);
+}
+
+//------------------------------------------------------------------------------
+void SplitLayout::layout(const IntRect & bounds)
 {
     if (isLeaf())
     {
@@ -242,8 +262,8 @@ void DockerSplit::layout(const IntRect & bounds)
     {
         SN_ASSERT(m_children[0] && m_children[1], "Invalid state");
 
-        DockerSplit & a = *m_children[0];
-        DockerSplit & b = *m_children[1];
+        SplitLayout & a = *m_children[0];
+        SplitLayout & b = *m_children[1];
 
         // TODO Apply margins
         // TODO Apply docker padding
@@ -305,7 +325,7 @@ void DockerSplit::layout(const IntRect & bounds)
 }
 
 //------------------------------------------------------------------------------
-void DockerSplit::createSizers(Control & container)
+void SplitLayout::createSizers(Control & container)
 {
 	if (!isLeaf() && r_sizer == nullptr)
 	{
@@ -315,7 +335,7 @@ void DockerSplit::createSizers(Control & container)
 
 		for (u32 i = 0; i < 2; ++i)
 		{
-			DockerSplit * child = m_children[i];
+			SplitLayout * child = m_children[i];
 			if (child)
 				child->createSizers(container);
 		}
@@ -323,29 +343,45 @@ void DockerSplit::createSizers(Control & container)
 }
 
 //------------------------------------------------------------------------------
-void DockerSplit::serializeTree(Variant & o, const SerializationContext & ctx)
+void SplitLayout::serializeState(Variant & o, const SerializationContext & ctx)
 {
-    SN_ERROR("DockerSplit::serializeTree is not implemented yet");
+	Layout::serializeState(o, ctx);
+	serializeTree(o["split"], ctx);
+}
+
+//------------------------------------------------------------------------------
+void SplitLayout::unserializeState(const Variant & o, const SerializationContext & ctx)
+{
+	Control * container = getContainer();
+	SN_ASSERT(container != nullptr, "SplitLayout container is null!");
+
+	unserializeTree(*container, o["split"], ctx);
+}
+
+//------------------------------------------------------------------------------
+void SplitLayout::serializeTree(Variant & o, const SerializationContext & ctx)
+{
+    SN_ERROR("SplitLayout::serializeTree is not implemented yet");
     // TODO
 
 }
 
 //------------------------------------------------------------------------------
-void DockerSplit::unserializeTree(const Docker & docker, const Variant & o, const SerializationContext & ctx)
+void SplitLayout::unserializeTree(Control & container, const Variant & o, const SerializationContext & ctx)
 {
-    if (o.isInt())
+	if (o.isInt())
     {
-        // Only one dock
-        Entity * e = docker.getChildByIndex(o.getInt());
+        // No split, the control takes the entire space
+		Entity * e = container.getChildByIndex(o.getInt());
         Control * c = Object::cast<Control>(e);
         if (c)
         {
             setLeaf(c);
         }
     }
-    else if (o.isArray())
+	else if (o.isArray())
     {
-        const Variant::Array & splitArray = o.getArray();
+		const Variant::Array & splitArray = o.getArray();
         if (splitArray.size() >= 1)
         {
             // Split type
@@ -381,8 +417,8 @@ void DockerSplit::unserializeTree(const Docker & docker, const Variant & o, cons
 
                     for (u32 i = 0; i < 2; ++i)
                     {
-                        m_children[i] = new DockerSplit(this);
-                        m_children[i]->unserializeTree(docker, splitArray[i+2], ctx);
+						m_children[i] = new SplitLayout(&container, this);
+                        m_children[i]->unserializeTree(container, splitArray[i+2], ctx);
                     }
 
                     // TODO Serialize splitter position as well

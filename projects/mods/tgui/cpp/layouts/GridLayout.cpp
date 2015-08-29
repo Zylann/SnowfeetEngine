@@ -7,7 +7,7 @@ namespace tgui
 {
 
 //------------------------------------------------------------------------------
-GridLayout::GridLayout(Control & control):
+GridLayout::GridLayout(Control * control):
     Layout(control),
     m_columnSpacing(0),
     m_rowSpacing(0),
@@ -49,12 +49,15 @@ void GridLayout::update()
     // TODO Apply column spacing
     // TODO Apply children margins and anchors
 
-    recalculateColumnSizes();
+	Control * container = getContainer();
+	SN_ASSERT(container != nullptr, "GridLayout container is null!");
+
+    recalculateColumnSizes(*container);
 
     std::vector<Control*> children;
-    r_control.getChildrenOfType<Control>(children);
+	container->getChildrenOfType<Control>(children);
 
-    const Border & padding = r_control.getPadding();
+	const Border & padding = container->getPadding();
 
     u32 rowCount = children.size() / m_columns.size() + 1;
 
@@ -113,15 +116,15 @@ void GridLayout::update()
 }
 
 //------------------------------------------------------------------------------
-void GridLayout::recalculateColumnSizes()
+void GridLayout::recalculateColumnSizes(const Control & container)
 {
     if (m_columns.empty())
         return;
 
-    IntRect clientBounds = r_control.getLocalClientBounds();
-    Border padding = r_control.getPadding();
+	IntRect clientBounds = container.getLocalClientBounds();
+	Border padding = container.getPadding();
 
-    f32 ratio = clientBounds.width() - padding.left - padding.right;
+    f32 ratio = static_cast<f32>(clientBounds.width() - padding.left - padding.right);
 
     // Normalize column scales
     f32 scaleSum = 0;

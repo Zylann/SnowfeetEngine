@@ -15,6 +15,22 @@ struct Border
     sn::s32 bottom;
 
     Border() { memset(this, 0, sizeof(Border)); }
+
+	void crop(sn::IntRect & inout_r) const
+	{
+		inout_r.x() += left;
+		inout_r.y() += top;
+		inout_r.width() -= (left + right);
+		inout_r.height() -= (top + bottom);
+	}
+
+	void expand(sn::IntRect & inout_r) const
+	{
+		inout_r.x() -= left;
+		inout_r.y() -= top;
+		inout_r.width() += (left + right);
+		inout_r.height() += (top + bottom);
+	}
 };
 
 inline void serialize(sn::Variant & o, const Border & b)

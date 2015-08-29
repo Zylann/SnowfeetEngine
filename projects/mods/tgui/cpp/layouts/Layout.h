@@ -4,6 +4,7 @@
 #include <core/types.h>
 #include <core/util/Variant.h>
 #include <core/asset/SerializationContext.h>
+#include <core/reflect/Object.h>
 
 namespace tgui
 {
@@ -11,19 +12,27 @@ namespace tgui
 class Control;
 
 /// \brief Controls how children items are positionned inside their parent
-class Layout
+class Layout : public sn::Object
 {
 public:
-    Layout(Control & control) : r_control(control) {}
-    virtual ~Layout() {}
+	SN_OBJECT(tgui::Layout, sn::Object)
+
+	Layout(Control * container = nullptr) : r_container(container) {}
 
     virtual void update() = 0;
+	virtual void onReady() {};
 
     virtual void serializeState(sn::Variant & o, const sn::SerializationContext & ctx) {};
     virtual void unserializeState(const sn::Variant & o, const sn::SerializationContext & ctx) {};
 
 protected:
-    Control & r_control;
+	friend class Control;
+
+	Control * getContainer() const { return r_container; }
+	void setContainer(Control & c) { r_container = &c; }
+
+private:
+	Control * r_container;
 
 };
 

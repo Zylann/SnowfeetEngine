@@ -38,6 +38,7 @@ private:
 
 private:
     // TODO Step?
+	// TODO Reset to default value on double-click?
     sn::f32 m_value;
     sn::Range<sn::f32> m_range;
     Orientation m_orientation;

@@ -73,6 +73,8 @@ public:
     const Border & getPadding() const { return m_padding; }
     Position getPositionMode() const { return m_positionMode; }
 
+	Layout * getLayout() const { return m_layout; }
+
     virtual void layoutChildren();
 
     //--------------------------------

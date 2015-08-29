@@ -2,6 +2,7 @@
 #include "../GUI.h"
 #include "../layouts/ListLayout.h"
 #include "../layouts/GridLayout.h"
+#include "../layouts/SplitLayout.h"
 
 #include <core/util/typecheck.h>
 #include <core/system/SystemGUI.h>
@@ -75,6 +76,7 @@ void Control::setLayout(Layout * newLayout)
     if (m_layout)
         delete m_layout;
     m_layout = newLayout;
+	m_layout->setContainer(*this);
 }
 
 //------------------------------------------------------------------------------
@@ -140,6 +142,8 @@ void Control::setParent(Entity * newParent)
 void Control::onReady()
 {
 	layoutChildren();
+	if (m_layout)
+		m_layout->onReady();
 	Entity::onReady();
 }
 
@@ -392,27 +396,32 @@ void Control::unserializeState(const sn::Variant & o, const SerializationContext
 
         if (!layoutType.empty())
         {
+			// TODO Use reflection
             Layout * layout = nullptr;
 
             if (layoutType == "tgui::ListLayout")
             {
-                layout = new ListLayout(*this);
+                layout = new ListLayout(this);
             }
             else if (layoutType == "tgui::GridLayout")
             {
-                layout = new GridLayout(*this);
+                layout = new GridLayout(this);
             }
-            else
+			else if (layoutType == "tgui::SplitLayout")
+			{
+				layout = new SplitLayout(this);
+			}
+			else
             {
                 SN_ERROR("Unrecognized TGUI layout type '" << layoutType << "'");
             }
+
+			setLayout(layout);
 
             if (layout)
             {
                 layout->unserializeState(layoutData, ctx);
             }
-
-            setLayout(layout);
         }
     }
 }

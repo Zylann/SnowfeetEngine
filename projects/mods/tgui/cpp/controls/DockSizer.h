@@ -2,7 +2,8 @@
 #define __HEADER_TGUI_DOCKSIZER__
 
 #include "Control.h"
-#include "DockerSplit.h"
+#include "../Orientation.h"
+#include "../layouts/SplitLayout.h"
 
 namespace tgui
 {
@@ -28,7 +29,7 @@ protected:
 	void onMousePress(Event & e) override;
 	void onMouseRelease(Event & e) override;
 
-	DockerSplit * getDockLayout() const;
+	SplitLayout * getLayout() const;
 
 private:
 	DockPath m_path;
