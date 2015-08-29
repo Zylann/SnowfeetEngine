@@ -116,6 +116,7 @@ public:
         return nullptr;
     }
 
+	// TODO T should not be turned to a pointer type internally, for clarity
     /// \brief Casts the given object pointer to another Object-derived type known at compile-time.
     /// \param obj: pointer to the object instance to cast. If nullptr, the cast will fail.
     /// \return casted object on success, nullptr on fail
