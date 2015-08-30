@@ -77,7 +77,7 @@
 					"@type":"tgui::Panel",
 					"name":"docker_container",
 					"bounds":{"x":10, "y":10, "w":200, "h":300},
-					"padding":{"left":4, "right":0, "top":0, "bottom":0},
+					"padding":{"left":4, "right":4, "top":4, "bottom":4},
 					"isResizeable":true,
 					"layout":{
 						"@type":"tgui::ListLayout"

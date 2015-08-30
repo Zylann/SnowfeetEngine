@@ -45,38 +45,42 @@ void ListLayout::update()
 
     // Default vertical layout
     
-	const Border & padding = container->getPadding();
-    Vector2i pos(0, padding.top);
+	// Get container bounds with padding
+	sn::IntRect localBounds = container->getLocalClientBounds();
+	localBounds.x() = 0;
+	localBounds.y() = 0;
+	container->getPadding().crop(localBounds);
 
-	const sn::IntRect & localBounds = container->getLocalClientBounds();
+	Vector2i pos = localBounds.origin();
 
-    for (auto it = children.begin(); it != children.end(); ++it)
+	for (auto it = children.begin(); it != children.end(); ++it)
     {
         Control & child = **it;
         if (child.getPositionMode() == TGUI_LAYOUT)
         {
             IntRect childBounds = child.getLocalClientBounds();
             const Anchors & anchors = child.getAnchors();
-            const Border & margin = child.getMargin();
 
-            childBounds.origin() = pos;
-
+			// TODO Alignment?
             //if (anchors[TGUI_LEFT])
-            childBounds.x() = margin.left + padding.left;
+			childBounds.origin() = pos;
 
-            if (anchors[TGUI_TOP])
-                childBounds.y() = margin.top + padding.top;
-
+			// Apply anchors
+            //if (anchors[TGUI_TOP])
+                //childBounds.y() = margin.top;
             if (anchors[TGUI_RIGHT])
-                childBounds.width() = localBounds.width() - margin.left - margin.right - childBounds.x() - padding.right;
-
+                childBounds.width() = localBounds.width();
             if (anchors[TGUI_BOTTOM])
-                childBounds.height() = localBounds.height() - margin.top - margin.bottom - childBounds.y() - padding.bottom;
+                childBounds.height() = localBounds.height() - (childBounds.y() - localBounds.minY());
+
+			pos.y() += childBounds.height() + m_spacing;
+
+			// Apply margin
+			const Border & margin = child.getMargin();
+			margin.crop(childBounds);
 
             child.setLocalClientBounds(childBounds);
             child.layoutChildren();
-
-            pos.y() += childBounds.height() + margin.top + margin.bottom + m_spacing;
         }
     }
 }

@@ -236,6 +236,8 @@ void SplitLayout::update()
 	Control * container = getContainer();
 	SN_ASSERT(container != nullptr, "SplitLayout container is null!");
 	IntRect bounds = container->getLocalClientBounds();
+	bounds.x() = 0;
+	bounds.y() = 0;
 	container->getPadding().crop(bounds);
 	layout(bounds);
 }
@@ -273,7 +275,7 @@ void SplitLayout::layout(const IntRect & bounds)
 
         if (m_orientation == TGUI_HORIZONTAL)
         {
-			s32 localSplitPos = bounds.minX() + static_cast<s32>(m_position * static_cast<f32>(bounds.width()));
+			s32 localSplitPos = static_cast<s32>(m_position * static_cast<f32>(bounds.width()));
 			if (r_sizer)
 				r_sizer->setLocalClientBounds(IntRect::fromPositionSize(
 					bounds.minX() + localSplitPos - sizerSize / 2,
@@ -327,6 +329,7 @@ void SplitLayout::layout(const IntRect & bounds)
 //------------------------------------------------------------------------------
 void SplitLayout::createSizers(Control & container)
 {
+	// TODO FIXME Some sizers don't appear before the first call to layout() (but they exist)
 	if (!isLeaf() && r_sizer == nullptr)
 	{
 		r_sizer = container.createChild<DockSizer>();
