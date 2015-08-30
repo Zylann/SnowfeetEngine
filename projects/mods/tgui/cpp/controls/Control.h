@@ -97,10 +97,11 @@ public:
     void setFocus(bool isFocused);
 
     //--------------------------------
-    // Event handlers
+    // Entity event handlers
     //--------------------------------
 
 	virtual void onReady() override;
+	virtual void onDestroy() override;
 
     //--------------------------------
     // Helpers
@@ -137,6 +138,8 @@ protected:
     virtual void onControlResized() {}
     virtual void onSetCursor(Event & e);
     virtual void onSizeChanged() {}
+
+	virtual void onChildControlRemoved(Control & child);
 
     bool hasLayout() const { return m_layout != nullptr; }
 

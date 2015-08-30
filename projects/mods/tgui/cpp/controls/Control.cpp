@@ -148,6 +148,14 @@ void Control::onReady()
 }
 
 //------------------------------------------------------------------------------
+void Control::onDestroy()
+{
+	Control * parent = getParentControl();
+	if (parent)
+		parent->onChildControlRemoved(*this);
+}
+
+//------------------------------------------------------------------------------
 const Theme * Control::getTheme() const
 {
     GUI * gui = getGUI();
@@ -364,6 +372,15 @@ void Control::onSetCursor(Event & e)
     sn::Window * win = SystemGUI::get().getWindowByID(getWindowID());
     if (win)
         win->setMouseCursor(SN_CURSOR_DEFAULT);
+}
+
+//------------------------------------------------------------------------------
+void Control::onChildControlRemoved(Control & child)
+{
+	if (m_layout)
+	{
+		m_layout->onControlRemoved(child);
+	}
 }
 
 //------------------------------------------------------------------------------

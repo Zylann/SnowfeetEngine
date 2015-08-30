@@ -36,6 +36,7 @@ public:
 	void update() override;
 
 	void onReady() override;
+	void onControlRemoved(const Control & c) override;
 
 	void serializeState(sn::Variant & o, const sn::SerializationContext & ctx) override;
 	void unserializeState(const sn::Variant & o, const sn::SerializationContext & ctx) override;

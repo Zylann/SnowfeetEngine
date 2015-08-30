@@ -251,6 +251,23 @@ void SplitLayout::onReady()
 }
 
 //------------------------------------------------------------------------------
+void SplitLayout::onControlRemoved(const Control & c)
+{
+	if (r_control == &c)
+		r_control = nullptr;
+	else if (r_sizer == &c)
+		r_sizer = nullptr;
+	else
+	{
+		if (!isLeaf())
+		{
+			for (u32 i = 0; i < 2; ++i)
+				m_children[i]->onControlRemoved(c);
+		}
+	}
+}
+
+//------------------------------------------------------------------------------
 void SplitLayout::layout(const IntRect & bounds)
 {
     if (isLeaf())

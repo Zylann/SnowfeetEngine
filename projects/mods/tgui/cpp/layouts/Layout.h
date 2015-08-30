@@ -20,7 +20,12 @@ public:
 	Layout(Control * container = nullptr) : r_container(container) {}
 
     virtual void update() = 0;
+
+	/// \brief Called when the container's onReady() event is called
 	virtual void onReady() {};
+
+	/// \brief Called when a control is removed from the container (primarily to prevent dangling pointers in some layouts)
+	virtual void onControlRemoved(const Control & c) {};
 
     virtual void serializeState(sn::Variant & o, const sn::SerializationContext & ctx) {};
     virtual void unserializeState(const sn::Variant & o, const sn::SerializationContext & ctx) {};
