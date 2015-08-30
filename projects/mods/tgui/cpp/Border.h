@@ -14,7 +14,12 @@ struct Border
     sn::s32 top;
     sn::s32 bottom;
 
-    Border() { memset(this, 0, sizeof(Border)); }
+    Border():
+		left(0), 
+		right(0), 
+		top(0), 
+		bottom(0) 
+	{}
 
 	void crop(sn::IntRect & inout_r) const
 	{
