@@ -19,7 +19,7 @@ class Control;
 class DockSizer;
 
 /// \brief Layouts controls in splits of two.
-/// Splits can be nested to form a tree of splits, however controls will still have the same parent.
+/// Splits can be nested to form a tree of splits, while controls will still have the same parent.
 /// It can be used in docking systems.
 class SplitLayout : public Layout
 {
