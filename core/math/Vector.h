@@ -27,12 +27,14 @@ public:
 
     Vector()
     {
-        memset(m_v, 0, N * sizeof(T));
+		for (u32 i = 0; i < N; ++i)
+			m_v[i] = 0;
     }
 
     Vector(const Vector<T, N> & other)
     {
-        memcpy(m_v, other.m_v, N * sizeof(T));
+		for (u32 i = 0; i < N; ++i)
+			m_v[i] = other.m_v[i];
     }
 
     // Conversion
@@ -45,7 +47,8 @@ public:
 
     explicit Vector(const T * values)
     {
-        memcpy(m_v, values, N * sizeof(T));
+		for (u32 i = 0; i < N; ++i)
+			m_v[i] = values[i];
     }
 
     Vector(T x, T y)
@@ -88,8 +91,9 @@ public:
 
     inline Vector<T,N> & operator=(const Vector<T, N> & other)
     {
-        memcpy(m_v, other.m_v, N * sizeof(T));
-        return *this;
+		for (u32 i = 0; i < N; ++i)
+			m_v[i] = other.m_v[i];
+		return *this;
     }
 
     inline bool operator==(const Vector<T, N> & other) const
