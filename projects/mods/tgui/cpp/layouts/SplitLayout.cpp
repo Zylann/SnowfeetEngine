@@ -438,12 +438,6 @@ void SplitLayout::unserializeTree(Control & container, const Variant & o, const 
 						m_children[i] = new SplitLayout(&container, this);
                         m_children[i]->unserializeTree(container, splitArray[i+2], ctx);
                     }
-
-                    // TODO Serialize splitter position as well
-                    //if (m_orientation == TGUI_HORIZONTAL)
-                    //    m_position = m_children[0]->getSize().x() / 2;
-                    //else
-                    //    m_position = m_children[0]->getSize().y() / 2;
                 }
                 else
                 {
