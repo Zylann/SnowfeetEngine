@@ -413,32 +413,16 @@ void Control::unserializeState(const sn::Variant & o, const SerializationContext
 
         if (!layoutType.empty())
         {
-			// TODO Use reflection
-            Layout * layout = nullptr;
-
-            if (layoutType == "tgui::ListLayout")
-            {
-                layout = new ListLayout(this);
-            }
-            else if (layoutType == "tgui::GridLayout")
-            {
-                layout = new GridLayout(this);
-            }
-			else if (layoutType == "tgui::SplitLayout")
+			Layout * layout = static_cast<Layout*>(instantiateDerivedObject(layoutType, sn::getObjectType<Layout>()));
+			if (layout)
 			{
-				layout = new SplitLayout(this);
+				setLayout(layout);
+				layout->unserializeState(layoutData, ctx);
 			}
 			else
-            {
-                SN_ERROR("Unrecognized TGUI layout type '" << layoutType << "'");
-            }
-
-			setLayout(layout);
-
-            if (layout)
-            {
-                layout->unserializeState(layoutData, ctx);
-            }
+			{
+				SN_ERROR("Unrecognized TGUI layout type '" << layoutType << "'");
+			}
         }
     }
 }

@@ -11,7 +11,8 @@ namespace tgui
 
 class Control;
 
-/// \brief Controls how children items are positionned inside their parent
+/// \brief Controls how children items are positionned inside their parent.
+/// A layout can only be installed in one Control (the container) and cannot be moved to another control.
 class Layout : public sn::Object
 {
 public:
