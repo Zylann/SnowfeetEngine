@@ -268,8 +268,6 @@ void SplitLayout::layout(const IntRect & bounds)
         SplitLayout & b = *m_children[1];
 
         // TODO Apply margins
-        // TODO Apply docker padding
-        // TODO Apply splitters size
 
 		s32 sizerSize = 4;
 

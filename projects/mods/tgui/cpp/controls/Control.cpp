@@ -141,9 +141,9 @@ void Control::setParent(Entity * newParent)
 //------------------------------------------------------------------------------
 void Control::onReady()
 {
-	layoutChildren();
 	if (m_layout)
 		m_layout->onReady();
+	layoutChildren();
 	Entity::onReady();
 }
 
