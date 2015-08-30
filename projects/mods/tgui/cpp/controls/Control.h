@@ -61,9 +61,6 @@ public:
     const sn::IntRect & getLocalClientBounds() const { return m_localBounds; }
     void setLocalClientBounds(sn::IntRect bounds);
 
-    Control * getChildControlAt(sn::Vector2i position) const;
-    Control * getChildControlByIndex(sn::u32 i) const;
-
     //--------------------------------
     // Layout
     //--------------------------------
@@ -82,6 +79,9 @@ public:
     //--------------------------------
 
     bool getControlFlag(sn::u32 i) const;
+
+	Control * getChildControlAt(sn::Vector2i position) const;
+	Control * getChildControlByIndex(sn::u32 i) const;
 
     Control * getParentControl() const;
     const Control * getRootControl() const;
