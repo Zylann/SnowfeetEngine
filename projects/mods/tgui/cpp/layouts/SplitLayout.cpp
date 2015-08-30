@@ -275,6 +275,7 @@ void SplitLayout::layout(const IntRect & bounds)
         if (r_control)
         {
             r_control->setLocalClientBounds(bounds);
+			r_control->layoutChildren();
         }
     }
     else
