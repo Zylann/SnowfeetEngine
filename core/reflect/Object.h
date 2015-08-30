@@ -156,9 +156,9 @@ inline const char * getClassName()
     return Object_T::__sGetClassName();
 }
 
-Object * instantiateDerivedObject(const std::string & typeName, const std::string & derivedTypeName);
-Object * instantiateDerivedObject(const std::string & typeName, const ObjectType & derivedType);
-Object * instantiateDerivedObject(const ObjectType & type, const ObjectType & derivedType);
+SN_API Object * instantiateDerivedObject(const std::string & typeName, const std::string & derivedTypeName);
+SN_API Object * instantiateDerivedObject(const std::string & typeName, const ObjectType & derivedType);
+SN_API Object * instantiateDerivedObject(const ObjectType & type, const ObjectType & derivedType);
 
 } // namespace sn
 
