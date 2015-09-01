@@ -1,124 +1,148 @@
 {
-	"entities":[
+	"format":"SN2",
+	"objects":[
+		1,
 		{
 			"@type":"sn::render::Camera",
 			"clearBits":["color", "depth"],
 			"clearColor": [0.5, 0.5, 0.8]
 		},
+		2,
 		{
 			"@type":"tgui::GUI",
 			"theme":"example_theme",
 			"name":"the_gui",
+			"_children":[
+				{"@ref":3},
+				{"@ref":4}
+			]
+		},
+		3,
+		{
+			"@type":"tgui::Renderer"
+		},
+		4,
+		{
+			"@type":"tgui::Panel",
+			"name":"docker_container",
+			"bounds":{"x":10, "y":10, "w":400, "h":300},
+			"padding":{"left":4, "right":4, "top":4, "bottom":4},
+			"isResizeable":true,
+			"layout":{
+				"@type":"tgui::ListLayout"
+			},
+			"_children":[
+				{"@ref":5}
+			]
+		},
+		5,
+		{
+			"@type":"tgui::Docker",
+			"name":"docker",
+			"anchors":["left", "right", "top", "bottom"],
+			"layout":{
+				"@type":"tgui::SplitLayout",
+				"split":[
+					"h",
+					0.3,
+					0,
+					[
+						"v",
+						0.7,
+						1,
+						2
+					]
+				]
+			},
+			"_children":[
+				{"@ref":6},
+				{"@ref":7},
+				{"@ref":8}
+			]
+		},
+		6,
+		{
+			"@type":"tgui::Panel",
+			"name":"first"
+		},
+		7,
+		{
+			"@type":"tgui::Panel",
+			"name":"second",
+			"padding":{"left":4, "right":4, "top":4, "bottom":4},
+			"layout":{
+				"@type":"tgui::ListLayout"
+			},
 
 			"_children":[
-				{
-					"@type":"tgui::Renderer"
-				},
-				{
-					"@type":"tgui::Panel",
-					"name":"lolpanel",
-					"bounds":{"x":300, "y":10, "w":300, "h":200},
-					"padding":{"left":4, "right":4, "top":4, "bottom":4},
-					"isResizeable":true,
-					"layout":{
-						"@type":"tgui::ListLayout"
-					},
-
-					"_children":[
-						{
-							"@type":"tgui::Button",
-							"bounds":{"x":10,"y":10,"w":100,"h":24},
-							"_children":[
-								{
-									"@type":"tgui::Text",
-									"text":"Hello world!",
-									"bounds":{"x":12, "y":17, "w":100, "h":24},
-									"anchors":["left", "right", "top", "bottom"]
-								}
-							]
-						},
-						{
-							"@type":"tgui::Button",
-							"name":"scripted_button",
-							"bounds":{"x":10,"y":50,"w":200,"h":50},
-							"anchors":["left", "right"],
-							"script":{
-								"class":"ButtonScript"
-							},
-							"_children":[
-								{
-									"@type":"tgui::Text",
-									"text":"Click me, I'm a button\nWith a lot of text in it, blah blah blah...\nMultiple lines of text!",
-									"align":"center",
-									"anchors":["left", "right", "top", "bottom"]
-								}
-							]
-						},
-						{
-							"@type":"tgui::Slider",
-							"bounds":{"x":10, "y":110, "w":200, "h":20}
-						},
-						{
-							"@type":"tgui::Slider",
-							"bounds":{"x":10, "y":130, "w":200, "h":20}
-						},
-						{
-							"@type":"tgui::Slider",
-							"bounds":{"x":10, "y":150, "w":200, "h":20},
-						},
-						{
-							"@type":"tgui::TextArea",
-							"anchors":["left", "right", "bottom"],
-							"text":"This is not a sample text\nAnother line\nLorem ipsum dolor sit amet, consectetur adipiscing elit.\nThis is not a sample text\nAnother line\nLorem ipsum dolor sit amet, consectetur adipiscing elit."
-						}
-					]
-				},
-				{
-					"@type":"tgui::Panel",
-					"name":"docker_container",
-					"bounds":{"x":10, "y":10, "w":200, "h":300},
-					"padding":{"left":4, "right":4, "top":4, "bottom":4},
-					"isResizeable":true,
-					"layout":{
-						"@type":"tgui::ListLayout"
-					},
-					"_children":[
-						{
-							"@type":"tgui::Docker",
-							"name":"docker",
-							"anchors":["left", "right", "top", "bottom"],
-							"layout":{
-								"@type":"tgui::SplitLayout",
-								"split":[
-									"h",
-									0.5,
-									0,
-									[
-										"v",
-										0.5,
-										1,
-										2
-									]
-								]
-							},
-							"_children":[
-								{
-									"@type":"tgui::Panel",
-									"name":"first"
-								},
-								{
-									"@type":"tgui::Panel",
-									"name":"second"
-								},
-								{
-									"@type":"tgui::Panel",
-									"name":"third"
-								}
-							]
-						}
-					]
-				}
+				{"@ref":9},
+				{"@ref":10},
+				{"@ref":11},
+				{"@ref":12},
+				{"@ref":13},
+				{"@ref":14}
 			]
-		}
+		},
+		8,
+		{
+			"@type":"tgui::Panel",
+			"name":"third"
+		},
+		9,
+		{
+			"@type":"tgui::Button",
+			"bounds":{"x":10,"y":10,"w":100,"h":24},
+			"_children":[
+				{"@ref":15}
+			]
+		},
+		10,
+		{
+			"@type":"tgui::Button",
+			"name":"scripted_button",
+			"bounds":{"x":10,"y":50,"w":200,"h":50},
+			"anchors":["left", "right"],
+			"script":{
+				"class":"ButtonScript"
+			},
+			"_children":[
+				{"@ref":16}
+			]
+		},
+		11,
+		{
+			"@type":"tgui::Slider",
+			"bounds":{"x":10, "y":110, "w":200, "h":20}
+		},
+		12,
+		{
+			"@type":"tgui::Slider",
+			"bounds":{"x":10, "y":130, "w":200, "h":20}
+		},
+		13,
+		{
+			"@type":"tgui::Slider",
+			"bounds":{"x":10, "y":150, "w":200, "h":20},
+		},
+		14,
+		{
+			"@type":"tgui::TextArea",
+			"anchors":["left", "right", "bottom"],
+			"text":"This is not a sample text\nAnother line\nLorem ipsum dolor sit amet, consectetur adipiscing elit.\nThis is not a sample text\nAnother line\nLorem ipsum dolor sit amet, consectetur adipiscing elit."
+		},
+		15,
+		{
+			"@type":"tgui::Text",
+			"text":"Hello world!",
+			"bounds":{"x":12, "y":17, "w":100, "h":24},
+			"anchors":["left", "right", "top", "bottom"]
+		},
+		16,
+		{
+			"@type":"tgui::Text",
+			"text":"Click me, I'm a button\nWith a lot of text in it, blah blah blah...\nMultiple lines of text!",
+			"align":"center",
+			"anchors":["left", "right", "top", "bottom"]
+		}		
 	]
 }
