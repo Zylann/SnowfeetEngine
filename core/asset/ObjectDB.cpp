@@ -43,12 +43,15 @@ bool ObjectDB::loadFromStream(std::istream & is)
 bool ObjectDB::loadFromVariant(Variant & doc)
 {
 	// Validate
-	if (!validate(doc, &m_nextID))
+    u32 nextID = 0;
+	if (!validate(doc, &nextID))
 	{
 		return false;
 	}
 
     clear();
+
+    m_nextID = nextID;
 
     // Get root ID
     Variant rootIDElem = doc[ROOT_ID_TAG];
