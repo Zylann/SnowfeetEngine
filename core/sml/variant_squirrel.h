@@ -11,12 +11,17 @@ namespace sn
 /// \param vm: target Squirrel VM
 /// \param o: Source value
 void SN_API pushValue(HSQUIRRELVM vm, const Variant & v);
+void SN_API pushTable(HSQUIRRELVM vm, const Variant::Dictionary & d);
+void SN_API pushArray(HSQUIRRELVM vm, const Variant::Array & a);
 
-/// \brief Walks through variant and applies its values to a Squirrel objects at the same paths
+/// \brief Walks through a variant dictionary and applies its values to a Squirrel objects at the same paths.
+/// \warning Existing sub-values are overwritten.
 /// \param vm: target Squirrel VM
 /// \param o: Source value
 /// \param objectIndex: stack index of the target Squirrel object
-void SN_API applyProperties(HSQUIRRELVM vm, const Variant & o, SQInteger objectIndex);
+void SN_API applyProperties(HSQUIRRELVM vm, const Variant::Dictionary & o, SQInteger objectIndex);
+
+// TODO applyProperties
 
 void SN_API getVariant(HSQUIRRELVM vm, Variant & out_v, SQInteger index);
 void SN_API getArray(HSQUIRRELVM vm, Variant & out_v, SQInteger index);

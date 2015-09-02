@@ -2,6 +2,7 @@
 #include "../GUI.h"
 #include "../layouts/ListLayout.h"
 #include "../layouts/GridLayout.h"
+#include "../layouts/SplitLayout.h"
 
 #include <core/util/typecheck.h>
 #include <core/system/SystemGUI.h>
@@ -75,6 +76,7 @@ void Control::setLayout(Layout * newLayout)
     if (m_layout)
         delete m_layout;
     m_layout = newLayout;
+	m_layout->setContainer(*this);
 }
 
 //------------------------------------------------------------------------------
@@ -139,8 +141,18 @@ void Control::setParent(Entity * newParent)
 //------------------------------------------------------------------------------
 void Control::onReady()
 {
+	if (m_layout)
+		m_layout->onReady();
 	layoutChildren();
 	Entity::onReady();
+}
+
+//------------------------------------------------------------------------------
+void Control::onDestroy()
+{
+	Control * parent = getParentControl();
+	if (parent)
+		parent->onChildControlRemoved(*this);
 }
 
 //------------------------------------------------------------------------------
@@ -170,6 +182,14 @@ Control * Control::getChildControlAt(sn::Vector2i position) const
         }
     }
     return nullptr;
+}
+
+//------------------------------------------------------------------------------
+Control * Control::getChildControlByIndex(u32 i) const
+{
+    Entity * e = getChildByIndex(i);
+    Control * c = Object::cast<Control>(e);
+    return c;
 }
 
 //------------------------------------------------------------------------------
@@ -237,6 +257,12 @@ void Control::setFocus(bool isFocused)
         }
         setControlFlag(TGUI_CF_FOCUSED, isFocused);
     }
+}
+
+//------------------------------------------------------------------------------
+void Control::setVisible(bool visible)
+{
+    setControlFlag(TGUI_CF_VISIBLE, visible);
 }
 
 //------------------------------------------------------------------------------
@@ -355,6 +381,15 @@ void Control::onSetCursor(Event & e)
 }
 
 //------------------------------------------------------------------------------
+void Control::onChildControlRemoved(Control & child)
+{
+	if (m_layout)
+	{
+		m_layout->onControlRemoved(child);
+	}
+}
+
+//------------------------------------------------------------------------------
 void Control::serializeState(sn::Variant & o, const SerializationContext & ctx)
 {
     Entity::serializeState(o, ctx);
@@ -384,27 +419,16 @@ void Control::unserializeState(const sn::Variant & o, const SerializationContext
 
         if (!layoutType.empty())
         {
-            Layout * layout = nullptr;
-
-            if (layoutType == "tgui::ListLayout")
-            {
-                layout = new ListLayout(*this);
-            }
-            else if (layoutType == "tgui::GridLayout")
-            {
-                layout = new GridLayout(*this);
-            }
-            else
-            {
-                SN_ERROR("Unrecognized TGUI layout type '" << layoutType << "'");
-            }
-
-            if (layout)
-            {
-                layout->unserializeState(layoutData, ctx);
-            }
-
-            setLayout(layout);
+			Layout * layout = static_cast<Layout*>(instantiateDerivedObject(layoutType, sn::getObjectType<Layout>()));
+			if (layout)
+			{
+				setLayout(layout);
+				layout->unserializeState(layoutData, ctx);
+			}
+			else
+			{
+				SN_ERROR("Unrecognized TGUI layout type '" << layoutType << "'");
+			}
         }
     }
 }

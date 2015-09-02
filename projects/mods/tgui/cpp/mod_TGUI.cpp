@@ -9,6 +9,13 @@
 #include "controls/Panel.h"
 #include "controls/Slider.h"
 #include "controls/TextArea.h"
+#include "controls/Docker.h"
+#include "controls/DockSizer.h"
+#include "controls/Tab.h"
+#include "controls/TabControl.h"
+
+#include "layouts/ListLayout.h"
+#include "layouts/GridLayout.h"
 
 #include "theme/Theme.h"
 
@@ -18,7 +25,7 @@ namespace tgui
 {
     void registerObjectTypes(sn::ObjectTypeDatabase & otb)
     {
-        // Entities
+        // Controls
         otb.registerType<Control>();
         otb.registerType<GUI>();
         otb.registerType<Button>();
@@ -27,6 +34,16 @@ namespace tgui
         otb.registerType<Panel>();
         otb.registerType<Slider>();
         otb.registerType<TextArea>();
+        otb.registerType<Docker>();
+		otb.registerType<DockSizer>();
+        otb.registerType<Tab>();
+        otb.registerType<TabControl>();
+
+		// Layouts
+		otb.registerType<Layout>();
+		otb.registerType<ListLayout>();
+		otb.registerType<GridLayout>();
+		otb.registerType<SplitLayout>();
 
         // Assets
         otb.registerType<Theme>();

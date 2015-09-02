@@ -369,7 +369,7 @@ void Entity::propagateOnReady()
 {
     onReady();
     for (auto it = m_children.begin(); it != m_children.end(); ++it)
-        (*it)->onReady();
+        (*it)->propagateOnReady();
 }
 
 //------------------------------------------------------------------------------

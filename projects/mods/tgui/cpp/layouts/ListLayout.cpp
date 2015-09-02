@@ -7,7 +7,7 @@ namespace tgui
 {
 
 //------------------------------------------------------------------------------
-ListLayout::ListLayout(Control & control):
+ListLayout::ListLayout(Control * control):
     Layout(control),
     m_spacing(0),
     m_orientation(TGUI_VERTICAL)
@@ -29,6 +29,9 @@ void ListLayout::setSpacing(sn::s32 newSpacing)
 //------------------------------------------------------------------------------
 void ListLayout::update()
 {
+	Control * container = getContainer();
+	SN_ASSERT(container != nullptr, "ListLayout container is null!");
+
     if (m_orientation == TGUI_HORIZONTAL)
     {
         SN_WARNING("Vertical ListLayout orientation is not implemented yet");
@@ -38,42 +41,46 @@ void ListLayout::update()
 	// TODO Have a dirty flag to avoid calculating layouts when nothing changed
 
     std::vector<Control*> children;
-    r_control.getChildrenOfType<Control>(children);
+	container->getChildrenOfType<Control>(children);
 
     // Default vertical layout
     
-    const Border & padding = r_control.getPadding();
-    Vector2i pos(0, padding.top);
+	// Get container bounds with padding
+	sn::IntRect localBounds = container->getLocalClientBounds();
+	localBounds.x() = 0;
+	localBounds.y() = 0;
+	container->getPadding().crop(localBounds);
 
-    const sn::IntRect & localBounds = r_control.getLocalClientBounds();
+	Vector2i pos = localBounds.origin();
 
-    for (auto it = children.begin(); it != children.end(); ++it)
+	for (auto it = children.begin(); it != children.end(); ++it)
     {
         Control & child = **it;
         if (child.getPositionMode() == TGUI_LAYOUT)
         {
             IntRect childBounds = child.getLocalClientBounds();
             const Anchors & anchors = child.getAnchors();
-            const Border & margin = child.getMargin();
 
-            childBounds.origin() = pos;
-
+			// TODO Alignment?
             //if (anchors[TGUI_LEFT])
-            childBounds.x() = margin.left + padding.left;
+			childBounds.origin() = pos;
 
-            if (anchors[TGUI_TOP])
-                childBounds.y() = margin.top + padding.top;
-
+			// Apply anchors
+            //if (anchors[TGUI_TOP])
+                //childBounds.y() = margin.top;
             if (anchors[TGUI_RIGHT])
-                childBounds.width() = localBounds.width() - margin.left - margin.right - childBounds.x() - padding.right;
-
+                childBounds.width() = localBounds.width();
             if (anchors[TGUI_BOTTOM])
-                childBounds.height() = localBounds.height() - margin.top - margin.bottom - childBounds.y() - padding.bottom;
+                childBounds.height() = localBounds.height() - (childBounds.y() - localBounds.minY());
+
+			pos.y() += childBounds.height() + m_spacing;
+
+			// Apply margin
+			const Border & margin = child.getMargin();
+			margin.crop(childBounds);
 
             child.setLocalClientBounds(childBounds);
             child.layoutChildren();
-
-            pos.y() += childBounds.height() + margin.top + margin.bottom + m_spacing;
         }
     }
 }

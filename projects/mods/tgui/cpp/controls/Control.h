@@ -61,8 +61,6 @@ public:
     const sn::IntRect & getLocalClientBounds() const { return m_localBounds; }
     void setLocalClientBounds(sn::IntRect bounds);
 
-    Control * getChildControlAt(sn::Vector2i position) const;
-
     //--------------------------------
     // Layout
     //--------------------------------
@@ -72,6 +70,8 @@ public:
     const Border & getPadding() const { return m_padding; }
     Position getPositionMode() const { return m_positionMode; }
 
+	Layout * getLayout() const { return m_layout; }
+
     virtual void layoutChildren();
 
     //--------------------------------
@@ -79,6 +79,9 @@ public:
     //--------------------------------
 
     bool getControlFlag(sn::u32 i) const;
+
+	Control * getChildControlAt(sn::Vector2i position) const;
+	Control * getChildControlByIndex(sn::u32 i) const;
 
     Control * getParentControl() const;
     const Control * getRootControl() const;
@@ -93,11 +96,14 @@ public:
 
     void setFocus(bool isFocused);
 
+    void setVisible(bool visible);
+
     //--------------------------------
-    // Event handlers
+    // Entity event handlers
     //--------------------------------
 
 	virtual void onReady() override;
+	virtual void onDestroy() override;
 
     //--------------------------------
     // Helpers
@@ -114,8 +120,8 @@ public:
     // Serialization
     //--------------------------------
 
-    void serializeState(sn::Variant & o, const sn::SerializationContext & ctx) override;
-    void unserializeState(const sn::Variant & o, const sn::SerializationContext & ctx) override;
+    virtual void serializeState(sn::Variant & o, const sn::SerializationContext & ctx) override;
+    virtual void unserializeState(const sn::Variant & o, const sn::SerializationContext & ctx) override;
 
 protected:
     virtual ~Control();
@@ -135,7 +141,10 @@ protected:
     virtual void onSetCursor(Event & e);
     virtual void onSizeChanged() {}
 
+	virtual void onChildControlRemoved(Control & child);
+
     bool hasLayout() const { return m_layout != nullptr; }
+    void setLayout(Layout * newLayout);
 
 	//--------------------------------
     // Helpers
@@ -151,8 +160,6 @@ private:
     void processKeyDown(Event & e);
 
     void setControlFlag(sn::u32 i, bool value);
-
-    void setLayout(Layout * newLayout);
 
 private:
     sn::IntRect m_localBounds;

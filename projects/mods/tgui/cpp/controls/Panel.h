@@ -28,6 +28,7 @@ protected:
     void onSetCursor(Event & e) override;
 
 private:
+	/// \brief Tests if the given cursor position is over a sizing area of the Panel.
     bool checkResizing(sn::Vector2i cursorPos, std::bitset<TGUI_DIRECTION_COUNT> & out_dirs);
 
 private:

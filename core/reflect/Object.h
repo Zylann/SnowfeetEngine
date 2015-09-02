@@ -116,6 +116,7 @@ public:
         return nullptr;
     }
 
+	// TODO T should not be turned to a pointer type internally, for clarity
     /// \brief Casts the given object pointer to another Object-derived type known at compile-time.
     /// \param obj: pointer to the object instance to cast. If nullptr, the cast will fail.
     /// \return casted object on success, nullptr on fail
@@ -155,9 +156,9 @@ inline const char * getClassName()
     return Object_T::__sGetClassName();
 }
 
-Object * instantiateDerivedObject(const std::string & typeName, const std::string & derivedTypeName);
-Object * instantiateDerivedObject(const std::string & typeName, const ObjectType & derivedType);
-Object * instantiateDerivedObject(const ObjectType & type, const ObjectType & derivedType);
+SN_API Object * instantiateDerivedObject(const std::string & typeName, const std::string & derivedTypeName);
+SN_API Object * instantiateDerivedObject(const std::string & typeName, const ObjectType & derivedType);
+SN_API Object * instantiateDerivedObject(const ObjectType & type, const ObjectType & derivedType);
 
 } // namespace sn
 
