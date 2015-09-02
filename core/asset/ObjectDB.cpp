@@ -2,6 +2,7 @@
 #include "../util/Log.h"
 #include "../asset/AssetDatabase.h"
 #include <core/sml/SmlParser.h>
+//#include <core/sml/SmlWriter.h>
 
 #define VALIDATION_ERROR(msg)\
     SN_ERROR("Invalid " << ObjectDB::FORMAT_VALUE << " format: " << msg)
@@ -374,6 +375,28 @@ void ObjectDB::flatten(std::vector<ObjectDB*> & stack)
     }
 
     m_isFlattened = true;
+
+    // DEBUG CODE: writes the objects after flattening in human-readable file
+    //if (m_objects.size() > 10)
+    //{
+    //    Variant dump;
+    //    dump.setDictionary();
+    //    Variant & av = dump["objects"];
+    //    av.setArray();
+    //    Variant::Array & a = av.getArray();
+    //    for (auto it = m_objects.begin(); it != m_objects.end(); ++it)
+    //    {
+    //        a.push_back(Variant((s32)it->first));
+    //        a.push_back(Variant(it->second.data));
+    //    }
+    //    sn::SmlWriter w;
+    //    std::ofstream ofs("flattened_test.json", std::ios::out|std::ios::binary);
+    //    if (ofs.good())
+    //    {
+    //        w.setPretty(true);
+    //        w.writeValue(ofs, dump);
+    //    }
+    //}
 }
 
 //------------------------------------------------------------------------------
@@ -441,7 +464,7 @@ bool ObjectDB::flattenObject(OverrideObject & overrideObj, u32 id, std::vector<O
     {
         const Modification & change = *it;
             
-        u32 targetID = srcToInstanceID[targetID];
+        u32 targetID = srcToInstanceID[change.target];
         Variant * targetObj = getObject(targetID);
         if (targetObj == nullptr)
         {
@@ -472,32 +495,32 @@ void ObjectDB::applyChange(Variant & obj, Modification change)
 }
 
 //------------------------------------------------------------------------------
-void ObjectDB::mapReferences(Variant & obj, std::unordered_map<u32, u32> refMap)
-{
-    if (obj.isDictionary())
-    {
-        // For each member
-        const Variant::Dictionary objMap = obj.getDictionary();
-        for (auto it = objMap.begin(); it != objMap.end(); ++it)
-        {
-            Variant & elem = obj[it->first];
-            mapReference(elem, refMap);
-        }
-    }
-    else if (obj.isArray())
-    {
-        // For each item
-        Variant::Array & a = obj.getArray();
-        for (size_t i = 0; i < a.size(); ++i)
-        {
-            Variant & elem = a[i];
-            mapReference(elem, refMap);
-        }
-    }
-}
+//void ObjectDB::mapReferences(Variant & obj, std::unordered_map<u32, u32> refMap)
+//{
+//    if (obj.isDictionary())
+//    {
+//        // For each member
+//        const Variant::Dictionary objMap = obj.getDictionary();
+//        for (auto it = objMap.begin(); it != objMap.end(); ++it)
+//        {
+//            Variant & elem = obj[it->first];
+//            mapReference(elem, refMap);
+//        }
+//    }
+//    else if (obj.isArray())
+//    {
+//        // For each item
+//        Variant::Array & a = obj.getArray();
+//        for (size_t i = 0; i < a.size(); ++i)
+//        {
+//            Variant & elem = a[i];
+//            mapReference(elem, refMap);
+//        }
+//    }
+//}
 
 //------------------------------------------------------------------------------
-void ObjectDB::mapReference(Variant & obj, std::unordered_map<u32, u32> refMap)
+void ObjectDB::mapReferences(Variant & obj, const std::unordered_map<u32, u32> & refMap)
 {
     // If the value is an object
     if (obj.isDictionary())
@@ -521,8 +544,23 @@ void ObjectDB::mapReference(Variant & obj, std::unordered_map<u32, u32> refMap)
         }
         else
         {
-            // Go recursively
-            mapReferences(obj, refMap);
+            // For each member
+            const Variant::Dictionary objMap = obj.getDictionary();
+            for (auto it = objMap.begin(); it != objMap.end(); ++it)
+            {
+                Variant & elem = obj[it->first];
+                mapReferences(elem, refMap);
+            }
+        }
+    }
+    else if (obj.isArray())
+    {
+        // For each item
+        Variant::Array & a = obj.getArray();
+        for (size_t i = 0; i < a.size(); ++i)
+        {
+            Variant & elem = a[i];
+            mapReferences(elem, refMap);
         }
     }
 }

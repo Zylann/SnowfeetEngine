@@ -94,8 +94,7 @@ private:
     bool flattenObject(OverrideObject & overrideObj, u32 id, std::vector<ObjectDB*> & stack);
 
     static void applyChange(Variant & obj, Modification change);
-    static void mapReferences(Variant & obj, std::unordered_map<u32, u32> refMap);
-    static void mapReference(Variant & obj, std::unordered_map<u32, u32> refMap);
+    static void mapReferences(Variant & obj, const std::unordered_map<u32, u32> & refMap);
 
     void clear();
     void clearInstances();
