@@ -41,6 +41,7 @@ void TabControl::layoutTabBar()
 			tabBounds.height() = barBounds.height();
 			pos.x() += tabBounds.width();
 			tab.setLocalClientBounds(tabBounds);
+            tab.layoutChildren();
 		}
 	}
 }
