@@ -21,6 +21,20 @@ public:
 
     void loadFromInstance(const Entity & entity);
 
+    /// \brief Gets the type of the root entity, if any.
+    /// \return Entity type, or null if none is defined.
+    const ObjectType * getRootType() const;
+
+    /// \brief Helper testing if the root entity is equal or derived from Entity_T.
+    template <class Entity_T>
+    bool isRootOfType()
+    {
+        const ObjectType * rootType = getRootType();
+        if (rootType)
+            return rootType->is(sn::getObjectType<Entity_T>(), true);
+        return false;
+    }
+
     void instantiate(Entity & a_parent, const std::string & contextModuleName) const;
 
 protected:

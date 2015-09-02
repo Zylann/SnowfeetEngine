@@ -44,6 +44,22 @@ void PackedEntity::loadFromInstance(const Entity & entity)
 }
 
 //------------------------------------------------------------------------------
+const ObjectType * PackedEntity::getRootType() const
+{
+    const Variant * root = getRootObject();
+    if (root)
+    {
+        const Variant & typeTag = (*root)["@type"];
+        if (typeTag.isString())
+        {
+            const ObjectType * ot = ObjectTypeDatabase::get().getType(typeTag.getString());
+            return ot;
+        }
+    }
+    return nullptr;
+}
+
+//------------------------------------------------------------------------------
 void PackedEntity::instantiate(Entity & a_parent, const std::string & contextModuleName) const
 {
     SerializationContext context(contextModuleName);
