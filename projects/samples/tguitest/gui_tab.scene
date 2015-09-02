@@ -1,0 +1,32 @@
+{
+    "format":"SN2",
+    "root":0,
+    "objects":[
+        0,
+        {
+            "@type":"tgui::Tab",
+            "_children":[
+                {"@ref":1},
+                {"@ref":2}
+            ]
+        },
+        1,
+        {
+            "@type":"tgui::Text"
+        },
+        2,
+        {
+            "@type":"tgui::Button",
+            "bounds":{"w":16, "h":16},
+            "anchors":["bottom", "top"],
+            "_children":[
+                {"@ref":3}
+            ]
+        },
+        3,
+        {
+            "@type":"tgui::Text",
+            "text":"X"
+        }
+    ]
+}

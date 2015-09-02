@@ -153,7 +153,7 @@
 					"tab":1,
 					"page":3
 				}
-			]
+			],
 			"_children":[
 				{"@ref":18},
 				{"@ref":20},
@@ -163,27 +163,17 @@
 		},
 		18,
 		{
-			"@type":"tgui::Tab",
-			"_children":[
-				{"@ref":19}
+			"@src":"gui_tab",
+			"changes":[
+				1, "text", "First tab"
 			]
 		},
-		19,
-		{
-			"@type":"tgui::Text",
-			"text":"First tab"
-		}
 		20,
 		{
-			"@type":"tgui::Tab",
-			"_children":[
-				{"@ref":21}
+			"@src":"gui_tab",
+			"changes":[
+				1, "text", "Second tab"
 			]
-		},
-		21,
-		{
-			"@type":"tgui::Text",
-			"text":"Second tab"
 		},
 		22,
 		{
