@@ -11,6 +11,8 @@
 #include "controls/TextArea.h"
 #include "controls/Docker.h"
 #include "controls/DockSizer.h"
+#include "controls/Tab.h"
+#include "controls/TabControl.h"
 
 #include "layouts/ListLayout.h"
 #include "layouts/GridLayout.h"
@@ -34,6 +36,8 @@ namespace tgui
         otb.registerType<TextArea>();
         otb.registerType<Docker>();
 		otb.registerType<DockSizer>();
+        otb.registerType<Tab>();
+        otb.registerType<TabControl>();
 
 		// Layouts
 		otb.registerType<Layout>();

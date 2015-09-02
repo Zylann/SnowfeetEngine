@@ -96,6 +96,8 @@ public:
 
     void setFocus(bool isFocused);
 
+    void setVisible(bool visible);
+
     //--------------------------------
     // Entity event handlers
     //--------------------------------
@@ -142,6 +144,7 @@ protected:
 	virtual void onChildControlRemoved(Control & child);
 
     bool hasLayout() const { return m_layout != nullptr; }
+    void setLayout(Layout * newLayout);
 
 	//--------------------------------
     // Helpers
@@ -157,8 +160,6 @@ private:
     void processKeyDown(Event & e);
 
     void setControlFlag(sn::u32 i, bool value);
-
-    void setLayout(Layout * newLayout);
 
 private:
     sn::IntRect m_localBounds;

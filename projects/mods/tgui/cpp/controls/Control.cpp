@@ -260,6 +260,12 @@ void Control::setFocus(bool isFocused)
 }
 
 //------------------------------------------------------------------------------
+void Control::setVisible(bool visible)
+{
+    setControlFlag(TGUI_CF_VISIBLE, visible);
+}
+
+//------------------------------------------------------------------------------
 void Control::onEvent(Event & ev)
 {
     // If events are not exclusive to the control, forward to children first

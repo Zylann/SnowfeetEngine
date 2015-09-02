@@ -14,7 +14,8 @@
 			"name":"the_gui",
 			"_children":[
 				{"@ref":3},
-				{"@ref":4}
+				{"@ref":4},
+				{"@ref":17}
 			]
 		},
 		3,
@@ -57,7 +58,7 @@
 			"_children":[
 				{"@ref":6},
 				{"@ref":7},
-				{"@ref":8}
+				{"@ref":17}
 			]
 		},
 		6,
@@ -82,11 +83,6 @@
 				{"@ref":13},
 				{"@ref":14}
 			]
-		},
-		8,
-		{
-			"@type":"tgui::Panel",
-			"name":"third"
 		},
 		9,
 		{
@@ -143,6 +139,61 @@
 			"text":"Click me, I'm a button\nWith a lot of text in it, blah blah blah...\nMultiple lines of text!",
 			"align":"center",
 			"anchors":["left", "right", "top", "bottom"]
-		}		
+		},
+		17,
+		{
+			"@type":"tgui::TabControl",
+			"bounds":{"x":450, "y":10, "w":200, "h":200},
+			"pages":[
+				{
+					"tab":0,
+					"page":2
+				},
+				{
+					"tab":1,
+					"page":3
+				}
+			]
+			"_children":[
+				{"@ref":18},
+				{"@ref":20},
+				{"@ref":22},
+				{"@ref":23}
+			]
+		},
+		18,
+		{
+			"@type":"tgui::Tab",
+			"_children":[
+				{"@ref":19}
+			]
+		},
+		19,
+		{
+			"@type":"tgui::Text",
+			"text":"First tab"
+		}
+		20,
+		{
+			"@type":"tgui::Tab",
+			"_children":[
+				{"@ref":21}
+			]
+		},
+		21,
+		{
+			"@type":"tgui::Text",
+			"text":"Second tab"
+		},
+		22,
+		{
+			"@type":"tgui::Text",
+			"text":"I'm the text contained in the first tab."
+		}
+		23,
+		{
+			"@type":"tgui::Text",
+			"text":"Hey, and I'm the text contained in the second tab."
+		}
 	]
 }
