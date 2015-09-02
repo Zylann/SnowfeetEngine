@@ -377,7 +377,12 @@ void ObjectDB::flatten(std::vector<ObjectDB*> & stack)
 ObjectDB * ObjectDB::getFromAssetDatabase(const std::string & location) const
 {
     // Default implementation
-    return AssetDatabase::get().getAsset<ObjectDB>(AssetLocation());
+    AssetLocation loc(location);
+    if (loc.module.empty())
+    {
+        loc.module = getAssetMetadata().module;
+    }
+    return AssetDatabase::get().getAsset<ObjectDB>(loc);
 }
 
 //------------------------------------------------------------------------------

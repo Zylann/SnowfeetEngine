@@ -188,7 +188,12 @@ void PackedEntity::instantiate(Entity & a_parent, const std::string & contextMod
 //------------------------------------------------------------------------------
 ObjectDB * PackedEntity::getFromAssetDatabase(const std::string & location) const
 {
-    return AssetDatabase::get().getAsset<PackedEntity>(AssetLocation(location));
+    AssetLocation loc(location);
+    if (loc.module.empty())
+    {
+        loc.module = getAssetMetadata().module;
+    }
+    return AssetDatabase::get().getAsset<PackedEntity>(loc);
 }
 
 } // namespace sn
