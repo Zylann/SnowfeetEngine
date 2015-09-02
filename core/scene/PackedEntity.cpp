@@ -60,11 +60,18 @@ const ObjectType * PackedEntity::getRootType() const
 }
 
 //------------------------------------------------------------------------------
-void PackedEntity::instantiate(Entity & a_parent, const std::string & contextModuleName) const
+void PackedEntity::instantiate(Entity & a_parent, const std::string & contextModuleName)
+{
+    if (!isFlattened())
+        flatten();
+
+    instantiateOnly(a_parent, contextModuleName);
+}
+
+//------------------------------------------------------------------------------
+void PackedEntity::instantiateOnly(Entity & a_parent, const std::string & contextModuleName) const
 {
     SerializationContext context(contextModuleName);
-
-    // TODO Flatten before?
 
     const auto & objects = getObjects();
 

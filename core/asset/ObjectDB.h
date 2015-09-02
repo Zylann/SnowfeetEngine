@@ -79,6 +79,9 @@ protected:
 
     const std::unordered_map<u32, ObjectDB::Object> & getObjects() const { return m_objects; }
 
+    bool isFlattened();
+	void flatten();
+
 private:
     struct Modification;
     struct OverrideObject;
@@ -87,8 +90,6 @@ private:
     static void parseModifications(const Variant & doc, std::vector<Modification> & out_modifications);
     static void parsePath(const Variant & o, std::vector<std::string> & out_path);
 
-	bool isFlattened();
-	void flatten();
 	void flatten(std::vector<ObjectDB*> & stack);
     bool flattenObject(OverrideObject & overrideObj, u32 id, std::vector<ObjectDB*> & stack);
 
