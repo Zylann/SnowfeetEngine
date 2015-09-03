@@ -44,7 +44,7 @@ It is done in several passes:
 4. States are deserialized (properties).
 5. The onReady() callback is called on all entities (like Unity3D's Awake() event).
 
-[See sn::PackedEntity for more details.](../blob/master/core/scene/PackedEntity.h)
+[See sn::PackedEntity for more details.](../core/scene/PackedEntity.h)
 
 
 Saving
@@ -126,9 +126,9 @@ Please note that this format is not specific to scenes:
 it can be used with any object that can be saved like that, so we can imagine
 making prefabs with materials, configuration files...
 
-- [See sn::ObjectDB for more details.](../blob/master/core/asset/ObjectDB.h)
-- [See more complex scene file](../blob/master/projects/samples/tguitest/main.scene)
-- [See SML JSON-superset format](../blob/master/doc/SML.md)
+- [See sn::ObjectDB for more details.](../core/asset/ObjectDB.h)
+- [See more complex scene file](../projects/samples/tguitest/main.scene)
+- [See SML JSON-superset format](../doc/SML.md)
 
 Legacy format
 -------------
