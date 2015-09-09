@@ -32,7 +32,8 @@ public:
 
     Vector2u getPreferredFramebufferSize(EyeIndex eye) override;
 
-    // No special serialization needed at the moment
+    void unserializeState(const Variant & o, const SerializationContext & context) override;
+    void serializeState(Variant & o, const SerializationContext & context) override;
 
 protected:
     ~HeadTracker();
@@ -48,8 +49,15 @@ private:
     ovrEyeRenderDesc m_ovrEyeDesc[2];
     f32 m_lastYaw;
     bool m_isFirstUpdate;
+    ovrHmdType m_debugHmdType;
+    bool m_debug;
 
 };
+
+void serialize(Variant & o, ovrHmdType hmdType);
+void unserialize(const Variant & o, ovrHmdType & out_hmdType);
+
+std::string toString(ovrHmdType type);
 
 } // namespace oculus
 } // namespace sn
