@@ -176,8 +176,8 @@ void HeadTracker::onRenderEye(Entity * sender, VRHeadset::EyeIndex abstractEyeIn
     if (material)
     {
         ovrTrackingState trackingState = ovrHmd_GetTrackingState(m_ovrHmd, m_ovrFrameTiming.ScanoutMidpointSeconds);
-        if (trackingState.StatusFlags & (ovrStatus_OrientationTracked | ovrStatus_PositionTracked))
-        {
+        //if (trackingState.StatusFlags & (ovrStatus_OrientationTracked | ovrStatus_PositionTracked))
+        //{
             // Get head pose
             OVR::Posef pose = trackingState.HeadPose.ThePose;
             Vector3f euler;
@@ -221,7 +221,7 @@ void HeadTracker::onRenderEye(Entity * sender, VRHeadset::EyeIndex abstractEyeIn
             timeWarpMatrices[1] = ((OVR::Matrix4f)timeWarpMatrices[1]).Transposed();
             material->setParam("u_EyeRotationStart", (f32*)&timeWarpMatrices[0]);
             material->setParam("u_EyeRotationEnd", (f32*)&timeWarpMatrices[1]);
-        }
+        //}
     }
 }
 
@@ -237,8 +237,12 @@ void HeadTracker::onUpdate()
     {
         // We're inside the main loop already so we'll assume that the frame begins after our update and ends at the end of it.
         // TODO onBeforeRender() and onAfterRender() callbacks for each VR cameras
+
+        // Must be called before any call to ovrHmd_BeginFrameTiming
         ovrHmd_ResetFrameTiming(m_ovrHmd, 0);
+
         m_ovrFrameTiming = ovrHmd_BeginFrameTiming(m_ovrHmd, 0);
+
         m_isFirstUpdate = false;
     }
     else
