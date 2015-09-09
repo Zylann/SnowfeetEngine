@@ -134,7 +134,7 @@ void HeadTracker::onReady()
     }
 
     const char* err = ovrHmd_GetLastError(m_ovrHmd);
-    if (err)
+    if (err && err[0] != '\0')
     {
         SN_ERROR(err);
     }
