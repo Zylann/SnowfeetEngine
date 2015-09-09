@@ -51,37 +51,35 @@ void ListLayout::update()
 	localBounds.y() = 0;
 	container->getPadding().crop(localBounds);
 
-	Vector2i pos = localBounds.origin();
+	IntRect cellBounds;
+	cellBounds.origin() = localBounds.origin();
+	cellBounds.width() = localBounds.width();
 
 	for (auto it = children.begin(); it != children.end(); ++it)
     {
         Control & child = **it;
         if (child.getPositionMode() == TGUI_LAYOUT)
         {
-            IntRect childBounds = child.getLocalClientBounds();
-            const Anchors & anchors = child.getAnchors();
-
-			// TODO Alignment?
-            //if (anchors[TGUI_LEFT])
-			childBounds.origin() = pos;
-
-			// Apply anchors
-            //if (anchors[TGUI_TOP])
-                //childBounds.y() = margin.top;
-            if (anchors[TGUI_RIGHT])
-                childBounds.width() = localBounds.width();
-            if (anchors[TGUI_BOTTOM])
-                childBounds.height() = localBounds.height() - (childBounds.y() - localBounds.minY());
-
-			pos.y() += childBounds.height() + m_spacing;
-
-			// Apply margin
 			const Border & margin = child.getMargin();
-			margin.crop(childBounds);
+            IntRect childBounds = child.getLocalClientBounds();
 
+			childBounds.origin() = cellBounds.origin();
+
+			// Anchors
+			cellBounds.height() = childBounds.height() + margin.top + margin.bottom;
+			applyAnchors(childBounds, cellBounds, child.getAnchors());
+
+			// TODO lastChildFill property
+
+			// Margin
+			child.getMargin().crop(childBounds);
+
+			// Apply
             child.setLocalClientBounds(childBounds);
             child.layoutChildren();
-        }
+
+			cellBounds.y() += cellBounds.height() + m_spacing;
+		}
     }
 }
 

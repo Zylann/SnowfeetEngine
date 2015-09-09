@@ -37,5 +37,27 @@ void unserializeAnchors(const sn::Variant & o, Anchors & anchors)
     }
 }
 
+void applyAnchors(IntRect & out_rect, const IntRect & container, const Anchors & anchors)
+{
+	if (anchors[TGUI_LEFT])
+	{
+		out_rect.width() += (out_rect.x() - container.x());
+		out_rect.x() = container.x();
+	}
+	if (anchors[TGUI_RIGHT])
+	{
+		out_rect.width() = (container.x() + container.width()) - out_rect.x();
+	}
+	if (anchors[TGUI_TOP])
+	{
+		out_rect.height() += (out_rect.y() - container.y());
+		out_rect.y() = container.y();
+	}
+	if (anchors[TGUI_BOTTOM])
+	{
+		out_rect.height() = (container.y() + container.height()) - out_rect.y();
+	}
+}
+
 } // namespace tgui
 
