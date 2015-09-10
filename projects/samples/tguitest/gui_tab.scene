@@ -5,6 +5,7 @@
         0,
         {
             "@type":"tgui::Tab",
+            "bounds":{"w":120},
             "_children":[
                 {"@ref":1},
                 {"@ref":2}
@@ -26,7 +27,9 @@
         3,
         {
             "@type":"tgui::Text",
-            "text":"X"
+            "text":"X",
+            "anchors":"fill",
+            "align":"center"
         }
     ]
 }

@@ -7,17 +7,24 @@ namespace tgui
 
 void serializeAnchors(sn::Variant & o, const Anchors & anchors)
 {
-    Variant::Array a;
-    for (u32 d = 0; d < TGUI_DIRECTION_COUNT; ++d)
-    {
-        if (anchors[d])
-        {
-            Variant v;
-            tgui::serialize(v, (Direction)d);
-            a.push_back(v);
-        }
-    }
-    o = a;
+	if (anchors.all())
+	{
+		o.setString("fill");
+	}
+	else
+	{
+		Variant::Array a;
+		for (u32 d = 0; d < TGUI_DIRECTION_COUNT; ++d)
+		{
+			if (anchors[d])
+			{
+				Variant v;
+				tgui::serialize(v, (Direction)d);
+				a.push_back(v);
+			}
+		}
+		o = a;
+	}
 }
 
 void unserializeAnchors(const sn::Variant & o, Anchors & anchors)
@@ -35,6 +42,15 @@ void unserializeAnchors(const sn::Variant & o, Anchors & anchors)
             }
         }
     }
+	else if (o.isString())
+	{
+		const std::string & s = o.getString();
+		if (s == "fill")
+		{
+			for (u32 i = 0; i < anchors.size(); ++i)
+				anchors[i] = true;
+		}
+	}
 }
 
 void applyAnchors(IntRect & out_rect, const IntRect & container, const Anchors & anchors)
