@@ -37,7 +37,7 @@ bool RenderTexture::create(Vector2u size, bool hasDepth)
     // Create framebuffer
     if (m_frameBufferID == 0)
     {
-        glCheck(glGenFramebuffersEXT(1, &m_frameBufferID));
+        glCheck(glGenFramebuffers(1, &m_frameBufferID));
         if (m_frameBufferID == 0)
         {
             SN_ERROR("Couldn't create framebuffer");
