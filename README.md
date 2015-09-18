@@ -33,7 +33,7 @@ What the engine does now
 ![Screenshot](http://zylannprods.fr/snowfeet/engine/screenshots/2015_04_11_0041_oculus7_bunny3_w800.png)
 Testing Oculus Rift display with engine-rendered distortion
 
-My current focus is on the TGUI module, then scripting, rendering fondation improvements and other various things.
+My current focus is on the TGUI module, then scripting, rendering foundation improvements and other various things.
 
 
 Features

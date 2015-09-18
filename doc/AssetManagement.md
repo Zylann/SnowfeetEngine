@@ -27,6 +27,7 @@ interoperate more easily on native level, without having to depend against each 
 For each asset type, you have to define a loader for it.
 Loaders must derive from AssetLoader, and implement every of the required virtual functions.
 Loaders defined in modules get automatically referenced with the reflection system.
+TODO: this might become manual in the future for practical reasons.
 
 
 How assets are loaded
@@ -35,7 +36,7 @@ How assets are loaded
 When a file has to be loaded as an asset, the following steps are executed:
 
 1) On indexing phase, the database iterates over all loaders.
-   If one match, it is choosed to create the instance and load it later.
+   If one match, it is choosed to create the instance for later loading.
    If two loaders match, isDirect() is called to check if it has priority over the other.
    Otherwise, the loading process is ambiguous and the file is not loaded.
 
@@ -50,7 +51,5 @@ Hot-reload
 Hot-reloading is achieved by design.
 Every asset the application references has an existing instance in the AssetDatabase.
 Only a subset of them may be loaded at a time.
-If assets need to be reloaded, they are not destroyed, only updated.
-
-
-
+If assets need to be reloaded, they are not destroyed, only updated:
+the loader gets called a second time on the same asset, and here you go :)

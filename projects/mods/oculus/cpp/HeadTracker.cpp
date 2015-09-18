@@ -26,6 +26,7 @@ namespace OVR
 namespace sn {
 namespace oculus {
 
+//------------------------------------------------------------------------------
 /// \brief Gets euler angles from an OVR rotation applying the engine's graphic conventions
 void getEulerAnglesFromOVR(OVR::Quat<float> & q, Vector3f & euler)
 {
@@ -36,7 +37,9 @@ void getEulerAnglesFromOVR(OVR::Quat<float> & q, Vector3f & euler)
 HeadTracker::HeadTracker():
     m_ovrHmd(nullptr),
     m_lastYaw(0),
-    m_isFirstUpdate(true)
+    m_isFirstUpdate(true),
+    m_debugHmdType(ovrHmd_None),
+    m_debug(false)
 {
     m_abstractEyes[0].tag = "VR_LeftEye";
     m_abstractEyes[1].tag = "VR_RightEye";
@@ -66,7 +69,15 @@ void HeadTracker::onReady()
     }
     else
     {
-        m_ovrHmd = ovrHmd_Create(0);
+        if (!m_debug)
+            m_ovrHmd = ovrHmd_Create(0);
+    }
+
+    if (!m_ovrHmd && m_debugHmdType != ovrHmd_None)
+    {
+        if (!m_debug)
+            SN_ERROR("Couldn't create OVR HMD from plugged device. Fallback on debug HMD (" << sn::oculus::toString(m_debugHmdType) << ")");
+        m_ovrHmd = ovrHmd_CreateDebug(m_debugHmdType);
     }
 
     if (m_ovrHmd)
@@ -134,7 +145,7 @@ void HeadTracker::onReady()
     }
 
     const char* err = ovrHmd_GetLastError(m_ovrHmd);
-    if (err)
+    if (err && err[0] != '\0')
     {
         SN_ERROR(err);
     }
@@ -165,8 +176,8 @@ void HeadTracker::onRenderEye(Entity * sender, VRHeadset::EyeIndex abstractEyeIn
     if (material)
     {
         ovrTrackingState trackingState = ovrHmd_GetTrackingState(m_ovrHmd, m_ovrFrameTiming.ScanoutMidpointSeconds);
-        if (trackingState.StatusFlags & (ovrStatus_OrientationTracked | ovrStatus_PositionTracked))
-        {
+        //if (trackingState.StatusFlags & (ovrStatus_OrientationTracked | ovrStatus_PositionTracked))
+        //{
             // Get head pose
             OVR::Posef pose = trackingState.HeadPose.ThePose;
             Vector3f euler;
@@ -210,7 +221,7 @@ void HeadTracker::onRenderEye(Entity * sender, VRHeadset::EyeIndex abstractEyeIn
             timeWarpMatrices[1] = ((OVR::Matrix4f)timeWarpMatrices[1]).Transposed();
             material->setParam("u_EyeRotationStart", (f32*)&timeWarpMatrices[0]);
             material->setParam("u_EyeRotationEnd", (f32*)&timeWarpMatrices[1]);
-        }
+        //}
     }
 }
 
@@ -226,7 +237,12 @@ void HeadTracker::onUpdate()
     {
         // We're inside the main loop already so we'll assume that the frame begins after our update and ends at the end of it.
         // TODO onBeforeRender() and onAfterRender() callbacks for each VR cameras
+
+        // Must be called before any call to ovrHmd_BeginFrameTiming
+        ovrHmd_ResetFrameTiming(m_ovrHmd, 0);
+
         m_ovrFrameTiming = ovrHmd_BeginFrameTiming(m_ovrHmd, 0);
+
         m_isFirstUpdate = false;
     }
     else
@@ -316,6 +332,71 @@ void HeadTracker::makeDistortionMesh(Mesh & out_mesh, u32 agnosticEyeType)
 
     out_mesh.recalculateBounds();
 
+}
+
+//------------------------------------------------------------------------------
+void HeadTracker::unserializeState(const Variant & o, const SerializationContext & context)
+{
+    sn::VRHeadset::unserializeState(o, context);
+    sn::unserialize(o["debug"], m_debug);
+    sn::oculus::unserialize(o["debugHmdType"], m_debugHmdType);
+}
+
+//------------------------------------------------------------------------------
+void HeadTracker::serializeState(Variant & o, const SerializationContext & context)
+{
+    sn::VRHeadset::serializeState(o, context);
+    sn::serialize(o["debug"], m_debug);
+    sn::oculus::serialize(o["debugHmdType"], m_debugHmdType);
+}
+
+//------------------------------------------------------------------------------
+void serialize(Variant & o, ovrHmdType hmdType)
+{
+    o.setString(toString(hmdType));
+}
+
+//------------------------------------------------------------------------------
+void unserialize(const Variant & o, ovrHmdType & out_hmdType)
+{
+    if (o.isString())
+    {
+        std::string s = o.getString();
+        //std::transform(s.begin(), s.end(), s.begin(), ::tolower);
+
+        if (!s.empty())
+        {
+            if (s == "DK1")
+            {
+                out_hmdType = ovrHmd_DK1;
+            }
+            else if (s == "DK2")
+            {
+                out_hmdType = ovrHmd_DK2;
+            }
+            else if (s == "DKHD")
+            {
+                out_hmdType = ovrHmd_DKHD;
+            }
+            else if (s == "none" || s == "None")
+            {
+                out_hmdType = ovrHmd_None;
+            }
+        }
+    }
+}
+
+//------------------------------------------------------------------------------
+std::string toString(ovrHmdType type)
+{
+    switch (type)
+    {
+    case ovrHmd_DK1: return "DK1"; break;
+    case ovrHmd_DK2: return "DK2"; break;
+    case ovrHmd_DKHD: return "DKHD"; break;
+    case ovrHmd_None: return "None"; break;
+    default: return "Other"; break;
+    }
 }
 
 } // namespace oculus

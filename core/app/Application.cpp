@@ -348,8 +348,8 @@ bool Application::parseCommandLine(CommandLine commandLine)
 //------------------------------------------------------------------------------
 void Application::printCommandLineUsage()
 {
-    std::cout << "Usage: SnowfeetApp.exe [-p <pathToProjects>] -x <pathToExecutableMod>" << std::endl;
-    std::cout << "You can also use a commandline.txt file as input." << std::endl;
+    std::cout << "Usage: SnowfeetApp.exe [-p <pathToProjectsDir>] -x <pathToExecutableModFile>" << std::endl;
+    std::cout << "You can also use a commandline.txt file as input in your working directory." << std::endl;
 }
 
 //------------------------------------------------------------------------------
@@ -363,7 +363,7 @@ Module * Application::loadModule(const String & path)
 
     std::list<ModuleInfo> modulesToLoad;
     Module::calculateDependencies(m_pathToProjects, path, modulesToLoad);
-    
+
 #ifdef SN_BUILD_DEBUG
     for (auto it = modulesToLoad.begin(); it != modulesToLoad.end(); ++it)
     {
@@ -396,7 +396,7 @@ Module * Application::loadModule(const String & path)
 
             // Create Module object
             mod = new Module(*this, info);
-            
+
             mod->loadNativeBindings(m_scriptEngine);
             mod->compileScripts();
 
@@ -472,6 +472,3 @@ void Application::quit()
 
 
 } // namespace sn
-
-
-
