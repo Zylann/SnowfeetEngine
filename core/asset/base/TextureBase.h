@@ -41,7 +41,7 @@ public:
     TextureHandle getHandle() const { return m_handle; }
 
     /// \brief Sets if source image's data should be kept in memory after upload.
-    void setKeepSourceInMemory(bool enable) { m_keepSourceInMemory = true; }
+    void setKeepSourceInMemory(bool enable) { m_keepSourceInMemory = enable; }
 
     /// \brief Tells if the source image's data should be kept in memory
     bool isKeepSourceInMemory() const { return m_keepSourceInMemory; }
