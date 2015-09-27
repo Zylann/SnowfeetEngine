@@ -71,7 +71,7 @@ void Entity::setEnabled(bool e)
 }
 
 //------------------------------------------------------------------------------
-void Entity::setUpdatable(bool updatable, s16 order, s16 layer)
+void Entity::setUpdatable(bool updatable, const std::string layerName)
 {
 	// TODO FIXME Set the flag!!
     if (getFlag(SN_EF_UPDATABLE) ^ updatable)
@@ -80,10 +80,15 @@ void Entity::setUpdatable(bool updatable, s16 order, s16 layer)
         if (scene)
         {
 			setFlag(SN_EF_UPDATABLE, updatable);
+            UpdateManager & manager = scene->getUpdateManager();
             if (updatable)
-                scene->registerUpdatableEntity(*this, order, layer);
+            {
+                manager.addEntity(*this, layerName.empty() ? UpdateManager::DEFAULT_LAYER : layerName);
+            }
             else
-                scene->unregisterUpdatableEntity(*this);
+            {
+                manager.removeEntity(*this, layerName);
+            }
         }
         else
         {
@@ -271,10 +276,10 @@ void Entity::onSceneChanged(Scene * oldScene, Scene * newScene)
         // Update subscription
         if (getFlag(SN_EF_UPDATABLE))
         {
-            s16 order=0, layer=0;
+            std::string updateLayer;
             if (oldScene)
-                oldScene->getEntityUpdateOrder(*this, order, layer);
-            newScene->registerUpdatableEntity(*this, order, layer);
+                oldScene->getUpdateManager().getEntityLayer(*this, updateLayer);
+            newScene->getUpdateManager().addEntity(*this, updateLayer);
         }
 
         // System events subscription
@@ -307,7 +312,7 @@ void Entity::onSceneChanged(Scene * oldScene, Scene * newScene)
     if (oldScene)
     {
         if (getFlag(SN_EF_UPDATABLE))
-            oldScene->unregisterUpdatableEntity(*this);
+            oldScene->getUpdateManager().removeEntity(*this);
 
         if (getFlag(SN_EF_SYSTEM_EVENT_LISTENER))
             oldScene->unregisterEventListener(*this);

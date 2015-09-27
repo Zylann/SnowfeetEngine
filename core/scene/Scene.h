@@ -12,6 +12,7 @@ This file is part of the SnowfeetEngine project.
 #include <core/system/Event.h>
 #include <core/system/Clock.h>
 #include <core/scene/TagManager.h>
+#include <core/scene/UpdateManager.h>
 #include <map>
 
 namespace sn
@@ -29,25 +30,21 @@ namespace sn
 class SN_API Scene : public Entity
 {
 public:
-	SN_ENTITY(sn::Scene, sn::Entity)
+    SN_ENTITY(sn::Scene, sn::Entity)
 
 	typedef TagManager<Entity*> TagManager;
 
-    Scene() : 
-        Entity(), 
-        m_quitFlag(false)
-    {
-        setName("Scene");
-    }
+    Scene();
 
     //------------------------------------
     // Registers
     //------------------------------------
 
-    // TODO UpdateManager
-    void registerUpdatableEntity(Entity & e, s16 order, s16 layer);
-    void unregisterUpdatableEntity(Entity & e);
-    bool getEntityUpdateOrder(Entity & e, s16 & out_order, s16 & out_layer) const;
+    //void registerUpdatableEntity(Entity & e, s16 order, s16 layer);
+    //void unregisterUpdatableEntity(Entity & e);
+    //bool getEntityUpdateOrder(Entity & e, s16 & out_order, s16 & out_layer) const;
+
+    UpdateManager & getUpdateManager() { return m_updateManager; }
 
 	void registerEventListener(Entity & e);
 	void unregisterEventListener(Entity & e);
@@ -103,7 +100,7 @@ public:
 
 private:
 	TagManager m_tagManager;
-    std::map<s32, std::unordered_set<Entity*>> m_updatableEntities;
+    UpdateManager m_updateManager;
 	std::unordered_set<Entity*> m_eventListenerEntities;
     bool m_quitFlag;
 	Time m_deltaTime;

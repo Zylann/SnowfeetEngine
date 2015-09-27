@@ -141,8 +141,7 @@ void RenderManager::onReady()
     addTag(TAG);
 
     // Register to update manager.
-    // Arbitrary values. The layer is given quite high so gameplay should be updated before.
-    setUpdatable(true, 0, 32000);
+    setUpdatable(true, getObjectType().getName());
     listenToSystemEvents();
 
     // Create the rendering context that will be shared across render screens

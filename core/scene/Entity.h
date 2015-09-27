@@ -14,6 +14,7 @@ This file is part of the SnowfeetEngine project.
 #include <core/squirrel/Instance.h>
 #include <core/asset/SerializationContext.h>
 #include <core/util/typecheck.h>
+#include <core/scene/UpdateManager.h>
 
 #include <vector>
 #include <string>
@@ -75,7 +76,7 @@ public:
     /// \param enable: make updatable or disable update
     /// \param order: update order within the update layer
     /// \param layer: update layer ID
-    void setUpdatable(bool enable=true, s16 order=0, s16 layer=0);
+    void setUpdatable(bool enable, const std::string layerName = "");
 
     /// \brief Sets wether this entity should be notified of system events.
     /// \brief enable: enables notification or disables it

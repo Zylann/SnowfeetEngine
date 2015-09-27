@@ -10,6 +10,18 @@ namespace sn
 {
 
 //------------------------------------------------------------------------------
+const char * Scene::DEFAULT_UPDATE_TAG = "DefaultUpdate";
+
+//------------------------------------------------------------------------------
+Scene::Scene() : Entity(), 
+    m_updateManager(),
+    m_quitFlag(false)
+{
+    setName("Scene");
+}
+
+/*
+//------------------------------------------------------------------------------
 void Scene::registerUpdatableEntity(Entity & e, s16 order, s16 layer)
 {
     s32 packedOrder = static_cast<s32>(order) | (static_cast<s32>(layer) << 16);
@@ -56,6 +68,7 @@ bool Scene::getEntityUpdateOrder(Entity & e, s16 & out_order, s16 & out_layer) c
     }
     return false;
 }
+*/
 
 //------------------------------------------------------------------------------
 void Scene::registerEventListener(Entity & e)
@@ -177,21 +190,7 @@ void Scene::update(Time deltaTime)
 //------------------------------------------------------------------------------
 void Scene::onUpdate()
 {
-    auto sortedEntities = m_updatableEntities; // Iterate over a copy
-    for (auto it = sortedEntities.begin(); it != sortedEntities.end(); ++it)
-    {
-        auto & entities = it->second;
-        for (auto it2 = entities.begin(); it2 != entities.end(); ++it2)
-        {
-            Entity & e = **it2;
-            if (!e.getFlag(SN_EF_FIRST_UPDATE))
-            {
-                e.onFirstUpdate();
-                e.setFlag(SN_EF_FIRST_UPDATE, true);
-            }
-            e.onUpdate();
-        }
-    }
+    m_updateManager.update();
 
 	// TODO Destroy entities with flag DESTROY_LATE set
 }
