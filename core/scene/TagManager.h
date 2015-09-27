@@ -18,9 +18,12 @@ class TagManager
 public:
 	static const u32 INVALID_INDEX = -1;
 
-	//--------------------------------------------------------------------------
-	u32 add(const std::string & tagName, T e)
-	{
+    //--------------------------------------------------------------------------
+    /// \brief Gets or creates a name=>tagIndex mapping
+    /// \param tagName: name of the tag
+    /// \return tag index
+    u32 getOrCreateTagIndex(const std::string & tagName)
+    {
 		u32 tagIndex;
 		auto it = m_tagNameToIndex.find(tagName);
 		if(it == m_tagNameToIndex.end())
@@ -36,6 +39,13 @@ public:
 		{
 			tagIndex = it->second;
 		}
+        return tagIndex;
+    }
+
+	//--------------------------------------------------------------------------
+	u32 add(const std::string & tagName, T e)
+	{
+        u32 tagIndex = getOrCreateTagIndex(tagName);
 
 		Bucket & b = m_indexToBucket[tagIndex];
 		b.objects.insert(e);
