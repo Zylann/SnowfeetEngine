@@ -83,6 +83,9 @@ bool ModuleInfo::setDataFromVariant(const Variant & v)
     // Get dependencies
 	unserialize(v["dependencies"], dependencies);
 
+    // Get update layers
+    updateLayers = v["updateLayers"];
+
     return true;
 }
 

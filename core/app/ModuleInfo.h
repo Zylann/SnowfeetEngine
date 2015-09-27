@@ -41,6 +41,8 @@ public:
     /// \warning The order is important in this container.
     std::vector<String> bindings;
 
+    Variant updateLayers;
+
 private:
     bool setDataFromVariant(const Variant & v);
     void parseServices(const Variant & o);

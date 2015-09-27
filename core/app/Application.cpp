@@ -110,6 +110,10 @@ int Application::executeEx()
     const ModuleInfo & mainModuleInfo = mainModule->getInfo();
     if (!mainModuleInfo.startupScene.empty())
     {
+        // Initialize update layers
+        // TODO UpdateManager config should be an asset
+        m_scene->getUpdateManager().unserialize(mainModuleInfo.updateLayers);
+
         // Load the scene
         PackedEntity * packedScene = AssetDatabase::get().getAsset<PackedEntity>(mainModuleInfo.name, mainModuleInfo.startupScene);
         if (packedScene)
@@ -418,9 +422,9 @@ Module * Application::loadModule(const String & path)
 	// Rebuild class mapping once all script classes have been defined
 	m_scriptEngine.rebuildClassMapping();
 
-	// Create services
 	if (m_scene)
 	{
+    	// Create services
 		size_t i = 0;
 		for (auto it = modulesToLoad.begin(); it != modulesToLoad.end(); ++it)
 		{
