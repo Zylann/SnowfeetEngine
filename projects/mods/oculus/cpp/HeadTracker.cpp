@@ -37,7 +37,6 @@ void getEulerAnglesFromOVR(OVR::Quat<float> & q, Vector3f & euler)
 HeadTracker::HeadTracker():
     m_ovrHmd(nullptr),
     m_lastYaw(0),
-    m_isFirstUpdate(true),
     m_debugHmdType(ovrHmd_None),
     m_debug(false)
 {
@@ -137,6 +136,11 @@ void HeadTracker::onReady()
 
         m_abstractEyes[0].effectMaterial.set(database.getAsset<Material>(modName, "left_eye_mat"));
         m_abstractEyes[1].effectMaterial.set(database.getAsset<Material>(modName, "right_eye_mat"));
+
+        // Must be called before any call to ovrHmd_BeginFrameTiming
+        ovrHmd_ResetFrameTiming(m_ovrHmd, 0);
+
+        m_ovrFrameTiming = ovrHmd_BeginFrameTiming(m_ovrHmd, 0);    
     }
     else
     {
@@ -149,8 +153,6 @@ void HeadTracker::onReady()
     {
         SN_ERROR(err);
     }
-
-    m_isFirstUpdate = true;
 }
 
 //------------------------------------------------------------------------------
@@ -233,45 +235,32 @@ void HeadTracker::onUpdate()
         return;
     // At this point we assume the headset is plugged and working
 
-    if (m_isFirstUpdate)
+    // We're inside the main loop already so we'll assume that the frame begins after our update and ends at the end of it.
+
+    ovrTrackingState trackingState = ovrHmd_GetTrackingState(m_ovrHmd, m_ovrFrameTiming.ScanoutMidpointSeconds);
+    if (trackingState.StatusFlags & (ovrStatus_OrientationTracked | ovrStatus_PositionTracked))
     {
-        // We're inside the main loop already so we'll assume that the frame begins after our update and ends at the end of it.
-        // TODO onBeforeRender() and onAfterRender() callbacks for each VR cameras
+        // Get head pose
+        OVR::Posef pose = trackingState.HeadPose.ThePose;
 
-        // Must be called before any call to ovrHmd_BeginFrameTiming
-        ovrHmd_ResetFrameTiming(m_ovrHmd, 0);
-
-        m_ovrFrameTiming = ovrHmd_BeginFrameTiming(m_ovrHmd, 0);
-
-        m_isFirstUpdate = false;
-    }
-    else
-    {
-        ovrTrackingState trackingState = ovrHmd_GetTrackingState(m_ovrHmd, m_ovrFrameTiming.ScanoutMidpointSeconds);
-        if (trackingState.StatusFlags & (ovrStatus_OrientationTracked | ovrStatus_PositionTracked))
+        // Update parent's position
+        Entity * targetEntity = getParent();
+        if (targetEntity && targetEntity->isInstanceOf<Entity3D>())
         {
-            // Get head pose
-            OVR::Posef pose = trackingState.HeadPose.ThePose;
-
-            // Update parent's position
-            Entity * targetEntity = getParent();
-            if (targetEntity && targetEntity->isInstanceOf<Entity3D>())
-            {
-                Entity3D & target3D = *(Entity3D*)targetEntity;
-                OVR::Quat<float> q = pose.Rotation;
-                // Note: Y and X axes need to be inverted to match the coordinate system
-                target3D.setRotation(Quaternion(q.w, -q.x, -q.y, q.z));
-            }
-
-            // Memorize last head/eye variables
-            Vector3f euler;
-            getEulerAnglesFromOVR(pose.Rotation, euler);
-            m_lastYaw = euler.y();
+            Entity3D & target3D = *(Entity3D*)targetEntity;
+            OVR::Quat<float> q = pose.Rotation;
+            // Note: Y and X axes need to be inverted to match the coordinate system
+            target3D.setRotation(Quaternion(q.w, -q.x, -q.y, q.z));
         }
 
-        ovrHmd_EndFrameTiming(m_ovrHmd);
-        ovrHmd_BeginFrameTiming(m_ovrHmd, 0);
+        // Memorize last head/eye variables
+        Vector3f euler;
+        getEulerAnglesFromOVR(pose.Rotation, euler);
+        m_lastYaw = euler.y();
     }
+
+    ovrHmd_EndFrameTiming(m_ovrHmd);
+    ovrHmd_BeginFrameTiming(m_ovrHmd, 0);
 }
 
 //------------------------------------------------------------------------------

@@ -48,7 +48,6 @@ private:
     ovrFrameTiming m_ovrFrameTiming;
     ovrEyeRenderDesc m_ovrEyeDesc[2];
     f32 m_lastYaw;
-    bool m_isFirstUpdate;
     ovrHmdType m_debugHmdType;
     bool m_debug;
 
