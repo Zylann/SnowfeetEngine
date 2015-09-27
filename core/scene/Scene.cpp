@@ -10,9 +10,6 @@ namespace sn
 {
 
 //------------------------------------------------------------------------------
-const char * Scene::DEFAULT_UPDATE_TAG = "DefaultUpdate";
-
-//------------------------------------------------------------------------------
 Scene::Scene() : Entity(), 
     m_updateManager(),
     m_quitFlag(false)
