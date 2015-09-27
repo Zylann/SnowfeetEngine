@@ -72,6 +72,33 @@ inline bool isEOL(char c) { return c == '\n' || c == '\r'; }
 /// \return true on success, false if the file couldn't be opened
 bool SN_API readFile(const std::string & filePath, std::string & str);
 
+/// \brief Concatenates strings with an optional separator between them.
+/// \param stringList: strings container (STL compliant)
+/// \param sep: separator
+/// \return concatenated string
+template <typename List_T>
+std::string join(const List_T & stringList, const std::string sep = "")
+{
+    if (stringList.empty())
+        return "";
+
+    // Put first element
+    auto it = stringList.begin();
+    std::string res = *it;
+
+    // While there are following elements
+    for (++it; it != stringList.end(); ++it)
+    {
+        // Put a separator
+        res += sep;
+        // Concatenate the element
+        const std::string & s = *it;
+        res += s;
+    }
+
+    return res;
+}
+
 } // namespace sn
 
 #endif // __HEADER_SN_STRINGUTILS__
