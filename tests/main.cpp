@@ -17,7 +17,8 @@ void testNTree()
 
 int main(int argc, char * argv[])
 {
-    test_sml();
+    test_guid();
+    //test_sml();
     //test_squirrelBinding();
 	//test_variant();
     //test_fileWatcher();
