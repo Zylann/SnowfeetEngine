@@ -94,7 +94,10 @@ void ListLayout::unserializeState(const Variant & o, const SerializationContext 
     Layout::unserializeState(o, ctx);
 
     sn::unserialize(o["spacing"], m_spacing);
-    tgui::unserialize(o["orientation"], m_orientation);
+
+	Variant orientationData = o["orientation"];
+	if (!orientationData.isNil())
+	    tgui::unserialize(orientationData, m_orientation);
 }
 
 } // namespace tgui
