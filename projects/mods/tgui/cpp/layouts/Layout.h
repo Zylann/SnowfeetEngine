@@ -37,6 +37,16 @@ protected:
 	Control * getContainer() const { return r_container; }
 	void setContainer(Control & c) { r_container = &c; }
 
+	/// \brief Gets child controls affected by layout positionning.
+	/// \param parent: container
+	/// \param out_controls
+	/// \param out_indexes: if not null, indexes in the parent will be stored here.
+	static void getChildrenToLayout(
+		Control & parent, 
+		std::vector<Control*> & out_controls, 
+		std::vector<sn::u32> * out_indexes=nullptr
+	);
+
 private:
 	Control * r_container;
 

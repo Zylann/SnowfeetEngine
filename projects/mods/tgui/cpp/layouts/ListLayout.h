@@ -29,6 +29,8 @@ public:
 private:
     sn::s32 m_spacing;
     Orientation m_orientation;
+	std::unordered_set<sn::u32> m_fillers; // TODO Should use weak refs rather than child indexes
+
 };
 
 } // namespace tgui

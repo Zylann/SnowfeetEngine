@@ -6,6 +6,19 @@
         {
             "@type":"tgui::Tab",
             "bounds":{"w":120},
+            "padding":{
+                "left":2,
+                "right":2,
+                "top":2,
+                "bottom":2
+            },
+            "layout":{
+                "@type":"tgui::ListLayout",
+                "orientation":"horizontal",
+                "fillers":[
+                    0
+                ]
+            },
             "_children":[
                 {"@ref":1},
                 {"@ref":2}

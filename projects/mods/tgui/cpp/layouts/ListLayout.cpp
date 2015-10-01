@@ -15,6 +15,8 @@ ListLayout::ListLayout(Control * control):
 }
 
 //------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
 void ListLayout::setOrientation(Orientation newOrientation)
 {
     m_orientation = newOrientation;
@@ -35,7 +37,8 @@ void ListLayout::update()
 	// TODO Have a dirty flag to avoid calculating layouts when nothing changed
 
     std::vector<Control*> children;
-	container->getChildrenOfType<Control>(children);
+	std::vector<u32> childrenIndex;
+	Layout::getChildrenToLayout(*container, children, &childrenIndex);
 
 	// Get container bounds with padding
 	sn::IntRect localBounds = container->getLocalClientBounds();
@@ -53,29 +56,69 @@ void ListLayout::update()
 
 	cellBounds.size()[xi] = localBounds.size()[xi];
 
-	for (auto it = children.begin(); it != children.end(); ++it)
+	std::vector<IntRect> calculatedBounds;
+	calculatedBounds.resize(children.size());
+
+	// Space left for filler controls
+	s32 fillSpace = localBounds.size()[yi];
+
+	// Calculate child bounds
+	for (u32 i = 0; i < children.size(); ++i)
 	{
-		Control & child = **it;
-		if (child.getPositionMode() == TGUI_LAYOUT)
+		Control & child = *children[i];
+
+		const Border & margin = child.getMargin();
+		IntRect childBounds = child.getLocalClientBounds();
+
+		childBounds.origin() = cellBounds.origin();
+
+		// Anchors
+		cellBounds.size()[yi] = childBounds.size()[yi] + (m_orientation == TGUI_VERTICAL ? (margin.left + margin.right) : (margin.top + margin.bottom));
+		applyAnchors(childBounds, cellBounds, child.getAnchors());
+
+		// Margin
+		child.getMargin().crop(childBounds);
+
+		calculatedBounds[i] = childBounds;
+
+		u32 h = cellBounds.size()[yi] + m_spacing;
+		cellBounds.origin()[yi] += h;
+
+		// If the control is not a filler
+		if (m_fillers.find(childrenIndex[i]) != m_fillers.end())
 		{
-			const Border & margin = child.getMargin();
-			IntRect childBounds = child.getLocalClientBounds();
-
-			childBounds.origin() = cellBounds.origin();
-
-			// Anchors
-			cellBounds.size()[yi] = childBounds.size()[yi] + (m_orientation == TGUI_VERTICAL ? (margin.left + margin.right) : (margin.top + margin.bottom));
-			applyAnchors(childBounds, cellBounds, child.getAnchors());
-
-			// Margin
-			child.getMargin().crop(childBounds);
-
-			// Apply
-			child.setLocalClientBounds(childBounds);
-			child.layoutChildren();
-
-			cellBounds.origin()[yi] += cellBounds.size()[yi] + m_spacing;
+			// Subtracts its size from available fill space
+			fillSpace -= h;
 		}
+	}
+
+	// Calculate fillers
+	if (!m_fillers.empty())
+	{
+		u32 fillSize = fillSpace < 0 ? 0 : fillSpace / m_fillers.size();
+		for (auto it = m_fillers.begin(); it != m_fillers.end(); ++it)
+		{
+			u32 i = *it;
+			IntRect & r = calculatedBounds[i];
+			s32 delta = fillSize - r.size()[yi];
+			if (delta < 0)
+				delta = 0;
+			r.size()[yi] += delta;
+			// Push other controls
+			for (u32 j = i + 1; j < calculatedBounds.size(); ++j)
+			{
+				calculatedBounds[j].origin()[yi] += delta;
+			}
+		}
+	}
+
+	// Apply
+	for (u32 i = 0; i < calculatedBounds.size(); ++i)
+	{
+		const auto & p = calculatedBounds[i];
+		Control & child = *children[i];
+		child.setLocalClientBounds(p);
+		child.layoutChildren();
 	}
 }
 

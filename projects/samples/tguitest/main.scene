@@ -71,7 +71,6 @@
 			"layout":{
 				"@type":"tgui::ListLayout"
 			},
-
 			"_children":[
 				{"@ref":9},
 				{"@ref":10},
