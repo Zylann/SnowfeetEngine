@@ -10,6 +10,8 @@ namespace tgui
 Slider::Slider() : Control(), 
     m_value(0),
     m_range(0, 1),
+    m_step(1),
+    m_stepEnabled(false),
     m_orientation(TGUI_HORIZONTAL)
 {}
 
@@ -28,6 +30,21 @@ void Slider::setValue(f32 v)
 sn::f32 Slider::getValue()
 {
     return m_value;
+}
+
+//------------------------------------------------------------------------------
+void Slider::setStep(sn::f32 step)
+{
+    if (step < 0.0001f)
+        step = 0.0001f;
+    m_step = step;
+    m_stepEnabled = true;
+}
+
+//------------------------------------------------------------------------------
+void Slider::setStepEnabled(bool enable)
+{
+    m_stepEnabled = enable;
 }
 
 //------------------------------------------------------------------------------
@@ -61,6 +78,9 @@ void Slider::onDrawSelf(DrawBatch & batch)
             barTheme.slicing, barImageRect, ts
         );
     }
+
+    // Step marks
+    // TODO
 
     // Thumb
     {
@@ -109,15 +129,28 @@ f32 Slider::getValueFromPos(sn::Vector2i cursorPos)
 {
     Vector2i size = getSize();
 	s32 padding = 0;
+
 	const Theme * theme = getTheme();
 	if (theme)
 	{
 		// Apply a padding to the slidable area so we can fix the thumb under the mouse
 		padding = theme->sliderThumbs.statesUV[0].size()[m_orientation] / 2;
 	}
-	f32 rawValue = static_cast<f32>(cursorPos[m_orientation] - padding) / static_cast<f32>(size[m_orientation] - 2 * padding);
-    rawValue = math::clamp(rawValue, 0.f, 1.f);
-    return m_range.lerp(rawValue);
+	
+    // Calculate value
+    f32 rawValue = static_cast<f32>(cursorPos[m_orientation] - padding) / static_cast<f32>(size[m_orientation] - 2 * padding);
+    f32 value = m_range.lerp(rawValue);
+
+    if (m_stepEnabled)
+    {
+        // Apply step snap
+        value = m_step * floor(value / m_step + 0.5f);
+    }
+
+    // Make sure we stay in the range
+    value = math::clamp(value, m_range.min(), m_range.max());
+
+    return value;
 }
 
 //------------------------------------------------------------------------------
@@ -154,6 +187,9 @@ void Slider::serializeState(sn::Variant & o, const sn::SerializationContext & ct
     tgui::serialize(o["orientation"], m_orientation);
     sn::serialize(o["value"], m_value);
     sn::serialize(o["range"], m_range);
+
+    if (m_stepEnabled)
+        sn::serialize(o["step"], m_step);
 }
 
 //------------------------------------------------------------------------------
@@ -163,6 +199,19 @@ void Slider::unserializeState(const sn::Variant & o, const sn::SerializationCont
     tgui::unserialize(o["orientation"], m_orientation);
     sn::unserialize(o["value"], m_value);
     sn::unserialize(o["range"], m_range, m_range);
+
+    const Variant & step = o["step"];
+    if (step.isFloat() || step.isInt())
+    {
+        f32 v;
+        sn::unserialize(step, v);
+        setStep(v);
+        m_stepEnabled = true;
+    }
+    else
+    {
+        m_stepEnabled = false;
+    }
 
     m_value = math::clamp(m_value, m_range.min(), m_range.max());
 }
