@@ -117,6 +117,7 @@
 			"@type":"tgui::Slider",
 			"step":10,
 			"range":[0, 100],
+			"anchors":["left", "right"],
 			"bounds":{"x":10, "y":150, "w":200, "h":20},
 		},
 		14,
