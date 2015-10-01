@@ -6,7 +6,7 @@
 namespace tgui
 {
 
-/// \brief Orientatation indexes. Can also be used to index X or Y property on vectors.
+/// \brief Orientation indexes. Can also be used to index X or Y property on vectors.
 enum Orientation
 {
     TGUI_HORIZONTAL = 0, // X
