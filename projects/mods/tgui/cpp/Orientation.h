@@ -26,7 +26,7 @@ inline void serialize(sn::Variant & o, Orientation v)
         o = "horizontal";
 }
 
-inline void unserialize(const sn::Variant & o, Orientation v)
+inline void unserialize(const sn::Variant & o, Orientation & v)
 {
     const std::string & s = o.getString();
     if (s == "vertical")
