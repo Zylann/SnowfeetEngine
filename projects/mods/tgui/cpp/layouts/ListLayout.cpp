@@ -15,6 +15,8 @@ ListLayout::ListLayout(Control * control):
 }
 
 //------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
 void ListLayout::setOrientation(Orientation newOrientation)
 {
     m_orientation = newOrientation;
@@ -32,57 +34,92 @@ void ListLayout::update()
 	Control * container = getContainer();
 	SN_ASSERT(container != nullptr, "ListLayout container is null!");
 
-    if (m_orientation == TGUI_HORIZONTAL)
-    {
-        SN_WARNING("Vertical ListLayout orientation is not implemented yet");
-        return;
-    }
-
 	// TODO Have a dirty flag to avoid calculating layouts when nothing changed
 
     std::vector<Control*> children;
-	container->getChildrenOfType<Control>(children);
+	std::vector<u32> childrenIndex;
+	Layout::getChildrenToLayout(*container, children, &childrenIndex);
 
-    // Default vertical layout
-    
 	// Get container bounds with padding
 	sn::IntRect localBounds = container->getLocalClientBounds();
 	localBounds.x() = 0;
 	localBounds.y() = 0;
 	container->getPadding().crop(localBounds);
 
-	Vector2i pos = localBounds.origin();
+	IntRect cellBounds;
+	cellBounds.origin() = localBounds.origin();
 
-	for (auto it = children.begin(); it != children.end(); ++it)
-    {
-        Control & child = **it;
-        if (child.getPositionMode() == TGUI_LAYOUT)
-        {
-            IntRect childBounds = child.getLocalClientBounds();
-            const Anchors & anchors = child.getAnchors();
+	// TODO lastChildFill parameter?
 
-			// TODO Alignment?
-            //if (anchors[TGUI_LEFT])
-			childBounds.origin() = pos;
+	u32 xi = opposite(m_orientation);
+	u32 yi = m_orientation;
 
-			// Apply anchors
-            //if (anchors[TGUI_TOP])
-                //childBounds.y() = margin.top;
-            if (anchors[TGUI_RIGHT])
-                childBounds.width() = localBounds.width();
-            if (anchors[TGUI_BOTTOM])
-                childBounds.height() = localBounds.height() - (childBounds.y() - localBounds.minY());
+	cellBounds.size()[xi] = localBounds.size()[xi];
 
-			pos.y() += childBounds.height() + m_spacing;
+	std::vector<IntRect> calculatedBounds;
+	calculatedBounds.resize(children.size());
 
-			// Apply margin
-			const Border & margin = child.getMargin();
-			margin.crop(childBounds);
+	// Space left for filler controls
+	s32 fillSpace = localBounds.size()[yi];
 
-            child.setLocalClientBounds(childBounds);
-            child.layoutChildren();
-        }
-    }
+	// Calculate child bounds
+	for (u32 i = 0; i < children.size(); ++i)
+	{
+		Control & child = *children[i];
+
+		const Border & margin = child.getMargin();
+		IntRect childBounds = child.getLocalClientBounds();
+
+		childBounds.origin() = cellBounds.origin();
+
+		// Anchors
+		cellBounds.size()[yi] = childBounds.size()[yi] + (m_orientation == TGUI_VERTICAL ? (margin.left + margin.right) : (margin.top + margin.bottom));
+		applyAnchors(childBounds, cellBounds, child.getAnchors());
+
+		// Margin
+		child.getMargin().crop(childBounds);
+
+		calculatedBounds[i] = childBounds;
+
+		u32 h = cellBounds.size()[yi] + m_spacing;
+		cellBounds.origin()[yi] += h;
+
+		// If the control is not a filler
+		if (m_fillers.find(childrenIndex[i]) != m_fillers.end())
+		{
+			// Subtracts its size from available fill space
+			fillSpace -= h;
+		}
+	}
+
+	// Calculate fillers
+	if (!m_fillers.empty())
+	{
+		u32 fillSize = fillSpace < 0 ? 0 : fillSpace / m_fillers.size();
+		for (auto it = m_fillers.begin(); it != m_fillers.end(); ++it)
+		{
+			u32 i = *it;
+			IntRect & r = calculatedBounds[i];
+			s32 delta = fillSize - r.size()[yi];
+			if (delta < 0)
+				delta = 0;
+			r.size()[yi] += delta;
+			// Push other controls
+			for (u32 j = i + 1; j < calculatedBounds.size(); ++j)
+			{
+				calculatedBounds[j].origin()[yi] += delta;
+			}
+		}
+	}
+
+	// Apply
+	for (u32 i = 0; i < calculatedBounds.size(); ++i)
+	{
+		const auto & p = calculatedBounds[i];
+		Control & child = *children[i];
+		child.setLocalClientBounds(p);
+		child.layoutChildren();
+	}
 }
 
 //------------------------------------------------------------------------------
@@ -100,7 +137,10 @@ void ListLayout::unserializeState(const Variant & o, const SerializationContext 
     Layout::unserializeState(o, ctx);
 
     sn::unserialize(o["spacing"], m_spacing);
-    tgui::unserialize(o["orientation"], m_orientation);
+
+	Variant orientationData = o["orientation"];
+	if (!orientationData.isNil())
+	    tgui::unserialize(orientationData, m_orientation);
 }
 
 } // namespace tgui

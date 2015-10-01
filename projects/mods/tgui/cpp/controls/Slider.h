@@ -19,6 +19,12 @@ public:
     void setValue(sn::f32 v);
     sn::f32 getValue();
 
+    void setStep(sn::f32 step);
+    sn::f32 getStep() const { return m_step; }
+
+    void setStepEnabled(bool enable);
+    bool isStepEnabled() const { return m_stepEnabled; }
+
     void serializeState(sn::Variant & o, const sn::SerializationContext & ctx) override;
     void unserializeState(const sn::Variant & o, const sn::SerializationContext & ctx) override;
 
@@ -41,6 +47,8 @@ private:
 	// TODO Reset to default value on double-click?
     sn::f32 m_value;
     sn::Range<sn::f32> m_range;
+    sn::f32 m_step;
+    bool m_stepEnabled;
     Orientation m_orientation;
 
 };

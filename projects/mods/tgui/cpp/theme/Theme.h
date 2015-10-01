@@ -67,6 +67,7 @@ public:
     ControlTheme panelTheme;
     ControlTheme sliderBar;
     ControlTheme sliderThumbs;
+    ControlTheme sliderStep;
     ControlTheme textAreaBackground;
     ControlTheme textAreaCaret;
 

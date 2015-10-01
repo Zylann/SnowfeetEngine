@@ -6,11 +6,17 @@
 namespace tgui
 {
 
+/// \brief Orientation indexes. Can also be used to index X or Y property on vectors.
 enum Orientation
 {
-    TGUI_HORIZONTAL = 0,
-    TGUI_VERTICAL
+    TGUI_HORIZONTAL = 0, // X
+    TGUI_VERTICAL // Y
 };
+
+inline Orientation opposite(Orientation o)
+{
+	return o == TGUI_HORIZONTAL ? TGUI_VERTICAL : TGUI_HORIZONTAL;
+}
 
 inline void serialize(sn::Variant & o, Orientation v)
 {
@@ -20,7 +26,7 @@ inline void serialize(sn::Variant & o, Orientation v)
         o = "horizontal";
 }
 
-inline void unserialize(const sn::Variant & o, Orientation v)
+inline void unserialize(const sn::Variant & o, Orientation & v)
 {
     const std::string & s = o.getString();
     if (s == "vertical")

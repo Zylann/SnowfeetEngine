@@ -71,6 +71,7 @@ bool ThemeLoader::load(std::ifstream & ifs, sn::Asset & asset) const
     {
         theme->sliderBar.unserialize(sliderData["bar"]);
         theme->sliderThumbs.unserialize(sliderData["thumb"]);
+        theme->sliderStep.unserialize(sliderData["step"]);
     }
 
     const Variant & textAreaData = o["textAreaTheme"];

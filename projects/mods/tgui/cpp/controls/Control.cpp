@@ -199,6 +199,27 @@ void Control::layoutChildren()
     {
         m_layout->update();
     }
+	else
+	{
+		// Default layout: only anchors are applied
+
+		std::vector<Control*> children;
+		getChildrenOfType<Control>(children);
+
+		IntRect cellBounds = getLocalClientBounds();
+		cellBounds.x() = 0;
+		cellBounds.y() = 0;
+		getPadding().crop(cellBounds);
+
+		for (auto it = children.begin(); it != children.end(); ++it)
+		{
+			Control & child = **it;
+			IntRect childBounds = child.getLocalClientBounds();
+			applyAnchors(childBounds, cellBounds, child.getAnchors());
+			child.setLocalClientBounds(childBounds);
+			child.layoutChildren();
+		}
+	}
 }
 
 //------------------------------------------------------------------------------
