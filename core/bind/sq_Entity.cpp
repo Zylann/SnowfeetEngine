@@ -120,7 +120,7 @@ namespace sn
 			else
 			{
                 std::stringstream ss;
-                ss << "Invalid argument type to " << SN_FUNCNAME;
+                ss << "Invalid argument type to " << SN_FUNCNAME << " (got " << squirrel::getTypeName(t) << ")";
                 std::string s = ss.str();
                 return sq_throwerror(vm, s.c_str());
 			}
