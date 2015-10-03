@@ -119,6 +119,9 @@ int Application::executeEx()
         if (packedScene)
         {
             packedScene->instantiate(*m_scene, mainModuleInfo.name);
+//#ifdef SN_BUILD_DEBUG
+//            Entity::debugPrintEntityTree(*m_scene);
+//#endif
         }
     }
 

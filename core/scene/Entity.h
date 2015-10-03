@@ -241,6 +241,8 @@ public:
 
     void propagateOnReady();
 
+    static void debugPrintEntityTree(Entity & e);
+
 protected:
     virtual ~Entity();
 

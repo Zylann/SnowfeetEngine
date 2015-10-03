@@ -666,5 +666,37 @@ void Entity::unserializeState(const Variant & o, const SerializationContext & co
 
 }
 
+//------------------------------------------------------------------------------
+namespace
+{
+    void privDebugPrintEntityTree(Entity & e, std::vector<std::string> & strs, u32 depth)
+    {
+        std::string s;
+        for (u32 i = 0; i < depth; ++i)
+        {
+            s += "    ";
+        }
+
+        strs.push_back(s + e.toString());
+
+        for (u32 i = 0; i < e.getChildCount(); ++i)
+        {
+            privDebugPrintEntityTree(*e.getChildByIndex(i), strs, depth + 1);
+        }
+    }
+}
+
+void Entity::debugPrintEntityTree(Entity & e)
+{
+    std::vector<std::string> strs;
+    privDebugPrintEntityTree(e, strs, 0);
+    SN_DLOG("");
+    for (auto it = strs.begin(); it != strs.end(); ++it)
+    {
+        SN_MORE(*it);
+    }
+}
+
+
 } // namespace sn
 
