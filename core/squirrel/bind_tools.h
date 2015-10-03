@@ -86,22 +86,22 @@ inline bool getBool(HSQUIRRELVM vm, SQInteger i)
 
 //------------------------------------------------------------------------------
 /// \brief Gets an integer value at given index on the stack of a Squirrel VM.
-inline bool getInt(HSQUIRRELVM vm, SQInteger i)
+inline SQInteger getInt(HSQUIRRELVM vm, SQInteger i)
 {
 	SQInteger v;
 	if (SQ_FAILED(sq_getinteger(vm, i, &v)))
-		return v != 0;
-	return 0;
+		return 0;
+	return v;
 }
 
 //------------------------------------------------------------------------------
 /// \brief Gets a float value at given index on the stack of a Squirrel VM.
-inline bool getFloat(HSQUIRRELVM vm, SQInteger i)
+inline SQFloat getFloat(HSQUIRRELVM vm, SQInteger i)
 {
 	SQFloat v;
 	if (SQ_FAILED(sq_getfloat(vm, i, &v)))
-		return v != 0;
-	return 0;
+		return 0;
+	return v;
 }
 
 //------------------------------------------------------------------------------
