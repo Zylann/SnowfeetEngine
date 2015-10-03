@@ -432,6 +432,12 @@ Entity * Entity::getChildByType(const std::string & name) const
 }
 
 //------------------------------------------------------------------------------
+u32 Entity::getIndexInParent() const
+{
+    return r_parent ? r_parent->indexOfChild(this) : 0;
+}
+
+//------------------------------------------------------------------------------
 //Entity::Ref Entity::getChildByPointer(Entity * child)
 //{
 //    for (auto it = m_children.begin(); it != m_children.end(); ++it)

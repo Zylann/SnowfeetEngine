@@ -126,6 +126,8 @@ public:
     /// \brief Gets a direct child by its type name. Returns null if not found.
     Entity * getChildByType(const std::string & name) const;
 
+    u32 getIndexInParent() const;
+
     /// \brief Creates a child entity of the given type.
     /// \param typeName: name of the type this entity must be
     /// \return The new entity

@@ -163,6 +163,13 @@ namespace sn
 			return 1;
 		}
 
+        SQInteger getIndexInParent(HSQUIRRELVM vm)
+        {
+            GET_SELF();
+            sq_pushinteger(vm, self->getIndexInParent());
+            return 1;
+        }
+
 	}
 
 void bindEntity(HSQUIRRELVM vm)
@@ -174,14 +181,15 @@ void bindEntity(HSQUIRRELVM vm)
         .setMethod("getChildCount", getChildCount)
         .setMethod("getName", getName)
         .setMethod("setName", setName, 1, "s")
-		.setMethod("isEnabled", isEnabled)
-		.setMethod("setEnabled", setEnabled, 1, "b")
-		.setMethod("hasTag", hasTag)
-		.setMethod("addTag", addTag, 1, "s")
-		.setMethod("removeTag", removeTag)
+        .setMethod("isEnabled", isEnabled)
+        .setMethod("setEnabled", setEnabled, 1, "b")
+        .setMethod("hasTag", hasTag)
+        .setMethod("addTag", addTag, 1, "s")
+        .setMethod("removeTag", removeTag)
         .setMethod("getScript", getScript)
         .setMethod("setUpdatable", setUpdatable, -1, "b")
-		.setMethod("createChild", createChild, -1, "s")
+        .setMethod("createChild", createChild, -1, "s")
+        .setMethod("getIndexInParent", getIndexInParent)
 	;
 }
 
