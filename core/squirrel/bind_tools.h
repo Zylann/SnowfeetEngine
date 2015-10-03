@@ -19,6 +19,11 @@ namespace squirrel
 /// This function is useful when debugging, you might be able to call it in an immediate window.
 void SN_API debugStackDump(HSQUIRRELVM v);
 
+/// \brief Gets the human-readable name of a Squirrel type
+/// \param type
+/// \return name
+const char * getTypeName(SQInteger type);
+
 /// \brief Binds a global function to the given Squirrel VM.
 void SN_API setGlobalFunction(HSQUIRRELVM vm, const char * name, SQFUNCTION cb_func);
 
