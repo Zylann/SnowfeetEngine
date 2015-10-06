@@ -234,26 +234,42 @@ std::vector<Asset*> AssetDatabase::preloadAssetFile(const String & path, const s
 
     if (!assets.empty())
     {
-        metadata.name = getFileNameWithoutExtension(toString(path));
+		metadata.name = getFileNameWithoutExtension(toString(path));
 
-        unsigned int i = 0;
-        for (auto it = assets.begin(); it != assets.end(); ++it)
+		auto assetsCopy = assets;
+		for (u32 i = 0; i < assetsCopy.size(); ++i)
         {
-            Asset & asset = **it;
-
-            // Assign metadata
-            asset.m_metadata = metadata;
-
-            // Store in file mapping
-            addToFileCache(asset);
+            Asset * asset = assetsCopy[i];
 
             const AssetLoader * loader = loaderChain.empty() ? nullptr : loaderChain[i];
 
             // Store in asset mapping using the ObjectType specified by the loader
-            const ObjectType & baseObjectType = loader ? loader->getBaseAssetType() : asset.getObjectType();
-            m_assets[metadata.module][baseObjectType.getName()][metadata.name] = &asset;
+            const ObjectType & baseObjectType = loader ? loader->getBaseAssetType() : asset->getObjectType();
 
-            ++i;
+			// Check ID collision
+			// TODO Assets should have a GUID
+			Asset *& previousAsset = m_assets[metadata.module][baseObjectType.getName()][metadata.name];
+			if (previousAsset)
+			{
+				SN_ERROR("Asset already registered under the same identifiers (Name collision between objects of the same type).");
+				SN_MORE("module: " << metadata.module << ", type : " << baseObjectType.getName() << ", name : " << metadata.name);
+				SN_MORE("[0]: " << sn::toString(previousAsset->getAssetMetadata().path));
+				SN_MORE("[1]: " << sn::toString(metadata.path) << " (will be ignored)");
+				assets.erase(assets.begin() + i);
+				asset->release();
+			}
+			else
+			{
+				// Assign metadata
+				asset->m_metadata = metadata;
+
+				// Store in file mapping
+				addToFileCache(*asset);
+
+				// Store in ID map
+				previousAsset = asset;
+				//m_assets[metadata.module][baseObjectType.getName()][metadata.name] = &asset;
+			}
         }
 
         SN_DLOG("Indexed asset " << toString(path) << " as " << assets.size() << " objects");
