@@ -78,7 +78,7 @@ project "ModRender"
 project "glew"
 	kind "StaticLib"
 	location "."
-	targetdir ".."
+    modTargetDir()
 	files {
 		"glew/**.h",
 		"glew/**.c",
