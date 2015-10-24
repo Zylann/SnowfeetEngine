@@ -41,7 +41,7 @@ public:
     /// The list is ordered by module loading.
     static void calculateProjectDependencies(
         const String & pathToProjects,
-        const String & modPath, 
+        const String & projectPath, 
         std::list<ProjectInfo> & dependencies,
         std::set<String> * openSet = nullptr
     );

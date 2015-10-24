@@ -430,21 +430,21 @@ Project * Application::loadProject(const String & path)
 
     SN_WDLOG("Calculating dependencies to load module \"" << path << '"');
 
-    std::list<ProjectInfo> modulesToLoad;
-    Project::calculateProjectDependencies(m_pathToProjects, path, modulesToLoad);
+    std::list<ProjectInfo> projectsToLoad;
+    Project::calculateProjectDependencies(m_pathToProjects, path, projectsToLoad);
 
 #ifdef SN_BUILD_DEBUG
-    for (auto it = modulesToLoad.begin(); it != modulesToLoad.end(); ++it)
+    for (auto it = projectsToLoad.begin(); it != projectsToLoad.end(); ++it)
     {
         SN_WDLOG(L"> " + it->modFilePath);
     }
 #endif
 
 	std::vector<Project*> projects;
-	projects.reserve(modulesToLoad.size());
+	projects.reserve(projectsToLoad.size());
 
     // Load main module and all its dependencies
-    for (auto it = modulesToLoad.begin(); it != modulesToLoad.end(); ++it)
+    for (auto it = projectsToLoad.begin(); it != projectsToLoad.end(); ++it)
     {
         const ProjectInfo & info = *it;
         if (m_projects.find(info.directory) != m_projects.end())
@@ -489,7 +489,7 @@ Project * Application::loadProject(const String & path)
 	{
     	// Create services
 		size_t i = 0;
-		for (auto it = modulesToLoad.begin(); it != modulesToLoad.end(); ++it)
+		for (auto it = projectsToLoad.begin(); it != projectsToLoad.end(); ++it)
 		{
 			// Load static assets
 			const ProjectInfo & info = *it;
@@ -501,7 +501,7 @@ Project * Application::loadProject(const String & path)
     SN_LOG("-------------");
 
     // Load Assets afterwards (so now all services assets would require should be available)
-    for (auto it = modulesToLoad.begin(); it != modulesToLoad.end(); ++it)
+    for (auto it = projectsToLoad.begin(); it != projectsToLoad.end(); ++it)
     {
         // Load static assets
         const ProjectInfo & info = *it;
