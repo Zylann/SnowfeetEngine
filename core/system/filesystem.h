@@ -44,6 +44,8 @@ bool SN_API makeDir(String path);
 /// \return true on success, false on error
 bool SN_API getFiles(String topDirectory, std::vector<FileNode> & out_nodes);
 
+std::string getWorkingDirectory();
+
 // Platform-independent
 
 /// \brief Recursively gets the list of files within a directory.

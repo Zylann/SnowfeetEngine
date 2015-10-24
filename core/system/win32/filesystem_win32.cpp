@@ -75,5 +75,14 @@ bool getFiles(String topDirectory, std::vector<FileNode> & out_nodes)
     return success;
 }
 
+//------------------------------------------------------------------------------
+std::string getWorkingDirectory()
+{
+    char dir[MAX_PATH] = { '\0' };
+    u32 len = GetCurrentDirectoryA(MAX_PATH, dir);
+    return std::string(dir);
+}
+
+
 } // namespace sn
 
