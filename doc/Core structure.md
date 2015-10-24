@@ -5,7 +5,7 @@ Quick description
 ---------------------
 
 The Snowfeet Core is a library that contains the common API used by all modules and most of platform-specific code.
-It exposes a set of abstracted functions and classes enabling modules to communicate on a native level without having to depend on each other.
+It exposes a set of abstracted functions and classes enabling modules to communicate on a native level.
 None of the functionality in the core can be removed for a project's needs, it is fixed and must remain robust.
 There isn't any rendering engine, physics or gameplay framework here.
 The key point is that it is designed to be extended by modules.

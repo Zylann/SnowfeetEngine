@@ -10,7 +10,7 @@ In order to do this, the entry point of an executable module is a scene.
 A scene is a file containing the serialized form of various entities, script states
 and other objects that compose a game's scene tree, a bit like Unity3D or Flash.
 
-To accomplish this, the state of all C++ entities and a lot of other objects in the engine is serializable as key/value objects, which can be stored in databases for later re-use.
+To accomplish this, the state of all C++ entities and a lot of other objects in the engine are serializable as key/value objects, which can be stored in databases for later re-use.
 The reflection system defined in the core helps a lot in this task.
 
 
@@ -63,11 +63,10 @@ The current file format is decoupled in two layers:
 * The transport format
 * The structure format
 
-The transport format is the way data is presented, and is not related to how the
-engine works whatsoever. We currently use JSON, but it will be tweaked in the future
+The transport format is the way data is stored in a file, and is not directly how the engine expects it. We currently use JSON, but it will be tweaked in the future
 to become SML (see docs), which adds a few handy features.
 
-The structure format is the actual form the engine expects to find in the file.
+The structure format is the actual form the engine expects to find in the file, after parsing and processing.
 Here is an example (JS so I can put comments):
 
 ```javascript
@@ -104,7 +103,7 @@ Here is an example (JS so I can put comments):
 		},
 
 		// Here is a sub-scene instance.
-		// This one will be processed during the instancing process by the,
+		// This one will be processed during the instancing process by the
 		// ObjectDB system, so C++ objects can access final values without
 		// having to know they are sub-scenes.
 		333, {

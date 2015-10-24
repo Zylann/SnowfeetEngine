@@ -4,7 +4,7 @@ Repo management
 Repositories
 --------------
 
-The core and its official modules currently form the "engine", in the same Git repository.
+The core and its official modules and projects currently form the "engine", in the same Git repository.
 In the far future, sub-repos might be created, however I prefer creating branches at the moment.
 
 
@@ -20,6 +20,7 @@ If a fix must be done in the core, it should be made on master, unless it's a br
 The workflow for a core fix is:
 * checkout master
 * perform the fix
+* pull master to merge eventual changes from other devs
 * push master so other can benefit your fix
 * checkout back to your branch
 * merge master to have your fix in your branch
