@@ -12,11 +12,11 @@ project "ModAssimp"
     dependson {
         "LibAssimp"
     }
-    filter "configurations:Debug"
-        objdir "_obj/debug"
-    filter "configurations:Release"
-        objdir "_obj/release"
-		
+    -- filter "configurations:Debug"
+    --     objdir "_obj/debug"
+    -- filter "configurations:Release"
+    --     objdir "_obj/release"
+
 
 ------------------------------------------
 project "LibAssimp"
@@ -32,7 +32,7 @@ project "LibAssimp"
 	links {
 		"zlib"
 	}
-    
+
     defines {
     	-- I use the zlib from SnowfeetEngine because the one included in Assimp
     	-- cannot be easily compiled with premake (because of generated files)
@@ -78,7 +78,7 @@ project "LibAssimp"
         "ASSIMP_BUILD_NO_M3_IMPORTER",
         "ASSIMP_BUILD_NO_XGL_IMPORTER"
     }
-    
+
     -- Windows-specific defines
     filter "system:windows"
         defines {
@@ -116,15 +116,12 @@ project "LibAssimp"
     	"/ignore:4221"
 	}
 
-    configuration "Debug"
-		objdir "_obj/libassimp/debug"
+    modObjDir("libassimp")
+
+    filter "configurations:Debug"
         flags { "Symbols" }
         defines { "DEBUG" }
-           
-    configuration "Release"
-		objdir "_obj/libassimp/release"
+
+    filter "configurations:Release"
         defines { "NDEBUG", "_NDEBUG" }
         optimize "Full"
-
-
-

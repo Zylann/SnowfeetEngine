@@ -31,12 +31,11 @@ end
 project "ModRender"
 	commonModConfigCPP()
 	dependson {
-		"glew",
+		"glew"
 	}
 	includedirs {
 		"glew/include"
 	}
-
 	filesCPP {
 		"*",
 		"entities/**",
@@ -64,10 +63,10 @@ project "ModRender"
 		}
 	filter {}
 
-	filter "configurations:Debug"
-		objdir "_obj/debug"
-	filter "configurations:Release"
-		objdir "_obj/release"
+	-- filter "configurations:Debug"
+	-- 	objdir "_obj/debug"
+	-- filter "configurations:Release"
+	-- 	objdir "_obj/release"
 
 	commonGlewConfig()
 
@@ -90,10 +89,5 @@ project "glew"
 	includedirs {
 		"glew/include"
 	}
-
-	filter "configurations:Debug"
-		objdir "_obj/glew_debug"
-	filter "configurations:Release"
-		objdir "_obj/glew_release"
-
+	modObjDir("glew")
 	commonGlewConfig()

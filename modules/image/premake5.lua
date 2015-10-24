@@ -1,18 +1,17 @@
 project "ModImage"
 	commonModConfigCPP()
 	files {
-		"*.h",
-		"**.hpp",
-		"**.cpp",
-		"stbi/*.h"
+		"*.cpp",
+		"*.hpp",
+		"**.h"
 	}
 	-- links {
 	-- 	"libpng"
 	-- }
-	filter "configurations:Debug"
-		objdir "_obj/debug"
-	filter "configurations:Release"
-		objdir "_obj/release"
+	-- filter "configurations:Debug"
+	-- 	objdir "_obj/debug"
+	-- filter "configurations:Release"
+	-- 	objdir "_obj/release"
 
 ------------------------------------------
 -- Just in case we go back to libpng
@@ -21,7 +20,7 @@ project "ModImage"
 -- 	platforms { "x32" }
 -- 	kind "StaticLib"
 -- 	language "C"
--- 	dependson { 
+-- 	dependson {
 -- 		"zlib"
 -- 	}
 -- 	location "."

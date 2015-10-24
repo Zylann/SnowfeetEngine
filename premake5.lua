@@ -9,6 +9,7 @@ SnowfeetRoot = os.getcwd()
 --------------------------------------------
 
 solution "SnowfeetEngine"
+--workspace "SnowfeetEngine"
 	-- Global default configurations
 	configurations { "Debug", "Release" }
 	includedirs {
@@ -60,6 +61,7 @@ solution "SnowfeetEngine"
 		filter "system:linux"
 			filesCPP "linux/*_linux"
 
+		filter {}
 		--...
 	end
 
@@ -70,7 +72,6 @@ solution "SnowfeetEngine"
 	end
 
 	function commonModIncludes()
-		--
 	end
 
 	function commonModDefines()
@@ -83,12 +84,36 @@ solution "SnowfeetEngine"
 		-- }
 	end
 
+	--! \brief Defines the location of output binary files for a module.
+	function modTargetDir()
+		filter "configurations:Debug"
+			targetdir(SnowfeetRoot.."/_bin/debug")
+		filter "configurations:Release"
+			targetdir(SnowfeetRoot.."../_bin/release")
+		filter {}
+	end
+
+	--! \brief Defines the location of intermediary build files for a module.
+	--! \param subDir (optional string): indicates a sub-directory
+	function modObjDir(subDir)
+		local base = "./_obj/"..(subDir or "")
+		filter "configurations:Debug"
+			objdir(base.."debug")
+		filter "configurations:Release"
+			objdir(base.."release")
+		filter {}
+	end
+
 	function commonModConfigCPP()
 		kind "SharedLib"
 		language "C++"
 		dependson { "SnowfeetCore" }
+
+		-- Location of the project file
 		location "."
-		targetdir ".."
+		-- Location of the output binaries
+		modTargetDir()
+
 		commonModLinks()
 		commonModIncludes()
 		commonModDefines()
@@ -111,15 +136,19 @@ solution "SnowfeetEngine"
 	-- Modules
 	--------------------------------------------
 
+	--include("modules/image")
+
+	---[[
 	-- Include modules:
 	-- Walks througth folders to include compliant premake5 projects
-	local fileList = os.matchfiles("./projects/**premake5.lua")
+	local fileList = os.matchfiles("./modules/**premake5.lua")
 	for k,fpath in pairs(fileList) do
 		if fpath ~= "premake5.lua" and -- Ignore the current file
 		   fpath:find("_old") == nil and  -- Ignore _old stuff
 		   fpath:find("_draft") == nil -- Ignore tests
 		then
 			--print(fpath)
-			dofile(fpath)
+			include(fpath)
 		end
 	end
+	--]]

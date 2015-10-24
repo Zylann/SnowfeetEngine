@@ -10,10 +10,10 @@ project "ModFreetype"
     links {
         "LibFreetype"
     }
-    filter "configurations:Debug"
-        objdir "_obj/debug"
-    filter "configurations:Release"
-        objdir "_obj/release"
+    -- filter "configurations:Debug"
+    --     objdir "_obj/debug"
+    -- filter "configurations:Release"
+    --     objdir "_obj/release"
 
 --------------------------------------------------
 project "LibFreetype"
@@ -32,8 +32,8 @@ project "LibFreetype"
 
     files {
         -- Headers
-        
-        "freetype/include/ft2build.h",        
+
+        "freetype/include/ft2build.h",
         "freetype/include/config/ft2build.h",
         "freetype/include/config/ftheader.h",
         "freetype/include/config/ftmodule.h",
@@ -107,8 +107,9 @@ project "LibFreetype"
     }
     --]]
 
+    modObjDir("freetype")
+
     filter "configurations:Debug"
-        objdir "_obj/debug/freetype"
         flags { "Symbols" }
         defines {
             "_DEBUG",
@@ -122,13 +123,12 @@ project "LibFreetype"
         }
 
     filter "configurations:Release"
-        objdir "_obj/release/freetype"
         optimize "Full"
         defines {
             "NDEBUG",
             "FT2_BUILD_LIBRARY"
         }
-        
+
     -- Windows-specific
     filter {"system:windows"}
         defines {
@@ -140,7 +140,3 @@ project "LibFreetype"
             "freetype/builds/windows/ftdebug.c",
         }
     --filter {"configurations:Release", "system:windows"}
-    
-    
-    
-    

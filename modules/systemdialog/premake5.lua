@@ -15,8 +15,7 @@ project "ModSystemDialog"
 		}
 	filter {}
 
-	filter "configurations:Debug"
-		objdir "_obj/debug"
-	filter "configurations:Release"
-		objdir "_obj/release"
-
+	-- filter "configurations:Debug"
+	-- 	objdir "_obj/debug"
+	-- filter "configurations:Release"
+	-- 	objdir "_obj/release"

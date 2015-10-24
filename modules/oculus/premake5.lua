@@ -3,19 +3,19 @@ project "ModOculus"
     commonModConfigCPP()
     files {
         "*.h",
-        "**.hpp",
-        "**.cpp",
+        "*.hpp",
+        "*.cpp",
     }
     includedirs {
-        "../external/LibOVR/Include",
-        "../external/LibOVR/Src" -- LOL
+        "external/LibOVR/Include",
+        "external/LibOVR/Src" -- LOL
     }
 
-    filter "configurations:Debug"
-        objdir "_obj/debug"
-    filter "configurations:Release"
-        objdir "_obj/release"
-    
+    -- filter "configurations:Debug"
+    --     objdir "_obj/debug"
+    -- filter "configurations:Release"
+    --     objdir "_obj/release"
+
     -- Windows-specific
     filter "system:windows"
         links {
@@ -26,10 +26,9 @@ project "ModOculus"
     -- Windows-specific
     filter {"configurations:Debug", "system:windows"}
         links {
-            "../external/LibOVR/Lib/Win32/VS2013/libovrd.lib"
+            "external/LibOVR/Lib/Win32/VS2013/libovrd.lib"
         }
     filter {"configurations:Release", "system:windows"}
         links {
-            "../external/LibOVR/Lib/Win32/VS2013/libovr.lib"
+            "external/LibOVR/Lib/Win32/VS2013/libovr.lib"
         }
-
