@@ -28,8 +28,14 @@ public:
     std::string name;
     String directory;
     String modFilePath;
+
     std::string scriptNamespace;
+
+    /// \brief Dependency projects required by this project
     std::vector<String> dependencies;
+
+    /// \brief Native libraries required by the project
+    std::vector<std::string> modules;
 
     /// \brief Name of the startup scene asset.
     std::string startupScene;
@@ -41,6 +47,7 @@ public:
     /// \warning The order is important in this container.
     std::vector<String> bindings;
 
+    /// \brief Serialized form of the update manager
     Variant updateLayers;
 
 private:

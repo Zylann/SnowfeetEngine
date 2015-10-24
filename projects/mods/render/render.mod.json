@@ -1,0 +1,6 @@
+{
+	"bindings":[
+		"ModRender",
+		"ModImage"
+	]
+}

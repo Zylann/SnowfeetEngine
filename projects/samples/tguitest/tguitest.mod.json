@@ -1,10 +1,11 @@
 {
 	"startupScene":"main",
 	"dependencies":[
-		"mods/render/render.mod.json",
-		"mods/image/image.mod.json",
-		"mods/tgui/tgui.mod.json",
-		"mods/freetype/freetype.mod.json"
+		"mods/render/render.mod.json"
+	],
+	"bindings":[
+		"ModTGUI",
+		"ModFreetype"
 	],
 	"services":[
 		"sn::render::RenderManager",
@@ -18,4 +19,3 @@
 		}
 	]
 }
-

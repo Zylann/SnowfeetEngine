@@ -114,13 +114,12 @@ bool Module::loadNativeBindings(ScriptManager & scriptEngine)
 
     if (!m_info.bindings.empty())
     {
-        String basePath = r_app.getPathToProjects() + L"/" + m_info.directory;
-
         // For each registered binding library
         for (u32 i = 0; i < m_info.bindings.size(); ++i)
         {
             String libName = m_info.bindings[i];
-            String path = basePath + L"/" + libName + L".dll";
+            // TODO win32 specific!
+            String path = libName + L".dll";
 
             SN_WLOG(L"Loading shared lib \"" << path << L"\"...");
             std::string loadFuncName = getLoadFuncName(libName);
