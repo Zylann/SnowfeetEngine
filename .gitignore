@@ -43,4 +43,5 @@ AS_DEBUG/
 
 # Other
 _old/
+_draft/
 doc/doxygen/
