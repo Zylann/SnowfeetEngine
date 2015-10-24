@@ -79,7 +79,7 @@ bool ProjectInfo::setDataFromVariant(const Variant & v)
     parseServices(v["services"]);
 
     // Get bindings
-	sn::unserialize(v["bindings"], modules);
+	sn::unserialize(v["modules"], modules);
 
     // Get dependencies
 	unserialize(v["dependencies"], dependencies);

@@ -3,7 +3,7 @@
 	"dependencies":[
 		"mods/render/render.mod.json"
 	],
-	"bindings":[
+	"modules":[
 		"ModTGUI",
 		"ModFreetype"
 	],
