@@ -19,7 +19,7 @@ project "ModFreetype"
 project "LibFreetype"
     kind "StaticLib"
     location "."
-    targetdir ".."
+    modTargetDir()
 
     includedirs {
         "freetype/include"
