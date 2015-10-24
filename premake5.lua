@@ -13,8 +13,7 @@ solution "SnowfeetEngine"
 	-- Global default configurations
 	configurations { "Debug", "Release" }
 	includedirs {
-		"squirrel",
-		"." -- core
+		"." -- repo source root
 	}
 	filter "configurations:Debug"
 		flags {
@@ -72,12 +71,12 @@ solution "SnowfeetEngine"
 	end
 
 	function commonModIncludes()
+		includedirs {
+			SnowfeetRoot.."/squirrel"
+		}
 	end
 
 	function commonModDefines()
-		-- Modules bindings have to include core bindings
-		-- if they want to interact with them
-
 		-- Was used for Sqrat but is no longer in the core
 		-- defines {
 		-- 	"SCRAT_IMPORT"
@@ -136,9 +135,6 @@ solution "SnowfeetEngine"
 	-- Modules
 	--------------------------------------------
 
-	--include("modules/image")
-
-	---[[
 	-- Include modules:
 	-- Walks througth folders to include compliant premake5 projects
 	local fileList = os.matchfiles("./modules/**premake5.lua")
@@ -151,4 +147,3 @@ solution "SnowfeetEngine"
 			include(fpath)
 		end
 	end
-	--]]

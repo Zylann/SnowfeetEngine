@@ -11,6 +11,10 @@ project "SnowfeetCore"
 	}
 	location "."
 
+	includedirs {
+		"../squirrel"
+	}
+
 	---------------------------------------------------
 	-- Files
 	---------------------------------------------------
@@ -29,7 +33,7 @@ project "SnowfeetCore"
 		"space/**",
 		"squirrel/**",
 		"util/**",
-		
+
 		"system/*"
 	}
 	-- Windows-specific

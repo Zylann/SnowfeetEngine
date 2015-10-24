@@ -2,11 +2,14 @@ project "Squirrel"
 	kind "StaticLib"
 	language "C++"
 	location "." -- what the fuck premake5
+	includedirs {
+		"."
+	}
 	files {
 		"**.h",
 		"**.cpp"
 	}
-		
+
 	filter "configurations:Debug"
 		targetdir "../_bin/debug"
 		objdir "../_obj/debug"

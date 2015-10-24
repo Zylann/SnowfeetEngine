@@ -1,6 +1,9 @@
 project "Tests"
 	kind "ConsoleApp"
 	language "C++"
+	includedirs {
+		"../squirrel"
+	}
 	dependson {
 		"SnowfeetCore"
 	}
@@ -19,5 +22,3 @@ project "Tests"
 	filter "configurations:Release"
 		targetdir "../_bin/release"
 		objdir "_obj/release"
-
-
