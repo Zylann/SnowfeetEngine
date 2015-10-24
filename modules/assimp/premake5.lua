@@ -23,7 +23,7 @@ project "LibAssimp"
 	kind "StaticLib"
 	language "C++"
 	location "."
-	targetdir ".."
+    modTargetDir()
 
 	dependson {
 		"zlib"
