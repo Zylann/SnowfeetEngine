@@ -1,5 +1,5 @@
 {
-	"shader":"sprite",
+	"shader":"render:sprite",
 	"blend":"alpha",
 	"params":{
 		"u_MainTexture":{"@type":"texture", "value":"example_theme"}

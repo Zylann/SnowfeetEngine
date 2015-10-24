@@ -4,7 +4,8 @@ Copyright (C) 2014-2015 Marc GILLERON
 This file is part of the SnowfeetEngine project.
 */
 
-#include "ModuleInfo.h"
+#include "ProjectInfo.h"
+#include <core/sml/variant_serialize.h>
 #include "../sml/SmlParser.h"
 #include "../util/stringutils.h"
 #include "../util/Log.h"
@@ -30,15 +31,15 @@ namespace sn
 				}
 			}
 		}
-	}
+    }
 
 //------------------------------------------------------------------------------
-bool ModuleInfo::loadFromFile(const String & pathToProjects, const String & modPath)
+bool ProjectInfo::loadFromFile(const String & pathToProjects, const String & modPath)
 {
     // Reset info
     modFilePath = L"";
     dependencies.clear();
-    bindings.clear();
+    modules.clear();
     directory = L"";
 
     modFilePath = modPath;
@@ -63,7 +64,7 @@ bool ModuleInfo::loadFromFile(const String & pathToProjects, const String & modP
 }
 
 //------------------------------------------------------------------------------
-bool ModuleInfo::setDataFromVariant(const Variant & v)
+bool ProjectInfo::setDataFromVariant(const Variant & v)
 {
 	if (!v.isDictionary())
 		return false;
@@ -78,7 +79,7 @@ bool ModuleInfo::setDataFromVariant(const Variant & v)
     parseServices(v["services"]);
 
     // Get bindings
-	unserialize(v["bindings"], bindings);
+	sn::unserialize(v["bindings"], modules);
 
     // Get dependencies
 	unserialize(v["dependencies"], dependencies);
@@ -90,7 +91,7 @@ bool ModuleInfo::setDataFromVariant(const Variant & v)
 }
 
 //------------------------------------------------------------------------------
-void ModuleInfo::parseServices(const Variant & o)
+void ProjectInfo::parseServices(const Variant & o)
 {
     if (o.isArray())
     {

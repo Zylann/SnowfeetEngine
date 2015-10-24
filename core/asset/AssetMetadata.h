@@ -35,7 +35,7 @@ public:
     bool saveToStream(std::ofstream & ofs);
 
     std::string type;
-    std::string module;
+    std::string project;
     String path; // File path
     std::string name;
     AssetLoadingMode loadingMode;

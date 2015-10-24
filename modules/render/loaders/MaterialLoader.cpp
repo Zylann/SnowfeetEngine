@@ -49,7 +49,9 @@ bool MaterialLoader::loadFromVariant(const sn::Variant & doc, sn::render::Materi
     const AssetMetadata & meta = mat.getAssetMetadata();
 
     // Shader
-    mat.setShader(getAssetBySerializedLocation<ShaderProgram>(doc["shader"].getString(), meta.module, &mat));
+    ShaderProgram * shader = getAssetBySerializedLocation<ShaderProgram>(doc["shader"].getString(), meta.project, &mat);
+    if (shader)
+        mat.setShader(shader);
 
     // Depth
     bool depthTest = false;
@@ -82,7 +84,7 @@ bool MaterialLoader::loadFromVariant(const sn::Variant & doc, sn::render::Materi
 
                     if (stype == "texture")
                     {
-                        Texture * tex = getAssetBySerializedLocation<Texture>(loc, meta.module, &mat);
+                        Texture * tex = getAssetBySerializedLocation<Texture>(loc, meta.project, &mat);
                         if (tex)
                             mat.setTexture(it->first, tex);
                         else
@@ -90,7 +92,7 @@ bool MaterialLoader::loadFromVariant(const sn::Variant & doc, sn::render::Materi
                     }
                     else if (stype == "rendertexture")
                     {
-                        RenderTexture * rt = getAssetBySerializedLocation<RenderTexture>(loc, meta.module, &mat);
+                        RenderTexture * rt = getAssetBySerializedLocation<RenderTexture>(loc, meta.project, &mat);
                         if (rt)
                             mat.setRenderTexture(it->first, rt);
                         else

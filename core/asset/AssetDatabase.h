@@ -11,7 +11,7 @@ This file is part of the SnowfeetEngine project.
 #include <core/asset/AssetLoader.h>
 #include <core/asset/AssetMetadata.h>
 #include <core/asset/SerializationContext.h>
-#include <core/app/ModuleInfo.h>
+#include <core/app/ProjectInfo.h>
 #include <core/system/FileWatcher.h>
 
 #include <unordered_map>
@@ -70,7 +70,7 @@ public:
 
     /// \brief Loads all assets contained in a given module directory.
     /// This function blocks until everything is loaded.
-    void loadAssets(const ModuleInfo & modInfo);
+    void loadAssets(const ProjectInfo & projectInfo);
 
     AssetLoadStatus loadAsset(Asset * asset, const AssetMetadata * a_newMetadata = nullptr);
 
@@ -97,10 +97,10 @@ public:
     // Template version of getAsset, compiled in your native code.
     // It works only if you used the SN_ASSET macro of your asset class.
     template <class Asset_T>
-    Asset_T * getAsset(const std::string & moduleName, const std::string & name)
+    Asset_T * getAsset(const std::string & projectName, const std::string & name)
     {
         // Note: use SN_ASSET in your asset class
-        Asset * a = getAsset(moduleName, getObjectType<Asset_T>(), name);
+        Asset * a = getAsset(projectName, getObjectType<Asset_T>(), name);
         if (a)
             return checked_cast<Asset_T*>(a);
         else
@@ -110,7 +110,7 @@ public:
     template <class Asset_T>
     Asset_T * getAsset(const AssetLocation & location)
     {
-        return getAsset<Asset_T>(location.module, location.name);
+        return getAsset<Asset_T>(location.project, location.name);
     }
 
     template <class Asset_T>
@@ -144,9 +144,9 @@ private:
     /// \brief Analyzes a file and creates one or several asset instances it will produce on runtime.
     /// The file will not be loaded into the instances until loadAsset() is called.
     /// \param path: path to the source file
-    /// \param moduleName: name of the module this file is associated to
+    /// \param projectName: name of the project this file is associated to
     /// \return Asset instances. Usually one, but depending on the pipeline it can be more.
-    std::vector<Asset*> preloadAssetFile(const String & path, const std::string & moduleName);
+    std::vector<Asset*> preloadAssetFile(const String & path, const std::string & projectName);
 
     /// \brief Loads or reloads all assets liked to a specific source file.
     /// \param Absolute path to the file
@@ -169,8 +169,8 @@ private:
     /// \brief [path] => asset
     std::unordered_map<String, std::vector<Asset*> > m_fileCache;
 
-    /// \brief [moduleName][baseTypeName][name] => asset
-    /// \note The moduleName corresponds to the location of the asset, not its type.
+    /// \brief [projectName][baseTypeName][name] => asset
+    /// \note The projectName corresponds to the location of the asset, not its type.
     std::unordered_map< std::string, std::unordered_map< std::string, std::unordered_map<std::string, Asset*> > > m_assets;
 
     /// \brief Listener used to track file changes when live edition is enabled
@@ -182,22 +182,20 @@ private:
 //-----------------------------------------------------------------------------
 /// \brief Reads a serialized asset reference, looks it up into the database and returns it if found.
 ///
-/// The algorithm searches the asset in the following modules:
-/// - The module where the serialization takes place
-/// - The module where the class of 'self' is defined (if provided)
+/// The algorithm searches the asset in the following projects:
+/// - The project specified in the location string (if provided)
+/// - The project where the serialization takes place
 /// - If still fails, returns nullptr.
 ///
 /// \param type:                    type name of the asset
 /// \param locationString:          string representing the location of the asset (see AssetLocation)
-/// \param contextModule:           name of the module where the serialization is taking place
-/// \param self (optional):         object needing to store the asset (typically the caller)
+/// \param contextProject:          name of the project where the serialization is taking place
 /// \param raiseError (optional):   if true, an error will be displayed if the asset can't be found.
 ///
 SN_API Asset * getAssetBySerializedLocation(
     const std::string & type, 
     const std::string & locationString, 
-    const std::string & contextModule,
-    const Object * self = nullptr,
+    const std::string & contextProject,
     bool raiseError = false
 );
 
@@ -205,12 +203,11 @@ SN_API Asset * getAssetBySerializedLocation(
 template <class Asset_T>
 Asset_T * getAssetBySerializedLocation(
     const std::string & locationString, 
-    const std::string & contextModule, 
-    const Object * self = nullptr,
+    const std::string & contextProject, 
     bool raiseError = false)
 {
     // Note: use SN_ASSET in your asset class
-    Asset * a = getAssetBySerializedLocation(Asset_T::__sGetClassName(), locationString, contextModule, self, raiseError);
+    Asset * a = getAssetBySerializedLocation(Asset_T::__sGetClassName(), locationString, contextProject, raiseError);
     if (a)
         return checked_cast<Asset_T*>(a);
     else

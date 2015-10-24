@@ -12,12 +12,10 @@ This file is part of the SnowfeetEngine project.
 #include <core/util/String.h>
 #include <core/reflect/ObjectTypeDatabase.h>
 #include <core/squirrel/bind_tools.h>
-#include <core/app/ModuleInfo.h>
 
 /// \brief This struct is passed as single argument of the loading function of a native module.
 struct SN_API ModuleLoadArgs
 {
-	const sn::ModuleInfo * moduleInfo;
     HSQUIRRELVM squirrelVM;
     sn::ObjectTypeDatabase * objectTypeDatabase;
 
@@ -45,16 +43,16 @@ typedef int(*NativeModUnloadFunc)(ModuleUnloadArgs);
 
 //------------------------------------------------------------------------------
 /// \brief Gets the name of the loading function from the name of a Snowfeet module native lib
-inline std::string getLoadFuncName(const String & libName)
+inline std::string getLoadFuncName(const std::string & libName)
 {
-	return "loadSnowfeetModule_" + toString(libName);
+	return "loadSnowfeetModule_" + libName;
 }
 
 //------------------------------------------------------------------------------
 /// \brief Gets the name of the unloading function from the name of a Snowfeet module native lib
-inline std::string getUnloadFuncName(const String & libName)
+inline std::string getUnloadFuncName(const std::string & libName)
 {
-	return "unloadSnowfeetModule_" + toString(libName);
+	return "unloadSnowfeetModule_" + libName;
 }
 
 } // namespace sn

@@ -5,6 +5,7 @@ This file is part of the SnowfeetEngine project.
 */
 
 #include <core/util/Log.h>
+#include <core/system/filesystem.h>
 #include <core/system/Thread.h>
 #include <core/system/console.h>
 #include <core/system/SystemGUI.h>
@@ -78,9 +79,9 @@ int Application::executeEx()
 {
 	SN_BEGIN_PROFILE_SAMPLE_NAMED("Startup");
 
-    if (m_pathToMainMod.empty())
+    if (m_pathToMainProject.empty())
     {
-        SN_WARNING("No main mod specified.");
+        SN_WARNING("No startup project specified.");
         return 0;
     }
 
@@ -100,25 +101,25 @@ int Application::executeEx()
     // Consider the app to be running from now
     m_runFlag = true;
 
-    // Corelib is the only module to always be loaded
-    loadModule(L"mods/corelib/corelib.mod.json");
+    // Corelib is the only dependency project to always be loaded
+    loadProject(L"mods/corelib/corelib.mod.json");
 
-    // Load the main module (including dependencies)
-    Module * mainModule = loadModule(m_pathToMainMod);
+    // Load the main project (including dependencies)
+    Project * mainProject = loadProject(m_pathToMainProject);
 
     // If a startup scene has been specified
-    const ModuleInfo & mainModuleInfo = mainModule->getInfo();
-    if (!mainModuleInfo.startupScene.empty())
+    const ProjectInfo & mainProjectInfo = mainProject->getInfo();
+    if (!mainProjectInfo.startupScene.empty())
     {
         // Initialize update layers
         // TODO UpdateManager config should be an asset
-        m_scene->getUpdateManager().unserialize(mainModuleInfo.updateLayers);
+        m_scene->getUpdateManager().unserialize(mainProjectInfo.updateLayers);
 
         // Load the scene
-        PackedEntity * packedScene = AssetDatabase::get().getAsset<PackedEntity>(mainModuleInfo.name, mainModuleInfo.startupScene);
+        PackedEntity * packedScene = AssetDatabase::get().getAsset<PackedEntity>(mainProjectInfo.name, mainProjectInfo.startupScene);
         if (packedScene)
         {
-            packedScene->instantiate(*m_scene, mainModuleInfo.name);
+            packedScene->instantiate(*m_scene, mainProjectInfo.name);
 //#ifdef SN_BUILD_DEBUG
 //            Entity::debugPrintEntityTree(*m_scene);
 //#endif
@@ -273,7 +274,7 @@ int Application::executeEx()
     }
 #endif
 
-    // Unload all modules
+    unloadAllProjects();
     unloadAllModules();
 
     return 0;
@@ -303,6 +304,7 @@ bool Application::parseCommandLine(CommandLine commandLine)
         argc = commandLine.getArgCount();
     }
 
+    SN_DLOG("Working dir: " << getWorkingDirectory());
     SN_WLOG("Command line: " << commandLine.toWideString());
 
     // path + -p + value + -x + value = 5 args minimum
@@ -319,7 +321,7 @@ bool Application::parseCommandLine(CommandLine commandLine)
             }
             else if (arg == L"-x")
             {
-                m_pathToMainMod = commandLine.getArg(++i);
+                m_pathToMainProject = commandLine.getArg(++i);
             }
             else if (arg == L"--trackfiles")
             {
@@ -355,21 +357,81 @@ bool Application::parseCommandLine(CommandLine commandLine)
 //------------------------------------------------------------------------------
 void Application::printCommandLineUsage()
 {
-    std::cout << "Usage: SnowfeetApp.exe [-p <pathToProjectsDir>] -x <pathToExecutableModFile>" << std::endl;
+    std::cout << "Usage: SnowfeetApp.exe [-p <pathToProjectsDir>] -x <pathToStartupProjectFile>" << std::endl;
     std::cout << "You can also use a commandline.txt file as input in your working directory." << std::endl;
 }
 
 //------------------------------------------------------------------------------
-Module * Application::loadModule(const String & path)
+bool Application::loadModule(const std::string & fileName)
+{
+    SN_LOG("Loading shared lib \"" << fileName << "\"...");
+
+    std::string name = getFileNameWithoutExtension(fileName);
+
+    auto it = m_modules.find(name);
+    if (it == m_modules.end())
+    {
+        // Load the code
+        Module * mod = Module::loadFromFile(fileName);
+        if (mod == nullptr)
+            return false;
+
+        auto & otb = ObjectTypeDatabase::get();
+
+        // Call entry point
+        otb.beginModule(mod->getName());
+        mod->entryPoint({
+            m_scriptEngine.getVM(),
+            &otb
+        });
+        otb.endModule();
+
+        // Register drivers
+        m_drivers.loadDriversFromModule(name);
+
+        // Register asset loaders
+        AssetDatabase::get().addLoadersFromModule(name);
+
+        m_modules[name] = mod;
+        return true;
+    }
+    else
+    {
+        return true;
+    }
+}
+
+//------------------------------------------------------------------------------
+void Application::unloadAllModules()
+{
+    for (auto it = m_modules.begin(); it != m_modules.end(); ++it)
+    {
+        Module * mod = it->second;
+
+        // Unload drivers
+        m_drivers.unloadDriversFromModule(mod->getName());
+
+        // Unload asset loaders
+        AssetDatabase::get().releaseLoadersFromModule(mod->getName());
+
+        ObjectTypeDatabase::get().unregisterModule(mod->getName());
+
+        mod->release();
+    }
+    m_modules.clear();
+}
+
+//------------------------------------------------------------------------------
+Project * Application::loadProject(const String & path)
 {
     // TODO If the path is a directory, append mod file with directory's name
 
-    Module * lastModule = nullptr;
+    Project * lastProject = nullptr;
 
     SN_WDLOG("Calculating dependencies to load module \"" << path << '"');
 
-    std::list<ModuleInfo> modulesToLoad;
-    Module::calculateDependencies(m_pathToProjects, path, modulesToLoad);
+    std::list<ProjectInfo> modulesToLoad;
+    Project::calculateProjectDependencies(m_pathToProjects, path, modulesToLoad);
 
 #ifdef SN_BUILD_DEBUG
     for (auto it = modulesToLoad.begin(); it != modulesToLoad.end(); ++it)
@@ -378,14 +440,14 @@ Module * Application::loadModule(const String & path)
     }
 #endif
 
-	std::vector<Module*> mods;
-	mods.reserve(modulesToLoad.size());
+	std::vector<Project*> projects;
+	projects.reserve(modulesToLoad.size());
 
     // Load main module and all its dependencies
     for (auto it = modulesToLoad.begin(); it != modulesToLoad.end(); ++it)
     {
-        const ModuleInfo & info = *it;
-        if (m_modules.find(info.directory) != m_modules.end())
+        const ProjectInfo & info = *it;
+        if (m_projects.find(info.directory) != m_projects.end())
         {
             SN_WLOG("Module " << path << " is already loaded, skipping");
             continue;
@@ -394,7 +456,7 @@ Module * Application::loadModule(const String & path)
         SN_LOG("-------------");
         SN_WLOG("Loading module " << info.directory);
 
-        Module * mod = nullptr;
+        Project * project = nullptr;
 
         try
         {
@@ -402,21 +464,19 @@ Module * Application::loadModule(const String & path)
             //m_scriptEngine.getEngine()->SetDefaultNamespace("");
 
             // Create Module object
-            mod = new Module(*this, info);
+            project = new Project(*this, info);
 
-            mod->loadNativeBindings(m_scriptEngine);
-            mod->compileScripts();
+            project->loadModules();
+            project->compileScripts();
 
-            m_drivers.loadDriversFromModule(info.name);
-
-            m_modules.insert(std::make_pair(info.directory, mod));
-			mods.push_back(mod);
-            lastModule = mod;
+            m_projects.insert(std::make_pair(info.directory, project));
+			projects.push_back(project);
+            lastProject = project;
         }
         catch (std::exception & ex)
         {
             SN_ERROR("Failed to load module: " << ex.what());
-            delete mod;
+            delete project;
             throw ex;
             return false;
         }
@@ -432,9 +492,9 @@ Module * Application::loadModule(const String & path)
 		for (auto it = modulesToLoad.begin(); it != modulesToLoad.end(); ++it)
 		{
 			// Load static assets
-			const ModuleInfo & info = *it;
-			Module* mod = mods[i++];
-			mod->createServices(*m_scene);
+			const ProjectInfo & info = *it;
+			Project * project = projects[i++];
+			project->createServices(*m_scene);
 		}
 	}
 
@@ -444,24 +504,22 @@ Module * Application::loadModule(const String & path)
     for (auto it = modulesToLoad.begin(); it != modulesToLoad.end(); ++it)
     {
         // Load static assets
-        const ModuleInfo & info = *it;
+        const ProjectInfo & info = *it;
         AssetDatabase::get().loadAssets(info);
     }
 
     // Note: the last loaded module will be the one we requested when calling this function
-    return lastModule;
+    return lastProject;
 }
 
 //------------------------------------------------------------------------------
-void Application::unloadAllModules()
+void Application::unloadAllProjects()
 {
-    // TODO Unload modules in right order!
-	// Unload modules
-    for (auto it = m_modules.begin(); it != m_modules.end(); ++it)
+    for (auto it = m_projects.begin(); it != m_projects.end(); ++it)
     {
         delete it->second;
     }
-    m_modules.clear();
+    m_projects.clear();
 }
 
 //------------------------------------------------------------------------------
@@ -470,12 +528,5 @@ void Application::quit()
     SN_LOG("Application: quit requested");
     m_runFlag = false;
 }
-
-//------------------------------------------------------------------------------
-//void Application::compileScripts()
-//{
-//
-//}
-
 
 } // namespace sn

@@ -28,10 +28,12 @@ This file is part of the SnowfeetEngine project.
 
 #include <core/reflect/ObjectTypeDatabase.h>
 #include <core/app/CommandLine.h>
+#include <core/app/Project.h>
 #include <core/app/Module.h>
 #include <core/app/ScriptManager.h>
 #include <core/app/TimeStepper.h>
 #include <core/scene/Scene.h>
+#include <core/system/SharedLib.h>
 #include <core/drivers/DriverManager.h>
 #include <map>
 
@@ -68,6 +70,7 @@ public:
     /// at the end of the current update.
     void quit();
 
+    bool loadModule(const std::string & name);
 
     // TODO Move SystemGUI here as a member variable, and let Application be the only one singleton?
 
@@ -79,10 +82,12 @@ private:
     /// \brief Parses the given command line object and configures the application accordingly
     bool parseCommandLine(CommandLine commandLine);
 
-    /// \brief Loads a module from its path within one of the roots known by the engine.
-    Module * loadModule(const String & path);
-
     void unloadAllModules();
+
+    /// \brief Loads a project from its path within one of the roots known by the engine.
+    Project * loadProject(const String & path);
+
+    void unloadAllProjects();
 
     /// \brief Executes the application without catching any exception (no try/catch)
     int executeEx();
@@ -108,17 +113,20 @@ private:
     /// \brief Drivers
     DriverManager m_drivers;
 
-    /// \brief Path (relative to the root) to the main module to be executed
-    String m_pathToMainMod;
-
-    /// \brief Main root directory for all paths used in the engine
+    /// \brief Main root directory for all paths used in projects
     String m_pathToProjects;
+
+    /// \brief Path (relative to the root) to the main module to be executed
+    String m_pathToMainProject;
 
     // TODO Maybe we don't need this in the core, only graphics or physics simulation really need stable frequency.
     TimeStepper m_timeStepper;
 
-    /// \brief [directory] => Module
-    std::map<String, Module*> m_modules;
+    /// \brief [directory] => Project
+    std::map<String, Project*> m_projects;
+
+    /// \brief [name] => Module
+    std::unordered_map<std::string, Module*> m_modules;
 
     /// \brief The main loop will run as long as this flag is true
     bool m_runFlag;

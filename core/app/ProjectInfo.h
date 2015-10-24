@@ -4,8 +4,8 @@ Copyright (C) 2014-2015 Marc GILLERON
 This file is part of the SnowfeetEngine project.
 */
 
-#ifndef __HEADER_MODULE_INFO__
-#define __HEADER_MODULE_INFO__
+#ifndef __HEADER_PROJECT_INFO__
+#define __HEADER_PROJECT_INFO__
 
 #include <core/util/String.h>
 #include <core/util/Variant.h>
@@ -14,7 +14,7 @@ This file is part of the SnowfeetEngine project.
 namespace sn
 {
 
-class ModuleInfo
+class ProjectInfo
 {
 public:
     bool loadFromFile(const String & pathToProjects, const String & modPath);
@@ -42,10 +42,6 @@ public:
 
     /// \brief List of global entities to create in the main scene when the module is loaded
     std::vector<Service> services;
-
-	/// \brief List of names of shared libraries containing native bindings
-    /// \warning The order is important in this container.
-    std::vector<String> bindings;
 
     /// \brief Serialized form of the update manager
     Variant updateLayers;

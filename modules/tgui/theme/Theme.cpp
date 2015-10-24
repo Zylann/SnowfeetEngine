@@ -58,7 +58,7 @@ bool ThemeLoader::load(std::ifstream & ifs, sn::Asset & asset) const
 	SmlParser parser;
 	parser.parseValue(ifs, o);
 
-    SerializationContext ctx(asset.getAssetMetadata().module);
+    SerializationContext ctx(asset.getAssetMetadata().project);
 
     sn::unserialize(o["textFormat"], theme->textFormat);
     sn::unserialize(o["textColor"], theme->textColor);
@@ -82,14 +82,14 @@ bool ThemeLoader::load(std::ifstream & ifs, sn::Asset & asset) const
     }
 
     // Get material
-    Material * mat = sn::getAssetBySerializedLocation<sn::Material>(o["material"].getString(), ctx.getModule(), this);
+    Material * mat = sn::getAssetBySerializedLocation<sn::Material>(o["material"].getString(), ctx.getProject());
     if (mat)
         theme->setMaterial(*mat);
     else
         SN_WERROR(L"No material specified in theme " << asset.getAssetMetadata().path);
 
     // Get font
-    Font * font = sn::getAssetBySerializedLocation<sn::Font>(o["font"].getString(), ctx.getModule(), this, true);
+    Font * font = sn::getAssetBySerializedLocation<sn::Font>(o["font"].getString(), ctx.getProject(), true);
     if (font)
         theme->setFont(*font);
     else

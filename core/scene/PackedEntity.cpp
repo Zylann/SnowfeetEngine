@@ -196,9 +196,9 @@ void PackedEntity::instantiateOnly(Entity & a_parent, const std::string & contex
 ObjectDB * PackedEntity::getFromAssetDatabase(const std::string & location) const
 {
     AssetLocation loc(location);
-    if (loc.module.empty())
+    if (loc.project.empty())
     {
-        loc.module = getAssetMetadata().module;
+        loc.project = getAssetMetadata().project;
     }
     return AssetDatabase::get().getAsset<PackedEntity>(loc);
 }

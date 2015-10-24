@@ -80,11 +80,13 @@ void Drawable::unserializeState(const sn::Variant & o, const SerializationContex
 
     std::string meshLocation;
     sn::unserialize(o["mesh"], meshLocation);
-    m_mesh.set(getAssetBySerializedLocation<Mesh>(         meshLocation,     context.getModule(), this));
+    if (!meshLocation.empty())
+        m_mesh.set(getAssetBySerializedLocation<Mesh>(meshLocation, context.getProject(), true));
 
     std::string materialLocation;
     sn::unserialize(o["material"], materialLocation);
-    m_material.set(getAssetBySerializedLocation<Material>( materialLocation, context.getModule(), this));
+    if (!materialLocation.empty())
+        m_material.set(getAssetBySerializedLocation<Material>(materialLocation, context.getProject(), true));
 
     // TODO
 }

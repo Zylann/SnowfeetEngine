@@ -13,12 +13,12 @@ class Object;
 class SN_API SerializationContext
 {
 public:
-    SerializationContext(const std::string & moduleName) :
-        m_module(moduleName)
+    SerializationContext(const std::string & projectName) :
+        m_project(projectName)
     {}
 
     /// \brief In which module the data is currently serialized
-    const std::string & getModule() const { return m_module; }
+    const std::string & getProject() const { return m_project; }
 
     /// \brief Gets an object from its ID in the serialized data.
     /// This is useful only in cases your object references others.
@@ -43,7 +43,7 @@ public:
     }
 
 private:
-    std::string m_module;
+    std::string m_project;
     std::unordered_map<u32, sn::Object*> m_objects;
 
 };

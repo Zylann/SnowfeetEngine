@@ -143,7 +143,7 @@ void GUI::unserializeState(const Variant & o, const sn::SerializationContext & c
 
 	std::string themeLocation;
 	sn::unserialize(o["theme"], themeLocation);
-    m_theme.set(getAssetBySerializedLocation<Theme>(themeLocation, ctx.getModule(), this));
+    m_theme.set(getAssetBySerializedLocation<Theme>(themeLocation, ctx.getProject()));
 }
 
 } // namespace tgui

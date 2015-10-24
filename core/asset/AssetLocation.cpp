@@ -12,10 +12,10 @@ AssetLocation::AssetLocation(const std::string & fullName)
 
 std::string AssetLocation::getFullName()
 {
-    if (module.empty())
+    if (project.empty())
         return name;
     else
-        return module + NAMESPACE_SEPARATOR + name;
+        return project + NAMESPACE_SEPARATOR + name;
 }
 
 void AssetLocation::setFullName(const std::string & fullName)
@@ -23,7 +23,7 @@ void AssetLocation::setFullName(const std::string & fullName)
     size_t i = fullName.find(NAMESPACE_SEPARATOR);
     if (i != std::string::npos)
     {
-        module = fullName.substr(0, i);
+        project = fullName.substr(0, i);
         name = fullName.substr(i+1);
     }
     else

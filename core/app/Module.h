@@ -1,68 +1,34 @@
-﻿/*
-Module.h
-Copyright (C) 2014-2015 Marc GILLERON
-This file is part of the SnowfeetEngine project.
-*/
-
 #ifndef __HEADER_SN_MODULE__
 #define __HEADER_SN_MODULE__
 
 #include <core/app/ModuleArgs.h>
-#include <core/app/ModuleInfo.h>
-#include <core/system/Time.h>
 #include <core/system/SharedLib.h>
-
-#include <set>
-#include <unordered_set>
-#include <list>
-#include <map>
+#include <core/util/RefCounted.h>
 
 namespace sn
 {
 
-class Application;
-class ScriptManager;
-class Scene;
-
-class SN_API Module
+class Module : public RefCounted
 {
 public:
+    static Module * loadFromFile(const std::string & filePath);
 
-    Module(Application & app, const ModuleInfo & info);
-    ~Module();
+    const std::string & getName() const;
 
-    bool loadNativeBindings(ScriptManager & scriptEngine);
-    bool compileScripts();
-    void createServices(Scene & scene);
+    bool entryPoint(ModuleLoadArgs args);
+    bool exitPoint(ModuleUnloadArgs args);
 
-    /// \brief Calculates the dependency list of the given module.
-    /// The list is ordered by module loading.
-    static void calculateDependencies(
-        const String & pathToProjects,
-        const String & modPath, 
-        std::list<ModuleInfo> & dependencies,
-        std::set<String> * openSet = nullptr
-    );
-
-    inline const ModuleInfo & getInfo() const { return m_info; }
+protected:
+    virtual ~Module();
 
 private:
-
-    void getScriptFiles(
-        std::vector<String> & out_filePaths, 
-        const std::set<String> & extensions, 
-        const std::unordered_set<String> & ignoreDirectories
-    );
-
-    bool loadNativeBindingsImpl(ScriptManager & scriptEngine);
-
-    void unloadNativeBindings();
-    void unloadNativeBindingsImpl();
+    Module();
 
 private:
-    const ModuleInfo m_info;
-    Application & r_app;
-    std::vector<SharedLib*> m_sharedLibs;
+    SharedLib * m_library;
+    NativeModLoadFunc m_entryPoint;
+    NativeModUnloadFunc m_exitPoint;
+    std::string m_name;
 
 };
 

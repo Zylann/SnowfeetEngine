@@ -24,7 +24,7 @@ struct AssetLocation
     /// \brief Name of the asset.
     std::string name;
     /// \brief Namespace of the asset. If not specified, it is relative.
-    std::string module;
+    std::string project;
 };
 
 void unserialize(const Variant & o, AssetLocation & loc);

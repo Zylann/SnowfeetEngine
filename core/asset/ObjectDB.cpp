@@ -404,9 +404,9 @@ ObjectDB * ObjectDB::getFromAssetDatabase(const std::string & location) const
 {
     // Default implementation
     AssetLocation loc(location);
-    if (loc.module.empty())
+    if (loc.project.empty())
     {
-        loc.module = getAssetMetadata().module;
+        loc.project = getAssetMetadata().project;
     }
     return AssetDatabase::get().getAsset<ObjectDB>(loc);
 }

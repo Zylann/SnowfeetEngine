@@ -410,7 +410,7 @@ void Camera::unserializeState(const sn::Variant & o, const SerializationContext 
         {
             if (effects[i].isString())
             {
-                Material * mat = getAssetBySerializedLocation<Material>(effects[i].getString(), context.getModule(), this);
+                Material * mat = getAssetBySerializedLocation<Material>(effects[i].getString(), context.getProject());
                 if (mat != nullptr)
                 {
                     addEffect(mat);
@@ -423,8 +423,8 @@ void Camera::unserializeState(const sn::Variant & o, const SerializationContext 
             else if (effects[i].isDictionary())
             {
                 const Variant & o = effects[i];
-                Material * mat = getAssetBySerializedLocation<Material>(o["material"].getString(), context.getModule(), this);
-                Mesh * mesh = getAssetBySerializedLocation<Mesh>(o["mesh"].getString(), context.getModule(), this);
+                Material * mat = getAssetBySerializedLocation<Material>(o["material"].getString(), context.getProject());
+                Mesh * mesh = getAssetBySerializedLocation<Mesh>(o["mesh"].getString(), context.getProject());
                 if (mat)
                 {
                     addEffect(mat, mesh);
@@ -438,7 +438,7 @@ void Camera::unserializeState(const sn::Variant & o, const SerializationContext 
         }
     }
 
-    setRenderTexture(getAssetBySerializedLocation<RenderTexture>(o["renderTexture"].getString(), context.getModule(), this));
+    setRenderTexture(getAssetBySerializedLocation<RenderTexture>(o["renderTexture"].getString(), context.getProject()));
 
 	m_projectionMatrixNeedUpdate = true;
 }

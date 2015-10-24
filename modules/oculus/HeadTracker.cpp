@@ -116,14 +116,14 @@ void HeadTracker::onReady()
         // to their real geometry, because we can only get it after an Oculus has
         // been started, which is not necessarily the case when the application launches.
 
-        // TODO Don't hardcode the names
+        // TODO Don't hardcode the names, we should create a dynamic asset instead
         // TODO Find a better design where we can have several models of headsets simultaneously
 
         auto & database = AssetDatabase::get();
-        std::string modName = getObjectType().getModuleName();
+        std::string projectName = "oculus";
 
-        m_abstractEyes[0].distortionMesh.set(database.getAsset<Mesh>(modName, "left_eye"));
-        m_abstractEyes[1].distortionMesh.set(database.getAsset<Mesh>(modName, "right_eye"));
+        m_abstractEyes[0].distortionMesh.set(database.getAsset<Mesh>(projectName, "left_eye"));
+        m_abstractEyes[1].distortionMesh.set(database.getAsset<Mesh>(projectName, "right_eye"));
 
         for (u32 i = 0; i < 2; ++i)
         {
@@ -134,8 +134,8 @@ void HeadTracker::onReady()
             }
         }
 
-        m_abstractEyes[0].effectMaterial.set(database.getAsset<Material>(modName, "left_eye_mat"));
-        m_abstractEyes[1].effectMaterial.set(database.getAsset<Material>(modName, "right_eye_mat"));
+        m_abstractEyes[0].effectMaterial.set(database.getAsset<Material>(projectName, "left_eye_mat"));
+        m_abstractEyes[1].effectMaterial.set(database.getAsset<Material>(projectName, "right_eye_mat"));
 
         // Must be called before any call to ovrHmd_BeginFrameTiming
         ovrHmd_ResetFrameTiming(m_ovrHmd, 0);
