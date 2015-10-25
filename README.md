@@ -1,7 +1,7 @@
 ![Snowfeet Engine](http://zylannprods.fr/snowfeet/engine/artwork/snowfeet_engine_title_alpha_w800_v3.png)
 ====================
 
-This is an experimental, cross-platform, modular, general purpose game engine.
+This is an experimental, general purpose game engine.
 Its core programming language is C++, and Squirrel for scripting.
 I develop it as a hobby, for fun.
 
@@ -10,18 +10,19 @@ with a completely new modular structure and integrated scripting.
 
 The engine is in its early stages of development, so lots of code is WIP, unoptimized,
 breaking changes may occur, and the main platform I develop on/for is win32 with Visual Studio 2013.
-However, the engine is aimed at being cross-platform (desktop, mobile or even web),
+However, the engine is aimed at being cross-platform and cross-system (desktop, mobile or even web),
 so any platform-specific code goes in separate implementation files.
 
 
 Engine structure
 =================
 
-The engine is made of a core and any number of modules.
-The core is written in C++ and includes only common functionnality.
-Modules are dynamic and you can adjust what you need for any project, without the need to recompile (or re-run) the whole thing.
+The engine is built upon 3 layers:
+- The core, a fixed C++ library, designed to be extended
+- Modules, C++ libraries you can add or remove for your needs without having to recompile everything
+- Projects, folders where you put scripts, assets and data that make up your games.
 
-For more info about how modules work, see documentation files.
+For more info about how these layers work, see documentation files.
 
 
 Notes
@@ -58,7 +59,7 @@ I should try Emscripten as a new platform, one day. Sounds like fun.
 
 Binaries
 --------
-There is no pre-build binaries available.
+There are no pre-built binaries available.
 At the moment, the whole engine and its modules must be compiled with the SAME
 compiler, no matter which one, for compatibility reasons.
 Building your own binaries is the best way to fit your platform,
