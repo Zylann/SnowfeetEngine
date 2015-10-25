@@ -1,7 +1,7 @@
 {
 	"startupScene":"main",
 	"dependencies":[
-		"mods/render/render.mod.json"
+		"mods/render"
 	],
 	"services":[
 		"sn::render::RenderManager",

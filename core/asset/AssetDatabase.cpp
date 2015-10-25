@@ -457,7 +457,7 @@ Asset * AssetDatabase::getAsset(const AssetLocation & loc, const std::string & t
 Asset * getAssetBySerializedLocation(
     const std::string & type, 
     const std::string & locationString, 
-    const std::string & contextModule, 
+    const std::string & contextProject, 
     bool raiseError)
 {
     AssetLocation location(locationString);
@@ -472,7 +472,7 @@ Asset * getAssetBySerializedLocation(
         }
 
         // Try to get the asset from the project the serialization is occurring into
-        location.project = contextModule;
+        location.project = contextProject;
         Asset * asset = adb.getAsset(location, type);
         if (asset)
             return asset;

@@ -17,7 +17,10 @@ namespace sn
 class ProjectInfo
 {
 public:
-    bool loadFromFile(const String & pathToProjects, const String & modPath);
+    /// \brief Default name of a project file
+    static const char * FILE_NAME;
+
+    bool loadFromFile(const String & pathToProjects, const String & pathToFile);
 
     struct Service
     {
@@ -27,7 +30,7 @@ public:
 
     std::string name;
     String directory;
-    String modFilePath;
+    String filePath;
 
     std::string scriptNamespace;
 

@@ -58,7 +58,7 @@ namespace
 // Static
 void Project::calculateProjectDependencies(
     const String & pathToProjects,
-    const String & projectPath,
+    const String & projectDir,
     std::list<ProjectInfo> & dependencies,
     std::set<String> * openSet)
 {
@@ -68,18 +68,18 @@ void Project::calculateProjectDependencies(
         openSet = &_openSet;
     }
 
-    if (openSet->find(projectPath) != openSet->end())
+    if (openSet->find(projectDir) != openSet->end())
     {
         return;
     }
 
     ProjectInfo info;
-    if (!info.loadFromFile(pathToProjects, projectPath))
+    if (!info.loadFromFile(pathToProjects, FilePath::join(projectDir, toWideString(ProjectInfo::FILE_NAME))))
     {
-        throw Exception("Unable to load project info for \"" + toString(projectPath) + '"');
+        throw Exception("Unable to load project info for \"" + toString(projectDir) + '"');
     }
 
-    openSet->insert(projectPath);
+    openSet->insert(projectDir);
     dependencies.push_front(info);
 
     for (auto it = info.dependencies.begin(); it != info.dependencies.end(); ++it)

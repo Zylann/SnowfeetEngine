@@ -102,7 +102,7 @@ int Application::executeEx()
     m_runFlag = true;
 
     // Corelib is the only dependency project to always be loaded
-    loadProject(L"mods/corelib/corelib.mod.json");
+    loadProject(L"mods/corelib");
 
     // Load the main project (including dependencies)
     Project * mainProject = loadProject(m_pathToMainProject);
@@ -428,7 +428,7 @@ Project * Application::loadProject(const String & path)
 
     Project * lastProject = nullptr;
 
-    SN_WDLOG("Calculating dependencies to load module \"" << path << '"');
+    SN_WDLOG("Calculating dependencies to load project \"" << path << '"');
 
     std::list<ProjectInfo> projectsToLoad;
     Project::calculateProjectDependencies(m_pathToProjects, path, projectsToLoad);
@@ -436,7 +436,7 @@ Project * Application::loadProject(const String & path)
 #ifdef SN_BUILD_DEBUG
     for (auto it = projectsToLoad.begin(); it != projectsToLoad.end(); ++it)
     {
-        SN_WDLOG(L"> " + it->modFilePath);
+        SN_WDLOG(L"> " + it->filePath);
     }
 #endif
 
@@ -449,12 +449,12 @@ Project * Application::loadProject(const String & path)
         const ProjectInfo & info = *it;
         if (m_projects.find(info.directory) != m_projects.end())
         {
-            SN_WLOG("Module " << path << " is already loaded, skipping");
+            SN_WLOG("Project " << path << " is already loaded, skipping");
             continue;
         }
 
         SN_LOG("-------------");
-        SN_WLOG("Loading module " << info.directory);
+        SN_WLOG("Loading project " << info.directory);
 
         Project * project = nullptr;
 
@@ -475,7 +475,7 @@ Project * Application::loadProject(const String & path)
         }
         catch (std::exception & ex)
         {
-            SN_ERROR("Failed to load module: " << ex.what());
+            SN_ERROR("Failed to load project: " << ex.what());
             delete project;
             throw ex;
             return false;
@@ -498,11 +498,10 @@ Project * Application::loadProject(const String & path)
 		}
 	}
 
-    SN_LOG("-------------");
-
     // Load Assets afterwards (so now all services assets would require should be available)
     for (auto it = projectsToLoad.begin(); it != projectsToLoad.end(); ++it)
     {
+        SN_LOG("-------------");
         // Load static assets
         const ProjectInfo & info = *it;
         AssetDatabase::get().loadAssets(info);

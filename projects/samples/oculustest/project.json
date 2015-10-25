@@ -1,7 +1,6 @@
 {
 	"startupScene":"main",
 	"dependencies":[
-		"mods/oculus/oculus.mod.json"
+		"mods/oculus"
 	]
 }
-

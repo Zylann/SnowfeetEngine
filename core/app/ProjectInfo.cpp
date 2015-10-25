@@ -34,20 +34,33 @@ namespace sn
     }
 
 //------------------------------------------------------------------------------
-bool ProjectInfo::loadFromFile(const String & pathToProjects, const String & modPath)
+const char * ProjectInfo::FILE_NAME = "project.json";
+
+//------------------------------------------------------------------------------
+bool ProjectInfo::loadFromFile(const String & pathToProjects, const String & pathToFile)
 {
     // Reset info
-    modFilePath = L"";
+    filePath = L"";
     dependencies.clear();
     modules.clear();
     directory = L"";
 
-    modFilePath = modPath;
-    directory = getFileFolder(modFilePath);
-    name = getFileNameWithoutExtension(toString(modFilePath));
+    filePath = pathToFile;
+    directory = getFileFolder(filePath);
+    SN_ASSERT(!directory.empty(), "A project file must always be loaded from a directory");
+
+    // The name is the folder
+    size_t sepIndex = directory.find_last_of('/');
+    if (sepIndex == std::string::npos)
+        sepIndex = directory.find_last_of('\\');
+    if (sepIndex == std::string::npos)
+        name = toString(directory);
+    else
+        name = toString(directory.substr(sepIndex+1));
+    //name = getFileNameWithoutExtension(toString(filePath));
 
     // Get full path
-    String fullPath = pathToProjects + L'/' + modPath;
+    String fullPath = pathToProjects + L'/' + filePath;
 
     // Parse module
     Variant v;
@@ -113,7 +126,7 @@ void ProjectInfo::parseServices(const Variant & o)
                 }
                 else
                 {
-                    SN_WARNING("Expected service name, got arguments in " + toString(modFilePath));
+                    SN_WARNING("Expected service name, got arguments in " + toString(filePath));
                 }
             }
         }
