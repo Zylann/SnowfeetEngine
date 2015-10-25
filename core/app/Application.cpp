@@ -357,7 +357,8 @@ bool Application::parseCommandLine(CommandLine commandLine)
 //------------------------------------------------------------------------------
 void Application::printCommandLineUsage()
 {
-    std::cout << "Usage: SnowfeetApp.exe [-p <pathToProjectsDir>] -x <pathToStartupProjectFile>" << std::endl;
+    std::cout << "Usage: SnowfeetApp.exe [-p <pathToProjectsDir>] -x <pathToStartupProjectDir>" << std::endl;
+    std::cout << "Example: SnowfeetApp.exe -p ../../projects -x samples/rendertest" << std::endl;
     std::cout << "You can also use a commandline.txt file as input in your working directory." << std::endl;
 }
 
