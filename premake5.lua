@@ -103,6 +103,16 @@ solution "SnowfeetEngine"
 		filter {}
 	end
 
+	--! \brief Helper defining include directories and links to another module.
+	--! \param t (table): list of module names
+	function moduleDependencies(t)
+		for i,moduleName in ipairs(t) do
+			dependson { moduleName }
+			includedirs { SnowfeetRoot.."/modules" }
+			links { moduleName }
+		end
+	end
+
 	function commonModConfigCPP()
 		kind "SharedLib"
 		language "C++"
