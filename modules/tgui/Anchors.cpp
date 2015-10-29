@@ -55,6 +55,48 @@ void unserializeAnchors(const sn::Variant & o, Anchors & anchors)
 
 void applyAnchors(IntRect & out_rect, const IntRect & container, const Anchors & anchors)
 {
+    if (anchors[TGUI_LEFT] && anchors[TGUI_RIGHT])
+    {
+        // Fill horizontal space
+        out_rect.width() = container.width();
+        out_rect.x() = container.x();
+    }
+    else
+    {
+	    if (anchors[TGUI_LEFT])
+	    {
+            // Align to left
+		    out_rect.x() = container.x();
+	    }
+	    if (anchors[TGUI_RIGHT])
+	    {
+            // Align to right
+            out_rect.x() = container.x() + container.width() - out_rect.width();
+	    }
+    }
+
+    if (anchors[TGUI_TOP] && anchors[TGUI_BOTTOM])
+    {
+        // Fill vertical space
+        out_rect.height() = container.height();
+        out_rect.y() = container.y();
+    }
+    else
+    {
+	    if (anchors[TGUI_TOP])
+	    {
+            // Align to left
+		    out_rect.y() = container.y();
+	    }
+	    if (anchors[TGUI_BOTTOM])
+	    {
+            // Align to right
+            out_rect.y() = container.y() + container.height() - out_rect.height();
+	    }
+    }
+
+    // Old implementation that applies only on individual border coordinates
+    /*
 	if (anchors[TGUI_LEFT])
 	{
 		out_rect.width() += (out_rect.x() - container.x());
@@ -73,6 +115,7 @@ void applyAnchors(IntRect & out_rect, const IntRect & container, const Anchors &
 	{
 		out_rect.height() = (container.y() + container.height()) - out_rect.y();
 	}
+    */
 }
 
 } // namespace tgui
