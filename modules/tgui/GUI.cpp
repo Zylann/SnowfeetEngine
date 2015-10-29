@@ -37,11 +37,21 @@ void GUI::onReady()
         SN_EVENT_MOUSE_LEFT,
         SN_EVENT_MOUSE_WHEEL_MOVED,
         SN_EVENT_KEY_DOWN,
-        SN_EVENT_KEY_UP
+        SN_EVENT_KEY_UP,
+        SN_EVENT_WINDOW_RESIZED
     };
     for (u32 i = 0; i < sizeof(events) / sizeof(u32); ++i)
     {
         m_eventFilter[events[i]] = true;
+    }
+
+    // Fill the window
+    sn::Window * window = SystemGUI::get().getWindowByID(getWindowID());
+    if (window)
+    {
+        sn::Vector2u size = window->getClientSize();
+        setLocalClientBounds(sn::IntRect::fromPositionSize(0, 0, size.x(), size.y()));
+        layoutChildren();
     }
 
     listenToSystemEvents();
@@ -113,8 +123,16 @@ bool GUI::onSystemEvent(const sn::Event & systemEvent)
         tgui::Event ev;
         ev.value = systemEvent;
 
-		if (r_captureControl)
+        if (ev.value.type == SN_EVENT_WINDOW_RESIZED)
+        {
+            // Fill the window
+            setLocalClientBounds(sn::IntRect::fromPositionSize(0, 0, ev.value.window.width, ev.value.window.height));
+            layoutChildren();
+        }
+        else if (r_captureControl)
+        {
 			r_captureControl->onEvent(ev);
+        }
         else
         {
 	        dispatchEventToChildren(ev);
