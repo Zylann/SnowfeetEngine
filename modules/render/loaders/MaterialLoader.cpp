@@ -43,7 +43,7 @@ bool MaterialLoader::loadFromVariant(const sn::Variant & doc, sn::render::Materi
     const AssetMetadata & meta = mat.getAssetMetadata();
 
     // Shader
-    ShaderProgram * shader = getAssetBySerializedLocation<ShaderProgram>(doc["shader"].getString(), meta.project, &mat);
+    ShaderProgram * shader = getAssetBySerializedLocation<ShaderProgram>(doc["shader"].getString(), meta.project, true);
     if (shader)
         mat.setShader(shader);
 
@@ -78,7 +78,7 @@ bool MaterialLoader::loadFromVariant(const sn::Variant & doc, sn::render::Materi
 
                     if (stype == "texture")
                     {
-                        Texture * tex = getAssetBySerializedLocation<Texture>(loc, meta.project, &mat);
+                        Texture * tex = getAssetBySerializedLocation<Texture>(loc, meta.project, true);
                         if (tex)
                             mat.setTexture(it->first, tex);
                         else
@@ -86,7 +86,7 @@ bool MaterialLoader::loadFromVariant(const sn::Variant & doc, sn::render::Materi
                     }
                     else if (stype == "rendertexture")
                     {
-                        RenderTexture * rt = getAssetBySerializedLocation<RenderTexture>(loc, meta.project, &mat);
+                        RenderTexture * rt = getAssetBySerializedLocation<RenderTexture>(loc, meta.project, true);
                         if (rt)
                             mat.setRenderTexture(it->first, rt);
                         else
