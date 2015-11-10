@@ -6,7 +6,7 @@
 #include <core/math/Rect.h>
 
 #include <modules/image/Image.h>
-#include <modules/render/TextureBase.h>
+#include <modules/render/Texture.h>
 #include <modules/freetype/FontFormat.h>
 
 namespace sn
@@ -45,7 +45,7 @@ public:
     /// \brief Gets the texture in which are stored glyphes of the specified format.
     /// \param format: the format
     /// \return A texture, or null if pixels are not stored in graphic memory
-    virtual TextureBase * getTexture(FontFormat format) const = 0;
+    virtual sn::render::Texture * getTexture(FontFormat format) const = 0;
 
     /// \brief Gets the image in which are stored glyphes of the specified format.
     /// \param format: the format

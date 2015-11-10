@@ -72,8 +72,8 @@ public:
     void disableScissor();
 
 private:
-    void setTexture(sn::TextureBase * tex);
-    sn::TextureBase * getTexture() const;
+    void setTexture(sn::render::Texture * tex);
+    sn::render::Texture * getTexture() const;
 
 private:
     sn::Mesh * m_mesh;

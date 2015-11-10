@@ -166,13 +166,13 @@ void DrawBatch::drawTextLine(
         return;
     SN_ASSERT(str != nullptr, "Reveived null string");
 
-    TextureBase * tex = font.getTexture(format);
+    sn::render::Texture * tex = font.getTexture(format);
     if (tex == nullptr)
         return;
 
     // TODO Improve DrawBatch so we don't have to swap textures like this?
 
-    TextureBase * lastTexture = nullptr;
+    sn::render::Texture * lastTexture = nullptr;
     if (swapFontTexture)
     {
         lastTexture = getTexture();
@@ -225,13 +225,13 @@ void DrawBatch::drawText(
 )
 /////////////////////////////////
 {
-    TextureBase * tex = font.getTexture(format);
+    sn::render::Texture * tex = font.getTexture(format);
     if (tex == nullptr)
         return;
 
     s32 lineHeight = font.getLineHeight(format.size);
 
-    TextureBase * lastTexture = getTexture();
+    sn::render::Texture * lastTexture = getTexture();
     setTexture(tex);
 
     for (u32 i = 0; i < model.getLineCount(); ++i)
@@ -268,13 +268,13 @@ void DrawBatch::drawText(
     sn::Color color
     )
 {
-    TextureBase * tex = font.getTexture(format);
+    sn::render::Texture * tex = font.getTexture(format);
     if (tex == nullptr)
         return;
 
     s32 lineHeight = font.getLineHeight(format.size);
 
-    TextureBase * lastTexture = getTexture();
+    sn::render::Texture * lastTexture = getTexture();
     setTexture(tex);
 
     const TextModel & model = wrapper.getTextModel();
@@ -306,11 +306,11 @@ void DrawBatch::drawText(
 }
 
 //------------------------------------------------------------------------------
-void DrawBatch::setTexture(TextureBase * tex)
+void DrawBatch::setTexture(sn::render::Texture * tex)
 {
     SN_ASSERT(r_material != nullptr, "Cannot set texture when material is not set");
     
-    const TextureBase * lastTexture = r_material->getTexture(sn::render::Material::MAIN_TEXTURE);
+    const sn::render::Texture * lastTexture = r_material->getTexture(sn::render::Material::MAIN_TEXTURE);
     if (tex != lastTexture)
     {
         flush();
@@ -321,7 +321,7 @@ void DrawBatch::setTexture(TextureBase * tex)
 }
 
 //------------------------------------------------------------------------------
-sn::TextureBase * DrawBatch::getTexture() const
+sn::render::Texture * DrawBatch::getTexture() const
 {
     SN_ASSERT(r_material != nullptr, "Cannot get texture when material is not set");
     return r_material->getTexture(sn::render::Material::MAIN_TEXTURE);

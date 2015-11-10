@@ -4,7 +4,7 @@
 namespace sn {
 namespace render {
 
-sn::TextureBase * VideoDriver::createTexture()
+sn::render::Texture * VideoDriver::createTexture()
 {
     return new Texture();
 }

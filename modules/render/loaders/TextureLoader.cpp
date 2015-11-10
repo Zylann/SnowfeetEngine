@@ -1,6 +1,6 @@
 #include <core/asset/AssetDatabase.h>
 
-#include <modules/render/TextureBase.h>
+#include <modules/render/Texture.h>
 
 #include "TextureLoader.h"
 #include "../Texture.h"
@@ -11,7 +11,7 @@ namespace render {
 //-----------------------------------------------------------------------------
 const ObjectType & TextureLoader::getBaseAssetType() const
 {
-    return sn::getObjectType<sn::TextureBase>();
+    return sn::getObjectType<sn::render::Texture>();
 }
 
 //-----------------------------------------------------------------------------

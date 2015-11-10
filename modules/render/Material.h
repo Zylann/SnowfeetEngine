@@ -33,9 +33,9 @@ public:
     void setParam(const std::string & name, f32 x, f32 y, f32 z, f32 w);
     void setParam(const std::string & name, f32 matrix4x4Values[16]);
 
-    void setTexture(const std::string & name, TextureBase * tex);
+    void setTexture(const std::string & name, Texture * tex);
     void setRenderTexture(const std::string & name, RenderTexture * tex);
-    TextureBase * getTexture(const std::string & name) const;
+    Texture * getTexture(const std::string & name) const;
 
     void setShader(ShaderProgram * shader);
     inline ShaderProgram * getShader() const { return m_shader.get(); }
@@ -61,7 +61,7 @@ private:
     std::unordered_map<std::string, Vector4f> m_vec4;
     std::unordered_map<std::string, Matrix4> m_mat4;
 
-    std::unordered_map< std::string, SharedRef<TextureBase> > m_textures;
+    std::unordered_map< std::string, SharedRef<Texture> > m_textures;
 
     bool m_depthTest;
     BlendMode m_blendMode;

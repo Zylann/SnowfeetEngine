@@ -49,7 +49,8 @@ bool RenderTexture::create(Vector2u size, bool hasDepth)
     glCheck(glBindFramebuffer(GL_FRAMEBUFFER, m_frameBufferID));
 
     // Attach color buffer from the texture to the framebuffer
-    glCheck(glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_texture->getInternalID(), 0));
+    const GLuint textureID = reinterpret_cast<GLuint>(m_texture->getHandle());
+    glCheck(glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureID, 0));
 
     m_hasDepth = hasDepth;
 

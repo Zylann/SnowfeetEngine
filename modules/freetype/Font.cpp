@@ -199,7 +199,7 @@ bool Font::generateGlyph(Glyph & out_glyph, sn::u32 unicode, sn::FontFormat form
 }
 
 //------------------------------------------------------------------------------
-sn::TextureBase * Font::getTexture(sn::FontFormat format) const
+sn::render::Texture * Font::getTexture(sn::FontFormat format) const
 {
     return m_texture;
 }

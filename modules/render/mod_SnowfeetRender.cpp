@@ -20,7 +20,7 @@
 
 #include "Mesh.h"
 #include "Material.h"
-#include "TextureBase.h"
+#include "Texture.h"
 
 #include "bind/sq_render.h"
 
@@ -33,7 +33,6 @@ namespace render {
         otb.registerType<sn::VRHeadset>();
         otb.registerType<sn::IVideoDriver>();
         otb.registerType<sn::Mesh>();
-        otb.registerType<sn::TextureBase>();
         otb.registerType<sn::Drawable>("DrawableBase");
 
         // Entities

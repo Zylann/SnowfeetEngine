@@ -3,7 +3,7 @@
 
 #include <core/drivers/Driver.h>
 
-#include <modules/render/TextureBase.h>
+#include <modules/render/Texture.h>
 #include <modules/render/common.h>
 
 namespace sn
@@ -17,7 +17,7 @@ class SN_RENDER_API IVideoDriver : public IDriver
 public:
     SN_OBJECT(sn::IVideoDriver, sn::IDriver);
 
-    virtual sn::TextureBase * createTexture() = 0;
+    virtual sn::render::Texture * createTexture() = 0;
 
 };
 

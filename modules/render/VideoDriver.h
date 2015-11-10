@@ -11,7 +11,7 @@ class VideoDriver : public IVideoDriver
 public:
     SN_OBJECT(sn::render::VideoDriver, sn::IVideoDriver)
 
-    sn::TextureBase * createTexture() override;
+    sn::render::Texture * createTexture() override;
 
 };
 

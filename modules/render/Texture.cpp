@@ -10,9 +10,11 @@ namespace sn {
 namespace render {
 
 //-----------------------------------------------------------------------------
-Texture::Texture() : TextureBase(),
+Texture::Texture() : sn::Asset(),
     m_isSmooth(true),
-    m_isRepeated(false)
+    m_isRepeated(false),
+    m_handle(nullptr),
+    m_keepSourceInMemory(false)
 {
 }
 
@@ -22,27 +24,58 @@ Texture::~Texture()
     destroy();
 }
 
-//-----------------------------------------------------------------------------
-bool Texture::onUploadToVRAM()
+//------------------------------------------------------------------------------
+bool Texture::uploadToVRAM()
 {
     Image * img = m_image.get();
     bool success = false;
     if (img)
-        success = loadFromPixelsRGBA8(img->getSize(), reinterpret_cast<const char*>(img->getPixelsPtr()));
+    {
+        Image * img = m_image.get();
+        bool success = false;
+        if (img)
+            success = loadFromPixelsRGBA8(img->getSize(), reinterpret_cast<const char*>(img->getPixelsPtr()));
+        if (success && !isKeepSourceInMemory())
+        {
+            img->clear();
+        }
+    }
     return success;
 }
 
-//-----------------------------------------------------------------------------
-bool Texture::onDownloadFromVRAM()
+//------------------------------------------------------------------------------
+bool Texture::downloadFromVRAM()
 {
     SN_WARNING("Texture::downloadFromVRAM(): not implemented yet");
     return false;
 }
 
+//------------------------------------------------------------------------------
+Image * Texture::getImage() const
+{
+    return m_image.get();
+}
+
+//------------------------------------------------------------------------------
+void Texture::setSourceImage(Image & image)
+{
+    m_image.set(&image);
+    m_size = image.getSize();
+}
+
+//------------------------------------------------------------------------------
+Vector2u Texture::getSize()
+{
+    if ((m_size.x() == 0 || m_size.y() == 0) && !m_image.isNull())
+        return m_image.get()->getSize();
+    else
+        return m_size;
+}
+
 //-----------------------------------------------------------------------------
 void Texture::destroy()
 {
-    GLuint textureID = getInternalID();
+    GLuint textureID = reinterpret_cast<GLuint>(getHandle());
     if (textureID)
     {
         glDeleteTextures(1, &textureID);
@@ -64,7 +97,7 @@ bool Texture::loadFromPixelsRGBA8(Vector2u size, const char * data)
 
     m_size = size;
 
-    GLuint textureID = getInternalID();
+    GLuint textureID = reinterpret_cast<GLuint>(getHandle());
 
     if (textureID == 0)
     {
@@ -138,7 +171,9 @@ void Texture::updateRepeat()
 //-----------------------------------------------------------------------------
 void Texture::bind(Texture * tex)
 {
-    glCheck(glBindTexture(GL_TEXTURE_2D, tex->getInternalID()));
+    SN_ASSERT(tex != nullptr, "Texture::bind(): texture is null");
+    GLuint textureID = reinterpret_cast<GLuint>(tex->getHandle());
+    glCheck(glBindTexture(GL_TEXTURE_2D, textureID));
 }
 
 //-----------------------------------------------------------------------------

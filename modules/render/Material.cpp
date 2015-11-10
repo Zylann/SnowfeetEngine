@@ -55,13 +55,13 @@ void Material::setParam(const std::string & name, f32 matrix4x4Values[16])
 }
 
 //------------------------------------------------------------------------------
-void Material::setTexture(const std::string & name, TextureBase * tex)
+void Material::setTexture(const std::string & name, Texture * tex)
 {
     m_textures[name].set(tex);
 }
 
 //------------------------------------------------------------------------------
-TextureBase * Material::getTexture(const std::string & name) const
+Texture * Material::getTexture(const std::string & name) const
 {
     auto it = m_textures.find(name);
     if (it != m_textures.end())
@@ -87,7 +87,7 @@ void Material::apply()
     s32 textureUnit = 0;
     for (auto it = m_textures.begin(); it != m_textures.end(); ++it)
     {
-        TextureBase * tex = it->second.get();
+        Texture * tex = it->second.get();
         Texture::setActive(textureUnit, sn::checked_cast<Texture*>(tex));
         shader.setParam(it->first, textureUnit);
         ++textureUnit;

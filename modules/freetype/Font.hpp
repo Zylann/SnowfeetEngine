@@ -1,8 +1,10 @@
 #ifndef __HEADER_FREETYPE_FONT__
 #define __HEADER_FREETYPE_FONT__
 
-#include <modules/freetype/FontBase.h>
 #include <core/util/ShelfPacker.h>
+
+#include <modules/freetype/FontBase.h>
+#include <modules/render/Texture.h>
 
 #include <ft2build.h>
 #include FT_FREETYPE_H
@@ -26,7 +28,7 @@ public:
     //---------------------------------------
 
     const sn::Glyph & getGlyph(sn::u32 unicode, sn::FontFormat format) const override;
-    sn::TextureBase * getTexture(sn::FontFormat format) const override;
+    sn::render::Texture * getTexture(sn::FontFormat format) const override;
     const sn::Image * getImage(sn::FontFormat format) const override;
 
     sn::Vector2i getKerning(
@@ -72,7 +74,7 @@ private:
     mutable sn::Image *                     m_image;
 
     /// \brief VRAM texture in which the image will be uploaded.
-    mutable sn::TextureBase *               m_texture;
+    mutable sn::render::Texture*            m_texture;
 
     /// \brief Packing algorithm used to atlas the glyphes
     mutable sn::ShelfPacker<sn::Glyph>      m_packer;
