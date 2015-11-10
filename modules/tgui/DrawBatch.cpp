@@ -8,7 +8,7 @@ namespace tgui
 {
 
 //------------------------------------------------------------------------------
-DrawBatch::DrawBatch(IDrawContext & dc):
+DrawBatch::DrawBatch(sn::render::IDrawContext & dc):
     m_dc(dc),
     r_material(nullptr)
 {
@@ -23,7 +23,7 @@ DrawBatch::~DrawBatch()
 }
 
 //------------------------------------------------------------------------------
-void DrawBatch::setMaterial(sn::Material & m)
+void DrawBatch::setMaterial(sn::render::Material & m)
 {
     m_dc.setMaterial(m);
     r_material = &m;
@@ -310,11 +310,11 @@ void DrawBatch::setTexture(TextureBase * tex)
 {
     SN_ASSERT(r_material != nullptr, "Cannot set texture when material is not set");
     
-    const TextureBase * lastTexture = r_material->getTexture(Material::MAIN_TEXTURE);
+    const TextureBase * lastTexture = r_material->getTexture(sn::render::Material::MAIN_TEXTURE);
     if (tex != lastTexture)
     {
         flush();
-        r_material->setTexture(Material::MAIN_TEXTURE, tex);
+        r_material->setTexture(sn::render::Material::MAIN_TEXTURE, tex);
         // TODO Needed to update uniforms...
         m_dc.setMaterial(*r_material);
     }
@@ -324,7 +324,7 @@ void DrawBatch::setTexture(TextureBase * tex)
 sn::TextureBase * DrawBatch::getTexture() const
 {
     SN_ASSERT(r_material != nullptr, "Cannot get texture when material is not set");
-    return r_material->getTexture(Material::MAIN_TEXTURE);
+    return r_material->getTexture(sn::render::Material::MAIN_TEXTURE);
 }
 
 //------------------------------------------------------------------------------

@@ -69,13 +69,13 @@ const Theme & GUI::getTheme() const
 }
 
 //------------------------------------------------------------------------------
-void GUI::draw(sn::IDrawContext & dc)
+void GUI::draw(sn::render::IDrawContext & dc)
 {
     SN_BEGIN_PROFILE_SAMPLE_NAMED("TGUI draw");
 
     const Theme & theme = getTheme();
 
-    Material * themeMaterial = theme.getMaterial();
+    sn::render::Material * themeMaterial = theme.getMaterial();
     if (themeMaterial)
     {
         Window * win = SystemGUI::get().getWindowByID(0);

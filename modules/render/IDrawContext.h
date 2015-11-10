@@ -6,8 +6,8 @@
 #include <modules/render/Mesh.h>
 #include <modules/render/Material.h>
 
-namespace sn
-{
+namespace sn {
+namespace render {
 
 /// \brief Simple and generic drawing interface to draw with code from anywhere.
 class IDrawContext
@@ -47,6 +47,7 @@ public:
 
 };
 
+} // namespace render
 } // namespace sn
 
 #endif // __HEADER_SN_IDRAWCONTEXT__

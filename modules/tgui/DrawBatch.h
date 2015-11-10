@@ -18,10 +18,10 @@ namespace tgui
 class DrawBatch
 {
 public:
-    DrawBatch(sn::IDrawContext & dc);
+    DrawBatch(sn::render::IDrawContext & dc);
     ~DrawBatch();
 
-    void setMaterial(sn::Material & m);
+    void setMaterial(sn::render::Material & m);
     void flush();
     
     void fillRect(
@@ -77,8 +77,8 @@ private:
 
 private:
     sn::Mesh * m_mesh;
-    sn::IDrawContext & m_dc;
-    sn::Material * r_material;
+    sn::render::IDrawContext & m_dc;
+    sn::render::Material * r_material;
 
 };
 

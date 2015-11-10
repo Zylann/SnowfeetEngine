@@ -23,11 +23,9 @@ public:
         context(a_context)
     {}
 
-    void setMaterial(sn::Material & a_material) override
+    void setMaterial(Material & a_material) override
     {
-        if (!a_material.isInstanceOf<sn::render::Material>())
-            return;
-        Material & material = *checked_cast<sn::render::Material*>(&a_material);
+        Material & material = *checked_cast<Material*>(&a_material);
 
         context.setDepthTest(material.isDepthTest());
         context.setBlendMode(material.getBlendMode());

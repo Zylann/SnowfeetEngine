@@ -6,7 +6,7 @@
 #include <core/util/WeakRef.h>
 #include <core/math/Rect.h>
 
-#include <modules/render/MaterialBase.h>
+#include <modules/render/Material.h>
 #include <modules/freetype/FontBase.h>
 
 #include "../Border.h"
@@ -52,8 +52,8 @@ public:
         m_textureSize(256,256) // Arbitrary by default
     {}
 
-    void setMaterial(sn::Material & m) { r_material.set(&m); }
-    sn::Material * getMaterial() const { return r_material.isNull() ? nullptr : r_material.get(); }
+    void setMaterial(sn::render::Material & m) { r_material.set(&m); }
+    sn::render::Material * getMaterial() const { return r_material.isNull() ? nullptr : r_material.get(); }
 
     sn::Vector2u getTextureAtlasSize() const { return m_textureSize; }
 
@@ -76,8 +76,8 @@ private:
     friend class ThemeLoader;
 
     sn::Vector2u m_textureSize;
-    sn::WeakRef<sn::Material> r_material;
-    sn::WeakRef<sn::Material> r_textMaterial;
+    sn::WeakRef<sn::render::Material> r_material;
+    sn::WeakRef<sn::render::Material> r_textMaterial;
     sn::WeakRef<sn::Font> r_font;
 
 };

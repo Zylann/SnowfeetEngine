@@ -33,7 +33,6 @@ namespace render {
         otb.registerType<sn::VRHeadset>();
         otb.registerType<sn::IVideoDriver>();
         otb.registerType<sn::Mesh>();
-        otb.registerType<sn::Material>("MaterialBase");
         otb.registerType<sn::TextureBase>();
         otb.registerType<sn::Drawable>("DrawableBase");
 

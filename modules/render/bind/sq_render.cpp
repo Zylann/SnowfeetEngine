@@ -6,7 +6,6 @@ namespace render {
 void bindRenderModule(HSQUIRRELVM vm)
 {
     bindDrawableBase(vm);
-    bindMaterialBase(vm);
 
     bindDrawable(vm);
     bindCamera(vm);

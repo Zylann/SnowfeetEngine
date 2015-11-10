@@ -11,13 +11,7 @@ namespace render {
 //------------------------------------------------------------------------------
 const ObjectType & MaterialLoader::getBaseAssetType() const
 {
-    return sn::getObjectType<sn::Material>();
-}
-
-//------------------------------------------------------------------------------
-const ObjectType & MaterialLoader::getAssetInstanceType() const
-{
-    return sn::getObjectType<sn::render::Material>();
+    return sn::getObjectType<Material>();
 }
 
 //------------------------------------------------------------------------------

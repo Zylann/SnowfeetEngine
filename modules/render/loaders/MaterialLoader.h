@@ -13,7 +13,6 @@ public:
     SN_OBJECT(sn::render::MaterialLoader, sn::AssetLoader)
 
     const ObjectType & getBaseAssetType() const override;
-    const ObjectType & getAssetInstanceType() const override;
     bool canLoad(const AssetMetadata & meta) const override;
     bool load(std::ifstream & ifs, Asset & asset) const override;
 

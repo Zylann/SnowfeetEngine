@@ -5,7 +5,7 @@
 
 #include <modules/render/entities/VRHeadset.h>
 #include <modules/render/Mesh.h>
-#include <modules/render/MaterialBase.h>
+#include <modules/render/Material.h>
 
 #include <OVR.h>
 #include <OVR_CAPI.h>
@@ -26,7 +26,7 @@ public:
     void onRenderEye(
         Entity * sender, 
         VRHeadset::EyeIndex abstractEyeIndex,
-        Material * effectMaterial, 
+        sn::render::Material * effectMaterial, 
         Vector2u sourceSize, 
         IntRect targetViewport
     ) override;

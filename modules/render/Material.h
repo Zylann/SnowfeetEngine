@@ -4,7 +4,7 @@
 #include <core/util/SharedRef.h>
 #include <core/math/Vector4.h>
 
-#include <modules/render/MaterialBase.h>
+#include <modules/render/common.h>
 
 #include "ShaderProgram.h"
 #include "RenderTexture.h"
@@ -13,20 +13,29 @@
 namespace sn {
 namespace render {
 
-class Material : public sn::Material
+class SN_RENDER_API Material : public sn::Asset
 {
 public:
-    SN_SCRIPT_OBJECT(sn::render::Material, sn::Material)
+    SN_SCRIPT_OBJECT(sn::render::Material, sn::Asset)
+
+    // Conventional uniform names
+    static const char* MAIN_TEXTURE;
 
     Material() :
-        sn::Material(),
+        sn::Asset(),
         m_shader(nullptr),
         m_depthTest(false)
     {}
 
-    //------------------------------------
-    // Material Methods (see generic Material for other parameters)
-    //------------------------------------
+    void setParam(const std::string & name, f32 x);
+    void setParam(const std::string & name, f32 x, f32 y);
+    void setParam(const std::string & name, f32 x, f32 y, f32 z);
+    void setParam(const std::string & name, f32 x, f32 y, f32 z, f32 w);
+    void setParam(const std::string & name, f32 matrix4x4Values[16]);
+
+    void setTexture(const std::string & name, TextureBase * tex);
+    void setRenderTexture(const std::string & name, RenderTexture * tex);
+    TextureBase * getTexture(const std::string & name) const;
 
     void setShader(ShaderProgram * shader);
     inline ShaderProgram * getShader() const { return m_shader.get(); }
@@ -38,11 +47,6 @@ public:
     BlendMode getBlendMode() const { return m_blendMode; }
     void setBlendMode(BlendMode mode) { m_blendMode = mode; }
 
-    // Note: "setParam" was not used here because C++ method overloads are limited to the scope where they are defined.
-    // If setParam was used, those defined in the base class could not be resolved.
-
-    void setRenderTexture(const std::string & name, RenderTexture * tex);
-
     void apply();
 
 private:
@@ -50,6 +54,14 @@ private:
 
 private:
     SharedRef<ShaderProgram> m_shader;
+
+    std::unordered_map<std::string, f32> m_floats;
+    std::unordered_map<std::string, Vector2f> m_vec2;
+    std::unordered_map<std::string, Vector3f> m_vec3;
+    std::unordered_map<std::string, Vector4f> m_vec4;
+    std::unordered_map<std::string, Matrix4> m_mat4;
+
+    std::unordered_map< std::string, SharedRef<TextureBase> > m_textures;
 
     bool m_depthTest;
     BlendMode m_blendMode;

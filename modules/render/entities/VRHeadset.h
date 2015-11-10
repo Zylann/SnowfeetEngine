@@ -7,7 +7,7 @@
 #include <core/math/Fov.h>
 #include <core/util/SharedRef.h>
 
-#include <modules/render/MaterialBase.h>
+#include <modules/render/Material.h>
 #include <modules/render/Mesh.h>
 
 namespace sn
@@ -39,13 +39,13 @@ public:
         /// \brief Distortion mesh if any
         SharedRef<Mesh> distortionMesh;
         /// \brief Post-processing effect material if any
-        SharedRef<Material> effectMaterial;
+        SharedRef<sn::render::Material> effectMaterial;
         /// \brief Part of the HMD screen used to render the eye, in pixels.
         IntRect viewport;
     };
 
     /// \brief Called just before an eye camera renders an effect. This lets the material to be modified if needed.
-    virtual void onRenderEye(Entity * sender, EyeIndex abstractEyeIndex, Material * effectMaterial, Vector2u sourceSize, IntRect targetViewport) = 0;
+    virtual void onRenderEye(Entity * sender, EyeIndex abstractEyeIndex, sn::render::Material * effectMaterial, Vector2u sourceSize, IntRect targetViewport) = 0;
 
     /// \brief Gets which is the preferred resolution to render the undistorted image for a given eye.
     /// \param eye: which eye is concerned

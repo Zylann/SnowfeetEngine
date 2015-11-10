@@ -19,7 +19,7 @@ public:
 
     GUI();
 
-    void draw(sn::IDrawContext & dc);
+    void draw(sn::render::IDrawContext & dc);
 
     void onReady() override;
 

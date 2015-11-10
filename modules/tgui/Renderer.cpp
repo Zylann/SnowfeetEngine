@@ -8,7 +8,7 @@ using namespace sn;
 namespace tgui
 {
 
-void Renderer::onDraw(IDrawContext & dc)
+void Renderer::onDraw(sn::render::IDrawContext & dc)
 {
     Entity * p = getParent();
     if (p && p->isInstanceOf<GUI>())

@@ -5,15 +5,30 @@
 namespace sn {
 namespace render {
 
-    //namespace
-    //{
-    //    CURRENT_CLASS(sn::render::Material)
+    namespace
+    {
+        CURRENT_CLASS(Material)
 
-    //}
+        BEGIN_METHOD(setFloat)
+            const SQChar* field;
+            if (SQ_SUCCEEDED(sq_getstring(vm, 2, &field)))
+            {
+                SQFloat value;
+                if (SQ_SUCCEEDED(sq_getfloat(vm, 3, &value)))
+                {
+                    self->setParam(field, value);
+                }
+            }
+            return 0;
+        END_METHOD
+
+    }
 
     void bindMaterial(HSQUIRRELVM vm)
     {
-        sn::ScriptableObject::bindBase<sn::render::Material>(vm);
+        sn::ScriptableObject::bindBase<Material>(vm)
+            .setMethod("setFloat", setFloat, 2, "sf|i")
+        ;
     }
 
 } // namespace render

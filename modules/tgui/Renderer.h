@@ -12,7 +12,7 @@ public:
     SN_ENTITY(tgui::Renderer, sn::Drawable)
 
 protected:
-    void onDraw(sn::IDrawContext & dc) override;
+    void onDraw(sn::render::IDrawContext & dc) override;
 };
 
 } // namespace tgui

@@ -82,7 +82,7 @@ bool ThemeLoader::load(std::ifstream & ifs, sn::Asset & asset) const
     }
 
     // Get material
-    Material * mat = sn::getAssetBySerializedLocation<sn::Material>(o["material"].getString(), ctx.getProject());
+    sn::render::Material * mat = sn::getAssetBySerializedLocation<sn::render::Material>(o["material"].getString(), ctx.getProject());
     if (mat)
         theme->setMaterial(*mat);
     else

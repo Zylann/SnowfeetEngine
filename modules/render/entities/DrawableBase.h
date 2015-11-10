@@ -18,7 +18,7 @@ public:
     static const std::string TAG;
 
     void onReady() override;
-    virtual void onDraw(IDrawContext & context) = 0;
+    virtual void onDraw(sn::render::IDrawContext & context) = 0;
 
 };
 
