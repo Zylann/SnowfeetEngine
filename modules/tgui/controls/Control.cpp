@@ -93,9 +93,14 @@ u32 Control::getWindowID() const
 {
     const Control * root = getRootControl();
     if (root)
-        return root->getWindowID();
+        return root->m_windowID;
     else
         return m_windowID;
+    //const Control * root = getRootControl();
+    //if (root)
+    //    return root->getWindowID();
+    //else
+    //    return m_windowID;
 }
 
 //------------------------------------------------------------------------------
