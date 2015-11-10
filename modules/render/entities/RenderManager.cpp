@@ -438,15 +438,12 @@ void RenderManager::renderCamera(Camera & camera)
         context->clearTarget(mask);
     }
 
-    // To avoid confusion with sn::render::Drawable
-    typedef sn::Drawable BaseDrawable;
-
     // Get drawables
-    std::vector<Entity*> drawables = getScene()->getTaggedEntities(BaseDrawable::TAG);
-    std::vector<BaseDrawable*> sortedDrawables;
+    std::vector<Entity*> drawables = getScene()->getTaggedEntities(Drawable::TAG);
+    std::vector<Drawable*> sortedDrawables;
     for (auto it = drawables.begin(); it != drawables.end(); ++it)
     {
-        BaseDrawable * d = checkTaggedType<BaseDrawable>(BaseDrawable::TAG, *it);
+        Drawable * d = checkTaggedType<Drawable>(Drawable::TAG, *it);
         if (d && d->isEnabled() && d->hasTag(camera.getVisibilityTag()))
         {
             sortedDrawables.push_back(d);
@@ -480,7 +477,7 @@ void RenderManager::renderCamera(Camera & camera)
     // Draw them
     for (auto it = sortedDrawables.begin(); it != sortedDrawables.end(); ++it) 
     {
-        BaseDrawable & d = **it;
+        Drawable & d = **it;
         d.onDraw(dc);
 
         context->useProgram(nullptr);

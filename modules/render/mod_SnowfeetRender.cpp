@@ -7,7 +7,7 @@
 
 #include "entities/RenderManager.h"
 #include "entities/Camera.h"
-#include "entities/Drawable.h"
+#include "entities/MeshEntity.h"
 #include "entities/VRHeadset.h"
 
 #include "loaders/BasicMeshLoader.h"
@@ -32,12 +32,12 @@ namespace render {
     {
         otb.registerType<sn::VRHeadset>();
         otb.registerType<sn::Mesh>();
-        otb.registerType<sn::Drawable>("DrawableBase");
 
         // Entities
         otb.registerType<RenderManager>();
         otb.registerType<Camera>();
         otb.registerType<Drawable>();
+        otb.registerType<MeshEntity>();
 
         // Assets
         otb.registerType<Material>();

@@ -6,9 +6,8 @@
 namespace sn {
 namespace render {
 
-void bindDrawableBase(HSQUIRRELVM vm);
-
 void bindDrawable(HSQUIRRELVM vm);
+void bindMeshEntity(HSQUIRRELVM vm);
 void bindCamera(HSQUIRRELVM vm);
 void bindMaterial(HSQUIRRELVM vm);
 

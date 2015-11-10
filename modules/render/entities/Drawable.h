@@ -1,44 +1,24 @@
 #ifndef __HEADER_SN_RENDER_DRAWABLE__
 #define __HEADER_SN_RENDER_DRAWABLE__
 
-#include <core/util/SharedRef.h>
+#include <core/scene/Entity3D.h>
 
-#include <modules/render/Mesh.h>
-#include <modules/render/Material.h>
-#include <modules/render/entities/DrawableBase.h>
+#include <modules/render/IDrawContext.h>
+#include <modules/render/common.h>
 
 namespace sn {
 namespace render {
 
-// TODO Rename StaticMesh
-class Drawable : public sn::Drawable
+/// \brief Entity having a visual appearance
+class SN_RENDER_API Drawable : public Entity3D
 {
 public:
-    SN_ENTITY(sn::render::Drawable, sn::Drawable)
+    SN_ENTITY(sn::render::Drawable, sn::Entity3D)
 
-    Drawable();
+    static const std::string TAG;
 
-    void onDraw(IDrawContext & dc) override;
-
-    void setMesh(Mesh * mesh);
-    const Mesh * getMesh() const { return m_mesh.get(); }
-
-    inline void setDrawOrder(s32 order) { m_drawOrder = order; }
-    inline s32 getDrawOrder() const { return m_drawOrder; }
-
-    void setMaterial(Material * material);
-    inline Material * getMaterial() const { return m_material.get(); }
-
-    virtual void serializeState(sn::Variant & o, const SerializationContext & context) override;
-    virtual void unserializeState(const sn::Variant & o, const SerializationContext & context) override;
-
-private:
-    ~Drawable();
-
-private:
-    SharedRef<Mesh> m_mesh;
-    SharedRef<Material> m_material;
-    s32 m_drawOrder;
+    void onReady() override;
+    virtual void onDraw(sn::render::IDrawContext & context) = 0;
 
 };
 
