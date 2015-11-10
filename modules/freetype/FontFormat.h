@@ -1,9 +1,10 @@
 #ifndef __HEADER_SN_FONTFORMAT__
 #define __HEADER_SN_FONTFORMAT__
 
-#include <string>
 #include <core/types.h>
 #include <core/sml/variant_serialize.h>
+
+#include <modules/freetype/common.h>
 
 namespace sn
 {
@@ -31,10 +32,10 @@ struct FontFormat
     bool isItalic() const { return (style & STYLE_ITALIC) != 0; }
 };
 
-std::string SN_API toString(FontFormat format);
+SN_FREETYPE_API std::string toString(FontFormat format);
 
-void SN_API serialize(Variant & o, const FontFormat & format);
-void SN_API unserialize(const Variant & o, FontFormat & format);
+SN_FREETYPE_API void serialize(Variant & o, const FontFormat & format);
+SN_FREETYPE_API void unserialize(const Variant & o, FontFormat & format);
 
 } // namespace sn
 

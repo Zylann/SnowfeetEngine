@@ -2,16 +2,18 @@
 #define __HEADER_SN_MATERIAL__
 
 #include <core/asset/Asset.h>
-#include <core/asset/base/TextureBase.h>
 #include <core/math/Vector2.h>
 #include <core/math/Vector3.h>
 #include <core/math/Vector4.h>
+
+#include <modules/render/TextureBase.h>
+#include <modules/render/common.h>
 
 namespace sn
 {
 
 /// \brief Graphics parameters used when drawing elements
-class SN_API Material : public Asset
+class SN_RENDER_API Material : public Asset
 {
 public:
     SN_SCRIPT_OBJECT(sn::Material, sn::Asset)

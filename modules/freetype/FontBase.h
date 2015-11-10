@@ -1,17 +1,20 @@
 #ifndef __HEADER_SN_FONT__
 #define __HEADER_SN_FONT__
 
-#include <core/asset/base/TextureBase.h>
-#include <core/asset/base/FontFormat.h>
-#include <core/math/Rect.h>
 #include <unordered_set>
+
+#include <core/math/Rect.h>
+
+#include <modules/image/Image.h>
+#include <modules/render/TextureBase.h>
+#include <modules/freetype/FontFormat.h>
 
 namespace sn
 {
 
 //------------------------------------------------------------------------------
 /// \brief Describes one character of a Font
-struct SN_API Glyph
+struct Glyph
 {
     Glyph() : advance(0) {}
 
@@ -28,7 +31,7 @@ struct SN_API Glyph
 /// accelerated text rendering or conversion pipelines.
 /// \note This class is designed so fonts can be loaded statically
 /// (load all glyphes once) or dynamically (load glyphes as they are requested).
-class SN_API Font : public Asset
+class SN_FREETYPE_API Font : public Asset
 {
 public:
     SN_SCRIPT_OBJECT(sn::Font, sn::Asset)

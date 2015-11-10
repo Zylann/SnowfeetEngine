@@ -9,7 +9,6 @@ This file is part of the SnowfeetEngine project.
 
 #include <core/asset/Asset.h>
 #include <unordered_map>
-#include <GL/glew.h>
 
 #include "Vertex.h"
 #include "Texture.h"
@@ -49,7 +48,7 @@ public:
     void unload();
 
     // Returns the program's ID.
-    inline GLuint getID() const { return m_programID; }
+    inline u32 getID() const { return m_programID; }
 
     void setParam(const std::string & name, f32 x);
     void setParam(const std::string & name, f32 x, f32 y);
@@ -69,25 +68,25 @@ private:
     // Finds the location of an uniform using internal index.
     // If not found in the index, the program is queried.
     // Undefined uniform name leads to an undefined behavior.
-    GLint getUniformLocation(const std::string & name);
+    s32 getUniformLocation(const std::string & name);
 
     // Loads a shader from a source file,
     // and returns its ID in outShaderID.
     // Returns true if success, false if not.
-    static bool loadShaderFromSourceCode(GLuint & outShaderID, ShaderType typeGeneric, const std::string & source);
+    static bool loadShaderFromSourceCode(u32 & outShaderID, ShaderType typeGeneric, const std::string & source);
 
     struct Shader
     {
-        GLuint ID;
-        Shader(GLuint sID):
+        u32 ID;
+        Shader(u32 sID):
             ID(sID)
         {}
     };
 
-    GLuint m_programID;
+    u32 m_programID;
 
     // Note: Uniforms affect a geometry (while attribs affect vertices)
-    std::unordered_map<std::string, GLint> m_uniforms;
+    std::unordered_map<std::string, s32> m_uniforms;
 
     // List of compiled shaders, indexed by ShaderType.
     // Entries can be null, except required shaders such as vertex and fragment.

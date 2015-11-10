@@ -33,6 +33,9 @@ project "ModRender"
 	dependson {
 		"glew"
 	}
+	moduleDependencies {
+        "ModImage"
+    }
 	includedirs {
 		"glew/include"
 	}

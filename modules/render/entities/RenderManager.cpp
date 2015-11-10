@@ -1,9 +1,10 @@
 #include <core/system/SystemGUI.h>
 #include <core/scene/Scene.h>
 #include <core/asset/AssetDatabase.h> // TODO Remove?
-#include <core/scene/VRHeadset.h>
 #include <core/util/typecheck.h>
 #include <core/util/Profiler.h>
+
+#include <modules/render/entities/VRHeadset.h>
 
 #include "RenderManager.h"
 #include "Drawable.h"

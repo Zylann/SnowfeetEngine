@@ -1,6 +1,9 @@
 project "ModOculus"
     -- TODO Don't build this module outside of Windows because it's not supported
     commonModConfigCPP()
+    moduleDependencies {
+        "ModRender"
+    }
     files {
         "*.h",
         "*.hpp",

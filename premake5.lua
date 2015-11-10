@@ -31,6 +31,9 @@ solution "SnowfeetEngine"
 	-- Windows-specific
 	filter "system:windows"
 		architecture "x86"
+		defines {
+			"SN_PLATFORM_WINDOWS"
+		}
 	filter {}
 
 	--------------------------------------------
@@ -77,10 +80,11 @@ solution "SnowfeetEngine"
 	end
 
 	function commonModDefines()
-		-- Was used for Sqrat but is no longer in the core
-		-- defines {
-		-- 	"SCRAT_IMPORT"
-		-- }
+		local modDir = path.getname(os.getcwd())
+		local exportMacroName = string.upper(modDir)
+		defines {
+			"SN_"..exportMacroName.."_EXPORT"
+		}
 	end
 
 	--! \brief Defines the location of output binary files for a module.
@@ -108,7 +112,8 @@ solution "SnowfeetEngine"
 	function moduleDependencies(t)
 		for i,moduleName in ipairs(t) do
 			dependson { moduleName }
-			includedirs { SnowfeetRoot.."/modules" }
+			-- Just write #include <modules/*>
+			--includedirs { SnowfeetRoot.."/modules" }
 			links { moduleName }
 		end
 	end

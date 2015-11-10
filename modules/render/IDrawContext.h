@@ -1,9 +1,10 @@
 #ifndef __HEADER_SN_IDRAWCONTEXT__
 #define __HEADER_SN_IDRAWCONTEXT__
 
-#include <core/asset/base/Mesh.h>
-#include <core/asset/base/Material.h>
 #include <core/math/Rect.h>
+
+#include <modules/render/Mesh.h>
+#include <modules/render/Material.h>
 
 namespace sn
 {

@@ -6,6 +6,7 @@ namespace freetype
 {
     void registerObjectTypes(sn::ObjectTypeDatabase & otb)
     {
+        otb.registerType<sn::Font>();
         otb.registerType<FontLoader>();
         otb.registerType<Font>();
     }

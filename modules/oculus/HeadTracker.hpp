@@ -1,13 +1,14 @@
 #ifndef __HEADER_OCULUS_HEAD_TRACKER__
 #define __HEADER_OCULUS_HEAD_TRACKER__
 
+#include <core/util/SharedRef.h>
+
+#include <modules/render/entities/VRHeadset.h>
+#include <modules/render/Mesh.h>
+#include <modules/render/MaterialBase.h>
+
 #include <OVR.h>
 #include <OVR_CAPI.h>
-
-#include <core/scene/VRHeadset.h>
-#include <core/asset/base/Mesh.h>
-#include <core/asset/base/Material.h>
-#include <core/util/SharedRef.h>
 
 namespace sn {
 namespace oculus {

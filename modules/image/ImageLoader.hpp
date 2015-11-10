@@ -8,12 +8,13 @@
 #include <core/math/Vector2.h>
 #include <core/math/Color.h>
 #include <core/asset/AssetLoader.h>
-#include <core/asset/base/Image.h>
+
+#include <modules/image/Image.h>
 
 namespace sn
 {
 
-class ImageLoader : public AssetLoader
+class SN_IMAGE_API ImageLoader : public AssetLoader
 {
 public:
     SN_OBJECT(sn::ImageLoader, sn::AssetLoader)

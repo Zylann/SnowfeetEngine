@@ -1,6 +1,11 @@
 project "ModFreetype"
     commonModConfigCPP()
+    moduleDependencies {
+        "ModImage",
+        "ModRender"
+    }
     files {
+        "*.h",
         "*.hpp",
         "*.cpp"
     }

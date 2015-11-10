@@ -1,11 +1,12 @@
 #ifndef __HEADER_TGUI_DRAWBATCH__
 #define __HEADER_TGUI_DRAWBATCH__
 
-#include <core/scene/base/IDrawContext.h>
-#include <core/asset/base/Mesh.h>
-#include <core/asset/base/Material.h>
-#include <core/asset/base/Font.h>
 #include <core/math/Color.h>
+
+#include <modules/render/Mesh.h>
+#include <modules/render/Material.h>
+#include <modules/render/IDrawContext.h>
+#include <modules/freetype/FontBase.h>
 
 #include "Border.h"
 #include "TextAlignment.h"

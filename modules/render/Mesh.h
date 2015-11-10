@@ -14,6 +14,8 @@ This file is part of the SnowfeetEngine project.
 #include <core/asset/Asset.h>
 #include <vector>
 
+#include <modules/render/common.h>
+
 namespace sn
 {
 
@@ -28,7 +30,7 @@ enum MeshPrimitiveType
     SN_MESH_QUADS = 3
 };
 
-class SN_API Mesh : public Asset
+class SN_RENDER_API Mesh : public Asset
 {
 public:
     SN_SCRIPT_OBJECT(sn::Mesh, sn::Asset)

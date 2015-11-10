@@ -1,11 +1,11 @@
 #ifndef __HEADER_SN_RENDER_DRAWABLE__
 #define __HEADER_SN_RENDER_DRAWABLE__
 
-#include <core/scene/Drawable.h>
 #include <core/util/SharedRef.h>
-#include <core/asset/base/Mesh.h>
 
-#include "../Material.h"
+#include <modules/render/Mesh.h>
+#include <modules/render/Material.h>
+#include <modules/render/entities/DrawableBase.h>
 
 namespace sn {
 namespace render {

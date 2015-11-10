@@ -1,8 +1,10 @@
 #ifndef __HEADER_SN_VIDEODRIVER__
 #define __HEADER_SN_VIDEODRIVER__
 
-#include <core/asset/base/TextureBase.h>
 #include <core/drivers/Driver.h>
+
+#include <modules/render/TextureBase.h>
+#include <modules/render/common.h>
 
 namespace sn
 {
@@ -10,7 +12,7 @@ namespace sn
 // TODO graphics API-specific functionnality should go here
 
 /// \brief Access to accelerated graphics functions
-class SN_API IVideoDriver : public IDriver
+class SN_RENDER_API IVideoDriver : public IDriver
 {
 public:
     SN_OBJECT(sn::IVideoDriver, sn::IDriver);

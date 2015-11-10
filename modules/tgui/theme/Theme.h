@@ -1,12 +1,13 @@
 #ifndef __HEADER_TGUI_THEME__
 #define __HEADER_TGUI_THEME__
 
-#include <core/asset/base/Material.h>
-#include <core/asset/base/Font.h>
 #include <core/asset/SerializationContext.h>
 #include <core/asset/AssetLoader.h>
 #include <core/util/WeakRef.h>
 #include <core/math/Rect.h>
+
+#include <modules/render/MaterialBase.h>
+#include <modules/freetype/FontBase.h>
 
 #include "../Border.h"
 

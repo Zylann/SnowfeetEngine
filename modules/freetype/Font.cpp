@@ -1,6 +1,7 @@
 #include "Font.hpp"
 #include <core/asset/AssetDatabase.h>
 #include <core/app/Application.h>
+#include <modules/render/VideoDriverBase.h>
 
 #include FT_GLYPH_H
 #include FT_OUTLINE_H
@@ -318,7 +319,7 @@ void Font::createTexture() const
 {
     SN_ASSERT(m_texture == nullptr, "Texture already created");
     SN_ASSERT(m_image != nullptr, "Image not created");
-    IVideoDriver * driver = Application::get().getDriverManager().getVideoDriver();
+    IVideoDriver * driver = Application::get().getDriverManager().getDriver<IVideoDriver>();
     if (driver)
     {
         m_texture = driver->createTexture();

@@ -1,7 +1,7 @@
 #ifndef __HEADER_FREETYPE_FONT__
 #define __HEADER_FREETYPE_FONT__
 
-#include <core/asset/base/Font.h>
+#include <modules/freetype/FontBase.h>
 #include <core/util/ShelfPacker.h>
 
 #include <ft2build.h>
@@ -30,8 +30,8 @@ public:
     const sn::Image * getImage(sn::FontFormat format) const override;
 
     sn::Vector2i getKerning(
-        sn::u32 firstUnicode, 
-        sn::u32 secondUnicode, 
+        sn::u32 firstUnicode,
+        sn::u32 secondUnicode,
         sn::FontFormat format
     ) const override;
 
@@ -86,4 +86,3 @@ private:
 } // namespace freetype
 
 #endif // __HEADER_FREETYPE_FONT__
-

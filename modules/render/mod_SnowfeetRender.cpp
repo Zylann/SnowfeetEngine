@@ -8,6 +8,7 @@
 #include "entities/RenderManager.h"
 #include "entities/Camera.h"
 #include "entities/Drawable.h"
+#include "entities/VRHeadset.h"
 
 #include "loaders/BasicMeshLoader.h"
 #include "loaders/MaterialLoader.h"
@@ -17,6 +18,10 @@
 
 #include "VideoDriver.h"
 
+#include "Mesh.h"
+#include "Material.h"
+#include "TextureBase.h"
+
 #include "bind/sq_render.h"
 
 
@@ -25,6 +30,13 @@ namespace render {
 
     void registerObjectTypes(ObjectTypeDatabase & otb)
     {
+        otb.registerType<sn::VRHeadset>();
+        otb.registerType<sn::IVideoDriver>();
+        otb.registerType<sn::Mesh>();
+        otb.registerType<sn::Material>("MaterialBase");
+        otb.registerType<sn::TextureBase>();
+        otb.registerType<sn::Drawable>("DrawableBase");
+
         // Entities
         otb.registerType<RenderManager>();
         otb.registerType<Camera>();

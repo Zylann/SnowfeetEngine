@@ -2,7 +2,9 @@
 #define __HEADER_SN_TEXTUREBASE__
 
 #include <core/util/SharedRef.h>
-#include <core/asset/base/Image.h>
+
+#include <modules/image/Image.h>
+#include <modules/render/common.h>
 
 namespace sn
 {
@@ -10,7 +12,7 @@ namespace sn
 typedef void* TextureHandle;
 
 /// \brief Common asset for images loaded into VRAM for accelerated rendering.
-class SN_API TextureBase : public Asset
+class SN_RENDER_API TextureBase : public Asset
 {
 public:
     SN_SCRIPT_OBJECT(sn::TextureBase, sn::Asset)

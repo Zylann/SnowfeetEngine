@@ -2,7 +2,6 @@
 #define __HEADER_TGUI_BUTTON__
 
 #include "Control.h"
-#include <core/scene/base/IDrawContext.h>
 
 namespace tgui
 {

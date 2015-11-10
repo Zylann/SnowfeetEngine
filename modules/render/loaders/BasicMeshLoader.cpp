@@ -1,6 +1,7 @@
-#include <core/asset/base/Mesh.h>
 #include <core/util/stringutils.h>
 #include <core/util/typecheck.h>
+
+#include <modules/render/Mesh.h>
 
 #include "BasicMeshLoader.h"
 #include "ply/PLYLoader.h"

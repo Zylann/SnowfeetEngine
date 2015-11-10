@@ -2,6 +2,7 @@
 
 #include "RenderTexture.h"
 #include "gl_check.h"
+#include <GL/glew.h>
 
 namespace sn {
 namespace render {

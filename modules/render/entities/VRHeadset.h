@@ -5,9 +5,10 @@
 #include <core/math/Rect.h>
 #include <core/math/Matrix4.h>
 #include <core/math/Fov.h>
-#include <core/asset/base/Material.h>
-#include <core/asset/base/Mesh.h>
 #include <core/util/SharedRef.h>
+
+#include <modules/render/MaterialBase.h>
+#include <modules/render/Mesh.h>
 
 namespace sn
 {
@@ -16,7 +17,7 @@ namespace sn
 /// \warning Wether this class should stay here or not is not decided yet.
 /// It is here because I need to communicate between rendering and the Oculus Rift,
 /// and the scripting system is not advanced enough to do it.
-class SN_API VRHeadset : public Entity
+class SN_RENDER_API VRHeadset : public Entity
 {
 public:
     SN_ENTITY(sn::VRHeadset, sn::Entity)

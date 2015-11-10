@@ -12,10 +12,8 @@ void bindCore(HSQUIRRELVM vm)
     bindEntity(vm);
     bindEntity3D(vm);
     bindScene(vm);
-    bindDrawable(vm);
 
     bindAsset(vm);
-    bindMaterialBase(vm);
 
 }
 

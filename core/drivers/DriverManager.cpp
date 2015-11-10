@@ -4,6 +4,17 @@
 namespace sn
 {
 
+IDriver * DriverManager::getDriver(const ObjectType & ot) const
+{
+    for (auto it = m_drivers.begin(); it != m_drivers.end(); ++it)
+    {
+        IDriver * d = it->second;
+        if (d->getObjectType().is(ot))
+            return d;
+    }
+    return nullptr;
+}
+
 void DriverManager::loadDriversFromModule(const std::string & modName)
 {
     const ObjectTypeDatabase & otb = ObjectTypeDatabase::get();
@@ -15,7 +26,7 @@ void DriverManager::loadDriversFromModule(const std::string & modName)
     for (auto it = types.begin(); it != types.end(); ++it)
     {
         const ObjectType & ot = **it;
-        if (ot.derivesFrom(driverBaseType))
+        if (!ot.isAbstract() && ot.derivesFrom(driverBaseType))
         {
             IDriver * d = loadDriver(ot);
             if (d)
@@ -51,25 +62,12 @@ void DriverManager::unloadAllDrivers()
     m_drivers.clear();
 }
 
-namespace
-{
-    template <class Driver_T>
-    Driver_T * instantiateDriver(Driver_T *& member, const ObjectType & ot)
-    {
-        if (member)
-            SN_ERROR("Video driver already installed (" << member->getObjectType().getName() << ")");
-        else
-            member = checked_cast<Driver_T*>(ot.instantiate());
-        return member;
-    }
-}
-
 IDriver * DriverManager::loadDriver(const ObjectType & ot)
 {
     SN_LOG("Loading driver " << ot.getName() << "...");
-    if (ot.derivesFrom(getObjectType<IVideoDriver>()))
+    if (ot.derivesFrom(getObjectType<IDriver>()))
     {
-        return instantiateDriver(m_videoDriver, ot);
+        return checked_cast<IDriver*>(ot.instantiate());
     }
     else
     {

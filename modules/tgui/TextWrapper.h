@@ -1,7 +1,7 @@
 #ifndef __HEADER_TGUI_TEXTWRAPPER__
 #define __HEADER_TGUI_TEXTWRAPPER__
 
-#include <core/asset/base/Font.h>
+#include <modules/freetype/FontBase.h>
 #include <core/util/Variant.h>
 
 #include "TextModel.h"

@@ -1,11 +1,11 @@
 #ifndef __HEADER_SNR_PLY_LOADER__
 #define __HEADER_SNR_PLY_LOADER__
 
-#include <core/asset/base/Mesh.h>
-
 #include <fstream>
 #include <unordered_set>
 #include <unordered_map>
+
+#include <modules/render/Mesh.h>
 
 // Disclaimer: this loader is only intented for very basic files, and sometimes might not work.
 // As SDL can load BMP images without SDL_Image, this mod can load one simple type

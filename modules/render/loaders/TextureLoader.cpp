@@ -1,5 +1,6 @@
-#include <core/asset/base/TextureBase.h>
 #include <core/asset/AssetDatabase.h>
+
+#include <modules/render/TextureBase.h>
 
 #include "TextureLoader.h"
 #include "../Texture.h"

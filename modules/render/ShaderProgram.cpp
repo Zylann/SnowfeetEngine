@@ -2,6 +2,7 @@
 
 #include "gl_check.h"
 #include "ShaderProgram.h"
+#include <GL/glew.h>
 
 namespace sn {
 namespace render {

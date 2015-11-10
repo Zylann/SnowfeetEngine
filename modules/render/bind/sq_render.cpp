@@ -5,6 +5,9 @@ namespace render {
 
 void bindRenderModule(HSQUIRRELVM vm)
 {
+    bindDrawableBase(vm);
+    bindMaterialBase(vm);
+
     bindDrawable(vm);
     bindCamera(vm);
     bindMaterial(vm);
@@ -12,4 +15,3 @@ void bindRenderModule(HSQUIRRELVM vm)
 
 } // namespace render
 } // namespace sn
-

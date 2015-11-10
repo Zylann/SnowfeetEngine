@@ -1,9 +1,9 @@
-#include <core/asset/base/Material.h>
-#include "sq_core.h"
-#include "../squirrel/bind_macros.h"
+#include <modules/render/MaterialBase.h>
+#include <core/squirrel/bind_macros.h>
 
-namespace sn
-{
+namespace sn {
+namespace render {
+
     namespace
     {
         CURRENT_CLASS(sn::Material)
@@ -29,4 +29,5 @@ namespace sn
             .setMethod("setFloat", setFloat, 2, "sf|i");
     }
 
+} // namespace render
 } // namespace sn

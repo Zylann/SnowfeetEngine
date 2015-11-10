@@ -5,8 +5,9 @@
 #include <core/math/Vector2.h>
 #include <core/math/Rect.h>
 #include <core/util/WeakRef.h>
-#include <core/asset/base/Mesh.h>
 #include <core/system/Window.h>
+
+#include <modules/render/Mesh.h>
 
 #include "../ClearBits.h"
 #include "../Material.h"

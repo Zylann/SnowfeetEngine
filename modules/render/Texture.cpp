@@ -3,6 +3,8 @@
 
 #include "gl_check.h"
 #include "Texture.h"
+#include <GL/glew.h>
+
 
 namespace sn {
 namespace render {

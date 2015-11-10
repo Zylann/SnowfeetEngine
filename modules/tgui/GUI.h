@@ -1,10 +1,10 @@
 #ifndef __HEADER_TGUI_GUI__
 #define __HEADER_TGUI_GUI__
 
-#include <core/scene/Drawable.h>
-#include <core/scene/base/IDrawContext.h>
 #include <core/util/SharedRef.h>
 #include <core/system/Event.h>
+
+#include <modules/render/IDrawContext.h>
 
 #include "controls/Control.h"
 #include "theme/Theme.h"

@@ -1,5 +1,9 @@
 project "ModTGUI"
     commonModConfigCPP()
+    moduleDependencies {
+        "ModFreetype",
+        "ModRender"
+    }
     files {
         "**.h",
         "**.cpp"

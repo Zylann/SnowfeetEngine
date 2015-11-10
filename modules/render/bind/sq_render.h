@@ -6,6 +6,9 @@
 namespace sn {
 namespace render {
 
+void bindDrawableBase(HSQUIRRELVM vm);
+void bindMaterialBase(HSQUIRRELVM vm);
+
 void bindDrawable(HSQUIRRELVM vm);
 void bindCamera(HSQUIRRELVM vm);
 void bindMaterial(HSQUIRRELVM vm);
@@ -16,5 +19,3 @@ void bindRenderModule(HSQUIRRELVM vm);
 } // namespace sn
 
 #endif // __HEADER_SN_RENDER_SQ_BINDING__
-
-

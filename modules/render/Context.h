@@ -8,14 +8,16 @@ This file is part of the SnowfeetEngine project.
 #define __HEADER_SN_CONTEXT__
 
 #include <core/system/Window.h>
-#include <core/asset/base/Mesh.h>
-
 #include <core/util/NonCopyable.h>
+
+#include <modules/render/Mesh.h>
 
 #include "ShaderProgram.h"
 #include "ContextSettings.h"
 #include "ClearBits.h"
 #include "BlendMode.h"
+
+#include <GL/glew.h>
 
 namespace sn {
 namespace render {

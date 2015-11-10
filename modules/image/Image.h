@@ -4,6 +4,8 @@
 #include <core/asset/Asset.h>
 #include <core/math/Vector2.h>
 
+#include <modules/image/common.h>
+
 namespace sn
 {
 
@@ -13,7 +15,7 @@ enum PixelFormat
 };
 
 /// \brief 2D container for pixel data, stored as 8 bit components.
-class SN_API Image : public Asset
+class SN_IMAGE_API Image : public Asset
 {
 public:
     SN_SCRIPT_OBJECT(sn::Image, sn::Asset)

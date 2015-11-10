@@ -1,9 +1,8 @@
 #ifndef __HEADER_SNR_TEXTURE__
 #define __HEADER_SNR_TEXTURE__
 
-#include <core/asset/base/TextureBase.h>
 #include <core/math/Vector2.h>
-#include <GL/glew.h>
+#include <modules/render/TextureBase.h>
 
 namespace sn {
 namespace render {
@@ -26,7 +25,7 @@ public:
     bool loadFromPixelsRGBA8(Vector2u size, const char * data);
 
     Vector2u getSize() const { return m_size; }
-    GLuint getInternalID() const { return reinterpret_cast<GLuint>(getHandle()); }
+    u32 getInternalID() const { return reinterpret_cast<u32>(getHandle()); }
 
     void setSmooth(bool enable);
     void setRepeated(bool enable);

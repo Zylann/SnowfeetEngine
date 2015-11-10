@@ -1,7 +1,7 @@
 #ifndef __HEADER_SNR_VIDEODRIVER__
 #define __HEADER_SNR_VIDEODRIVER__
 
-#include <core/drivers/VideoDriver.h>
+#include <modules/render/VideoDriverBase.h>
 
 namespace sn {
 namespace render {

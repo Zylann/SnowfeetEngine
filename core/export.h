@@ -8,14 +8,14 @@
 
     #ifdef _WIN32
 
-        #define SN_API_EXPORT __declspec(dllexport)
-        #define SN_API_IMPORT __declspec(dllimport)
+        #define SN_EXPORT_SPEC __declspec(dllexport)
+        #define SN_IMPORT_SPEC __declspec(dllimport)
 
         // Windows compilers need specific (and different) keywords for export and import
         #ifdef SN_CORE_EXPORT
-            #define SN_API SN_API_EXPORT
+            #define SN_API SN_EXPORT_SPEC
         #else
-            #define SN_API SN_API_IMPORT
+            #define SN_API SN_IMPORT_SPEC
         #endif
 
         #define SN_MOD_EXPORT __declspec(dllexport)
@@ -29,11 +29,16 @@
 
     #else // Linux, FreeBSD, Mac OS X
         #if __GNUC__ >= 4
+            #define SN_EXPORT_SPEC __attribute__ ((__visibility__ ("default")))
+            #define SN_IMPORT_SPEC SN_EXPORT_SPEC
+
             // GCC 4 has special keywords for showing/hidding symbols,
             // the same keyword is used for both importing and exporting
-            #define SN_API __attribute__ ((__visibility__ ("default")))
+            #define SN_API SN_EXPORT_SPEC
         #else
             // GCC < 4 has no mechanism to explicitely hide symbols, everything's exported
+            #define SN_EXPORT_SPEC
+            #define SN_IMPORT_SPEC
             #define SN_API
         #endif
     #endif

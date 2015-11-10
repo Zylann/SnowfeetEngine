@@ -41,8 +41,8 @@ protected:
     ~RenderTexture();
 
 private:
-    GLuint m_frameBufferID;
-    GLuint m_depthBufferID;
+    u32 m_frameBufferID;
+    u32 m_depthBufferID;
     bool m_hasDepth;
     Texture * m_texture;
 
