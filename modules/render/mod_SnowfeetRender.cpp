@@ -31,7 +31,6 @@ namespace render {
     void registerObjectTypes(ObjectTypeDatabase & otb)
     {
         otb.registerType<sn::VRHeadset>();
-        otb.registerType<sn::IVideoDriver>();
         otb.registerType<sn::Mesh>();
         otb.registerType<sn::Drawable>("DrawableBase");
 

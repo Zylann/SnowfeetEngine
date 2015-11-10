@@ -1,17 +1,18 @@
 #ifndef __HEADER_SNR_VIDEODRIVER__
 #define __HEADER_SNR_VIDEODRIVER__
 
-#include <modules/render/VideoDriverBase.h>
+#include <core/drivers/Driver.h>
+#include <modules/render/Texture.h>
 
 namespace sn {
 namespace render {
 
-class VideoDriver : public IVideoDriver
+class SN_RENDER_API VideoDriver : public sn::IDriver
 {
 public:
-    SN_OBJECT(sn::render::VideoDriver, sn::IVideoDriver)
+    SN_OBJECT(sn::render::VideoDriver, sn::IDriver)
 
-    sn::render::Texture * createTexture() override;
+    sn::render::Texture * createTexture();
 
 };
 
