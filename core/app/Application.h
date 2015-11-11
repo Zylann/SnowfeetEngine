@@ -32,9 +32,9 @@ This file is part of the SnowfeetEngine project.
 #include <core/app/Module.h>
 #include <core/app/ScriptManager.h>
 #include <core/app/TimeStepper.h>
+#include <core/app/DriverManager.h>
 #include <core/scene/Scene.h>
 #include <core/system/SharedLib.h>
-#include <core/drivers/DriverManager.h>
 #include <map>
 
 namespace sn

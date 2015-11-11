@@ -2,7 +2,7 @@
 #define __HEADER_SN_DRIVERMANAGER__
 
 #include <core/util/typecheck.h>
-#include <core/drivers/Driver.h>
+#include <core/app/Driver.h>
 
 namespace sn
 {

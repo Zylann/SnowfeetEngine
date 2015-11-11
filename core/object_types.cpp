@@ -17,7 +17,7 @@
 #include "asset/Asset.h"
 #include "asset/AssetLoader.h"
 
-#include "drivers/Driver.h"
+#include "app/Driver.h"
 
 namespace sn
 {
