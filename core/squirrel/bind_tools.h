@@ -14,6 +14,26 @@ This file is part of the SnowfeetEngine project.
 namespace squirrel
 {
 
+/// \brief Explicit version of characters used in paramcheck masks.
+/// Each character represents a Squirrel data type.
+enum TypeChars
+{
+    T_NULL       = 'o',
+    T_BOOL       = 'b',
+    T_INT        = 'i',
+    T_FLOAT      = 'f',
+    T_STRING     = 's',
+    T_TABLE      = 't',
+    T_ARRAY      = 'a',
+    T_USERDATA   = 'u',
+    T_CLOSURE    = 'c',
+    T_INSTANCE   = 'x',
+    T_CLASS      = 'y',
+    T_GENERATOR  = 'g',
+    T_THREAD     = 'v',
+    T_ANY        = '.'
+};
+
 //------------------------------------------------------------------------------
 /// \brief Prints the Squirrel stack in the console output.
 /// This function is useful when debugging, you might be able to call it in an immediate window.
