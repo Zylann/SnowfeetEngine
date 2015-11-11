@@ -4,6 +4,9 @@
 #include "Font.hpp"
 #include "FontLoader.hpp"
 
+#include <ft2build.h>
+#include FT_FREETYPE_H
+
 // These headers are important here because it tells FreeType to initialize features
 // that wouldn't be available otherwise
 #include FT_GLYPH_H
@@ -19,10 +22,13 @@ FontLoader::FontLoader():
     m_library(nullptr)
 {
     // Initialize Freetype
-    if (FT_Init_FreeType(&m_library) != 0)
+    FT_Library lib;
+    if (FT_Init_FreeType(&lib) != 0)
     {
         SN_ERROR("Failed to initialize FreeType library");
     }
+    else
+        m_library = lib;
 }
 
 FontLoader::~FontLoader()
@@ -30,13 +36,13 @@ FontLoader::~FontLoader()
     if (m_library != 0)
     {
         // Deinitialize Freetype
-        FT_Done_FreeType(m_library);
+        FT_Done_FreeType(static_cast<FT_Library>(m_library));
     }
 }
 
 const sn::ObjectType & FontLoader::getBaseAssetType() const
 {
-    return sn::getObjectType<sn::Font>();
+    return sn::getObjectType<Font>();
 }
 
 const sn::ObjectType & FontLoader::getAssetInstanceType() const
@@ -69,7 +75,7 @@ bool FontLoader::load(std::ifstream & ifs, sn::Asset & asset) const
 
     // Load the face
     FT_Face face;
-    if (FT_New_Memory_Face(m_library, reinterpret_cast<const FT_Byte*>(fileData), len, 0, &face) != 0)
+    if (FT_New_Memory_Face(static_cast<FT_Library>(m_library), reinterpret_cast<const FT_Byte*>(fileData), len, 0, &face) != 0)
     {
         SN_ERROR("Failed to create Freetype font face from memory");
         delete[] fileData;

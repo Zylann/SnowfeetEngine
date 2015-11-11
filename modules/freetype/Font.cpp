@@ -5,6 +5,9 @@
 
 #include <modules/render/VideoDriver.h>
 
+#include <ft2build.h>
+#include FT_FREETYPE_H
+
 #include FT_GLYPH_H
 #include FT_OUTLINE_H
 #include FT_BITMAP_H
@@ -15,7 +18,7 @@ namespace freetype
 {
 
 //------------------------------------------------------------------------------
-Font::Font() : sn::Font(),
+Font::Font() : sn::Asset(),
     m_face(nullptr),
     m_fileData(nullptr),
     m_image(nullptr),
@@ -35,7 +38,7 @@ Font::~Font()
 }
 
 //------------------------------------------------------------------------------
-const sn::Glyph & Font::getGlyph(sn::u32 unicode, sn::FontFormat format) const
+const Glyph & Font::getGlyph(u32 unicode, FontFormat format) const
 {
     auto & glyphes = m_glyphes[format.style];
     auto it = glyphes.find(unicode);
@@ -57,7 +60,7 @@ const sn::Glyph & Font::getGlyph(sn::u32 unicode, sn::FontFormat format) const
 }
 
 //------------------------------------------------------------------------------
-bool Font::generateGlyph(Glyph & out_glyph, sn::u32 unicode, sn::FontFormat format) const
+bool Font::generateGlyph(Glyph & out_glyph, sn::u32 unicode, FontFormat format) const
 {
     Glyph glyph;
 
@@ -65,12 +68,12 @@ bool Font::generateGlyph(Glyph & out_glyph, sn::u32 unicode, sn::FontFormat form
         return false;
 
     // Load the glyph corresponding to the code point
-    if (FT_Load_Char(m_face, unicode, FT_LOAD_TARGET_NORMAL) != 0)
+    if (FT_Load_Char(static_cast<FT_Face>(m_face), unicode, FT_LOAD_TARGET_NORMAL) != 0)
         return false;
 
     // Retrieve the glyph
     FT_Glyph glyphDesc;
-    if (FT_Get_Glyph(m_face->glyph, &glyphDesc) != 0)
+    if (FT_Get_Glyph(static_cast<FT_Face>(m_face)->glyph, &glyphDesc) != 0)
         return false;
 
     // Apply bold if necessary -- first technique using outline (highest quality)
@@ -201,13 +204,13 @@ bool Font::generateGlyph(Glyph & out_glyph, sn::u32 unicode, sn::FontFormat form
 }
 
 //------------------------------------------------------------------------------
-sn::render::Texture * Font::getTexture(sn::FontFormat format) const
+sn::render::Texture * Font::getTexture(FontFormat format) const
 {
     return m_texture;
 }
 
 //------------------------------------------------------------------------------
-const sn::Image * Font::getImage(sn::FontFormat format) const
+const sn::Image * Font::getImage(FontFormat format) const
 {
     return m_image;
 }
@@ -219,15 +222,17 @@ Vector2i Font::getKerning(u32 firstUnicode, u32 secondUnicode, FontFormat format
     if (firstUnicode == 0 || secondUnicode == 0)
         return Vector2i();
 
-    if (m_face && FT_HAS_KERNING(m_face) && setCurrentSize(format.size))
+    FT_Face face = static_cast<FT_Face>(m_face);
+
+    if (face && FT_HAS_KERNING(face) && setCurrentSize(format.size))
     {
         // Convert the characters to indices
-        FT_UInt index1 = FT_Get_Char_Index(m_face, firstUnicode);
-        FT_UInt index2 = FT_Get_Char_Index(m_face, secondUnicode);
+        FT_UInt index1 = FT_Get_Char_Index(face, firstUnicode);
+        FT_UInt index2 = FT_Get_Char_Index(face, secondUnicode);
 
         // Get the kerning vector
         FT_Vector kerning;
-        FT_Get_Kerning(m_face, index1, index2, FT_KERNING_DEFAULT, &kerning);
+        FT_Get_Kerning(face, index1, index2, FT_KERNING_DEFAULT, &kerning);
 
         return Vector2i(kerning.x, kerning.y);
     }
@@ -241,9 +246,10 @@ Vector2i Font::getKerning(u32 firstUnicode, u32 secondUnicode, FontFormat format
 //------------------------------------------------------------------------------
 s32 Font::getLineHeight(u32 charSize) const
 {
-    if (m_face && setCurrentSize(charSize))
+    FT_Face face = static_cast<FT_Face>(m_face);
+    if (face && setCurrentSize(charSize))
     {
-        return m_face->size->metrics.height >> 6;
+        return face->size->metrics.height >> 6;
     }
     else
     {
@@ -252,15 +258,45 @@ s32 Font::getLineHeight(u32 charSize) const
 }
 
 //------------------------------------------------------------------------------
+s32 Font::getLineWidth(const char * str, u32 charCount, FontFormat format) const
+{
+    SN_ASSERT(str != nullptr, "Received null string");
+    if (charCount == 0)
+        return 0;
+
+    s32 width = 0;
+
+#ifdef SN_BUILD_DEBUG
+    char lastC = str[0];
+#endif
+
+    for (u32 i = 0; i < charCount; ++i)
+    {
+        char c = str[i];
+
+#ifdef SN_BUILD_DEBUG
+        SN_ASSERT(lastC != '\0', "Passed null character, charCount " << charCount << " may be invalid");
+        lastC = c;
+#endif
+
+        const Glyph & glyph = getGlyph(c, format);
+        width += glyph.advance;
+    }
+
+    return width;
+}
+
+//------------------------------------------------------------------------------
 bool Font::setCurrentSize(sn::u32 characterSize) const
 {
     SN_ASSERT(m_face != nullptr, "Invalid state: Freetype font face is null");
 
-    FT_UShort currentSize = m_face->size->metrics.x_ppem;
+    FT_Face face = static_cast<FT_Face>(m_face);
+    FT_UShort currentSize = face->size->metrics.x_ppem;
 
     if (currentSize != characterSize)
     {
-        return FT_Set_Pixel_Sizes(m_face, 0, characterSize) == 0;
+        return FT_Set_Pixel_Sizes(face, 0, characterSize) == 0;
     }
     else
     {
@@ -269,7 +305,7 @@ bool Font::setCurrentSize(sn::u32 characterSize) const
 }
 
 //------------------------------------------------------------------------------
-void Font::setFace(FT_Face face, char * fileData)
+void Font::setFace(void * face, char * fileData)
 {
     if (m_face != face)
     {

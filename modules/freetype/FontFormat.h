@@ -6,7 +6,7 @@
 
 #include <modules/freetype/common.h>
 
-namespace sn
+namespace freetype
 {
 
 struct FontFormat
@@ -20,10 +20,10 @@ struct FontFormat
         STYLE_COMBINATION_COUNT = STYLE_BOLD | STYLE_ITALIC + 1
     };
 
-    u32 size;
-    u32 style;
+    sn::u32 size;
+    sn::u32 style;
 
-    FontFormat(u32 a_size=16, u32 a_style=STYLE_REGULAR) :
+    FontFormat(sn::u32 a_size=16, sn::u32 a_style=STYLE_REGULAR) :
         size(a_size),
         style(a_style)
     {}
@@ -34,10 +34,10 @@ struct FontFormat
 
 SN_FREETYPE_API std::string toString(FontFormat format);
 
-SN_FREETYPE_API void serialize(Variant & o, const FontFormat & format);
-SN_FREETYPE_API void unserialize(const Variant & o, FontFormat & format);
+SN_FREETYPE_API void serialize(sn::Variant & o, const FontFormat & format);
+SN_FREETYPE_API void unserialize(const sn::Variant & o, FontFormat & format);
 
-} // namespace sn
+} // namespace freetype
 
 #endif // __HEADER_SN_FONTFORMAT__
 

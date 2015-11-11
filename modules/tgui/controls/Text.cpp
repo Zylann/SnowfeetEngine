@@ -4,6 +4,7 @@
 #include "../theme/Theme.h"
 
 using namespace sn;
+using namespace freetype;
 
 namespace tgui
 {

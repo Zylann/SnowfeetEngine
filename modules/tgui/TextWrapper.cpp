@@ -2,6 +2,7 @@
 #include <core/util/stringutils.h>
 
 using namespace sn;
+using namespace freetype;
 
 namespace tgui
 {
@@ -40,7 +41,7 @@ void TextWrapper::updateNoWrap()
 }
 
 //------------------------------------------------------------------------------
-void TextWrapper::update(sn::u32 width, const sn::Font & font, const sn::FontFormat & format)
+void TextWrapper::update(sn::u32 width, const Font & font, const FontFormat & format)
 {
     if (m_wrapMode == TGUI_WRAP_NONE)
     {

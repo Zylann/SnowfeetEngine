@@ -3,6 +3,7 @@
 #include <core/util/stringutils.h>
 
 using namespace sn;
+using namespace freetype;
 
 namespace tgui
 {
@@ -262,8 +263,8 @@ void DrawBatch::drawText(
 void DrawBatch::drawText(
     const TextWrapper & wrapper,
     sn::IntRect area,
-    const sn::Font & font,
-    sn::FontFormat format,
+    const Font & font,
+    FontFormat format,
     TextAlignment align,
     sn::Color color
     )

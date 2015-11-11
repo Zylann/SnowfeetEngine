@@ -3,9 +3,6 @@
 
 #include <core/asset/AssetLoader.h>
 
-#include <ft2build.h>
-#include FT_FREETYPE_H
-
 namespace freetype
 {
 
@@ -23,7 +20,7 @@ public:
     bool load(std::ifstream & ifs, sn::Asset & asset) const override;
 
 private:
-    FT_Library m_library;
+    void * m_library;
 
 };
 

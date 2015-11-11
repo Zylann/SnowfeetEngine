@@ -5,6 +5,7 @@
 #include "Theme.h"
 
 using namespace sn;
+using namespace freetype;
 
 namespace tgui
 {
@@ -60,7 +61,7 @@ bool ThemeLoader::load(std::ifstream & ifs, sn::Asset & asset) const
 
     SerializationContext ctx(asset.getAssetMetadata().project);
 
-    sn::unserialize(o["textFormat"], theme->textFormat);
+    unserialize(o["textFormat"], theme->textFormat);
     sn::unserialize(o["textColor"], theme->textColor);
 
     theme->controlTheme.unserialize(o["controlTheme"]);
@@ -89,7 +90,7 @@ bool ThemeLoader::load(std::ifstream & ifs, sn::Asset & asset) const
         SN_WERROR(L"No material specified in theme " << asset.getAssetMetadata().path);
 
     // Get font
-    Font * font = sn::getAssetBySerializedLocation<sn::Font>(o["font"].getString(), ctx.getProject(), true);
+    Font * font = sn::getAssetBySerializedLocation<Font>(o["font"].getString(), ctx.getProject(), true);
     if (font)
         theme->setFont(*font);
     else

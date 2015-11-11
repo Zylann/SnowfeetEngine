@@ -3,7 +3,7 @@
 
 #include <vector>
 #include <core/types.h>
-#include <modules/freetype/FontBase.h>
+#include <modules/freetype/Font.hpp>
 
 namespace tgui
 {

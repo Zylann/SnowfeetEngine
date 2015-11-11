@@ -1,9 +1,7 @@
 #ifndef __HEADER_TGUI_TEXTWRAPPER__
 #define __HEADER_TGUI_TEXTWRAPPER__
 
-#include <modules/freetype/FontBase.h>
 #include <core/util/Variant.h>
-
 #include "TextModel.h"
 
 namespace tgui
@@ -73,8 +71,8 @@ public:
     /// it often results in better performances.
     void update(
         sn::u32 width,
-        const sn::Font & font,
-        const sn::FontFormat & format
+        const freetype::Font & font,
+        const freetype::FontFormat & format
     );
 
     // TODO Per-case functions for more efficiency

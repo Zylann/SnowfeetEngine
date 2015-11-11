@@ -5,6 +5,7 @@
 #include <core/util/Profiler.h>
 
 using namespace sn;
+using namespace freetype;
 
 namespace tgui
 {
