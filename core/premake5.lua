@@ -41,6 +41,9 @@ project "SnowfeetCore"
 		filesCPP {
 			"system/**_win32"
 		}
+		links {
+			"winmm"
+		}
 	-- Linux-specific
 	filter "system:linux"
 		filesCPP {

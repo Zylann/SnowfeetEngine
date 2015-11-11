@@ -1,0 +1,12 @@
+{
+    "format":"SN2",
+    "objects":[
+        1,
+        {
+            "@type":"sn::Entity",
+            "script":{
+                "class":"JoystickPrinter"
+            }
+        },
+    ]
+}

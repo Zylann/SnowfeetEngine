@@ -9,6 +9,7 @@ This file is part of the SnowfeetEngine project.
 #include <core/system/Thread.h>
 #include <core/system/console.h>
 #include <core/system/SystemGUI.h>
+#include <core/system/Joystick.h>
 #include <core/object_types.h>
 #include <core/asset/AssetDatabase.h>
 #include <core/util/Profiler.h>
@@ -156,6 +157,7 @@ int Application::executeEx()
 
         // Process system GUI messages
         SystemGUI::processEvents();
+        Joystick::updateJoysticks();
 
         Event ev;
         while (SystemGUI::get().popEvent(ev))
