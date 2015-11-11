@@ -77,7 +77,7 @@ Class & Class::setPrivateConstructor()
 }
 
 //------------------------------------------------------------------------------
-Class & Class::setMethod(const char * methodName, SQFUNCTION cb_method, SQInteger nparams, const std::string & a_paramsMask)
+Class & Class::setMethod(const char * methodName, SQFUNCTION cb_method, SQInteger nparams, const std::string & a_paramsMask, SQBool isStatic)
 {
     SN_ASSERT(!isNull(), "Class is null");
     SN_ASSERT(cb_method != nullptr, "Function pointer argument is null");
@@ -88,13 +88,12 @@ Class & Class::setMethod(const char * methodName, SQFUNCTION cb_method, SQIntege
 
     if (nparams != NO_PARAMCHECK)
     {
-        // Note: we need to include the "this" parameter
-        std::string paramsMask = "x" + a_paramsMask;
+        // Note: we need to include the "this" parameter (a class if static, an instance otherwise)
+        std::string paramsMask = (isStatic ? "y" : "x") + a_paramsMask;
         sq_setparamscheck(m_vm, nparams+1, paramsMask.c_str());
     }
 
     // Store the method
-    SQBool isStatic = SQFalse;
     sq_newslot(m_vm, -3, isStatic);
 
     sq_pop(m_vm, 1);

@@ -16,7 +16,8 @@ public:
     /// (It would mean functions are valid if called with at least 65536 arguments, which is far away from reality)
     static const SQInteger NO_PARAMCHECK = -65536;
 
-    /// \brief Gets or creates a Squirrel class.
+    /// \brief Gets or creates a Squirrel class. It will be stored in the registry table.
+    /// To make it accessible from the roottable, you have to store it there too (This is to prevent scripters from messing with the class)
     /// \param vm
     /// \param className: name of the class in scripts
     /// \param baseClassName: optional name of the base class to inherit if the class is created
@@ -40,7 +41,8 @@ public:
         const char * methodName, 
         SQFUNCTION cb_method, 
         SQInteger nparams=NO_PARAMCHECK, 
-        const std::string & a_paramsMask=""
+        const std::string & a_paramsMask="",
+        SQBool isStatic = false
     );
 
     //TODO Class & setProperty(const char * propertyName, SQFUNCTION cb_getter, SQFUNCTION cb_setter=nullptr, const std::string & a_paramMask);
