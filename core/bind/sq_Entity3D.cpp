@@ -12,21 +12,25 @@ namespace sn
 	{
         CURRENT_CLASS(Entity3D)
 
-        BEGIN_METHOD(setPosition)
+        SQRESULT setPosition(HSQUIRRELVM vm)
+        {
+            GET_SELF();
             Vector3f v;
             if (!getVector3fAs3Numbers(vm, 2, v))
                 return sq_throwerror(vm, "Expected 3 numbers");
 			self->setPosition(v);
 			return 0;
-        END_METHOD
+        }
 
-        BEGIN_METHOD(setRotation)
+        SQRESULT setRotation(HSQUIRRELVM vm)
+        {
+            GET_SELF();
             Quaternion q;
             if (!getQuaternionAsEuler(vm, 2, q))
                 return sq_throwerror(vm, "Expected 3 euler angles (deg)");
             self->setRotation(q);
             return 0;
-        END_METHOD
+        }
         
 		// TODO Bind math primitives!
 	}

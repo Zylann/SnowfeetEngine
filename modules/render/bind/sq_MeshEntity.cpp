@@ -10,14 +10,16 @@ namespace render {
     {
         CURRENT_CLASS(MeshEntity)
 
-        BEGIN_METHOD(getMaterial)
+        SQRESULT getMaterial(HSQUIRRELVM vm)
+        {
+            GET_SELF();
             Material * m = self->getMaterial();
             if (m)
                 m->pushScriptObject(vm);
             else
                 sq_pushnull(vm);
             return 1;
-        END_METHOD
+        }
     }
 
 void bindMeshEntity(HSQUIRRELVM vm)

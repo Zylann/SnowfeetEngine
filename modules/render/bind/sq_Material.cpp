@@ -9,7 +9,9 @@ namespace render {
     {
         CURRENT_CLASS(Material)
 
-        BEGIN_METHOD(setFloat)
+        SQRESULT setFloat(HSQUIRRELVM vm)
+        {
+            GET_SELF();
             const SQChar* field;
             if (SQ_SUCCEEDED(sq_getstring(vm, 2, &field)))
             {
@@ -20,7 +22,7 @@ namespace render {
                 }
             }
             return 0;
-        END_METHOD
+        }
 
     }
 
