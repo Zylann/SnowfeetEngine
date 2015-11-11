@@ -71,8 +71,8 @@ public:
     /// it often results in better performances.
     void update(
         sn::u32 width,
-        const freetype::Font & font,
-        const freetype::FontFormat & format
+        const sn::Font & font,
+        const sn::FontFormat & format
     );
 
     // TODO Per-case functions for more efficiency

@@ -3,7 +3,7 @@
 
 #include <core/math/Rect.h>
 
-namespace freetype
+namespace sn
 {
 
 /// \brief Describes one character of a Font
@@ -19,7 +19,7 @@ struct Glyph
     sn::IntRect bounds;
 };
 
-} // namespace freetype
+} // namespace sn
 
 #endif // __HEADER_SN_FONT_GLYPH__
 

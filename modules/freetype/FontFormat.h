@@ -6,7 +6,7 @@
 
 #include <modules/freetype/common.h>
 
-namespace freetype
+namespace sn
 {
 
 struct FontFormat
@@ -37,7 +37,7 @@ SN_FREETYPE_API std::string toString(FontFormat format);
 SN_FREETYPE_API void serialize(sn::Variant & o, const FontFormat & format);
 SN_FREETYPE_API void unserialize(const sn::Variant & o, FontFormat & format);
 
-} // namespace freetype
+} // namespace sn
 
 #endif // __HEADER_SN_FONTFORMAT__
 

@@ -3,13 +3,13 @@
 
 #include <core/asset/AssetLoader.h>
 
-namespace freetype
+namespace sn
 {
 
 class FontLoader : public sn::AssetLoader
 {
 public:
-    SN_OBJECT(freetype::FontLoader, sn::AssetLoader)
+    SN_OBJECT(sn::FontLoader, sn::AssetLoader)
 
     FontLoader();
     ~FontLoader();
@@ -24,7 +24,7 @@ private:
 
 };
 
-} // freetype
+} // sn
 
 #endif // __HEADER_FREETYPE_FONTLOADER__
 

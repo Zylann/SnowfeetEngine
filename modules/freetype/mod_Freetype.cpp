@@ -2,18 +2,15 @@
 #include "FontLoader.hpp"
 #include "Font.hpp"
 
-namespace freetype
-{
-    void registerObjectTypes(sn::ObjectTypeDatabase & otb)
-    {
-        otb.registerType<FontLoader>();
-        otb.registerType<Font>();
-    }
-}
-
 int loadSnowfeetModule_ModFreetype(ModuleLoadArgs args)
 {
-	freetype::registerObjectTypes(*(args.objectTypeDatabase));
+    using namespace sn;
+
+    ObjectTypeDatabase & otb = *args.objectTypeDatabase;
+
+    otb.registerType<FontLoader>();
+    otb.registerType<Font>();
+
     return 0;
 }
 

@@ -13,9 +13,7 @@
 #include FT_OUTLINE_H
 #include FT_BITMAP_H
 
-using namespace sn;
-
-namespace freetype
+namespace sn
 {
 
 FontLoader::FontLoader():
@@ -47,7 +45,7 @@ const sn::ObjectType & FontLoader::getBaseAssetType() const
 
 const sn::ObjectType & FontLoader::getAssetInstanceType() const
 {
-    return sn::getObjectType<freetype::Font>();
+    return sn::getObjectType<Font>();
 }
 
 bool FontLoader::canLoad(const sn::AssetMetadata & meta) const
@@ -58,7 +56,7 @@ bool FontLoader::canLoad(const sn::AssetMetadata & meta) const
 
 bool FontLoader::load(std::ifstream & ifs, sn::Asset & asset) const
 {
-    freetype::Font * font = sn::checked_cast<freetype::Font*>(&asset);
+    Font * font = sn::checked_cast<Font*>(&asset);
     SN_ASSERT(font != nullptr, "Invalid asset type");
 
     //AssetMetadata meta = asset.getAssetMetadata();
@@ -95,5 +93,5 @@ bool FontLoader::load(std::ifstream & ifs, sn::Asset & asset) const
     return true;
 }
 
-} // namespace freetype
+} // namespace sn
 

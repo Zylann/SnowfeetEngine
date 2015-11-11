@@ -1,9 +1,7 @@
 #include "FontFormat.h"
 #include <sstream>
 
-using namespace sn;
-
-namespace freetype
+namespace sn
 {
 
 std::string toString(FontFormat format)
@@ -40,5 +38,5 @@ void unserialize(const Variant & o, FontFormat & format)
         format.style |= FontFormat::STYLE_ITALIC;
 }
 
-} // namespace freetype
+} // namespace sn
 

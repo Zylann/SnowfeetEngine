@@ -42,8 +42,8 @@ public:
         const char * str,
         sn::u32 charCount,
         sn::IntRect area, 
-        const freetype::Font & font, 
-        freetype::FontFormat format, 
+        const sn::Font & font, 
+        sn::FontFormat format, 
         TextAlignment align = TGUI_ALIGN_LEFT,
         sn::Color color = sn::Color(1,1,1,1),
         bool swapFontTexture = true // Internal
@@ -53,8 +53,8 @@ public:
     void drawText(
         const TextModel & model,
         sn::IntRect area,
-        const freetype::Font & font,
-        freetype::FontFormat format,
+        const sn::Font & font,
+        sn::FontFormat format,
         TextAlignment align = TGUI_ALIGN_LEFT,
         sn::Color color = sn::Color(1,1,1,1)
     );
@@ -62,8 +62,8 @@ public:
     void drawText(
         const TextWrapper & wrapper,
         sn::IntRect area,
-        const freetype::Font & font,
-        freetype::FontFormat format,
+        const sn::Font & font,
+        sn::FontFormat format,
         TextAlignment align = TGUI_ALIGN_LEFT,
         sn::Color color = sn::Color(1,1,1,1)
     );

@@ -12,9 +12,7 @@
 #include FT_OUTLINE_H
 #include FT_BITMAP_H
 
-using namespace sn;
-
-namespace freetype
+namespace sn
 {
 
 //------------------------------------------------------------------------------
@@ -366,5 +364,5 @@ void Font::createTexture() const
     }
 }
 
-} // namespace freetype
+} // namespace sn
 

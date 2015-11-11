@@ -57,11 +57,11 @@ public:
 
     sn::Vector2u getTextureAtlasSize() const { return m_textureSize; }
 
-    void setFont(freetype::Font & font) { r_font.set(&font); }
-    freetype::Font * getFont() const { return r_font.isNull() ? nullptr : r_font.get(); }
+    void setFont(sn::Font & font) { r_font.set(&font); }
+    sn::Font * getFont() const { return r_font.isNull() ? nullptr : r_font.get(); }
 
 public:
-    freetype::FontFormat textFormat;
+    sn::FontFormat textFormat;
     sn::Color textColor;
 
     ControlTheme controlTheme;
@@ -78,7 +78,7 @@ private:
     sn::Vector2u m_textureSize;
     sn::WeakRef<sn::render::Material> r_material;
     sn::WeakRef<sn::render::Material> r_textMaterial;
-    sn::WeakRef<freetype::Font> r_font;
+    sn::WeakRef<sn::Font> r_font;
 
 };
 
