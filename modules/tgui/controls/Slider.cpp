@@ -88,7 +88,7 @@ void Slider::onDrawSelf(DrawBatch & batch)
         IntRect visualRect = texRect;
         visualRect.y() = b.minY() + b.height() / 2 - texRect.height() / 2;
 
-        f32 w = static_cast<s32>(b.width());
+        f32 w = static_cast<f32>(b.width());
         f32 visualStep = w * m_step / m_range.width();
         w -= visualStep * 0.9f; // Hack to prevent rounding errors in the following for loop
         u32 count = 0;
