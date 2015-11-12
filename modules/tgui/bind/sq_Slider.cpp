@@ -10,16 +10,20 @@ namespace tgui
     {
         CURRENT_CLASS(Slider)
 
-        BEGIN_METHOD(setValue)
+        SQRESULT setValue(HSQUIRRELVM vm)
+        {
+            GET_SELF();
             f32 v = squirrel::getFloat(vm, 2);
             self->setValue(v);
             return 0;
-        END_METHOD
+        }
 
-        BEGIN_METHOD(getValue)
+        SQRESULT getValue(HSQUIRRELVM vm)
+        {
+            GET_SELF();
             sq_pushfloat(vm, self->getValue());
             return 1;
-        END_METHOD
+        }
     }
 
 void bindSlider(HSQUIRRELVM vm)

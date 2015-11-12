@@ -8,26 +8,30 @@ namespace tgui
     {
         CURRENT_CLASS(Text)
 
-        BEGIN_METHOD(set)
+        SQRESULT setSource(HSQUIRRELVM vm)
+        {
+            GET_SELF();
             const SQChar * str = 0;
             sq_getstring(vm, 2, &str);
             self->setSource(str);
             return 0;
-        END_METHOD
+        }
 
-        BEGIN_METHOD(get)
+        SQRESULT getSource(HSQUIRRELVM vm)
+        {
+            GET_SELF();
             std::string str;
             self->getSource(str);
             sq_pushstring(vm, str.c_str(), str.size());
             return 1;
-        END_METHOD
+        }
     }
 
 void bindText(HSQUIRRELVM vm)
 {
     sn::ScriptableObject::bindBase<Text>(vm)
-        .setMethod("getSource", get)
-        .setMethod("setSource", set, 1, "s");
+        .setMethod("getSource", getSource)
+        .setMethod("setSource", setSource, 1, "s");
 }
 
 } // namespace tgui
