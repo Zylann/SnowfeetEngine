@@ -9,12 +9,12 @@ namespace render {
 // for use in OpenGL3
 enum VertexAttribute
 {
-    SNR_ATTRIB_POSITION = 0,
-    SNR_ATTRIB_COLOR,
-    SNR_ATTRIB_TEXCOORD,
-    SNR_ATTRIB_NORMAL,
+    ATTRIB_POSITION = 0,
+    ATTRIB_COLOR,
+    ATTRIB_TEXCOORD,
+    ATTRIB_NORMAL,
     //...
-    SNR_ATTRIB_COUNT // Keep last
+    ATTRIB_COUNT // Keep last
 };
 
 std::string toString(VertexAttribute st);

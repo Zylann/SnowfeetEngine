@@ -125,11 +125,11 @@ bool ShaderProgram::loadFromSourceCode(const std::unordered_map<ShaderType, std:
         }
     }
 
-    // Generic input shader variables (only for OpenGL3-based experimental version)
-    //		glBindAttribLocation(m_programID, Attrib::POSITION, "in_Position");
-    //		glBindAttribLocation(m_programID, Attrib::COLOR, "in_Color");
-    //		glBindAttribLocation(m_programID, Attrib::TEXCOORD0, "in_TexCoord0");
-    //		glBindAttribLocation(m_programID, Attrib::NORMAL, "in_Normal");
+    // Generic input shader variables
+    glCheck(glBindAttribLocation(m_programID, ATTRIB_POSITION, "in_Position"));
+    glCheck(glBindAttribLocation(m_programID, ATTRIB_COLOR, "in_Color"));
+    glCheck(glBindAttribLocation(m_programID, ATTRIB_TEXCOORD, "in_TexCoord"));
+    glCheck(glBindAttribLocation(m_programID, ATTRIB_NORMAL, "in_Normal"));
 
     // Link
     glCheck(glLinkProgram(m_programID));
