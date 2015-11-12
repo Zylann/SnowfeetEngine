@@ -11,7 +11,7 @@
 			"scaleMode":"adapted",
 		},
 		{
-			"@type":"sn::render::Drawable",
+			"@type":"sn::render::MeshEntity",
 			"mesh":"render:cube",
 			"material":"cube",
 			"position":[0,0,5],
