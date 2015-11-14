@@ -35,6 +35,20 @@ public:
         }
     }
 
+    void setMin(T min)
+    {
+        if (min >= m_max)
+            m_max = min;
+        m_min = min;
+    }
+
+    void setMax(T max)
+    {
+        if (max <= m_min)
+            m_min = max;
+        m_max = max;
+    }
+
     inline T width() const { return m_max - m_min; }
 
     inline f32 inverseLerp(T v)
