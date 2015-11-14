@@ -48,6 +48,20 @@ void Slider::setStepEnabled(bool enable)
 }
 
 //------------------------------------------------------------------------------
+void Slider::setMin(sn::f32 min)
+{
+    m_range.setMin(min);
+    m_value = math::clamp(m_value, m_range.min(), m_range.max());
+}
+
+//------------------------------------------------------------------------------
+void Slider::setMax(sn::f32 max)
+{
+    m_range.setMax(max);
+    m_value = math::clamp(m_value, m_range.min(), m_range.max());
+}
+
+//------------------------------------------------------------------------------
 void Slider::onDrawSelf(DrawBatch & batch)
 {
     const Theme * theme = getTheme();

@@ -24,13 +24,62 @@ namespace tgui
             sq_pushfloat(vm, self->getValue());
             return 1;
         }
+
+        SQRESULT getMin(HSQUIRRELVM vm)
+        {
+            GET_SELF();
+            sq_pushfloat(vm, self->getMin());
+            return 1;
+        }
+
+        SQRESULT setMin(HSQUIRRELVM vm)
+        {
+            GET_SELF();
+            self->setMin(squirrel::getFloat(vm, 2));
+            return 0;
+        }
+
+        SQRESULT getMax(HSQUIRRELVM vm)
+        {
+            GET_SELF();
+            sq_pushfloat(vm, self->getMax());
+            return 1;
+        }
+
+        SQRESULT setMax(HSQUIRRELVM vm)
+        {
+            GET_SELF();
+            self->setMax(squirrel::getFloat(vm, 2));
+            return 0;
+        }
+
+        SQRESULT getStep(HSQUIRRELVM vm)
+        {
+            GET_SELF();
+            sq_pushfloat(vm, self->getStep());
+            return 1;
+        }
+
+        SQRESULT setStep(HSQUIRRELVM vm)
+        {
+            GET_SELF();
+            self->setStep(squirrel::getFloat(vm, 2));
+            return 0;
+        }
     }
 
 void bindSlider(HSQUIRRELVM vm)
 {
     sn::ScriptableObject::bindBase<Slider>(vm)
-        .setMethod("setValue", setValue)
-        .setMethod("getValue", getValue);
+        .setMethod("setValue", setValue, 1, "f|i")
+        .setMethod("getValue", getValue)
+        .setMethod("setMin", setMin, 1, "f|i")
+        .setMethod("getMin", getMin)
+        .setMethod("setMax", setMax, 1, "f|i")
+        .setMethod("getMax", getMax)
+        .setMethod("setStep", setStep, 1, "f|i")
+        .setMethod("getStep", getStep)
+    ;
 }
 
 } // namespace tgui

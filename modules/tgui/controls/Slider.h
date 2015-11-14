@@ -22,6 +22,12 @@ public:
     void setStep(sn::f32 step);
     sn::f32 getStep() const { return m_step; }
 
+    void setMin(sn::f32 step);
+    void setMax(sn::f32 max);
+
+    sn::f32 getMin() const { return m_range.min(); }
+    sn::f32 getMax() const { return m_range.max(); }
+
     void setStepEnabled(bool enable);
     bool isStepEnabled() const { return m_stepEnabled; }
 
