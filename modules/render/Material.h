@@ -27,6 +27,17 @@ public:
         m_depthTest(false)
     {}
 
+    template <typename T>
+    T getParam(const std::string & name)
+    {
+        T v;
+        getParam(name, v);
+        return v;
+    }
+
+    bool getParam(const std::string & name, f32 & out_v);
+    // TODO Other getters
+
     void setParam(const std::string & name, f32 x);
     void setParam(const std::string & name, f32 x, f32 y);
     void setParam(const std::string & name, f32 x, f32 y, f32 z);

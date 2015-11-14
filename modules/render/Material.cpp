@@ -25,6 +25,18 @@ void Material::setShader(ShaderProgram * shader)
 const char * Material::MAIN_TEXTURE = "u_MainTexture";
 
 //------------------------------------------------------------------------------
+bool Material::getParam(const std::string & name, f32 & out_v)
+{
+    auto it = m_floats.find(name);
+    if (it != m_floats.end())
+    {
+        out_v = it->second;
+        return false;
+    }
+    return false;
+}
+
+//------------------------------------------------------------------------------
 void Material::setParam(const std::string & name, f32 x)
 {
     m_floats[name] = x;
