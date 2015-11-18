@@ -6,6 +6,8 @@ This file is part of the SnowfeetEngine project.
 
 #include "../scene/Entity.h"
 #include "../scene/Scene.h"
+#include "../asset/AssetDatabase.h"
+#include "../scene/PackedEntity.h"
 #include "sq_core.h"
 #include <iostream>
 #include "../squirrel/bind_macros.h"
@@ -171,7 +173,7 @@ namespace sn
             return 1;
         }
 
-		SQInteger createChild(HSQUIRRELVM vm)
+		SQRESULT createChild(HSQUIRRELVM vm)
 		{
 			GET_SELF();
 			SQInteger argType = sq_gettype(vm, 2);
@@ -182,7 +184,7 @@ namespace sn
 				if(SQ_SUCCEEDED(sq_getstring(vm, 2, &typeName)))
 					child = self->createChild(typeName);
 			}
-			else
+            else
 			{
 				child = self->createChild();
 			}
@@ -193,7 +195,32 @@ namespace sn
 			return 1;
 		}
 
-        SQInteger getIndexInParent(HSQUIRRELVM vm)
+        SQRESULT instantiateChild(HSQUIRRELVM vm)
+        {
+            GET_SELF();
+            const char * packName = squirrel::getString(vm, 2);
+            AssetLocation location(packName);
+            PackedEntity * pack = AssetDatabase::get().getAsset<PackedEntity>(location);
+            if (pack)
+            {
+                std::vector<Entity*> entities;
+                pack->instantiate(*self, location.project, &entities);
+                if (!entities.empty())
+                {
+                    squirrel::push(vm, entities[0]);
+                    return 1;
+                }
+            }
+            else
+            {
+                std::stringstream ss;
+                ss << "Asset not found: \"" << packName << '"';
+                sq_throwerror(vm, ss.str().c_str());
+            }
+            return 0;
+        }
+
+        SQRESULT getIndexInParent(HSQUIRRELVM vm)
         {
             GET_SELF();
             sq_pushinteger(vm, self->getIndexInParent());
@@ -219,6 +246,7 @@ void bindEntity(HSQUIRRELVM vm)
         .setMethod("getScript", getScript)
         .setMethod("setUpdatable", setUpdatable, -1, "b")
         .setMethod("createChild", createChild, -1, "s")
+        .setMethod("instantiateChild", instantiateChild, 1, "s")
         .setMethod("getIndexInParent", getIndexInParent)
 	;
 }

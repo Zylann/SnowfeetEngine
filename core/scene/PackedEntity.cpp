@@ -60,16 +60,24 @@ const ObjectType * PackedEntity::getRootType() const
 }
 
 //------------------------------------------------------------------------------
-void PackedEntity::instantiate(Entity & a_parent, const std::string & contextModuleName)
+void PackedEntity::instantiate(
+        Entity & a_parent, 
+        const std::string & contextModuleName, 
+        std::vector<Entity*> * out_rootEntities
+        )
 {
     if (!isFlattened())
         flatten();
 
-    instantiateOnly(a_parent, contextModuleName);
+    instantiateOnly(a_parent, contextModuleName, out_rootEntities);
 }
 
 //------------------------------------------------------------------------------
-void PackedEntity::instantiateOnly(Entity & a_parent, const std::string & contextModuleName) const
+void PackedEntity::instantiateOnly(
+        Entity & a_parent, 
+        const std::string & contextModuleName, 
+        std::vector<Entity*> * out_rootEntities
+        ) const
 {
     SerializationContext context(contextModuleName);
 
@@ -165,7 +173,8 @@ void PackedEntity::instantiateOnly(Entity & a_parent, const std::string & contex
         //    }
         //}
     }
-    std::vector<Entity*> rootEntities;
+    std::vector<Entity*> rootEntities_;
+    std::vector<Entity*> & rootEntities = out_rootEntities ? *out_rootEntities : rootEntities_;
     for (auto it = entities.begin(); it != entities.end(); ++it)
     {
         Entity * e = (Entity*)it->second;

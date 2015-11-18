@@ -35,13 +35,21 @@ public:
         return false;
     }
 
-    void instantiate(Entity & a_parent, const std::string & contextModuleName);
+    void instantiate(
+        Entity & a_parent, 
+        const std::string & contextModuleName, 
+        std::vector<Entity*> * out_rootEntities = nullptr
+    );
 
 protected:
     ObjectDB * getFromAssetDatabase(const std::string & location) const override;
 
 private:
-    void instantiateOnly(Entity & a_parent, const std::string & contextModuleName) const;
+    void instantiateOnly(
+        Entity & a_parent, 
+        const std::string & contextModuleName, 
+        std::vector<Entity*> * out_rootEntities
+    ) const;
 
 };
 
