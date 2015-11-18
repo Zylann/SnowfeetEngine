@@ -227,6 +227,13 @@ namespace sn
             return 1;
         }
 
+        SQRESULT destroyChildren(HSQUIRRELVM vm)
+        {
+            GET_SELF();
+            self->destroyChildren();
+            return 0;
+        }
+
 	}
 
 void bindEntity(HSQUIRRELVM vm)
@@ -248,6 +255,7 @@ void bindEntity(HSQUIRRELVM vm)
         .setMethod("createChild", createChild, -1, "s")
         .setMethod("instantiateChild", instantiateChild, 1, "s")
         .setMethod("getIndexInParent", getIndexInParent)
+        .setMethod("destroyChildren", destroyChildren)
 	;
 }
 
