@@ -124,7 +124,7 @@ void GridLayout::recalculateColumnSizes(const Control & container)
 	IntRect clientBounds = container.getLocalClientBounds();
 	Border padding = container.getPadding();
 
-    f32 ratio = static_cast<f32>(clientBounds.width() - padding.left - padding.right);
+    f32 ratio = static_cast<f32>(clientBounds.width() - padding.left - padding.right - m_columnSpacing * m_columns.size());
 
     // Normalize column scales
     f32 scaleSum = 0;
@@ -135,19 +135,18 @@ void GridLayout::recalculateColumnSizes(const Control & container)
     if (scaleSum > math::ROUNDING_ERROR_F32)
         ratio /= scaleSum;
 
-    s32 x = padding.left;
     for (u32 i = 0; i < m_columns.size(); ++i)
     {
         Column & col = m_columns[i];
         s32 size = static_cast<s32>(col.scale * ratio);
         col.size = size < 0 ? 0 : static_cast<u32>(size);
     }
-    m_columns[0].x = 0;
+    m_columns[0].x = padding.left;
     for (u32 i = 1; i < m_columns.size(); ++i)
     {
         Column & col1 = m_columns[i-1];
         Column & col2 = m_columns[i];
-        col2.x = col1.x + col1.size;
+        col2.x = col1.x + col1.size + m_columnSpacing;
     }
 }
 
