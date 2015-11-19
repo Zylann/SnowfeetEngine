@@ -67,6 +67,8 @@ public:
     //--------------------------------
     
     const Anchors & getAnchors() const { return m_anchors; }
+    void setAnchors(Anchors anchors);
+
     const Border & getMargin() const { return m_margins; }
     const Border & getPadding() const { return m_padding; }
     Position getPositionMode() const { return m_positionMode; }

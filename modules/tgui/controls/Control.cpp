@@ -59,6 +59,15 @@ void Control::setLocalClientBounds(sn::IntRect bounds)
 }
 
 //------------------------------------------------------------------------------
+void Control::setAnchors(Anchors anchors)
+{
+    if (anchors != m_anchors)
+    {
+        m_anchors = anchors;
+    }
+}
+
+//------------------------------------------------------------------------------
 bool Control::getControlFlag(sn::u32 i) const
 {
     return m_controlFlags[i];
