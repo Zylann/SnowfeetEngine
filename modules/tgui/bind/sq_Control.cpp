@@ -39,6 +39,7 @@ namespace tgui
                 anchors.set(i, squirrel::getBool(vm, 2 + i));
             }
             self->setAnchors(anchors);
+            return 0;
         }
     }
 
