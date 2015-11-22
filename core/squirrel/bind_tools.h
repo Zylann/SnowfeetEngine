@@ -83,41 +83,41 @@ bool getNativeInstance(HSQUIRRELVM vm, SQInteger i, T *& out_ptr)
 
 //------------------------------------------------------------------------------
 /// \brief Gets a string value at given index on the stack of a Squirrel VM.
-inline const char * getString(HSQUIRRELVM vm, SQInteger i)
+inline const SQChar * getString(HSQUIRRELVM vm, SQInteger i, const SQChar * defval = nullptr)
 {
-    const char * str = nullptr;
+    const SQChar * str = nullptr;
     if (SQ_FAILED(sq_getstring(vm, 2, &str)))
-        return nullptr;
+        return defval;
     return str;
 }
 
 //------------------------------------------------------------------------------
 /// \brief Gets a boolean value at given index on the stack of a Squirrel VM.
-inline bool getBool(HSQUIRRELVM vm, SQInteger i)
+inline bool getBool(HSQUIRRELVM vm, SQInteger i, bool defval = false)
 {
 	SQBool b;
 	if (SQ_FAILED(sq_getbool(vm, i, &b)))
-		return false;
+		return defval;
 	return b != 0;
 }
 
 //------------------------------------------------------------------------------
 /// \brief Gets an integer value at given index on the stack of a Squirrel VM.
-inline SQInteger getInt(HSQUIRRELVM vm, SQInteger i)
+inline SQInteger getInt(HSQUIRRELVM vm, SQInteger i, SQInteger defval = 0)
 {
 	SQInteger v;
 	if (SQ_FAILED(sq_getinteger(vm, i, &v)))
-		return 0;
+		return defval;
 	return v;
 }
 
 //------------------------------------------------------------------------------
 /// \brief Gets a float value at given index on the stack of a Squirrel VM.
-inline SQFloat getFloat(HSQUIRRELVM vm, SQInteger i)
+inline SQFloat getFloat(HSQUIRRELVM vm, SQInteger i, SQFloat defval = 0)
 {
 	SQFloat v;
 	if (SQ_FAILED(sq_getfloat(vm, i, &v)))
-		return 0;
+		return defval;
 	return v;
 }
 
