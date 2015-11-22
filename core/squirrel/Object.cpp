@@ -82,5 +82,16 @@ Object & Object::setMethod(const char * methodName, SQFUNCTION cb_method, SQInte
 
     return *this;
 }
+
+//------------------------------------------------------------------------------
+void Object::setTypeTag(SQUserPointer typeTag)
+{
+    SN_ASSERT(!isNull(), "Object is null");
+
+    sq_pushobject(m_vm, m_object);
+    sq_settypetag(m_vm, -1, typeTag);
+    sq_pop(m_vm, 1);
+}
+
 } // namespace squirrel
 

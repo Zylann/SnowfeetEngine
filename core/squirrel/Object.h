@@ -48,6 +48,8 @@ public:
         SQBool isStatic = false
     );
 
+    void setTypeTag(SQUserPointer typeTag);
+
     Object & operator=(const Object & other);
 
 protected:
