@@ -105,5 +105,13 @@ void Class::pushClassesTable(HSQUIRRELVM vm)
 
 }
 
+//------------------------------------------------------------------------------
+void Class::setUserdataSize(size_t size)
+{
+    sq_pushobject(m_vm, m_object);
+    sq_setclassudsize(m_vm, -1, size);
+    sq_pop(m_vm, 1);
+}
+
 } // namespace squirrel
 

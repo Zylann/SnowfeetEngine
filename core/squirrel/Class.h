@@ -18,6 +18,8 @@ public:
     /// \param baseClassName: optional name of the base class to inherit if the class is created
     Class(HSQUIRRELVM vm, const std::string & className, const std::string & baseClassName="");
 
+    void setUserdataSize(size_t size);
+
     /// \brief Sets the native function that will be called when the Squirrel class is instantiated.
     /// This is only relevant for classes, but also works on tables.
     Class & setConstructor(
