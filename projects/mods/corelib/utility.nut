@@ -20,3 +20,15 @@ function printVar(v, title="var") {
 	}
 	print("\n")
 }
+
+//------------------------------------------------------------------------------
+/// \brief Tries to get a value from a table, class or instance.
+/// \param obj (class|instance|table)
+/// \param key (var)
+/// \param defval (optional var): returned value if the key is not found
+/// \return obj[key] if it exists, defval otherwise
+function tryget(obj, key, defval=null) {
+	if(key in obj)
+		return obj[key]
+	return defval
+}
