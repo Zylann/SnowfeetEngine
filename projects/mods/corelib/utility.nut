@@ -7,7 +7,7 @@ function println(msg) {
 
 //------------------------------------------------------------------------------
 function printVar(v, title="var") {
-	print("--- " + title + ":" + typeof v + " ---\n")
+	print("--- " + title + ":" + v + " ---\n")
 	local vt = typeof v
 	if(vt == "table" || vt == "class" || vt == "instance") {
 		foreach(key,val in v) {
