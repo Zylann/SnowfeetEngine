@@ -47,8 +47,8 @@ void bindControl(HSQUIRRELVM vm)
 {
     sn::ScriptableObject::bindBase<Control>(vm)
         .setMethod("isPressed", isPressed)
-        .setMethod("setBounds", setBounds, 4, "iiii")
-        .setMethod("setAnchors", setAnchors, 4, "bbbb")
+        .setMethod("setBounds", setBounds, 5, "xiiii")
+        .setMethod("setAnchors", setAnchors, 5, "xbbbb")
     ;
 }
 

@@ -71,13 +71,13 @@ namespace tgui
 void bindSlider(HSQUIRRELVM vm)
 {
     sn::ScriptableObject::bindBase<Slider>(vm)
-        .setMethod("setValue", setValue, 1, "f|i")
+        .setMethod("setValue", setValue, 2, "xn")
         .setMethod("getValue", getValue)
-        .setMethod("setMin", setMin, 1, "f|i")
+        .setMethod("setMin", setMin, 2, "xn")
         .setMethod("getMin", getMin)
-        .setMethod("setMax", setMax, 1, "f|i")
+        .setMethod("setMax", setMax, 2, "xn")
         .setMethod("getMax", getMax)
-        .setMethod("setStep", setStep, 1, "f|i")
+        .setMethod("setStep", setStep, 2, "xn")
         .setMethod("getStep", getStep)
     ;
 }

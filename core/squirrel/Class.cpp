@@ -19,7 +19,7 @@ namespace
 //------------------------------------------------------------------------------
 Class::Class(HSQUIRRELVM vm, const std::string & className, const std::string & baseClassName) : Object(vm)
 {
-    pushClassesTable();
+    pushClassesTable(vm);
 
     sq_pushstring(vm, className.c_str(), -1);
 
@@ -65,40 +65,15 @@ Class::Class(HSQUIRRELVM vm, const std::string & className, const std::string & 
 }
 
 //------------------------------------------------------------------------------
-Class & Class::setConstructor(SQFUNCTION cb_constructor)
+Class & Class::setConstructor(SQFUNCTION cb_constructor, SQInteger nparams, const std::string & a_paramsMask)
 {
-    return setMethod("constructor", cb_constructor);
+    return (Class&)setMethod("constructor", cb_constructor, nparams, a_paramsMask, SQFalse);
 }
 
 //------------------------------------------------------------------------------
 Class & Class::setPrivateConstructor()
 {
     return setConstructor(cb_privateConstructor);
-}
-
-//------------------------------------------------------------------------------
-Class & Class::setMethod(const char * methodName, SQFUNCTION cb_method, SQInteger nparams, const std::string & a_paramsMask, SQBool isStatic)
-{
-    SN_ASSERT(!isNull(), "Class is null");
-    SN_ASSERT(cb_method != nullptr, "Function pointer argument is null");
-
-    sq_pushobject(m_vm, m_object);
-    sq_pushstring(m_vm, methodName, -1);
-    sq_newclosure(m_vm, cb_method, 0);
-
-    if (nparams != NO_PARAMCHECK)
-    {
-        // Note: we need to include the "this" parameter (a class if static, an instance otherwise)
-        std::string paramsMask = (isStatic ? "y" : "x") + a_paramsMask;
-        sq_setparamscheck(m_vm, nparams+1, paramsMask.c_str());
-    }
-
-    // Store the method
-    sq_newslot(m_vm, -3, isStatic);
-
-    sq_pop(m_vm, 1);
-
-    return *this;
 }
 
 //------------------------------------------------------------------------------
@@ -113,9 +88,8 @@ Class & Class::setMethod(const char * methodName, SQFUNCTION cb_method, SQIntege
 //}
 
 //------------------------------------------------------------------------------
-void Class::pushClassesTable()
+void Class::pushClassesTable(HSQUIRRELVM vm)
 {
-    auto vm = m_vm;
     // Get classes table
     sq_pushregistrytable(vm);
     sq_pushstring(vm, CLASSES_TABLE, -1);

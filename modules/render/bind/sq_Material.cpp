@@ -41,8 +41,8 @@ namespace render {
     void bindMaterial(HSQUIRRELVM vm)
     {
         sn::ScriptableObject::bindBase<Material>(vm)
-            .setMethod("getFloat", getFloat, 1, "s")
-            .setMethod("setFloat", setFloat, 2, "sf|i")
+            .setMethod("getFloat", getFloat, 2, "xs")
+            .setMethod("setFloat", setFloat, 3, "xsn")
         ;
     }
 

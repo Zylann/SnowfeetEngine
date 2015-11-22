@@ -1,7 +1,7 @@
 #ifndef __HEADER_SQUIRREL_PUSH__
 #define __HEADER_SQUIRREL_PUSH__
 
-#include <squirrel.h>
+#include <core/squirrel/Object.h>
 
 namespace squirrel
 {

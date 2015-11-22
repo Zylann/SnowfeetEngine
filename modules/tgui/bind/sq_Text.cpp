@@ -31,7 +31,7 @@ void bindText(HSQUIRRELVM vm)
 {
     sn::ScriptableObject::bindBase<Text>(vm)
         .setMethod("getSource", getSource)
-        .setMethod("setSource", setSource, 1, "s");
+        .setMethod("setSource", setSource, 2, "xs");
 }
 
 } // namespace tgui

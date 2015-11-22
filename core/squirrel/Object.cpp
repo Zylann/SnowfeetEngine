@@ -1,4 +1,5 @@
 #include "Object.h"
+#include <core/util/assert.h>
 
 namespace squirrel
 {
@@ -59,5 +60,27 @@ void Object::releaseObject()
     }
 }
 
+//------------------------------------------------------------------------------
+Object & Object::setMethod(const char * methodName, SQFUNCTION cb_method, SQInteger nparams, const std::string & a_paramsMask, SQBool isStatic)
+{
+    SN_ASSERT(!isNull(), "Object is null");
+    SN_ASSERT(cb_method != nullptr, "Function pointer argument is null");
+
+    sq_pushobject(m_vm, m_object);
+    sq_pushstring(m_vm, methodName, -1);
+    sq_newclosure(m_vm, cb_method, 0);
+
+    if (nparams != NO_PARAMCHECK)
+    {
+        sq_setparamscheck(m_vm, nparams, a_paramsMask.c_str());
+    }
+
+    // Store the method
+    sq_newslot(m_vm, -3, isStatic);
+
+    sq_pop(m_vm, 1);
+
+    return *this;
+}
 } // namespace squirrel
 

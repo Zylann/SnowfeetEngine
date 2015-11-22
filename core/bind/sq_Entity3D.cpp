@@ -39,8 +39,9 @@ namespace sn
 void bindEntity3D(HSQUIRRELVM vm)
 {
     ScriptableObject::bindBase<Entity3D>(vm)
-        .setMethod("setPosition", setPosition, -1)
-        .setMethod("setRotation", setRotation, 3, "nnn");
+        .setMethod("setPosition", setPosition, -2)
+        .setMethod("setRotation", setRotation, 4, "xnnn")
+    ;
 }
 
 } // namespace sn

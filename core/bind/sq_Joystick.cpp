@@ -65,11 +65,11 @@ namespace sn
 
         Class c(vm, name);
         c.setPrivateConstructor()
-            .setMethod("getMaxCount", getMaxCount, 0, "", true)
-            .setMethod("isConnected", isConnected, 1, "i", true)
-            .setMethod("getButtonCount", getButtonCount, 1, "i", true)
-            .setMethod("getButton", getButton, 2, "ii", true)
-            .setMethod("getAxis", getAxis, 2, "ii", true)
+            .setMethod("getMaxCount", getMaxCount, 1, "y", true)
+            .setMethod("isConnected", isConnected, 2, "yi", true)
+            .setMethod("getButtonCount", getButtonCount, 2, "yi", true)
+            .setMethod("getButton", getButton, 3, "yii", true)
+            .setMethod("getAxis", getAxis, 3, "yii", true)
         ;
 
         RootTable(vm).setObject(name, c);
