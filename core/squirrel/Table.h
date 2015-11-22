@@ -38,6 +38,8 @@ public:
 		return *this;
 	}
 
+    Table & setDelegate(const Table & other);
+
 	bool getString(HSQOBJECT keyObject, std::string & out_str);
 
 protected:

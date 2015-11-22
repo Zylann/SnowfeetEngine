@@ -85,6 +85,19 @@ bool Table::getString(HSQOBJECT keyObject, std::string & out_str)
 }
 
 //------------------------------------------------------------------------------
+Table & Table::setDelegate(const Table & other)
+{
+    SN_ASSERT(!isNull(), "Table is null");
+
+    sq_pushobject(m_vm, m_object);
+    sq_pushobject(m_vm, other.m_object);
+    sq_setdelegate(m_vm, -2);
+    sq_pop(m_vm, 1);
+
+    return *this;
+}
+
+//------------------------------------------------------------------------------
 RootTable::RootTable(HSQUIRRELVM vm) : Table(vm)
 {
     sq_pushroottable(vm);
