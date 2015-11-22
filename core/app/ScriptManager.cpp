@@ -184,7 +184,7 @@ bool ScriptManager::compileSquirrelModule(const std::string & modName, const std
         if (readFile(toString(filePath), sourceCode))
         {
             squirrel::Script script(m_squirrelVM);
-            if (script.compileString(sourceCode))
+            if (script.compileString(sourceCode, sn::toString(filePath)))
             {
                 scripts.push_back(script);
             }
