@@ -11,6 +11,50 @@ using namespace sn;
 
 void debugStackDump(HSQUIRRELVM vm) { squirrel::debugStackDump(vm); }
 
+namespace priv
+{
+	/// \deprecated
+    template<class T>
+    void destroyClassInstance_checkRefCounted(std::true_type, T * p)
+    {
+        // If the class derives from RefCounted,
+        // use its release() method instead of delete (which is protected)
+        p->release();
+    }
+
+	/// \deprecated
+    template<class T>
+    void destroyClassInstance_checkRefCounted(std::false_type, T * p)
+    {
+        // If it's a regular class, just delete it
+        delete p;
+    }
+
+	/// \deprecated
+    template<class T>
+    void destroyClassInstance(T * p)
+    {
+        priv::destroyClassInstance_checkRefCounted<T>(std::is_base_of<RefCounted, T>(), p);
+    }
+}
+
+template <typename T>
+SQInteger releaseClassInstance(SQUserPointer ptr, SQInteger size)
+{
+    T * p = static_cast<T*>(ptr);
+    priv::destroyClassInstance(p);
+    return 0;
+}
+
+template <typename T>
+SQInteger createClassInstance(HSQUIRRELVM vm)
+{
+    T * p = new T();
+    sq_setinstanceup(vm, -1, p);
+    sq_setreleasehook(vm, -1, releaseClassInstance<T>);
+    return 0;
+}
+
 //------------------------------------------------------------------------------
 // The native classes
 
@@ -112,24 +156,34 @@ namespace
 
     int Something_doStuff(HSQUIRRELVM vm)
     {
-        auto * self = squirrel::getNativeInstance<Something>(vm, 1);
-        self->doStuff();
+        Something * self = nullptr;
+        if (squirrel::getNativeInstance(vm, 1, self))
+        {
+            self->doStuff();
+        }
         return 0;
     }
 
 	int Something_getText(HSQUIRRELVM vm)
 	{
-		auto * self = squirrel::getNativeInstance<Something>(vm, 1);
-		sq_pushstring(vm, self->getText().c_str(), -1);
-		return 1;
+        Something * self = nullptr;
+        if (squirrel::getNativeInstance(vm, 1, self))
+        {
+		    sq_pushstring(vm, self->getText().c_str(), -1);
+		    return 1;
+        }
+        return 0;
 	}
 
 	int Something_setText(HSQUIRRELVM vm)
 	{
-		auto * self = squirrel::getNativeInstance<Something>(vm, 1);
-        const char * str = squirrel::getString(vm, 2);
-		if (str)
-			self->setText(str);
+        Something * self = nullptr;
+        if (squirrel::getNativeInstance(vm, 1, self))
+        {
+            const char * str = squirrel::getString(vm, 2);
+		    if (str)
+			    self->setText(str);
+        }
 		return 0;
 	}
 
@@ -138,7 +192,7 @@ namespace
         const char * className = "Something";
 
         squirrel::Class c(vm, className);
-        c.setConstructor(squirrel::createClassInstance<Something>);
+        c.setConstructor(createClassInstance<Something>);
         c.setMethod("doStuff", Something_doStuff);
 		c.setMethod("setText", Something_setText);
 		c.setMethod("getText", Something_getText);
@@ -151,17 +205,24 @@ namespace
 
     int SharedThing_sayHello(HSQUIRRELVM vm)
     {
-        auto * self = squirrel::getNativeInstance<SharedThing>(vm, 1);
-        self->sayHello();
+        SharedThing * self = nullptr;
+        if (squirrel::getNativeInstance(vm, 1, self))
+        {
+            self->sayHello();
+        }
         return 0;
     }
 
     int SharedThing_getChild(HSQUIRRELVM vm)
     {
-        auto * self = squirrel::getNativeInstance<SharedThing>(vm, 1);
-        SharedThing * sub = self->getChild();
-        sub->pushScriptObject(vm);
-        return 1;
+        SharedThing * self = nullptr;
+        if (squirrel::getNativeInstance(vm, 1, self))
+        {
+            SharedThing * sub = self->getChild();
+            sub->pushScriptObject(vm);
+            return 1;
+        }
+        return 0;
     }
 
     void registerSharedThing(HSQUIRRELVM vm)
@@ -178,8 +239,11 @@ namespace
 
     int DerivedThing_sayHello(HSQUIRRELVM vm)
     {
-        auto * self = squirrel::getNativeInstance<DerivedThing>(vm, 1);
-        self->sayHello();
+        DerivedThing * self = nullptr;
+        if (squirrel::getNativeInstance(vm, 1, self))
+        {
+            self->sayHello();
+        }
         return 0;
     }
 

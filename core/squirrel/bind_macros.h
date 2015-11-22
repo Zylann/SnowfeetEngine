@@ -12,13 +12,19 @@
 // Put this on top of the namespace containing the wrappers
 #define CURRENT_CLASS(_name) typedef _name __sn_CurrentClass;
 
-// If you prefer writing the function in plain C++ instead of the macros above, 
-// Put this macro at the beginning to get the "self" local variable.
-// The function will generate an error if self is null.
+// Put this on top of each method. It will create the 'self' variable containing the C++ object,
+// and perform all required checks on it.
 #define GET_SELF() \
-	auto * self = squirrel::getNativeInstance<__sn_CurrentClass>(vm, 1);\
-	if (self == nullptr)\
-		return sq_throwerror(vm, "Attempt to call native method '" SN_FUNCNAME "' on destroyed instance")
+    __sn_CurrentClass * self = nullptr; \
+    do {\
+        SQUserPointer ptr = nullptr; \
+        if (SQ_FAILED(sq_getinstanceup(vm, 1, &ptr, squirrel::getTypeTag<__sn_CurrentClass>()))) {\
+            return sq_throwerror(vm, "sq_getinstanceup failed in native method '" SN_FUNCNAME "'");\
+        }\
+        if (ptr == nullptr)\
+            return sq_throwerror(vm, "Attempt to call native method '" SN_FUNCNAME "' on destroyed instance"); \
+        self = static_cast<__sn_CurrentClass*>(ptr);\
+    } while (0)
 
 #endif // __HEADER_SQUIRREL_BIND_MACROS__
 

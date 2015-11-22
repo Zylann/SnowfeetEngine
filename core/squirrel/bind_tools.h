@@ -50,43 +50,35 @@ void SN_API setGlobalFunction(HSQUIRRELVM vm, const char * name, SQFUNCTION cb_f
 /// \brief Gets the last error generated in the given VM.
 std::string SN_API getLastError(HSQUIRRELVM vm);
 
-// TODO Most of the following functions are out of date, check their use and remove them
-
 //------------------------------------------------------------------------------
-/// \deprecated
-/// \brief Creates a new C++ instance and assigns it as the instance userpointer
-/// of the last element on the Squirrel stack.
-template <typename T>
-SQInteger createClassInstance(HSQUIRRELVM vm)
+/// \brief Tests if a Squirrel type is numeric
+inline bool isNumericType(SQObjectType t)
 {
-    T * p = new T();
-    sq_setinstanceup(vm, -1, p);
-    sq_setreleasehook(vm, -1, releaseClassInstance<T>);
-    return 0;
+    return t == OT_FLOAT || t == OT_INTEGER;
 }
 
 //------------------------------------------------------------------------------
-/// \deprecated
-/// \brief (internal use) Destroys/releases a C++ instance.
-/// This function is used in the Squirrel release hook.
-template <typename T>
-SQInteger releaseClassInstance(SQUserPointer ptr, SQInteger size)
+/// \brief Use this function to provide a typetag to sq_getinstanceup.
+/// You have to define template specializations to make it work.
+/// By default, it returns null and so ignores the tag check.
+template <class T>
+inline SQUserPointer getTypeTag()
 {
-    T * p = static_cast<T*>(ptr);
-    priv::destroyClassInstance(p);
-    return 0;
+    return nullptr;
 }
 
 //------------------------------------------------------------------------------
-/// \deprecated
 /// \brief Gets the associated userpointer of an instance at the given index on the stack of a Squirrel VM.
-/// In a custom Squirrel callback bound as a method, you can use it to retrieve your C++ instance at index 1.
+/// If getTypeTag has a specialization for T, it will be used to check the typetag.
+/// If the typetag check fails, the function will return false.
 template <typename T>
-T * getNativeInstance(HSQUIRRELVM vm, SQInteger i)
+bool getNativeInstance(HSQUIRRELVM vm, SQInteger i, T *& out_ptr)
 {
     SQUserPointer p = NULL;
-    sq_getinstanceup(vm, i, &p, NULL);
-    return static_cast<T*>(p);
+    if (SQ_FAILED(sq_getinstanceup(vm, i, &p, getTypeTag<T>())))
+        return false;
+    out_ptr = static_cast<T*>(p);
+    return true;
 }
 
 //------------------------------------------------------------------------------
@@ -127,34 +119,6 @@ inline SQFloat getFloat(HSQUIRRELVM vm, SQInteger i)
 	if (SQ_FAILED(sq_getfloat(vm, i, &v)))
 		return 0;
 	return v;
-}
-
-//------------------------------------------------------------------------------
-namespace priv
-{
-	/// \deprecated
-    template<class T>
-    void destroyClassInstance_checkRefCounted(std::true_type, T * p)
-    {
-        // If the class derives from RefCounted,
-        // use its release() method instead of delete (which is protected)
-        p->release();
-    }
-
-	/// \deprecated
-    template<class T>
-    void destroyClassInstance_checkRefCounted(std::false_type, T * p)
-    {
-        // If it's a regular class, just delete it
-        delete p;
-    }
-
-	/// \deprecated
-    template<class T>
-    void destroyClassInstance(T * p)
-    {
-        priv::destroyClassInstance_checkRefCounted<T>(std::is_base_of<RefCounted, T>(), p);
-    }
 }
 
 } // namespace squirrel
