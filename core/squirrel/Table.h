@@ -38,6 +38,24 @@ public:
 		return *this;
 	}
 
+    template <typename Key_T, typename Value_T>
+    bool getField(Key_T key, Value_T & out_value)
+    {
+        SN_ASSERT(!isNull(), "Table is null");
+        sq_pushobject(m_vm, m_object);
+        squirrel::push(m_vm, key);
+        if (SQ_SUCCEEDED(sq_get(m_vm, -2)))
+        {
+            if (SQ_SUCCEEDED(squirrel::getValue(m_vm, -1, out_value)))
+            {
+                sq_pop(m_vm, 2);
+                return true;
+            }
+        }
+        sq_pop(m_vm, 1);
+        return false;
+    }
+
     Table & setDelegate(const Table & other);
 
 	bool getString(HSQOBJECT keyObject, std::string & out_str);
