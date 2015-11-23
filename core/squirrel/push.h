@@ -26,7 +26,7 @@ inline void push(HSQUIRRELVM vm, SQFloat v)
     sq_pushfloat(vm, v);
 }
 
-inline void push(HSQUIRRELVM vm, const char * str)
+inline void push(HSQUIRRELVM vm, const SQChar * str)
 {
     sq_pushstring(vm, str, -1);
 }

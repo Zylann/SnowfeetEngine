@@ -121,6 +121,50 @@ inline SQFloat getFloat(HSQUIRRELVM vm, SQInteger i, SQFloat defval = 0)
 	return v;
 }
 
+//------------------------------------------------------------------------------
+inline SQRESULT getValue(HSQUIRRELVM vm, SQInteger i, const SQChar *& out_value)
+{
+    return sq_getstring(vm, i, &out_value);
+}
+
+//------------------------------------------------------------------------------
+inline SQRESULT getValue(HSQUIRRELVM vm, SQInteger i, std::string & out_value)
+{
+    const SQChar * str;
+    SQRESULT res = sq_getstring(vm, i, &str);
+    if (SQ_SUCCEEDED(res))
+        out_value = str;
+    return res;
+}
+
+//------------------------------------------------------------------------------
+inline SQRESULT getValue(HSQUIRRELVM vm, SQInteger i, SQBool & out_value)
+{
+    return sq_getbool(vm, i, &out_value);
+}
+
+//------------------------------------------------------------------------------
+inline SQRESULT getValue(HSQUIRRELVM vm, SQInteger i, SQInteger & out_value)
+{
+    return sq_getinteger(vm, i, &out_value);
+}
+
+//------------------------------------------------------------------------------
+inline SQRESULT getValue(HSQUIRRELVM vm, SQInteger i, SQFloat & out_value)
+{
+    return sq_getfloat(vm, i, &out_value);
+}
+
+//------------------------------------------------------------------------------
+template <typename T>
+T tryGetValue(HSQUIRRELVM vm, SQInteger i, T defval = T())
+{
+    T value;
+    if (SQ_FAILED(getValue(vm, i, value)))
+        return defval;
+    return value;
+}
+
 } // namespace squirrel
 
 #endif // __HEADER_SN_SQ_BIND_TOOLS__
