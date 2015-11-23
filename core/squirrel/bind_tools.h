@@ -86,7 +86,7 @@ bool getNativeInstance(HSQUIRRELVM vm, SQInteger i, T *& out_ptr)
 inline const SQChar * getString(HSQUIRRELVM vm, SQInteger i, const SQChar * defval = nullptr)
 {
     const SQChar * str = nullptr;
-    if (SQ_FAILED(sq_getstring(vm, 2, &str)))
+    if (SQ_FAILED(sq_getstring(vm, i, &str)))
         return defval;
     return str;
 }
