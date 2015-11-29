@@ -234,6 +234,24 @@ std::wstring getFileFolder(const std::wstring & path)
 }
 
 //------------------------------------------------------------------------------
+std::string getFileFolder(const std::string & path)
+{
+    size_t sepIndex = path.find_last_of('/');
+    if (sepIndex == std::string::npos)
+    {
+        sepIndex = path.find_last_of('\\');
+    }
+    if (sepIndex == std::string::npos)
+    {
+        return "";
+    }
+    else
+    {
+        return path.substr(0, sepIndex);
+    }
+}
+
+//------------------------------------------------------------------------------
 std::string trimLeft(std::string str)
 {
     u32 i = 0;

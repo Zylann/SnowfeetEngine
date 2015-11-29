@@ -50,6 +50,7 @@ std::wstring SN_API getFileExtension(const std::wstring & str);
 // If the path points to a folder, the parent folder is returned.
 // If the path ends with a '/' or a '\', the function just removes it.
 std::wstring SN_API getFileFolder(const std::wstring & path);
+std::string SN_API getFileFolder(const std::string & path);
 
 /// \brief Returns a substring without trailing whitespace.
 std::string SN_API trimLeft(std::string str);
