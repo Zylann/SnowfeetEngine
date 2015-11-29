@@ -180,11 +180,11 @@ bool ScriptManager::compileSquirrelModule(const std::string & modName, const std
 
     for (auto it = files.begin(); it != files.end(); ++it)
     {
-        const String & filePath = *it;
-        if (readFile(toString(filePath), sourceCode))
+        const std::string & filePath = sn::toString(*it);
+        if (readFile(filePath, sourceCode))
         {
             squirrel::Script script(m_squirrelVM);
-            if (script.compileString(sourceCode, sn::toString(filePath)))
+            if (script.compileString(sourceCode, filePath))
             {
                 scripts.push_back(script);
             }
@@ -202,9 +202,9 @@ bool ScriptManager::compileSquirrelModule(const std::string & modName, const std
 
     // Run scripts
 
-    for (auto it = scripts.begin(); it != scripts.end(); ++it)
+    for (size_t i = 0; i < scripts.size(); ++i)
     {
-        auto & script = *it;
+        auto & script = scripts[i];
         script.execute();
     }
 
@@ -272,7 +272,7 @@ void ScriptManager::registerCoreAPI()
     SN_LOG("Registering core API");
 
 	squirrel::RootTable root(m_squirrelVM);
-	root.setField("getClassName", sqGetClassName);
+	root.setMethod("getClassName", sqGetClassName, 2, "tx|y");
 
     bindCore(m_squirrelVM);
 }
