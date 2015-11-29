@@ -46,6 +46,7 @@ public:
 
     /// \brief Auto-binds a ScriptableObject class to Squirrel with just a constructor and destructor,
     /// and returns it to let binding the other specific members.
+    /// \warning Make sure getTypeTag<T> is defined before you call this method.
     template <typename T>
     static squirrel::Class bindBase(HSQUIRRELVM vm)
     {
@@ -64,6 +65,7 @@ public:
 
         // Create the class
         squirrel::Class c(vm, sqName, sqBaseName);
+        c.setTypeTag(squirrel::getTypeTag<T>());
 
         // Bind constructor
         ScriptableObject::bindBaseConstructor<T>(vm, c, std::is_abstract<T>());

@@ -11,9 +11,28 @@ This file is part of the SnowfeetEngine project.
 #include <string>
 #include <core/export.h>
 
+// Just an idea...
+//#define DECLARE_SQUIRREL_CLASS_NS(_namespace, _class)\
+//    namespace _namespace {\
+//        extern squirrel::ClassBinding _class##_squirrelBinding;\
+//    }\
+//    namespace squirrel {\
+//        template <>\
+//        inline ClassBinding & getClassBinding<_namespace::##_class>() {\
+//            return _namespace::_class##_squirrelBinding;\
+//        }\
+//    }
+//
+//#define IMPL_SQUIRREL_CLASS_NS(_namespace, _class)\
+//    namespace _namespace {\
+//        squirrel::ClassBinding _class##_squirrelBinding;\
+//        typedef _class squirrelBinding_CurrentClass;\
+//    }
+
 namespace squirrel
 {
 
+//------------------------------------------------------------------------------
 /// \brief Explicit version of characters used in paramcheck masks.
 /// Each character represents a Squirrel data type.
 enum TypeChars
@@ -33,6 +52,11 @@ enum TypeChars
     T_THREAD     = 'v',
     T_ANY        = '.'
 };
+
+//------------------------------------------------------------------------------
+//class ClassBinding
+//{
+//};
 
 //------------------------------------------------------------------------------
 /// \brief Prints the Squirrel stack in the console output.
@@ -58,12 +82,27 @@ inline bool isNumericType(SQObjectType t)
 }
 
 //------------------------------------------------------------------------------
-/// \brief Use this function to provide a typetag to sq_getinstanceup.
+//template <class T>
+//inline ClassBinding & getClassBinding()
+//{
+//    static_assert(false, "Specialization not found");
+//    return nullptr;
+//}
+
+//------------------------------------------------------------------------------
+/// \brief Use this function to provide a unique typetag to sq_getinstanceup.
 /// You have to define template specializations to make it work.
-/// By default, it returns null and so ignores the tag check.
+/// Otherwise, it will fail because a value of 0 would disable typetag checking
+/// and make sq_getinstanceup calls unsafe (it's a cast from void*, you know)
+///
+/// \note A common implementation is to simply return the address of the function or
+/// object providing the binding, which is guaranteed to be unique during process execution.
+///
 template <class T>
 inline SQUserPointer getTypeTag()
 {
+    //return getClassBinding<T>();
+    static_assert(false, "getTypeTag<T> Specialization not found.");
     return nullptr;
 }
 

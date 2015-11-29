@@ -145,6 +145,22 @@ protected:
 };
 
 //------------------------------------------------------------------------------
+// Forward-declare binding functions
+namespace test_squirrel
+{
+    void registerSomething(HSQUIRRELVM vm);
+    void registerSharedThing(HSQUIRRELVM vm);
+    void registerDerivedThing(HSQUIRRELVM vm);
+}
+
+//------------------------------------------------------------------------------
+namespace squirrel
+{
+    template <> inline SQUserPointer getTypeTag<Something>() { return test_squirrel::registerSomething; }
+    template <> inline SQUserPointer getTypeTag<SharedThing>() { return test_squirrel::registerSharedThing; }
+    template <> inline SQUserPointer getTypeTag<DerivedThing>() { return test_squirrel::registerDerivedThing; }
+}
+
 //------------------------------------------------------------------------------
 
 // Binding
@@ -187,19 +203,6 @@ namespace
 		return 0;
 	}
 
-    void registerSomething(HSQUIRRELVM vm)
-    {
-        const char * className = "Something";
-
-        squirrel::Class c(vm, className);
-        c.setConstructor(createClassInstance<Something>);
-        c.setMethod("doStuff", Something_doStuff);
-		c.setMethod("setText", Something_setText);
-		c.setMethod("getText", Something_getText);
-
-        squirrel::RootTable(vm).setObject(className, c);
-    }
-
     //--------------------------------------------------------------------------
     // Binding of a ScriptableObject 
 
@@ -225,15 +228,6 @@ namespace
         return 0;
     }
 
-    void registerSharedThing(HSQUIRRELVM vm)
-    {
-        ObjectTypeDatabase::get().registerType<SharedThing>();
-
-        ScriptableObject::bindBase<SharedThing>(vm)
-            .setMethod("sayHello", SharedThing_sayHello)
-            .setMethod("getChild", SharedThing_getChild);
-    }
-
     //--------------------------------------------------------------------------
     // Binding of a DerivedThing
 
@@ -245,6 +239,31 @@ namespace
             self->sayHello();
         }
         return 0;
+    }
+}
+
+namespace test_squirrel
+{
+    void registerSomething(HSQUIRRELVM vm)
+    {
+        const char * className = "Something";
+
+        squirrel::Class c(vm, className);
+        c.setConstructor(createClassInstance<Something>);
+        c.setMethod("doStuff", Something_doStuff);
+		c.setMethod("setText", Something_setText);
+		c.setMethod("getText", Something_getText);
+
+        squirrel::RootTable(vm).setObject(className, c);
+    }
+
+    void registerSharedThing(HSQUIRRELVM vm)
+    {
+        ObjectTypeDatabase::get().registerType<SharedThing>();
+
+        ScriptableObject::bindBase<SharedThing>(vm)
+            .setMethod("sayHello", SharedThing_sayHello)
+            .setMethod("getChild", SharedThing_getChild);
     }
 
     void registerDerivedThing(HSQUIRRELVM vm)
@@ -271,9 +290,9 @@ void test_squirrelBinding()
     HSQUIRRELVM vm = vmObject.getSquirrelVM();
 
     // Register native interface
-    registerSomething(vm);
-    registerSharedThing(vm);
-    registerDerivedThing(vm);
+    test_squirrel::registerSomething(vm);
+    test_squirrel::registerSharedThing(vm);
+    test_squirrel::registerDerivedThing(vm);
 
     {
         // Execute a script
