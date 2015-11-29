@@ -46,7 +46,7 @@ inline Vector<f32, 3> getSphericalAngles(const Vector<T, 3> & v)
     return angles;
 }
 
-inline size_t getHash(const sn::Vector3i & v)
+inline size_t getHash(const Vector3i & v)
 {
     return (((size_t)v.x()) * 73856093)
 		^ (((size_t)v.y()) * 19349663)
