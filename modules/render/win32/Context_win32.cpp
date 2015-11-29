@@ -216,6 +216,8 @@ bool ContextImpl::setPixelFormat(HWND hwnd, ContextSettings & settings)
         return false;
     }
 
+    ReleaseDC(hwnd, hdc);
+
     return true;
 }
 
