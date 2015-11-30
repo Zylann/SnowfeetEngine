@@ -33,6 +33,8 @@ public:
 
     Texture * getTexture() const { return m_texture; }
 
+    bool hasDepth() const { return m_hasDepth; }
+
     static void bind(const RenderTexture * rt);
 
     // TODO
