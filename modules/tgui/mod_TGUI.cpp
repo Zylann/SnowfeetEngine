@@ -1,7 +1,7 @@
 #include "mod_TGUI.h"
 
 #include "GUI.h"
-#include "Renderer.h"
+#include "RenderStep.h"
 
 #include "controls/Control.h"
 #include "controls/Button.h"
@@ -29,7 +29,7 @@ namespace tgui
         otb.registerType<Control>();
         otb.registerType<GUI>();
         otb.registerType<Button>();
-        otb.registerType<Renderer>();
+        otb.registerType<RenderStep>();
         otb.registerType<Text>();
         otb.registerType<Panel>();
         otb.registerType<Slider>();

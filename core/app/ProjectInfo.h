@@ -43,15 +43,14 @@ public:
     /// \brief Name of the startup scene asset.
     std::string startupScene;
 
-    /// \brief List of global entities to create in the main scene when the module is loaded
-    std::vector<Service> services;
+    /// \brief Global entities to create in the main scene when the module is loaded
+    std::string sceneManagers;
 
     /// \brief Serialized form of the update manager
     Variant updateLayers;
 
 private:
     bool setDataFromVariant(const Variant & v);
-    void parseServices(const Variant & o);
 
 };
 

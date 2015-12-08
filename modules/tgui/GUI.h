@@ -4,7 +4,7 @@
 #include <core/util/SharedRef.h>
 #include <core/system/Event.h>
 
-#include <modules/render/IDrawContext.h>
+#include <modules/render/VideoDriver.h>
 
 #include "controls/Control.h"
 #include "theme/Theme.h"
@@ -19,7 +19,7 @@ public:
 
     GUI();
 
-    void draw(sn::render::IDrawContext & dc);
+    void draw(sn::render::VideoDriver & driver);
 
     void onReady() override;
 
@@ -49,6 +49,8 @@ private:
     Control * r_focusControl;
     sn::SharedRef<Theme> m_theme;
     std::bitset<sn::SN_EVENT_COUNT> m_eventFilter;
+    sn::render::ClearMask m_clearMask;
+    sn::Color m_clearColor;
 
 };
 

@@ -13,13 +13,21 @@
 namespace sn {
 namespace render {
 
+/// \brief Defines the appearance of objects
 class SN_RENDER_API Material : public sn::Asset
 {
 public:
     SN_SCRIPT_OBJECT(sn::render::Material, sn::Asset)
 
     // Conventional uniform names
-    static const char* MAIN_TEXTURE;
+    static const char * MAIN_TEXTURE;
+    static const char * MODEL_MATRIX;
+    static const char * VIEW_MATRIX;
+    static const char * MODEL_VIEW_MATRIX;
+    static const char * PROJECTION_MATRIX;
+    static const char * NORMAL_MATRIX;
+    static const char * COLOR;
+    static const char * TIME;
 
     Material() :
         sn::Asset(),
@@ -58,7 +66,7 @@ public:
     BlendMode getBlendMode() const { return m_blendMode; }
     void setBlendMode(BlendMode mode) { m_blendMode = mode; }
 
-    void apply();
+    void applyParameters();
 
 private:
     ~Material();

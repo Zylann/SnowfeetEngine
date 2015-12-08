@@ -17,15 +17,13 @@ This file is part of the SnowfeetEngine project.
 #include "ClearBits.h"
 #include "BlendMode.h"
 
-#include <GL/glew.h>
-
 namespace sn {
 namespace render {
 
 class ContextImpl;
 
 /// \brief Holds a valid rendering context.
-class Context : public NonCopyable
+class SN_RENDER_API Context : public NonCopyable
 {
 public:
     // TODO What if the window is closed by the user?
@@ -47,25 +45,6 @@ public:
 
     const ContextSettings & getSettings() const { return m_settings; }
 
-    void useProgram(const ShaderProgram * shader = nullptr);
-
-    void clearTarget(ClearMask mask = SNR_CLEAR_ALL);
-    void clearColor(const Color color);
-
-    void setDepthTest(bool enabled);
-
-    void setViewport(u32 x, u32 y, u32 width, u32 height);
-    void setViewport(const IntRect & rect);
-
-    void drawMesh(const Mesh & mesh);
-
-    /// \brief Clamps next draw calls to a sub-rectangle on the current render target.
-    void setScissor(IntRect rect);
-    /// \brief Disables scissor.
-    void disableScissor();
-
-    void setBlendMode(BlendMode mode);
-
     // Platform-specific
     //void swapBuffers();
     ContextImpl * getImpl() const { return m_impl; }
@@ -80,8 +59,6 @@ private:
     Window * r_window;
     ContextSettings m_settings;
 };
-
-GLenum genericPrimitiveTypeToGL(MeshPrimitiveType pt);
 
 } // namespace render
 } // namespace sn

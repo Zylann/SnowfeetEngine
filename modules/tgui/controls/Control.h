@@ -5,8 +5,6 @@
 #include <core/scene/Entity.h>
 #include <core/math/Vector2.h>
 
-#include <modules/render/IDrawContext.h>
-
 #include "../Direction.h"
 #include "../theme/Theme.h"
 #include "../DrawBatch.h"

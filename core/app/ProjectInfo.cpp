@@ -88,8 +88,10 @@ bool ProjectInfo::setDataFromVariant(const Variant & v)
     // Get startup scene if any
     startupScene = v["startupScene"].getString();
 
-    // Get services if any
-    parseServices(v["services"]);
+    // Get managers
+    if (!v["services"].isNil())
+        SN_WARNING("The 'services' field is deprecated. You should use the 'sceneManagers' field instead and assign it to a scene.");
+    sn::unserialize(v["sceneManagers"], sceneManagers);
 
     // Get bindings
 	sn::unserialize(v["modules"], modules);
@@ -104,34 +106,34 @@ bool ProjectInfo::setDataFromVariant(const Variant & v)
 }
 
 //------------------------------------------------------------------------------
-void ProjectInfo::parseServices(const Variant & o)
-{
-    if (o.isArray())
-    {
-        const Variant::Array & a = o.getArray();
-        for (u32 i = 0; i < a.size(); ++i)
-        {
-            const Variant & serviceValue = o[i];
-            if (serviceValue.isString())
-            {
-                Service s;
-                s.type = serviceValue.getString();
-                services.push_back(s);
-            }
-            else if (serviceValue.isDictionary())
-            {
-                if (services.size() >= 1)
-                {
-                    services.back().args = serviceValue;
-                }
-                else
-                {
-                    SN_WARNING("Expected service name, got arguments in " + toString(filePath));
-                }
-            }
-        }
-    }
-}
+//void ProjectInfo::parseServices(const Variant & o)
+//{
+//    if (o.isArray())
+//    {
+//        const Variant::Array & a = o.getArray();
+//        for (u32 i = 0; i < a.size(); ++i)
+//        {
+//            const Variant & serviceValue = o[i];
+//            if (serviceValue.isString())
+//            {
+//                Service s;
+//                s.type = serviceValue.getString();
+//                services.push_back(s);
+//            }
+//            else if (serviceValue.isDictionary())
+//            {
+//                if (services.size() >= 1)
+//                {
+//                    services.back().args = serviceValue;
+//                }
+//                else
+//                {
+//                    SN_WARNING("Expected service name, got arguments in " + toString(filePath));
+//                }
+//            }
+//        }
+//    }
+//}
 
 } // namespace sn
 

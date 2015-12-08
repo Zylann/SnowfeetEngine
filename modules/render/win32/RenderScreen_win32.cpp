@@ -105,20 +105,6 @@ void RenderScreen::swapBuffers()
     m_impl->swapBuffers();
 }
 
-//static RenderScreen * g_currentScreen = nullptr;
-
-// Static
-bool RenderScreen::setCurrent(RenderScreen * screen, Context * context)
-{
-    //if (g_currentScreen == screen)
-    //    return true;
-    //g_currentScreen = screen;
-    if (screen)
-        return screen->makeCurrent(context);
-    else
-        return !!wglMakeCurrent(nullptr, nullptr);
-}
-
 } // namespace render
 } // namespace sn
 

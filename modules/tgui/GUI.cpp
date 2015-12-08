@@ -1,6 +1,9 @@
 #include <core/system/SystemGUI.h>
 #include <core/asset/AssetDatabase.h>
 #include <core/util/Profiler.h>
+#include <core/scene/Scene.h>
+
+#include <modules/render/entities/RenderManager.h>
 
 #include "GUI.h"
 #include "DrawBatch.h"
@@ -14,7 +17,8 @@ namespace tgui
 GUI::GUI():
 	m_defaultTheme(nullptr),
 	r_captureControl(nullptr),
-    r_focusControl(nullptr)
+    r_focusControl(nullptr),
+    m_clearMask(sn::render::SNR_CLEAR_NONE)
 {
     m_defaultTheme = new Theme();
 }
@@ -69,7 +73,7 @@ const Theme & GUI::getTheme() const
 }
 
 //------------------------------------------------------------------------------
-void GUI::draw(sn::render::IDrawContext & dc)
+void GUI::draw(sn::render::VideoDriver & driver)
 {
     SN_BEGIN_PROFILE_SAMPLE_NAMED("TGUI draw");
 
@@ -78,26 +82,46 @@ void GUI::draw(sn::render::IDrawContext & dc)
     sn::render::Material * themeMaterial = theme.getMaterial();
     if (themeMaterial)
     {
-        Window * win = SystemGUI::get().getWindowByID(0);
+        Scene * scene = getScene();
+        if (scene)
+        {
+            auto * renderManager = scene->getChild<sn::render::RenderManager>();
+            if (renderManager)
+            {
+                u32 winId = getWindowID();
+                sn::render::RenderScreen * screen = renderManager->getScreenByWindowId(winId);
+                if (screen)
+                {
+                    Vector2u screenSize = screen->getSize();
 
-        Vector2u screenSize = win->getClientSize();
+                    Matrix4 projection, view;
 
-        // Override projection
-        Matrix4 projection;
-        projection.loadOrtho2DProjection(0, 0, static_cast<f32>(screenSize.x()), static_cast<f32>(screenSize.y()), -1, 100);
-        dc.setProjectionMatrix(projection);
+                    projection.loadOrtho2DProjection(0, 0, static_cast<f32>(screenSize.x()), static_cast<f32>(screenSize.y()), -1, 100);
+                    // TODO This translation quickfixes Matrix4 not handling assymetric ortho frustrum, please fix it
+                    view.setTranslation(sn::Vector3f(-static_cast<f32>(screenSize.x()) / 2, -static_cast<f32>(screenSize.y()) / 2, 0));
 
-        // Override view
-        Matrix4 view;
-        // TODO This translation quickfixes Matrix4 not handling assymetric ortho frustrum, please fix it
-        view.setTranslation(sn::Vector3f(-static_cast<f32>(screenSize.x())/2, -static_cast<f32>(screenSize.y())/2, 0));
-        dc.setViewMatrix(view);
+                    driver.makeCurrent(*screen);
 
-        DrawBatch batch(dc);
-        batch.setMaterial(*themeMaterial);
+                    // Clear?
+                    if (m_clearMask)
+                    {
+                        if (m_clearMask & sn::render::SNR_CLEAR_COLOR)
+                            driver.clearColor(m_clearColor);
+                        driver.clearTarget(m_clearMask);
+                    }
 
-        onDraw(batch);
-        batch.flush();
+                    driver.setViewport(0, 0, screenSize.x(), screenSize.y());
+
+                    DrawBatch batch(driver);
+                    batch.setProjectionMatrix(projection);
+                    batch.setViewMatrix(view);
+                    batch.setMaterial(*themeMaterial);
+
+                    onDraw(batch);
+                    batch.flush();
+                }
+            }
+        }
     }
 
     SN_END_PROFILE_SAMPLE();
@@ -151,6 +175,10 @@ bool GUI::onSystemEvent(const sn::Event & systemEvent)
 void GUI::serializeState(sn::Variant & o, const sn::SerializationContext & ctx)
 {
     Control::serializeState(o, ctx);
+
+    sn::render::serialize(o["clearBits"], m_clearMask);
+    sn::serialize(o["clearColor"], m_clearColor);
+
     // TODO Serialize theme location
 }
 
@@ -162,6 +190,9 @@ void GUI::unserializeState(const Variant & o, const sn::SerializationContext & c
 	std::string themeLocation;
 	sn::unserialize(o["theme"], themeLocation);
     m_theme.set(getAssetBySerializedLocation<Theme>(themeLocation, ctx.getProject()));
+
+    sn::render::unserialize(o["clearBits"], m_clearMask);
+    sn::unserialize(o["clearColor"], m_clearColor);
 }
 
 } // namespace tgui

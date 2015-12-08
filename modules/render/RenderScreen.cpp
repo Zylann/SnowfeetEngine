@@ -25,14 +25,14 @@ void RenderScreen::createSharedContext(Context & mainContext, ContextSettings se
     m_context = new Context(settings, &r_window, &mainContext);
 }
 
-bool RenderScreen::makeCurrent(Context * context)
+bool RenderScreen::makeCurrent(Context & context)
 {
-    if (context == nullptr)
-    {
-        SN_ASSERT(m_context != nullptr, "Cannot set current RenderScreen, context is null");
-        context = m_context;
-    }
-    return makeCurrentImpl(*context);
+    return makeCurrentImpl(context);
+}
+
+const Vector2u RenderScreen::getSize()
+{
+    return r_window.getClientSize();
 }
 
 } // namespace render

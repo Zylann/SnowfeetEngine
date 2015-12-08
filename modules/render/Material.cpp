@@ -10,6 +10,16 @@ namespace sn {
 namespace render {
 
 //------------------------------------------------------------------------------
+const char * Material::MAIN_TEXTURE = "u_MainTexture";
+const char * Material::MODEL_MATRIX = "u_ModelMatrix";
+const char * Material::MODEL_VIEW_MATRIX = "u_ModelView";
+const char * Material::VIEW_MATRIX = "u_ViewMatrix";
+const char * Material::PROJECTION_MATRIX = "u_Projection";
+const char * Material::NORMAL_MATRIX = "u_NormalMatrix";
+const char * Material::COLOR = "u_Color";
+const char * Material::TIME = "u_Time";
+
+//------------------------------------------------------------------------------
 Material::~Material()
 {
 }
@@ -20,9 +30,6 @@ void Material::setShader(ShaderProgram * shader)
     SN_ASSERT(shader != nullptr, "Material shader cannot be null (" << sn::toString(getAssetMetadata().path) << ")");
 	m_shader.set(shader);
 }
-
-//------------------------------------------------------------------------------
-const char * Material::MAIN_TEXTURE = "u_MainTexture";
 
 //------------------------------------------------------------------------------
 bool Material::getParam(const std::string & name, f32 & out_v)
@@ -88,7 +95,7 @@ void Material::setRenderTexture(const std::string & name, RenderTexture * tex)
 }
 
 //------------------------------------------------------------------------------
-void Material::apply()
+void Material::applyParameters()
 {
     if (m_shader.isNull())
         return;

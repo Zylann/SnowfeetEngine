@@ -3,7 +3,7 @@
 
 #include <core/scene/Entity3D.h>
 
-#include <modules/render/IDrawContext.h>
+#include <modules/render/RenderState.h>
 #include <modules/render/common.h>
 
 namespace sn {
@@ -18,7 +18,7 @@ public:
     static const std::string TAG;
 
     void onReady() override;
-    virtual void onDraw(sn::render::IDrawContext & context) = 0;
+    virtual void onDraw(RenderState & state) = 0;
 
 };
 

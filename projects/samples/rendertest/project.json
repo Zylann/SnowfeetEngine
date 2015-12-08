@@ -1,17 +1,7 @@
 {
 	"startupScene":"main",
+	"sceneManagers":"managers",
 	"dependencies":[
 		"mods/render"
-	],
-	"services":[
-		"sn::render::RenderManager",
-		{
-			"screens":[
-				{
-					"size":[800,600],
-					"title":"Test"
-				}
-			]
-		}
 	]
 }

@@ -37,7 +37,7 @@ public:
 
     void instantiate(
         Entity & a_parent, 
-        const std::string & contextModuleName, 
+        const std::string & contextProjectName, 
         std::vector<Entity*> * out_rootEntities = nullptr
     );
 
@@ -47,7 +47,7 @@ protected:
 private:
     void instantiateOnly(
         Entity & a_parent, 
-        const std::string & contextModuleName, 
+        const std::string & contextProjectName, 
         std::vector<Entity*> * out_rootEntities
     ) const;
 

@@ -8,6 +8,7 @@ This file is part of the SnowfeetEngine project.
 #define __HEADER_SN_RENDER_SHADERPROGRAM__
 
 #include <core/asset/Asset.h>
+#include <core/math/Matrix4.h>
 #include <unordered_map>
 
 #include "Vertex.h"
@@ -27,7 +28,7 @@ enum ShaderType
 
 std::string toString(ShaderType st);
 
-class ShaderProgram : public Asset
+class SN_RENDER_API ShaderProgram : public Asset
 {
 public:
     SN_SCRIPT_OBJECT(sn::render::ShaderProgram, sn::Asset)
@@ -56,6 +57,11 @@ public:
     void setParam(const std::string & name, f32 x, f32 y, f32 z, f32 w);
     void setParam(const std::string & name, const f32 matrixValues[16], bool transpose=false);
     void setParam(const std::string & name, s32 i);
+
+    inline void setParam(const std::string & name, const Matrix4 & matrix, bool transpose = false)
+    {
+        setParam(name, matrix.values(), transpose);
+    }
 
     bool hasParameter(const std::string & name);
 

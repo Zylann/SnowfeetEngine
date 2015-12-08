@@ -1,10 +1,13 @@
+#include <core/app/Application.h>
 #include <core/system/SystemGUI.h>
 #include <core/scene/Scene.h>
 #include <core/asset/AssetDatabase.h> // TODO Remove?
 #include <core/util/typecheck.h>
 #include <core/util/Profiler.h>
 
+#include <modules/render/RenderState.h>
 #include <modules/render/entities/VRHeadset.h>
+#include <modules/render/entities/RenderStep.h>
 
 #include "RenderManager.h"
 #include "Drawable.h"
@@ -16,88 +19,7 @@ namespace render {
 const char * RenderManager::TAG = "RenderManager";
 
 //------------------------------------------------------------------------------
-class DrawContext : public IDrawContext
-{
-public:
-    DrawContext(Context & a_context) :
-        context(a_context)
-    {}
-
-    void setMaterial(Material & a_material) override
-    {
-        Material & material = *checked_cast<Material*>(&a_material);
-
-        context.setDepthTest(material.isDepthTest());
-        context.setBlendMode(material.getBlendMode());
-
-        ShaderProgram * shader = material.getShader();
-
-        if (shader)
-        {
-            context.useProgram(material.getShader());
-
-            modelViewMatrix.loadIdentity();
-            modelViewMatrix.setByProduct(viewMatrix, modelMatrix);
-
-            // Note: Matrix4 is row-major with translation in the last row
-            shader->setParam("u_Projection", projectionMatrix.values(), false);
-            shader->setParam("u_ModelView", modelViewMatrix.values(), false);
-            shader->setParam("u_NormalMatrix", normalMatrix.values(), false);
-
-            material.apply();
-        }
-    }
-
-    void setViewport(const IntRect & pixelRect) override
-    {
-        context.setViewport(pixelRect);
-    }
-
-    void drawMesh(const Mesh & mesh) override
-    {
-        context.drawMesh(mesh);
-    }
-
-    void setProjectionMatrix(const Matrix4 & projection) override
-    {
-        projectionMatrix = projection;
-    }
-
-    void setModelMatrix(const Matrix4 & model) override
-    {
-        modelMatrix = model;
-    }
-
-    void setViewMatrix(const Matrix4 & view) override
-    {
-        viewMatrix = view;
-    }
-
-    void setNormalMatrix(const Matrix4 & m) override
-    {
-        normalMatrix = m;
-    }
-
-    void setScissor(IntRect rect) override
-    {
-        context.setScissor(rect);
-    }
-
-    void disableScissor() override
-    {
-        context.disableScissor();
-    }
-
-    Context & context;
-    Matrix4 modelMatrix;
-    Matrix4 viewMatrix;
-    Matrix4 projectionMatrix;
-    Matrix4 modelViewMatrix;
-    Matrix4 normalMatrix;
-};
-
-//------------------------------------------------------------------------------
-RenderManager::RenderManager() : Entity(), m_mainContext(nullptr), m_effectQuad(nullptr)
+RenderManager::RenderManager() : Entity(), m_effectQuad(nullptr)
 {
     // This entity is always present across scenes
     setFlag(SN_EF_STICKY, true);
@@ -113,13 +35,6 @@ RenderManager::~RenderManager()
     }
     m_screens.clear();
 
-    // Release main context
-    if (m_mainContext)
-    {
-        delete m_mainContext;
-        m_mainContext = nullptr;
-    }
-
     if (m_effectQuad)
     {
         m_effectQuad->release();
@@ -132,8 +47,6 @@ void RenderManager::onReady()
 {
     Entity::onReady();
 
-    SN_ASSERT(m_mainContext == nullptr, "Invalid state, m_context is not null");
-
     // TODO If two renderManager are created, just use another window ID and it might work
     SN_ASSERT(getScene()->getTaggedEntity(TAG) == nullptr, "Two RenderManagers is not supported at the moment");
 
@@ -142,13 +55,6 @@ void RenderManager::onReady()
     // Register to update manager.
     setUpdatable(true, getObjectType().getName());
     listenToSystemEvents();
-
-    // Create the rendering context that will be shared across render screens
-    ContextSettings contextSettings;
-    contextSettings.majorVersion = 3;
-    contextSettings.minorVersion = 3;
-    m_mainContext = new Context(contextSettings);
-    m_mainContext->makeCurrent();
 
     // TODO This must depend on RenderManager service parameters
     // Create default screen
@@ -205,7 +111,7 @@ void RenderManager::removeScreen(u32 windowID, bool showError)
 }
 
 //------------------------------------------------------------------------------
-RenderScreen * RenderManager::getScreen(u32 windowID)
+RenderScreen * RenderManager::getScreenByWindowId(u32 windowID)
 {
     auto it = m_screens.find(windowID);
     if (it != m_screens.end())
@@ -219,16 +125,17 @@ void RenderManager::onUpdate()
 {
     Entity::onUpdate();
 
-    // Render!
-    render();
+    VideoDriver * driverPtr = Application::get().getDriverManager().getDriver<VideoDriver>();
+    if (driverPtr)
+    {
+        // Render!
+        render(*driverPtr);
+    }
 }
 
 //------------------------------------------------------------------------------
 bool RenderManager::onSystemEvent(const sn::Event & event)
 {
-    if (m_mainContext == nullptr)
-        return false;
-
 	switch (event.type)
 	{
 	case SN_EVENT_WINDOW_RESIZED:
@@ -250,7 +157,7 @@ bool RenderManager::onSystemEvent(const sn::Event & event)
 //------------------------------------------------------------------------------
 void RenderManager::onWindowResized(const Event & ev)
 {
-    RenderScreen * screen = getScreen(ev.windowID);
+    RenderScreen * screen = getScreenByWindowId(ev.windowID);
     if (screen)
     {
         onScreenResized(ev.windowID, ev.window.width, ev.window.height);
@@ -303,13 +210,48 @@ T * checkTaggedType(const std::string & tag, Entity * e)
 }
 
 //------------------------------------------------------------------------------
-void RenderManager::render()
+void RenderManager::render(VideoDriver & driver)
 {
     SN_BEGIN_PROFILE_SAMPLE_NAMED("Render");
 
-    if (m_mainContext == nullptr)
-        return; // Can't render
+    /*
+    renderAllTaggedCameras(driver, Camera::TAG);
+    
+    // Display rendered surfaces
+    for (auto it = m_screens.begin(); it != m_screens.end(); ++it)
+    {
+        RenderScreen & screen = *it->second;
+        screen.swapBuffers();
+    }
+    */
 
+    // Get steps
+    std::vector<RenderStep*> renderSteps;
+    getChildrenOfType<RenderStep>(renderSteps);
+
+    if (!renderSteps.empty())
+    {
+        // Execute steps
+        for (auto it = renderSteps.begin(); it != renderSteps.end(); ++it)
+        {
+            RenderStep * step = *it;
+            step->onDraw(driver);
+        }
+
+        // Display rendered surfaces
+        for (auto it = m_screens.begin(); it != m_screens.end(); ++it)
+        {
+            RenderScreen & screen = *it->second;
+            screen.swapBuffers();
+        }
+    }
+
+    SN_END_PROFILE_SAMPLE();
+}
+
+//------------------------------------------------------------------------------
+void RenderManager::renderAllTaggedCameras(VideoDriver & driver, const std::string & tag)
+{
     Scene * scene = getScene();
 
     // Get cameras
@@ -334,33 +276,23 @@ void RenderManager::render()
     // Draw scene parts viewed by cameras
     for (auto it = sortedCameras.begin(); it != sortedCameras.end(); ++it)
     {
-        renderCamera(**it);
+        renderCamera(driver, **it);
     }
-
-    // Display rendered surfaces
-    for (auto it = m_screens.begin(); it != m_screens.end(); ++it)
-    {
-        RenderScreen & screen = *it->second;
-        screen.swapBuffers();
-    }
-
-    SN_END_PROFILE_SAMPLE();
 }
 
 //------------------------------------------------------------------------------
-void RenderManager::renderCamera(Camera & camera)
+void RenderManager::renderCamera(VideoDriver & driver, Camera & camera)
 {
     SN_BEGIN_PROFILE_SAMPLE_NAMED("Render camera");
 
     // Note: at the moment, only render with a single main context
 
     // Get context of the target window, or the main shared context if we render offscreen
-    Context * context = m_mainContext;
-    RenderScreen * screen = camera.getRenderTarget() == nullptr ? getScreen(camera.getTargetWindowID()) : nullptr;
+    RenderScreen * screen = camera.getRenderTarget() == nullptr ? getScreenByWindowId(camera.getTargetWindowID()) : nullptr;
     if (screen)
-        RenderScreen::setCurrent(screen, context);
+        driver.makeCurrent(*screen);
     else
-        context->makeCurrent();
+        driver.makeCurrent();
 
     // Get VR
     // TODO VR shouldn't be searched on each render
@@ -419,14 +351,14 @@ void RenderManager::renderCamera(Camera & camera)
         RenderTexture::bind(rt);
         // Use filled viewport
         Vector2u size = rt->getSize();
-        context->setViewport(0, 0, size.x(), size.y());
+        driver.setViewport(0, 0, size.x(), size.y());
     }
     else
     {
         // Or bind the target directly
         RenderTexture::bind(camera.getRenderTarget());
         // Set final viewport
-        context->setViewport(viewport);
+        driver.setViewport(viewport);
     }
 
     // Clear?
@@ -434,8 +366,8 @@ void RenderManager::renderCamera(Camera & camera)
     {
         ClearMask mask = camera.getClearBits();
         if (mask & SNR_CLEAR_COLOR)
-            context->clearColor(camera.getClearColor());
-        context->clearTarget(mask);
+            driver.clearColor(camera.getClearColor());
+        driver.clearTarget(mask);
     }
 
     // Get drawables
@@ -470,17 +402,17 @@ void RenderManager::renderCamera(Camera & camera)
         projectionMatrix.loadPerspectiveProjection(eyeDesc.fov, camera.getNear(), camera.getFar());
     }
 
-    DrawContext dc(*context);
-    dc.setViewMatrix(viewMatrix);
-    dc.setProjectionMatrix(projectionMatrix);
+    RenderState state(driver);
+    state.viewMatrix = viewMatrix;
+    state.projectionMatrix = projectionMatrix;
 
     // Draw them
     for (auto it = sortedDrawables.begin(); it != sortedDrawables.end(); ++it) 
     {
         Drawable & d = **it;
-        d.onDraw(dc);
+        d.onDraw(state);
 
-        context->useProgram(nullptr);
+        driver.useProgram(nullptr);
     }
 
     // If the camera has effects
@@ -507,7 +439,7 @@ void RenderManager::renderCamera(Camera & camera)
         }
 
         // Disable depth-test, we'll draw an overlay
-        context->setDepthTest(false);
+        driver.setDepthTest(false);
 
         RenderTexture * targetBuffer = camera.getEffectBuffer(0);
         RenderTexture * sourceBuffer = camera.getEffectBuffer(1);
@@ -525,7 +457,7 @@ void RenderManager::renderCamera(Camera & camera)
                 // Bind the final target (which is the screen)
                 RenderTexture::bind(camera.getRenderTarget());
                 // With the final viewport
-                context->setViewport(viewport);
+                driver.setViewport(viewport);
             }
             else
             {
@@ -539,7 +471,7 @@ void RenderManager::renderCamera(Camera & camera)
             if (material.getShader())
             {
                 ShaderProgram * shader = material.getShader();
-                context->useProgram(shader);
+                driver.useProgram(shader);
 
                 material.setRenderTexture(Material::MAIN_TEXTURE, sourceBuffer);
 
@@ -552,7 +484,7 @@ void RenderManager::renderCamera(Camera & camera)
 
                 // No projection, no modelview. Everything is [-1, 1].
 
-                material.apply();
+                material.applyParameters();
             }
 
             Mesh * effectMesh = effect.mesh.get();
@@ -560,9 +492,9 @@ void RenderManager::renderCamera(Camera & camera)
                 effectMesh = m_effectQuad;
 
             // Draw
-            context->drawMesh(*effectMesh);
+            driver.drawMesh(*effectMesh);
 
-            context->useProgram(nullptr);
+            driver.useProgram(nullptr);
         }
     }
 

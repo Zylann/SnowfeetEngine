@@ -35,7 +35,6 @@ public:
 
     bool loadModules();
     bool compileScripts();
-    void createServices(Scene & scene);
 
     /// \brief Calculates the project dependency list of the given project.
     /// The list is ordered by module loading.

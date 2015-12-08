@@ -9,6 +9,7 @@
 #include "entities/Camera.h"
 #include "entities/MeshEntity.h"
 #include "entities/VRHeadset.h"
+#include "entities/CameraRenderStep.h"
 
 #include "loaders/BasicMeshLoader.h"
 #include "loaders/MaterialLoader.h"
@@ -38,6 +39,8 @@ namespace render {
         otb.registerType<Camera>();
         otb.registerType<Drawable>();
         otb.registerType<MeshEntity>();
+        otb.registerType<RenderStep>();
+        otb.registerType<CameraRenderStep>();
 
         // Assets
         otb.registerType<Material>();

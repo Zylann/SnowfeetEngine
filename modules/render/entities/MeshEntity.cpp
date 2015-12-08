@@ -30,7 +30,7 @@ void MeshEntity::setMesh(Mesh * mesh)
 }
 
 //------------------------------------------------------------------------------
-void MeshEntity::onDraw(IDrawContext & dc)
+void MeshEntity::onDraw(RenderState & state)
 {
     const Mesh * mesh = getMesh();
     if (mesh)
@@ -39,17 +39,43 @@ void MeshEntity::onDraw(IDrawContext & dc)
         Material * material = getMaterial();
         if (material)
         {
+            VideoDriver & driver = state.driver;
+
             Matrix4 normalMatrix;
             normalMatrix.setRotation(getGlobalRotation());
-            dc.setNormalMatrix(normalMatrix);
 
-            dc.setModelMatrix(getGlobalMatrix());
+            if (!m_material.isNull())
+            {
+                Material & material = *m_material.get();
 
-            dc.setMaterial(*material);
+                driver.setDepthTest(material.isDepthTest());
+                driver.setBlendMode(material.getBlendMode());
+
+                ShaderProgram * shader = material.getShader();
+
+                if (shader)
+                {
+                    driver.useProgram(material.getShader());
+
+                    Matrix4 modelViewMatrix;
+                    modelViewMatrix.setByProduct(state.viewMatrix, getGlobalMatrix());
+
+                    // Note: Matrix4 is row-major with translation in the last row
+                    shader->setParam(Material::PROJECTION_MATRIX, state.projectionMatrix.values(), false);
+                    shader->setParam(Material::MODEL_VIEW_MATRIX, modelViewMatrix.values(), false);
+                    shader->setParam(Material::NORMAL_MATRIX, state.normalMatrix.values(), false);
+
+                    material.applyParameters();
+                }
+            }
+
+            // Draw the mesh
+            driver.drawMesh(*mesh);
         }
-
-        // Draw the mesh
-        dc.drawMesh(*mesh);
+        //else
+        //{
+        //    // TODO Draw the mesh with a dummy material
+        //}
     }
 }
 

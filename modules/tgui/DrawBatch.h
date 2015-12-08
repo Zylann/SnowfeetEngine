@@ -5,7 +5,7 @@
 
 #include <modules/render/Mesh.h>
 #include <modules/render/Material.h>
-#include <modules/render/IDrawContext.h>
+#include <modules/render/VideoDriver.h>
 #include <modules/freetype/Font.hpp>
 
 #include "Border.h"
@@ -18,8 +18,11 @@ namespace tgui
 class DrawBatch
 {
 public:
-    DrawBatch(sn::render::IDrawContext & dc);
+    DrawBatch(sn::render::VideoDriver & driver);
     ~DrawBatch();
+
+    void setViewMatrix(const sn::Matrix4 & matrix);
+    void setProjectionMatrix(const sn::Matrix4 & matrix);
 
     void setMaterial(sn::render::Material & m);
     void flush();
@@ -77,8 +80,10 @@ private:
 
 private:
     sn::Mesh * m_mesh;
-    sn::render::IDrawContext & m_dc;
+    sn::render::VideoDriver & r_driver;
     sn::render::Material * r_material;
+    sn::Matrix4 m_viewMatrix;
+    sn::Matrix4 m_projectionMatrix;
 
 };
 

@@ -488,27 +488,40 @@ Project * Application::loadProject(const String & path)
 	// Rebuild class mapping once all script classes have been defined
 	m_scriptEngine.rebuildClassMapping();
 
-	if (m_scene)
-	{
-    	// Create services
-		size_t i = 0;
-		for (auto it = projectsToLoad.begin(); it != projectsToLoad.end(); ++it)
-		{
-			// Load static assets
-			const ProjectInfo & info = *it;
-			Project * project = projects[i++];
-			project->createServices(*m_scene);
-		}
-	}
+    AssetDatabase & assetDatabase = AssetDatabase::get();
 
-    // Load Assets afterwards (so now all services assets would require should be available)
+    // Load Assets afterwards (so now all modules assets would require should be available)
     for (auto it = projectsToLoad.begin(); it != projectsToLoad.end(); ++it)
     {
         SN_LOG("-------------");
         // Load static assets
         const ProjectInfo & info = *it;
-        AssetDatabase::get().loadAssets(info);
+        assetDatabase.loadAssets(info);
     }
+
+	if (m_scene)
+	{
+    	// Create scene managers
+		size_t i = 0;
+		for (auto it = projectsToLoad.begin(); it != projectsToLoad.end(); ++it)
+		{
+			const ProjectInfo & info = *it;
+            sn::PackedEntity * pack = assetDatabase.getAsset<PackedEntity>(info.name, info.sceneManagers);
+            if (pack)
+            {
+                // Instantiate managers
+                std::vector<Entity*> rootEntities;
+                pack->instantiate(*m_scene, info.name, &rootEntities);
+
+                // Make them sticky (they won't go away when a new scene is loaded)
+                for (u32 i = 0; i < rootEntities.size(); ++i)
+                {
+                    Entity * e = rootEntities[i];
+                    e->setFlag(SN_EF_STICKY, true);
+                }
+            }
+		}
+	}
 
     // Note: the last loaded module will be the one we requested when calling this function
     return lastProject;

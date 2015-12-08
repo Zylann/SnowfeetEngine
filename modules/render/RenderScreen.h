@@ -2,15 +2,16 @@
 #define __HEADER_SNR_RENDERSCREEN__
 
 #include <core/system/Window.h>
-#include "Context.h"
+#include <modules/render/Context.h>
 
 namespace sn {
 namespace render {
 
 class RenderScreenImpl;
+class VideoDriver;
 
 /// \brief Encapsulates a window that is used as rendering target
-class RenderScreen : public NonCopyable
+class SN_RENDER_API RenderScreen : public NonCopyable
 {
 public:
     RenderScreen(Window & window);
@@ -21,7 +22,11 @@ public:
     /// \brief Gets the context attached to this window. Can be null.
     Context * getContext() const { return m_context; }
 
+    bool makeCurrent(Context & context);
+
     Window & getWindow() const { return r_window; }
+
+    const Vector2u getSize();
 
     //---------------------------
     // Platform-specific
@@ -30,11 +35,7 @@ public:
     /// \brief Swaps the buffers of the window (double-buffering)
     void swapBuffers();
 
-    static bool setCurrent(RenderScreen * screen, Context * context = nullptr);
-
 private:
-    bool makeCurrent(Context * context = nullptr);
-
     // Platform-specific
     void initImpl();
     void deinitImpl();

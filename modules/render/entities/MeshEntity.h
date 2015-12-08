@@ -17,7 +17,7 @@ public:
 
     MeshEntity();
 
-    void onDraw(IDrawContext & dc) override;
+    void onDraw(RenderState & state) override;
 
     void setMesh(Mesh * mesh);
     const Mesh * getMesh() const { return m_mesh.get(); }

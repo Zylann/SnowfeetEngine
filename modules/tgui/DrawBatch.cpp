@@ -8,12 +8,14 @@ namespace tgui
 {
 
 //------------------------------------------------------------------------------
-DrawBatch::DrawBatch(sn::render::IDrawContext & dc):
-    m_dc(dc),
+DrawBatch::DrawBatch(sn::render::VideoDriver & driver):
+    r_driver(driver),
     r_material(nullptr)
 {
     m_mesh = new sn::Mesh();
     m_mesh->setPrimitiveType(SN_MESH_QUADS);
+
+
 }
 
 //------------------------------------------------------------------------------
@@ -23,10 +25,37 @@ DrawBatch::~DrawBatch()
 }
 
 //------------------------------------------------------------------------------
+void DrawBatch::setViewMatrix(const Matrix4 & matrix)
+{
+    m_viewMatrix = matrix;
+}
+
+//------------------------------------------------------------------------------
+void DrawBatch::setProjectionMatrix(const Matrix4 & matrix)
+{
+    m_projectionMatrix = matrix;
+}
+
+//------------------------------------------------------------------------------
 void DrawBatch::setMaterial(sn::render::Material & m)
 {
-    m_dc.setMaterial(m);
-    r_material = &m;
+    sn::render::ShaderProgram * shader = m.getShader();
+    if (shader)
+    {
+        r_driver.setDepthTest(m.isDepthTest());
+        r_driver.setBlendMode(m.getBlendMode());
+
+        r_driver.useProgram(shader);
+
+        //Matrix4 model;
+        //shader->setParam(sn::render::Material::MODEL_MATRIX, model);
+        shader->setParam(sn::render::Material::MODEL_VIEW_MATRIX, m_viewMatrix);
+        shader->setParam(sn::render::Material::PROJECTION_MATRIX, m_projectionMatrix);
+
+        m.applyParameters();
+
+        r_material = &m;
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -316,7 +345,7 @@ void DrawBatch::setTexture(sn::render::Texture * tex)
         flush();
         r_material->setTexture(sn::render::Material::MAIN_TEXTURE, tex);
         // TODO Needed to update uniforms...
-        m_dc.setMaterial(*r_material);
+        setMaterial(*r_material);
     }
 }
 
@@ -343,7 +372,7 @@ void DrawBatch::setScissor(sn::IntRect rect, u32 windowID)
     {
         Vector2u winSize = win->getClientSize();
         rect.y() = static_cast<s32>(winSize.y()) - rect.y() - rect.height();
-        m_dc.setScissor(rect);
+        r_driver.setScissor(rect);
     }
 }
 
@@ -351,7 +380,7 @@ void DrawBatch::setScissor(sn::IntRect rect, u32 windowID)
 void DrawBatch::disableScissor()
 {
     flush();
-    m_dc.disableScissor();
+    r_driver.disableScissor();
 }
 
 //------------------------------------------------------------------------------
@@ -359,7 +388,7 @@ void DrawBatch::flush()
 {
     sn::Mesh & m = *m_mesh;
     m.recalculateIndexes();
-    m_dc.drawMesh(m);
+    r_driver.drawMesh(m);
     m.clear();
 }
 

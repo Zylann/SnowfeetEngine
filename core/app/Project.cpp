@@ -176,30 +176,31 @@ bool Project::compileScripts()
 }
 
 //------------------------------------------------------------------------------
-void Project::createServices(Scene & scene)
-{
-    for (auto it = m_info.services.begin(); it != m_info.services.end(); ++it)
-    {
-        const ProjectInfo::Service & serviceInfo = *it;
-
-        std::string typeName = serviceInfo.type;
-        if (scene.getChildByType(typeName))
-        {
-            SN_WARNING("Service " << typeName << " already created");
-        }
-        else
-        {
-            SN_LOG("Creating service " << typeName);
-            Entity * e = scene.createChild(typeName);
-            if (e && it->args.isDictionary())
-            {
-                SerializationContext context(m_info.name);
-                e->unserializeState(serviceInfo.args, context);
-				e->propagateOnReady();
-            }
-        }
-    }
-}
+//void Project::createServices(Scene & scene)
+//{
+//    SerializationContext context(m_info.name);
+//
+//    for (auto it = m_info.services.begin(); it != m_info.services.end(); ++it)
+//    {
+//        const ProjectInfo::Service & serviceInfo = *it;
+//
+//        std::string typeName = serviceInfo.type;
+//        if (scene.getChildByType(typeName))
+//        {
+//            SN_WARNING("Service " << typeName << " already created");
+//        }
+//        else
+//        {
+//            SN_LOG("Creating service " << typeName);
+//            Entity * e = scene.createChild(typeName);
+//            if (e && it->args.isDictionary())
+//            {
+//                e->unserializeState(serviceInfo.args, context);
+//				e->propagateOnReady();
+//            }
+//        }
+//    }
+//}
 
 } // namespace sn
 

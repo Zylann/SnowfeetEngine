@@ -22,7 +22,6 @@ void serialize(sn::Variant & o, ClearMask m)
 //------------------------------------------------------------------------------
 void unserialize(const sn::Variant & o, ClearMask & m)
 {
-    m = SNR_CLEAR_NONE;
     if (!o.isArray())
         return;
     const sn::Variant::Array & a = o.getArray();
@@ -40,6 +39,8 @@ void unserialize(const sn::Variant & o, ClearMask & m)
                 m |= SNR_CLEAR_COLOR;
             else if (s == "depth")
                 m |= SNR_CLEAR_DEPTH;
+            else if (s == "none")
+                m = SNR_CLEAR_NONE;
             else
                 SN_WARNING("Unknown ClearMask value: '" << s << "'");
         }

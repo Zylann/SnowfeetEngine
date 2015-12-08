@@ -62,24 +62,24 @@ const ObjectType * PackedEntity::getRootType() const
 //------------------------------------------------------------------------------
 void PackedEntity::instantiate(
         Entity & a_parent, 
-        const std::string & contextModuleName, 
+        const std::string & contextProjectName, 
         std::vector<Entity*> * out_rootEntities
         )
 {
     if (!isFlattened())
         flatten();
 
-    instantiateOnly(a_parent, contextModuleName, out_rootEntities);
+    instantiateOnly(a_parent, contextProjectName, out_rootEntities);
 }
 
 //------------------------------------------------------------------------------
 void PackedEntity::instantiateOnly(
         Entity & a_parent, 
-        const std::string & contextModuleName, 
+        const std::string & contextProjectName, 
         std::vector<Entity*> * out_rootEntities
         ) const
 {
-    SerializationContext context(contextModuleName);
+    SerializationContext context(contextProjectName);
 
     const auto & objects = getObjects();
 
@@ -106,7 +106,7 @@ void PackedEntity::instantiateOnly(
         }
         else
         {
-            SN_ERROR("Unknown object object type from JSON (name=" << typeName << ")");
+            SN_ERROR("Unknown object type from JSON (name=" << typeName << ")");
         }
     }
 

@@ -1,26 +1,18 @@
 {
 	"format":"SN2",
 	"objects":[
-		1,
-		{
-			"@type":"sn::render::Camera",
-			"clearBits":["color", "depth"],
-			"clearColor": [0.5, 0.5, 0.8]
-		},
 		2,
 		{
 			"@type":"tgui::GUI",
 			"theme":"example_theme",
 			"name":"the_gui",
+			"clearBits":["color"],
+			"clearColor":[0.5, 0.5, 1.0],
 			"_children":[
 				{"@ref":3},
 				{"@ref":4},
 				{"@ref":17}
 			]
-		},
-		3,
-		{
-			"@type":"tgui::Renderer"
 		},
 		4,
 		{
@@ -29,7 +21,6 @@
 			"anchors":"fill",
 			"bounds":{"x":10, "y":10, "w":400, "h":300},
 			"padding":{"left":4, "right":4, "top":4, "bottom":4},
-			"isResizeable":true,
 			"_children":[
 				{"@ref":5}
 			]

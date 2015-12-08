@@ -1,0 +1,22 @@
+{
+    "format":"SN2",
+    "objects":[
+        1,
+        {
+            "@type": "sn::render::RenderManager",
+			"screens":[
+				{
+					"size":[800,600],
+					"title":"TGUI test"
+				}
+			],
+            "_children":[
+                {"@ref":2}
+            ]
+		},
+        2,
+        {
+            "@type":"tgui::RenderStep"
+        }
+    ]
+}
