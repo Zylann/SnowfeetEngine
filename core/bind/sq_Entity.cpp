@@ -215,7 +215,7 @@ namespace sn
             {
                 std::stringstream ss;
                 ss << "Asset not found: \"" << packName << '"';
-                sq_throwerror(vm, ss.str().c_str());
+                return sq_throwerror(vm, ss.str().c_str());
             }
             return 0;
         }
