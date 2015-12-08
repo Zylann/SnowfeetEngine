@@ -14,9 +14,6 @@ namespace sn
 {
 
 /// \brief Base class for VR headsets controllers.
-/// \warning Wether this class should stay here or not is not decided yet.
-/// It is here because I need to communicate between rendering and the Oculus Rift,
-/// and the scripting system is not advanced enough to do it.
 class SN_RENDER_API VRHeadset : public Entity
 {
 public:

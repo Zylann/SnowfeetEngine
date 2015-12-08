@@ -23,8 +23,10 @@ class WindowImpl;
 class WindowContainer;
 
 //------------------------------------------------------------------------------
-/// \brief A rectangular area on the screen.
+/// \brief A rectangular area on the screen handled by the OS.
 /// It's the frontier between the system's GUI and what the engine will show by itself.
+/// Note that in games, you should use RenderScreens instead, because Windows have initially
+/// nothing  to do with accelerated rendering.
 class SN_API Window : public NonCopyable
 {
 public:
