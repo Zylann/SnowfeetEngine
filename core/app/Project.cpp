@@ -76,7 +76,7 @@ void Project::calculateProjectDependencies(
     ProjectInfo info;
     if (!info.loadFromFile(pathToProjects, FilePath::join(projectDir, toWideString(ProjectInfo::FILE_NAME))))
     {
-        throw Exception("Unable to load project info for \"" + toString(projectDir) + '"');
+        throw Exception("Unable to load project info for \"" + toString(projectDir) + "\", file not found");
     }
 
     openSet->insert(projectDir);
