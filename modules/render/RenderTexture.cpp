@@ -4,8 +4,8 @@
 #include "gl_check.h"
 #include <GL/glew.h>
 
-namespace sn {
-namespace render {
+namespace sn
+{
 
 RenderTexture::RenderTexture(): Asset(),
     m_frameBufferID(0),
@@ -123,6 +123,5 @@ void RenderTexture::bind(const RenderTexture * rt)
     glCheck(glBindFramebuffer(GL_FRAMEBUFFER, rt ? rt->m_frameBufferID : 0));
 }
 
-} // namespace render
 } // namespace sn
 

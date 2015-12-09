@@ -3,8 +3,8 @@
 #include "MeshEntity.h"
 #include "RenderManager.h"
 
-namespace sn {
-namespace render {
+namespace sn
+{
 
 //------------------------------------------------------------------------------
 MeshEntity::~MeshEntity()
@@ -117,7 +117,6 @@ void MeshEntity::unserializeState(const sn::Variant & o, const SerializationCont
     // TODO
 }
 
-} // namespace render
 } // namespace sn
 
 

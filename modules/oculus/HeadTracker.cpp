@@ -134,8 +134,8 @@ void HeadTracker::onReady()
             }
         }
 
-        m_abstractEyes[0].effectMaterial.set(database.getAsset<sn::render::Material>(projectName, "left_eye_mat"));
-        m_abstractEyes[1].effectMaterial.set(database.getAsset<sn::render::Material>(projectName, "right_eye_mat"));
+        m_abstractEyes[0].effectMaterial.set(database.getAsset<sn::Material>(projectName, "left_eye_mat"));
+        m_abstractEyes[1].effectMaterial.set(database.getAsset<sn::Material>(projectName, "right_eye_mat"));
 
         // Must be called before any call to ovrHmd_BeginFrameTiming
         ovrHmd_ResetFrameTiming(m_ovrHmd, 0);
@@ -172,9 +172,9 @@ Vector2u HeadTracker::getPreferredFramebufferSize(EyeIndex eyeIndex)
 }
 
 //------------------------------------------------------------------------------
-void HeadTracker::onRenderEye(Entity * sender, VRHeadset::EyeIndex abstractEyeIndex, sn::render::Material * effectMaterial, Vector2u sourceSize, IntRect targetViewport)
+void HeadTracker::onRenderEye(Entity * sender, VRHeadset::EyeIndex abstractEyeIndex, sn::Material * effectMaterial, Vector2u sourceSize, IntRect targetViewport)
 {
-    sn::render::Material * material = effectMaterial;
+    sn::Material * material = effectMaterial;
     if (material)
     {
         ovrTrackingState trackingState = ovrHmd_GetTrackingState(m_ovrHmd, m_ovrFrameTiming.ScanoutMidpointSeconds);

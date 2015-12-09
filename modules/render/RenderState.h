@@ -4,8 +4,8 @@
 #include <core/math/Matrix4.h>
 #include <modules/render/VideoDriver.h>
 
-namespace sn {
-namespace render {
+namespace sn
+{
 
 /// \brief Additional data carried during rendering of entities
 class RenderState
@@ -22,7 +22,6 @@ public:
 
 };
 
-} // namespace render
 } // namespace sn
 
 #endif // __HEADER_SN_RENDERSTATE__

@@ -12,8 +12,8 @@
 // of model format without third-party library.
 // For more complex models, use the appropriate module.
 
-namespace sn {
-namespace render {
+namespace sn
+{
 
 enum PLYElementType
 {
@@ -103,7 +103,6 @@ private:
 
 };
 
-} // namespace render
 } // namespace sn
 
 #endif // __HEADER_SNR_PLY_LOADER__

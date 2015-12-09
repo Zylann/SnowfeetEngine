@@ -1,7 +1,7 @@
 #include "PLYLoader.h"
 
-namespace sn  {
-namespace render {
+namespace sn
+{
 
 // Some references
 // http://paulbourke.net/dataformats/ply/
@@ -397,7 +397,6 @@ bool PLYLoader::parseFaces(const PLYElement & element)
     return true;
 }
 
-} // namespace render
 } // namespace sn
 
 

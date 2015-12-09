@@ -5,8 +5,8 @@
 #include "../Material.h"
 #include "MaterialLoader.h"
 
-namespace sn {
-namespace render {
+namespace sn
+{
 
 //------------------------------------------------------------------------------
 const ObjectType & MaterialLoader::getBaseAssetType() const
@@ -27,8 +27,8 @@ bool MaterialLoader::canLoad(const AssetMetadata & meta) const
 //------------------------------------------------------------------------------
 bool MaterialLoader::load(std::ifstream & ifs, Asset & asset) const
 {
-    sn::render::Material * materialPtr = checked_cast<sn::render::Material*>(&asset);
-    sn::render::Material & mat = *materialPtr;
+    sn::Material * materialPtr = checked_cast<sn::Material*>(&asset);
+    sn::Material & mat = *materialPtr;
 
     SmlParser parser;
     Variant doc;
@@ -38,7 +38,7 @@ bool MaterialLoader::load(std::ifstream & ifs, Asset & asset) const
 }
 
 //------------------------------------------------------------------------------
-bool MaterialLoader::loadFromVariant(const sn::Variant & doc, sn::render::Material & mat) const
+bool MaterialLoader::loadFromVariant(const sn::Variant & doc, sn::Material & mat) const
 {
     const AssetMetadata & meta = mat.getAssetMetadata();
 
@@ -54,7 +54,7 @@ bool MaterialLoader::loadFromVariant(const sn::Variant & doc, sn::render::Materi
 
     // Blending
     BlendMode blendMode;
-    sn::render::unserialize(doc["blend"], blendMode);
+    sn::unserialize(doc["blend"], blendMode);
     mat.setBlendMode(blendMode);
 
     // Params
@@ -130,6 +130,5 @@ bool MaterialLoader::loadFromVariant(const sn::Variant & doc, sn::render::Materi
     return mat.getShader() != nullptr;
 }
 
-} // namespace render
 } // namespace sn
 

@@ -13,8 +13,8 @@
 #include "Drawable.h"
 #include "Camera.h"
 
-namespace sn {
-namespace render {
+namespace sn
+{
 
 const char * RenderManager::TAG = "RenderManager";
 
@@ -532,6 +532,5 @@ void RenderManager::unserializeState(const Variant & o, const SerializationConte
     }
 }
 
-} // namespace render
 } // namespace sn
 

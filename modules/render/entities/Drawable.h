@@ -6,14 +6,14 @@
 #include <modules/render/RenderState.h>
 #include <modules/render/common.h>
 
-namespace sn {
-namespace render {
+namespace sn
+{
 
 /// \brief Entity having a visual appearance
 class SN_RENDER_API Drawable : public Entity3D
 {
 public:
-    SN_ENTITY(sn::render::Drawable, sn::Entity3D)
+    SN_ENTITY(sn::Drawable, sn::Entity3D)
 
     static const std::string TAG;
 
@@ -22,7 +22,6 @@ public:
 
 };
 
-} // namespace render
 } // namespace sn
 
 #endif // __HEADER_SN_RENDER_DRAWABLE__

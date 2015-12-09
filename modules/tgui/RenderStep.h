@@ -6,12 +6,12 @@
 namespace tgui
 {
 
-class RenderStep : public sn::render::RenderStep
+class RenderStep : public sn::RenderStep
 {
 public:
-    SN_ENTITY(tgui::RenderStep, sn::render::RenderStep)
+    SN_ENTITY(tgui::RenderStep, sn::RenderStep)
 
-    void onDraw(sn::render::VideoDriver & driver) override;
+    void onDraw(sn::VideoDriver & driver) override;
 
 };
 

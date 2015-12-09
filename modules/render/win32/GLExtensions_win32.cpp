@@ -3,8 +3,8 @@
 #include <GL/glew.h>
 #include <Windows.h>
 
-namespace sn {
-namespace render {
+namespace sn
+{
 
 // Thanks to Megabyte Softworks, for its tutorial series on "from-scratch" OpenGL 3.3 
 // http://www.mbsoftworks.sk/index.php?page=tutorials&series=1
@@ -110,6 +110,5 @@ bool ensureGLExtensions()
 	return bResult;
 }
 
-} // namespace render
 } // namespace sn
 

@@ -4,13 +4,13 @@
 #include <core/asset/AssetLoader.h>
 #include "../ShaderProgram.h"
 
-namespace sn {
-namespace render {
+namespace sn
+{
 
 class ShaderLoader : public AssetLoader
 {
 public:
-    SN_OBJECT(sn::render::ShaderLoader, sn::AssetLoader)
+    SN_OBJECT(sn::ShaderLoader, sn::AssetLoader)
 
     const ObjectType & getBaseAssetType() const override;
     bool canLoad(const AssetMetadata & meta) const override;
@@ -22,7 +22,6 @@ private:
 
 };
 
-} // namespace render
 } // namespace sn
 
 #endif // __HEADER_SNR_SHADERLOADER__

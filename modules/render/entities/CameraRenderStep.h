@@ -4,13 +4,13 @@
 #include <modules/render/entities/Camera.h>
 #include <modules/render/entities/RenderStep.h>
 
-namespace sn {
-namespace render {
+namespace sn
+{
 
 class CameraRenderStep : public RenderStep
 {
 public:
-    SN_ENTITY(sn::render::CameraRenderStep, sn::render::RenderStep)
+    SN_ENTITY(sn::CameraRenderStep, sn::RenderStep)
 
     CameraRenderStep();
 
@@ -23,7 +23,6 @@ private:
     std::string m_tag;
 };
 
-} // namespace render
 } // namespace sn
 
 #endif // __HEADER_SN_CAMERA_RENDER_STEP__

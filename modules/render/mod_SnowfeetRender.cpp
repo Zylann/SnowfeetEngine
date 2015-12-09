@@ -26,8 +26,8 @@
 #include "bind/sq_render.h"
 
 
-namespace sn {
-namespace render {
+namespace sn
+{
 
     void registerObjectTypes(ObjectTypeDatabase & otb)
     {
@@ -58,13 +58,12 @@ namespace render {
         otb.registerType<VideoDriver>();
     }
 
-} // namespace render
 } // namespace sn
 
 int loadSnowfeetModule_ModRender(ModuleLoadArgs args)
 {
-    sn::render::registerObjectTypes(*(args.objectTypeDatabase));
-    sn::render::bindRenderModule(args.squirrelVM);
+    sn::registerObjectTypes(*(args.objectTypeDatabase));
+    sn::bindRenderModule(args.squirrelVM);
     return 0;
 }
 

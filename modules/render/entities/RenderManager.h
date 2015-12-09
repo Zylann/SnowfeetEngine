@@ -5,8 +5,8 @@
 #include "../Context.h"
 #include "../RenderScreen.h"
 
-namespace sn {
-namespace render {
+namespace sn
+{
 
 class Camera;
 
@@ -17,7 +17,7 @@ class SN_RENDER_API RenderManager : public Entity
 {
 public:
 
-    SN_ENTITY(sn::render::RenderManager, sn::Entity);
+    SN_ENTITY(sn::RenderManager, sn::Entity);
 
     static const char * TAG;
 
@@ -53,8 +53,7 @@ private:
 
 };
 
-} // namespace render
-} // namespace
+} // namespace sn
 
 #endif // __HEADER_SN_RENDER_RENDERMANAGER__
 

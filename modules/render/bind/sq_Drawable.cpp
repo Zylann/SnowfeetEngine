@@ -1,12 +1,11 @@
 #include "sq_render.h"
 
-namespace sn {
-namespace render {
+namespace sn
+{
 
 void bindDrawable(HSQUIRRELVM vm)
 {
     ScriptableObject::bindBase<Drawable>(vm);
 }
 
-} // namespace render
 } // namespace sn

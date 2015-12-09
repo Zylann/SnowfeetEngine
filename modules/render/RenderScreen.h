@@ -4,8 +4,8 @@
 #include <core/system/Window.h>
 #include <modules/render/Context.h>
 
-namespace sn {
-namespace render {
+namespace sn
+{
 
 class RenderScreenImpl;
 class VideoDriver;
@@ -52,7 +52,6 @@ private:
 };
 
 } // namespace sn
-} // namespace render
 
 #endif // __HEADER_SNR_RENDERSCREEN__
 

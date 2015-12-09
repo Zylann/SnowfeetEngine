@@ -9,7 +9,7 @@ using namespace sn;
 namespace tgui
 {
 
-void RenderStep::onDraw(sn::render::VideoDriver & driver)
+void RenderStep::onDraw(sn::VideoDriver & driver)
 {
     Scene * scene = getScene();
     if (scene)

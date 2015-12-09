@@ -2,8 +2,8 @@
 #include <GL/glew.h>
 #include "Context.h"
 
-namespace sn {
-namespace render {
+namespace sn
+{
 
 // TODO Create a main OpenGL context that will be shared will all others
 // (A context must be created for each system window).
@@ -45,6 +45,5 @@ Context::~Context()
     //}
 }
 
-} // namespace render
 } // namespace sn
 

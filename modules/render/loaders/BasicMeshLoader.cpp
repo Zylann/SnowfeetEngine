@@ -6,8 +6,8 @@
 #include "BasicMeshLoader.h"
 #include "ply/PLYLoader.h"
 
-namespace sn {
-namespace render {
+namespace sn
+{
 
 //-----------------------------------------------------------------------------
 const ObjectType & BasicMeshLoader::getBaseAssetType() const
@@ -32,6 +32,5 @@ bool BasicMeshLoader::load(std::ifstream & ifs, Asset & asset) const
     return success;
 }
 
-} // namespace render
 } // namespace sn
 

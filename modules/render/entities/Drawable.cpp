@@ -2,8 +2,8 @@
 #include <core/asset/AssetDatabase.h>
 #include "Drawable.h"
 
-namespace sn {
-namespace render {
+namespace sn
+{
 
 const std::string Drawable::TAG = "Drawable";
 
@@ -14,7 +14,6 @@ void Drawable::onReady()
     addTag(TAG);
 }
 
-} // namespace render
 } // namespace sn
 
 

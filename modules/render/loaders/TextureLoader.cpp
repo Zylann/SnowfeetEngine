@@ -5,19 +5,19 @@
 #include "TextureLoader.h"
 #include "../Texture.h"
 
-namespace sn {
-namespace render {
+namespace sn
+{
 
 //-----------------------------------------------------------------------------
 const ObjectType & TextureLoader::getBaseAssetType() const
 {
-    return sn::getObjectType<sn::render::Texture>();
+    return sn::getObjectType<sn::Texture>();
 }
 
 //-----------------------------------------------------------------------------
 const ObjectType & TextureLoader::getAssetInstanceType() const
 {
-    return sn::getObjectType<sn::render::Texture>();
+    return sn::getObjectType<sn::Texture>();
 }
 
 //-----------------------------------------------------------------------------
@@ -86,6 +86,5 @@ bool TextureLoader::load(std::ifstream & ifs, Asset & asset) const
 //    return 0;
 //}
 
-} // namespace render
 } // namespace sn
 

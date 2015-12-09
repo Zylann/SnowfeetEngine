@@ -1,7 +1,7 @@
 #include "BlendMode.h"
 
-namespace sn {
-namespace render {
+namespace sn
+{
 
 void serialize(sn::Variant & o, BlendMode m)
 {
@@ -21,6 +21,5 @@ void unserialize(const sn::Variant & o, BlendMode & m)
         m = SNR_BLEND_NONE;
 }
 
-} // namespace render
 } // namespace sn
 

@@ -3,8 +3,8 @@
 #include "sq_render.h"
 #include <core/squirrel/bind_macros.h>
 
-namespace sn {
-namespace render {
+namespace sn
+{
 
     namespace
     {
@@ -29,6 +29,5 @@ void bindMeshEntity(HSQUIRRELVM vm)
     ;
 }
 
-} // namespace render
 } // namespace sn
 

@@ -4,8 +4,8 @@
 #include "../Context.h"
 #include <Windows.h>
 
-namespace sn {
-namespace render {
+namespace sn
+{
 
 /// \cond INTERNAL
 
@@ -42,7 +42,6 @@ private:
 
 /// \endcond
 
-} // namespace render
 } // namespace sn
 
 #endif //__HEADER_SN_CONTEXT_WIN32__

@@ -2,8 +2,8 @@
 #include <core/app/Application.h>
 #include "CameraRenderStep.h"
 
-namespace sn {
-namespace render {
+namespace sn
+{
 
 CameraRenderStep::CameraRenderStep() : RenderStep()
 {
@@ -30,6 +30,5 @@ void CameraRenderStep::unserializeState(const Variant & o, const SerializationCo
     sn::unserialize(o["tag"], m_tag);
 }
 
-} // namespace render
 } // namespace sn
 

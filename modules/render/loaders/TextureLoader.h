@@ -3,13 +3,13 @@
 
 #include <core/asset/AssetLoader.h>
 
-namespace sn {
-namespace render {
+namespace sn
+{
 
 class TextureLoader : public AssetLoader
 {
 public:
-    SN_OBJECT(sn::render::TextureLoader, sn::AssetLoader)
+    SN_OBJECT(sn::TextureLoader, sn::AssetLoader)
 
     const ObjectType & getBaseAssetType() const override;
     const ObjectType & getAssetInstanceType() const override;
@@ -19,7 +19,6 @@ public:
     //s32 getPriority(const AssetLoader & other) const override;
 };
 
-} // namespace render
 } // namespace sn
 
 #endif // __HEADER_SNR_TEXTURELOADER__

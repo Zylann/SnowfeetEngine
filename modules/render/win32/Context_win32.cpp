@@ -13,8 +13,8 @@
 #include <tchar.h>
 #include <core/system/win32/helpers_win32.h>
 
-namespace sn {
-namespace render {
+namespace sn
+{
 
 
 //==============================================================================
@@ -327,6 +327,5 @@ bool Context::makeCurrent(bool isCurrent)
 //    m_impl->swapBuffers();
 //}
 
-} // namespace render
 } // namespace sn
 

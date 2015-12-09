@@ -4,13 +4,13 @@
 #include <core/scene/Entity.h>
 #include <modules/render/entities/RenderManager.h>
 
-namespace sn {
-namespace render {
+namespace sn
+{
 
 class SN_RENDER_API RenderStep : public sn::Entity
 {
 public:
-    SN_ENTITY(sn::render::RenderStep, sn::Entity)
+    SN_ENTITY(sn::RenderStep, sn::Entity)
 
     RenderStep();
 
@@ -24,7 +24,6 @@ private:
 
 };
 
-} // namespace render
 } // namespace sn
 
 #endif // __HEADER_SN_RENDER_STEP__

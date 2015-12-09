@@ -6,8 +6,8 @@
 #include <GL/glew.h>
 
 
-namespace sn {
-namespace render {
+namespace sn
+{
 
 //-----------------------------------------------------------------------------
 Texture::Texture() : sn::Asset(),
@@ -183,6 +183,5 @@ void Texture::setActive(u32 textureUnit, Texture * tex)
     Texture::bind(tex);
 }
 
-} // namespace render
 } // namespace sn
 

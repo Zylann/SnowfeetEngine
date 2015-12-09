@@ -5,8 +5,8 @@
 #include <cmath>
 #include <sstream>
 
-namespace sn {
-namespace render {
+namespace sn
+{
 
 struct ContextSettings
 {
@@ -52,7 +52,6 @@ inline bool operator!=(const ContextSettings & lhs, const ContextSettings & rhs)
 		|| lhs.depthBits != rhs.depthBits;
 }
 
-} // namespace render
 } // namespace sn
 
 #endif // __HEADER_SNR_CONTEXTSETTINGS__

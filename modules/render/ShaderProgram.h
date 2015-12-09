@@ -14,8 +14,8 @@ This file is part of the SnowfeetEngine project.
 #include "Vertex.h"
 #include "Texture.h"
 
-namespace sn {
-namespace render {
+namespace sn
+{
 
 enum ShaderType
 {
@@ -31,7 +31,7 @@ std::string toString(ShaderType st);
 class SN_RENDER_API ShaderProgram : public Asset
 {
 public:
-    SN_SCRIPT_OBJECT(sn::render::ShaderProgram, sn::Asset)
+    SN_SCRIPT_OBJECT(sn::ShaderProgram, sn::Asset)
 
     // Constructs an empty program.
     ShaderProgram():
@@ -100,7 +100,6 @@ private:
 
 };
 
-} // namespace render
 } // namespace sn
 
 #endif // __HEADER_SN_RENDER_SHADERPROGRAM__

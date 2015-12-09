@@ -1,8 +1,8 @@
 #include <core/types.h>
 #include "Vertex.h"
 
-namespace sn {
-namespace render {
+namespace sn
+{
 
 std::string toString(VertexAttribute attrib)
 {
@@ -16,6 +16,5 @@ std::string toString(VertexAttribute attrib)
     }
 }
 
-} // namespace render
 } // namespace sn
 

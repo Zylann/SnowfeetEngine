@@ -3,8 +3,8 @@
 
 #include <string>
 
-namespace sn {
-namespace render {
+namespace sn
+{
 
 // for use in OpenGL3
 enum VertexAttribute
@@ -19,7 +19,6 @@ enum VertexAttribute
 
 std::string toString(VertexAttribute st);
 
-} // namespace render
 } // namespace sn
 
 #endif // __HEADER_SNR_VERTEX__

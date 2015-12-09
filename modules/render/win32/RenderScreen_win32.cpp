@@ -1,8 +1,8 @@
 #include "../RenderScreen.h"
 #include "Context_win32.h"
 
-namespace sn {
-namespace render {
+namespace sn
+{
 
 class RenderScreenImpl
 {
@@ -105,7 +105,6 @@ void RenderScreen::swapBuffers()
     m_impl->swapBuffers();
 }
 
-} // namespace render
 } // namespace sn
 
 

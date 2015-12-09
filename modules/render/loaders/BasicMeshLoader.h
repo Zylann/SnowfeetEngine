@@ -3,13 +3,13 @@
 
 #include <core/asset/AssetLoader.h>
 
-namespace sn {
-namespace render {
+namespace sn
+{
 
 class BasicMeshLoader : public AssetLoader
 {
 public:
-    SN_OBJECT(sn::render::BasicMeshLoader, sn::AssetLoader)
+    SN_OBJECT(sn::BasicMeshLoader, sn::AssetLoader)
 
     const ObjectType & getBaseAssetType() const override;
     bool canLoad(const AssetMetadata & meta) const override;
@@ -17,7 +17,6 @@ public:
 
 };
 
-} // namespace render
 } // namespace sn
 
 #endif // __HEADER_SNR_BASICMESHLOADER__

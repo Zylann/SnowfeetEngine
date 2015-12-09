@@ -4,8 +4,8 @@
 #include "ShaderProgram.h"
 #include <GL/glew.h>
 
-namespace sn {
-namespace render {
+namespace sn
+{
 
 //==============================================================================
 // Enums
@@ -275,7 +275,6 @@ GLint ShaderProgram::getUniformLocation(const std::string & name)
     return loc;
 }
 
-} // namespace render
 } // namespace sn
 
 

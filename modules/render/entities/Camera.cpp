@@ -4,8 +4,8 @@
 #include "Drawable.h"
 #include "Camera.h"
 
-namespace sn {
-namespace render {
+namespace sn
+{
 
 const std::string Camera::TAG = "Camera";
 
@@ -362,11 +362,11 @@ void Camera::serializeState(sn::Variant & o, const SerializationContext & contex
     sn::serialize(o["near"], m_near);
     sn::serialize(o["far"], m_far);
     sn::serialize(o["isOrtho"], m_isOrtho);
-    render::serialize(o["scaleMode"], m_scaleMode);
+    sn::serialize(o["scaleMode"], m_scaleMode);
     sn::serialize(o["fov"], m_fov);
     sn::serialize(o["orthoSize"], m_orthoSize);
     sn::serialize(o["drawOrder"], m_drawOrder);
-    render::serialize(o["clearBits"], m_clearBits);
+    sn::serializeClearMask(o["clearBits"], m_clearBits);
     sn::serialize(o["clearColor"], m_clearColor);
     sn::serialize(o["viewport"], m_viewport);
     sn::serialize(o["targetWindow"], m_targetWindowID);
@@ -386,11 +386,11 @@ void Camera::unserializeState(const sn::Variant & o, const SerializationContext 
     sn::unserialize(o["near"], m_near, 0.1f);
     sn::unserialize(o["far"], m_far, 100.f);
     sn::unserialize(o["isOrtho"], m_isOrtho, false);
-    render::unserialize(o["scaleMode"], m_scaleMode);
+    sn::unserialize(o["scaleMode"], m_scaleMode);
     sn::unserialize(o["fov"], m_fov, 70.f);
     sn::unserialize(o["orthoSize"], m_orthoSize, Vector2f(16,9));
     sn::unserialize(o["drawOrder"], m_drawOrder);
-    render::unserialize(o["clearBits"], m_clearBits);
+    sn::unserializeClearMask(o["clearBits"], m_clearBits);
     sn::unserialize(o["clearColor"], m_clearColor, Color());
     sn::unserialize<u32>(o["targetWindow"], m_targetWindowID, 0);
     sn::unserialize(o["visibilityTag"], m_visibilityTag, m_visibilityTag);
@@ -443,6 +443,5 @@ void Camera::unserializeState(const sn::Variant & o, const SerializationContext 
 	m_projectionMatrixNeedUpdate = true;
 }
 
-} // namespace render
 } // namespace sn
 

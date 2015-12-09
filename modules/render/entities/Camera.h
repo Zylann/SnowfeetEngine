@@ -13,8 +13,8 @@
 #include "../Material.h"
 #include "../RenderTexture.h"
 
-namespace sn {
-namespace render {
+namespace sn
+{
 
 //------------------------------------------------------------------------------
 enum ScaleMode
@@ -36,7 +36,7 @@ class Camera : public Entity3D
 {
 public:
 
-    SN_ENTITY(sn::render::Camera, sn::Entity3D)
+    SN_ENTITY(sn::Camera, sn::Entity3D)
 
     static const std::string TAG;
 
@@ -165,7 +165,6 @@ private:
 
 };
 
-} // namespace render
 } // namespace sn
 
 #endif // __HEADER_SN_RENDER_CAMERA__

@@ -1,7 +1,7 @@
 {
 	"entities":[
 		{
-			"@type":"sn::render::Camera",
+			"@type":"sn::Camera",
 			"isOrtho":false,
 			"fov":70.0,
 			"near":0.1,
@@ -11,7 +11,7 @@
 			"scaleMode":"adapted",
 		},
 		{
-			"@type":"sn::render::MeshEntity",
+			"@type":"sn::MeshEntity",
 			"mesh":"render:cube",
 			"material":"cube",
 			"position":[0,0,5],

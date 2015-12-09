@@ -1,7 +1,7 @@
 #include "RenderScreen.h"
 
-namespace sn {
-namespace render {
+namespace sn
+{
 
 RenderScreen::RenderScreen(Window & window):
     m_context(nullptr),
@@ -35,6 +35,5 @@ const Vector2u RenderScreen::getSize()
     return r_window.getClientSize();
 }
 
-} // namespace render
 } // namespace sn
 

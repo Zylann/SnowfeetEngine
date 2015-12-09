@@ -4,24 +4,23 @@
 #include <core/asset/AssetLoader.h>
 #include <core/util/Variant.h>
 
-namespace sn {
-namespace render {
+namespace sn
+{
 
 class MaterialLoader : public AssetLoader
 {
 public:
-    SN_OBJECT(sn::render::MaterialLoader, sn::AssetLoader)
+    SN_OBJECT(sn::MaterialLoader, sn::AssetLoader)
 
     const ObjectType & getBaseAssetType() const override;
     bool canLoad(const AssetMetadata & meta) const override;
     bool load(std::ifstream & ifs, Asset & asset) const override;
 
 private:
-    bool loadFromVariant(const sn::Variant & doc, sn::render::Material & mat) const;
+    bool loadFromVariant(const sn::Variant & doc, sn::Material & mat) const;
 
 };
 
-} // namespace render
 } // namespace sn
 
 #endif // __HEADER_SNR_MATERIALLOADER__

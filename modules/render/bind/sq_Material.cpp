@@ -2,8 +2,8 @@
 #include "sq_render.h"
 #include <core/squirrel/bind_macros.h>
 
-namespace sn {
-namespace render {
+namespace sn
+{
 
     namespace
     {
@@ -46,5 +46,4 @@ namespace render {
         ;
     }
 
-} // namespace render
 } // namespace sn

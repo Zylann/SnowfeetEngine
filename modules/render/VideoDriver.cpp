@@ -3,8 +3,8 @@
 #include <GL/glew.h>
 #include "gl_check.h"
 
-namespace sn {
-namespace render {
+namespace sn
+{
 
     namespace
     {
@@ -42,7 +42,7 @@ VideoDriver::~VideoDriver()
 }
 
 //------------------------------------------------------------------------------
-sn::render::Texture * VideoDriver::createTexture()
+sn::Texture * VideoDriver::createTexture()
 {
     return new Texture();
 }
@@ -254,6 +254,5 @@ void VideoDriver::setBlendMode(BlendMode mode)
 }
 
 
-} // namespace render
 } // namespace sn
 

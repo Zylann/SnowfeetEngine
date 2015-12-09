@@ -2,14 +2,13 @@
 #include "../entities/Camera.h"
 #include "sq_render.h"
 
-namespace sn {
-namespace render {
+namespace sn
+{
 
 void bindCamera(HSQUIRRELVM vm)
 {
-    sn::ScriptableObject::bindBase<sn::render::Camera>(vm);
+    sn::ScriptableObject::bindBase<sn::Camera>(vm);
 }
 
-} // namespace render
 } // namespace sn
 

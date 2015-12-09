@@ -8,7 +8,7 @@ namespace tgui
 {
 
 //------------------------------------------------------------------------------
-DrawBatch::DrawBatch(sn::render::VideoDriver & driver):
+DrawBatch::DrawBatch(sn::VideoDriver & driver):
     r_driver(driver),
     r_material(nullptr)
 {
@@ -37,9 +37,9 @@ void DrawBatch::setProjectionMatrix(const Matrix4 & matrix)
 }
 
 //------------------------------------------------------------------------------
-void DrawBatch::setMaterial(sn::render::Material & m)
+void DrawBatch::setMaterial(sn::Material & m)
 {
-    sn::render::ShaderProgram * shader = m.getShader();
+    sn::ShaderProgram * shader = m.getShader();
     if (shader)
     {
         r_driver.setDepthTest(m.isDepthTest());
@@ -48,9 +48,9 @@ void DrawBatch::setMaterial(sn::render::Material & m)
         r_driver.useProgram(shader);
 
         //Matrix4 model;
-        //shader->setParam(sn::render::Material::MODEL_MATRIX, model);
-        shader->setParam(sn::render::Material::MODEL_VIEW_MATRIX, m_viewMatrix);
-        shader->setParam(sn::render::Material::PROJECTION_MATRIX, m_projectionMatrix);
+        //shader->setParam(sn::Material::MODEL_MATRIX, model);
+        shader->setParam(sn::Material::MODEL_VIEW_MATRIX, m_viewMatrix);
+        shader->setParam(sn::Material::PROJECTION_MATRIX, m_projectionMatrix);
 
         m.applyParameters();
 
@@ -195,13 +195,13 @@ void DrawBatch::drawTextLine(
         return;
     SN_ASSERT(str != nullptr, "Reveived null string");
 
-    sn::render::Texture * tex = font.getTexture(format);
+    sn::Texture * tex = font.getTexture(format);
     if (tex == nullptr)
         return;
 
     // TODO Improve DrawBatch so we don't have to swap textures like this?
 
-    sn::render::Texture * lastTexture = nullptr;
+    sn::Texture * lastTexture = nullptr;
     if (swapFontTexture)
     {
         lastTexture = getTexture();
@@ -254,13 +254,13 @@ void DrawBatch::drawText(
 )
 /////////////////////////////////
 {
-    sn::render::Texture * tex = font.getTexture(format);
+    sn::Texture * tex = font.getTexture(format);
     if (tex == nullptr)
         return;
 
     s32 lineHeight = font.getLineHeight(format.size);
 
-    sn::render::Texture * lastTexture = getTexture();
+    sn::Texture * lastTexture = getTexture();
     setTexture(tex);
 
     for (u32 i = 0; i < model.getLineCount(); ++i)
@@ -297,13 +297,13 @@ void DrawBatch::drawText(
     sn::Color color
     )
 {
-    sn::render::Texture * tex = font.getTexture(format);
+    sn::Texture * tex = font.getTexture(format);
     if (tex == nullptr)
         return;
 
     s32 lineHeight = font.getLineHeight(format.size);
 
-    sn::render::Texture * lastTexture = getTexture();
+    sn::Texture * lastTexture = getTexture();
     setTexture(tex);
 
     const TextModel & model = wrapper.getTextModel();
@@ -335,25 +335,25 @@ void DrawBatch::drawText(
 }
 
 //------------------------------------------------------------------------------
-void DrawBatch::setTexture(sn::render::Texture * tex)
+void DrawBatch::setTexture(sn::Texture * tex)
 {
     SN_ASSERT(r_material != nullptr, "Cannot set texture when material is not set");
     
-    const sn::render::Texture * lastTexture = r_material->getTexture(sn::render::Material::MAIN_TEXTURE);
+    const sn::Texture * lastTexture = r_material->getTexture(sn::Material::MAIN_TEXTURE);
     if (tex != lastTexture)
     {
         flush();
-        r_material->setTexture(sn::render::Material::MAIN_TEXTURE, tex);
+        r_material->setTexture(sn::Material::MAIN_TEXTURE, tex);
         // TODO Needed to update uniforms...
         setMaterial(*r_material);
     }
 }
 
 //------------------------------------------------------------------------------
-sn::render::Texture * DrawBatch::getTexture() const
+sn::Texture * DrawBatch::getTexture() const
 {
     SN_ASSERT(r_material != nullptr, "Cannot get texture when material is not set");
-    return r_material->getTexture(sn::render::Material::MAIN_TEXTURE);
+    return r_material->getTexture(sn::Material::MAIN_TEXTURE);
 }
 
 //------------------------------------------------------------------------------

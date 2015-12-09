@@ -4,8 +4,8 @@
 #include <core/sml/variant_serialize.h>
 #include <modules/render/common.h>
 
-namespace sn {
-namespace render {
+namespace sn
+{
 
 enum ClearBits
 {
@@ -20,10 +20,9 @@ enum ClearBits
 
 typedef u32 ClearMask;
 
-void SN_RENDER_API serialize(sn::Variant & o, ClearMask m);
-void SN_RENDER_API unserialize(const sn::Variant & o, ClearMask & m);
+void SN_RENDER_API serializeClearMask(sn::Variant & o, ClearMask m);
+void SN_RENDER_API unserializeClearMask(const sn::Variant & o, ClearMask & m);
 
-} // namespace render
 } // namespace sn
 
 #endif // __HEADER_SNR_CLEARBITS__

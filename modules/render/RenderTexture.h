@@ -6,13 +6,13 @@
 #include "Texture.h"
 //#include "RenderTarget.h"
 
-namespace sn {
-namespace render {
+namespace sn
+{
 
 class RenderTexture : public Asset
 {
 public:
-    SN_SCRIPT_OBJECT(sn::render::RenderTexture, sn::Asset)
+    SN_SCRIPT_OBJECT(sn::RenderTexture, sn::Asset)
 
     RenderTexture();
 
@@ -50,7 +50,6 @@ private:
 
 };
 
-} // namespace render
 } // namespace sn
 
 #endif // __HEADER_SNR_RENDERTEXTURE__

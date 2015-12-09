@@ -33,7 +33,7 @@ public:
     /// \brief Gets the texture in which are stored glyphes of the specified format.
     /// \param format: the format
     /// \return A texture, or null if pixels are not stored in graphic memory
-    sn::render::Texture * getTexture(FontFormat format) const;
+    sn::Texture * getTexture(FontFormat format) const;
 
     /// \brief Gets the image in which are stored glyphes of the specified format.
     /// \param format: the format
@@ -95,7 +95,7 @@ private:
     mutable sn::Image * m_image;
 
     /// \brief VRAM texture in which the image will be uploaded.
-    mutable sn::render::Texture* m_texture;
+    mutable sn::Texture* m_texture;
 
     /// \brief Packing algorithm used to atlas the glyphes
     mutable sn::ShelfPacker<Glyph> m_packer;

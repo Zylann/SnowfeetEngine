@@ -6,8 +6,8 @@
 
 #include "Material.h"
 
-namespace sn {
-namespace render {
+namespace sn
+{
 
 //------------------------------------------------------------------------------
 const char * Material::MAIN_TEXTURE = "u_MainTexture";
@@ -147,6 +147,5 @@ void Material::applyParameters()
     }
 }
 
-} // namespace render
 } // namespace sn
 

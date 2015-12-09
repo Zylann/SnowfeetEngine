@@ -1,10 +1,10 @@
 #include "ClearBits.h"
 
-namespace sn {
-namespace render {
+namespace sn
+{
 
 //------------------------------------------------------------------------------
-void serialize(sn::Variant & o, ClearMask m)
+void serializeClearMask(sn::Variant & o, ClearMask m)
 {
     sn::Variant::Array a;
     if (m & SNR_CLEAR_ALL)
@@ -20,7 +20,7 @@ void serialize(sn::Variant & o, ClearMask m)
 }
 
 //------------------------------------------------------------------------------
-void unserialize(const sn::Variant & o, ClearMask & m)
+void unserializeClearMask(const sn::Variant & o, ClearMask & m)
 {
     if (!o.isArray())
         return;
@@ -47,7 +47,6 @@ void unserialize(const sn::Variant & o, ClearMask & m)
     }
 }
 
-} // namespace render
 } // namespace sn
 
 

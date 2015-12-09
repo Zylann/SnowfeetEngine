@@ -1,7 +1,7 @@
 #include "sq_render.h"
 
-namespace sn {
-namespace render {
+namespace sn
+{
 
 void bindRenderModule(HSQUIRRELVM vm)
 {
@@ -11,5 +11,4 @@ void bindRenderModule(HSQUIRRELVM vm)
     bindMaterial(vm);
 }
 
-} // namespace render
 } // namespace sn

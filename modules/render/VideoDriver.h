@@ -5,18 +5,18 @@
 #include <modules/render/Texture.h>
 #include <modules/render/RenderScreen.h>
 
-namespace sn {
-namespace render {
+namespace sn
+{
 
 class SN_RENDER_API VideoDriver : public sn::IDriver
 {
 public:
-    SN_OBJECT(sn::render::VideoDriver, sn::IDriver)
+    SN_OBJECT(sn::VideoDriver, sn::IDriver)
 
     VideoDriver();
     ~VideoDriver();
 
-    sn::render::Texture * createTexture();
+    sn::Texture * createTexture();
 
     void makeCurrent(bool isCurrent = true);
     void makeCurrent(RenderScreen & screen);
@@ -49,7 +49,6 @@ private:
 
 };
 
-} // namespace render
 } // namespace sn
 
 #endif // __HEADER_SNR_VIDEODRIVER__

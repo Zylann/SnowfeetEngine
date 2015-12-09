@@ -17,8 +17,8 @@ This file is part of the SnowfeetEngine project.
 #include "ClearBits.h"
 #include "BlendMode.h"
 
-namespace sn {
-namespace render {
+namespace sn
+{
 
 class ContextImpl;
 
@@ -60,7 +60,6 @@ private:
     ContextSettings m_settings;
 };
 
-} // namespace render
 } // namespace sn
 
 #endif // __HEADER_SN_CONTEXT__

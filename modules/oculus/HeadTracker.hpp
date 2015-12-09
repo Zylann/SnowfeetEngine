@@ -26,7 +26,7 @@ public:
     void onRenderEye(
         Entity * sender, 
         VRHeadset::EyeIndex abstractEyeIndex,
-        sn::render::Material * effectMaterial, 
+        sn::Material * effectMaterial, 
         Vector2u sourceSize, 
         IntRect targetViewport
     ) override;

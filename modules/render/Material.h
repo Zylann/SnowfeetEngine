@@ -10,14 +10,14 @@
 #include "RenderTexture.h"
 #include "BlendMode.h"
 
-namespace sn {
-namespace render {
+namespace sn
+{
 
 /// \brief Defines the appearance of objects
 class SN_RENDER_API Material : public sn::Asset
 {
 public:
-    SN_SCRIPT_OBJECT(sn::render::Material, sn::Asset)
+    SN_SCRIPT_OBJECT(sn::Material, sn::Asset)
 
     // Conventional uniform names
     static const char * MAIN_TEXTURE;
@@ -87,7 +87,6 @@ private:
 
 };
 
-} // namespace render
 } // namespace sn
 
 #endif // __HEADER_SN_RENDER_MATERIAL__

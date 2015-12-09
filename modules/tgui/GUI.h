@@ -19,7 +19,7 @@ public:
 
     GUI();
 
-    void draw(sn::render::VideoDriver & driver);
+    void draw(sn::VideoDriver & driver);
 
     void onReady() override;
 
@@ -49,7 +49,7 @@ private:
     Control * r_focusControl;
     sn::SharedRef<Theme> m_theme;
     std::bitset<sn::SN_EVENT_COUNT> m_eventFilter;
-    sn::render::ClearMask m_clearMask;
+    sn::ClearMask m_clearMask;
     sn::Color m_clearColor;
 
 };

@@ -3,13 +3,13 @@
 #include <core/util/typecheck.h>
 #include <unordered_map>
 
-namespace sn {
-namespace render {
+namespace sn
+{
 
 //------------------------------------------------------------------------------
 const ObjectType & ShaderLoader::getBaseAssetType() const
 {
-    return sn::getObjectType<sn::render::ShaderProgram>();
+    return sn::getObjectType<sn::ShaderProgram>();
 }
 
 //------------------------------------------------------------------------------
@@ -23,7 +23,7 @@ bool ShaderLoader::canLoad(const AssetMetadata & meta) const
 //------------------------------------------------------------------------------
 bool ShaderLoader::load(std::ifstream & ifs, Asset & asset) const
 {
-    ShaderProgram * shader = checked_cast<sn::render::ShaderProgram*>(&asset);
+    ShaderProgram * shader = checked_cast<sn::ShaderProgram*>(&asset);
     SN_ASSERT(shader != nullptr, "ShaderLoader received null or invalid asset");
     return ShaderLoader::loadMergedShaderFromStream(*shader, ifs);
 }
@@ -130,6 +130,5 @@ bool ShaderLoader::loadMergedShaderFromStream(ShaderProgram & shaderProgram, std
     return true;
 }
 
-} // namespace render
 } // namespace sn
 

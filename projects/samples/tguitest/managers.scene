@@ -3,7 +3,7 @@
     "objects":[
         1,
         {
-            "@type": "sn::render::RenderManager",
+            "@type": "sn::RenderManager",
 			"screens":[
 				{
 					"size":[800,600],

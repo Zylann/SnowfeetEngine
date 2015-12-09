@@ -18,7 +18,7 @@ GUI::GUI():
 	m_defaultTheme(nullptr),
 	r_captureControl(nullptr),
     r_focusControl(nullptr),
-    m_clearMask(sn::render::SNR_CLEAR_NONE)
+    m_clearMask(sn::SNR_CLEAR_NONE)
 {
     m_defaultTheme = new Theme();
 }
@@ -73,23 +73,23 @@ const Theme & GUI::getTheme() const
 }
 
 //------------------------------------------------------------------------------
-void GUI::draw(sn::render::VideoDriver & driver)
+void GUI::draw(sn::VideoDriver & driver)
 {
     SN_BEGIN_PROFILE_SAMPLE_NAMED("TGUI draw");
 
     const Theme & theme = getTheme();
 
-    sn::render::Material * themeMaterial = theme.getMaterial();
+    sn::Material * themeMaterial = theme.getMaterial();
     if (themeMaterial)
     {
         Scene * scene = getScene();
         if (scene)
         {
-            auto * renderManager = scene->getChild<sn::render::RenderManager>();
+            auto * renderManager = scene->getChild<sn::RenderManager>();
             if (renderManager)
             {
                 u32 winId = getWindowID();
-                sn::render::RenderScreen * screen = renderManager->getScreenByWindowId(winId);
+                sn::RenderScreen * screen = renderManager->getScreenByWindowId(winId);
                 if (screen)
                 {
                     Vector2u screenSize = screen->getSize();
@@ -105,7 +105,7 @@ void GUI::draw(sn::render::VideoDriver & driver)
                     // Clear?
                     if (m_clearMask)
                     {
-                        if (m_clearMask & sn::render::SNR_CLEAR_COLOR)
+                        if (m_clearMask & sn::SNR_CLEAR_COLOR)
                             driver.clearColor(m_clearColor);
                         driver.clearTarget(m_clearMask);
                     }
@@ -176,7 +176,7 @@ void GUI::serializeState(sn::Variant & o, const sn::SerializationContext & ctx)
 {
     Control::serializeState(o, ctx);
 
-    sn::render::serialize(o["clearBits"], m_clearMask);
+    sn::serializeClearMask(o["clearBits"], m_clearMask);
     sn::serialize(o["clearColor"], m_clearColor);
 
     // TODO Serialize theme location
@@ -191,7 +191,7 @@ void GUI::unserializeState(const Variant & o, const sn::SerializationContext & c
 	sn::unserialize(o["theme"], themeLocation);
     m_theme.set(getAssetBySerializedLocation<Theme>(themeLocation, ctx.getProject()));
 
-    sn::render::unserialize(o["clearBits"], m_clearMask);
+    sn::unserializeClearMask(o["clearBits"], m_clearMask);
     sn::unserialize(o["clearColor"], m_clearColor);
 }
 

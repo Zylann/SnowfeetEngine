@@ -202,7 +202,7 @@ bool Font::generateGlyph(Glyph & out_glyph, sn::u32 unicode, FontFormat format) 
 }
 
 //------------------------------------------------------------------------------
-sn::render::Texture * Font::getTexture(FontFormat format) const
+sn::Texture * Font::getTexture(FontFormat format) const
 {
     return m_texture;
 }
@@ -355,7 +355,7 @@ void Font::createTexture() const
 {
     SN_ASSERT(m_texture == nullptr, "Texture already created");
     SN_ASSERT(m_image != nullptr, "Image not created");
-    sn::render::VideoDriver * driver = Application::get().getDriverManager().getDriver<sn::render::VideoDriver>();
+    sn::VideoDriver * driver = Application::get().getDriverManager().getDriver<sn::VideoDriver>();
     if (driver)
     {
         m_texture = driver->createTexture();

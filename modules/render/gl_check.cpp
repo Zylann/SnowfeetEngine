@@ -3,8 +3,8 @@
 #include <GL/glew.h>
 #include <string>
 
-namespace sn {
-namespace render {
+namespace sn
+{
 
 void glCheckError(const char * file, unsigned int line)
 {
@@ -50,6 +50,5 @@ void glCheckError(const char * file, unsigned int line)
 	SN_ERROR("OpenGL error in " << file << ": " << line << ": " << error);
 }
 
-} // namespace render
 } // namespace sn
 

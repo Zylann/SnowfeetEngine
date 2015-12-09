@@ -7,8 +7,8 @@
 #include <modules/image/Image.h>
 #include <modules/render/common.h>
 
-namespace sn {
-namespace render {
+namespace sn
+{
 
 typedef void* TextureHandle;
 
@@ -16,7 +16,7 @@ typedef void* TextureHandle;
 class SN_RENDER_API Texture : public sn::Asset, public NonCopyable
 {
 public:
-    SN_SCRIPT_OBJECT(sn::render::Texture, sn::Asset)
+    SN_SCRIPT_OBJECT(sn::Texture, sn::Asset)
 
     Texture();
 
@@ -91,7 +91,6 @@ private:
 
 };
 
-} // namespace render
 } // namespace sn
 
 #endif // __HEADER_SNR_TEXTURE__

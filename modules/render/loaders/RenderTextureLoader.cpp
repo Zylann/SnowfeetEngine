@@ -6,8 +6,8 @@
 #include "RenderTextureLoader.h"
 #include "../RenderTexture.h"
 
-namespace sn {
-namespace render {
+namespace sn
+{
 
 const ObjectType & RenderTextureLoader::getAssetInstanceType() const
 {
@@ -47,6 +47,5 @@ bool RenderTextureLoader::loadFromVariant(sn::Variant & doc, RenderTexture & rt)
     return true;
 }
 
-} // namespace render
 } // namespace sn
 

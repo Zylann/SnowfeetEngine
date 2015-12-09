@@ -7,13 +7,13 @@
 #include <modules/render/Material.h>
 #include <modules/render/entities/Drawable.h>
 
-namespace sn {
-namespace render {
+namespace sn
+{
 
 class SN_RENDER_API MeshEntity : public Drawable
 {
 public:
-    SN_ENTITY(sn::render::MeshEntity, sn::render::Drawable)
+    SN_ENTITY(sn::MeshEntity, sn::Drawable)
 
     MeshEntity();
 
@@ -41,7 +41,6 @@ private:
 
 };
 
-} // namespace render
 } // namespace sn
 
 #endif // __HEADER_SN_RENDER_MESHENTITY__

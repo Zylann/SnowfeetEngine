@@ -1,7 +1,7 @@
 #include "RenderStep.h"
 
-namespace sn {
-namespace render {
+namespace sn
+{
 
 RenderStep::RenderStep() : sn::Entity(),
     r_manager(nullptr)
@@ -26,6 +26,5 @@ RenderManager * RenderStep::getManager() const
     return r_manager;
 }
 
-} // namespace render
 } // namespace sn
 
