@@ -1,5 +1,5 @@
 #include "../RenderScreen.h"
-#include "Context_win32.h"
+#include "GLContext_win32.h"
 
 namespace sn
 {
@@ -10,15 +10,15 @@ public:
     RenderScreenImpl(RenderScreen & screen);
     ~RenderScreenImpl();
 
-    void updatePixelFormat(const Context & context);
-    bool makeCurrent(const Context & context);
+    void updatePixelFormat(const GLContext & context);
+    bool makeCurrent(const GLContext & context);
     void swapBuffers();
 
 private:
     RenderScreen & r_renderScreen;
     bool m_pixelFormatInitialized;
     HDC m_hdc;
-    ContextSettings m_lastExternalContextSettings;
+    GLContextSettings m_lastExternalContextSettings;
 };
 
 //-----------------------------------------------------------------------------
@@ -42,20 +42,20 @@ RenderScreenImpl::~RenderScreenImpl()
     }
 }
 
-void RenderScreenImpl::updatePixelFormat(const Context & context)
+void RenderScreenImpl::updatePixelFormat(const GLContext & context)
 {
     HWND hwnd = static_cast<HWND>(r_renderScreen.getWindow().getHandle());
-    ContextSettings settings = context.getSettings();
+    GLContextSettings settings = context.getSettings();
 
     if (!m_pixelFormatInitialized || settings != m_lastExternalContextSettings)
     {
-        ContextImpl::setPixelFormat(hwnd, settings);
+        GLContextImpl::setPixelFormat(hwnd, settings);
         m_lastExternalContextSettings = settings;
         m_pixelFormatInitialized = true;
     }
 }
 
-bool RenderScreenImpl::makeCurrent(const Context & context)
+bool RenderScreenImpl::makeCurrent(const GLContext & context)
 {
     HWND hwnd = static_cast<HWND>(r_renderScreen.getWindow().getHandle());
     if (hwnd)
@@ -91,7 +91,7 @@ void RenderScreen::deinitImpl()
         delete m_impl;
 }
 
-bool RenderScreen::makeCurrentImpl(Context & context)
+bool RenderScreen::makeCurrentImpl(GLContext & context)
 {
     if (r_window.getHandle())
     {

@@ -4,8 +4,8 @@ Copyright (C) 2014-2015 Marc GILLERON
 This file is part of the SnowfeetEngine project.
 */
 
-#ifndef __HEADER_SN_CONTEXT__
-#define __HEADER_SN_CONTEXT__
+#ifndef __HEADER_SN_GLCONTEXT__
+#define __HEADER_SN_GLCONTEXT__
 
 #include <core/system/Window.h>
 #include <core/util/NonCopyable.h>
@@ -13,17 +13,17 @@ This file is part of the SnowfeetEngine project.
 #include <modules/render/Mesh.h>
 
 #include "ShaderProgram.h"
-#include "ContextSettings.h"
+#include "GLContextSettings.h"
 #include "ClearBits.h"
 #include "BlendMode.h"
 
 namespace sn
 {
 
-class ContextImpl;
+class GLContextImpl;
 
 /// \brief Holds a valid rendering context.
-class SN_RENDER_API Context : public NonCopyable
+class SN_RENDER_API GLContext : public NonCopyable
 {
 public:
     // TODO What if the window is closed by the user?
@@ -31,37 +31,37 @@ public:
     /// \brief Creates a render context.
     /// \param window (optional): external window to attach the context to
     /// \note Settings might change to the closest match during construction, for compatibility reasons.
-    Context(
-        ContextSettings settings = ContextSettings(), 
+    GLContext(
+        GLContextSettings settings = GLContextSettings(), 
         Window * window = nullptr, 
-        Context * sharedContext = nullptr
+        GLContext * sharedContext = nullptr
     );
 
-    ~Context();
+    ~GLContext();
 
     bool makeCurrent(bool isCurrent=true);
 
     inline Window * getWindow() const { return r_window; }
 
-    const ContextSettings & getSettings() const { return m_settings; }
+    const GLContextSettings & getSettings() const { return m_settings; }
 
     // Platform-specific
     //void swapBuffers();
-    ContextImpl * getImpl() const { return m_impl; }
+    GLContextImpl * getImpl() const { return m_impl; }
 
 private:
     // Platform-specific
-    void initImpl(Context * sharedContext);
+    void initImpl(GLContext * sharedContext);
     void deinitImpl();
 
 private:
-    ContextImpl * m_impl;
+    GLContextImpl * m_impl;
     Window * r_window;
-    ContextSettings m_settings;
+    GLContextSettings m_settings;
 };
 
 } // namespace sn
 
-#endif // __HEADER_SN_CONTEXT__
+#endif // __HEADER_SN_GLCONTEXT__
 
 

@@ -1,6 +1,6 @@
 ﻿#include "gl_check.h"
 #include <GL/glew.h>
-#include "Context.h"
+#include "GLContext.h"
 
 namespace sn
 {
@@ -15,7 +15,7 @@ namespace sn
 //}
 
 //------------------------------------------------------------------------------
-Context::Context(ContextSettings settings, Window * window, Context * sharedContext):
+GLContext::GLContext(GLContextSettings settings, Window * window, GLContext * sharedContext):
     m_impl(nullptr),
     r_window(window),
     m_settings(settings)
@@ -33,7 +33,7 @@ Context::Context(ContextSettings settings, Window * window, Context * sharedCont
 }
 
 //------------------------------------------------------------------------------
-Context::~Context()
+GLContext::~GLContext()
 {
     deinitImpl();
     SN_LOG("Destroying context " << this << " (window: " << (r_window) << ")");

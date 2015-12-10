@@ -45,7 +45,7 @@ public:
     void setBlendMode(BlendMode mode);
 
 private:
-    Context * m_context;
+    GLContext * m_context;
 
 };
 

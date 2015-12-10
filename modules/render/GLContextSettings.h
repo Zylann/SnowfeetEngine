@@ -1,5 +1,5 @@
-#ifndef __HEADER_SNR_CONTEXTSETTINGS__
-#define __HEADER_SNR_CONTEXTSETTINGS__
+#ifndef __HEADER_SNR_GLCONTEXTSETTINGS__
+#define __HEADER_SNR_GLCONTEXTSETTINGS__
 
 #include <core/types.h>
 #include <cmath>
@@ -8,7 +8,7 @@
 namespace sn
 {
 
-struct ContextSettings
+struct GLContextSettings
 {
     u32 majorVersion;
     u32 minorVersion;
@@ -16,7 +16,7 @@ struct ContextSettings
 	u32 stencilBits;
 	u32 depthBits;
 
-    ContextSettings() :
+    GLContextSettings() :
         majorVersion(3),
         minorVersion(3),
 		multiSampleLevel(0),
@@ -43,7 +43,7 @@ struct ContextSettings
 	}
 };
 
-inline bool operator!=(const ContextSettings & lhs, const ContextSettings & rhs)
+inline bool operator!=(const GLContextSettings & lhs, const GLContextSettings & rhs)
 {
 	return lhs.majorVersion != rhs.majorVersion
 		|| lhs.minorVersion != rhs.minorVersion
@@ -54,6 +54,6 @@ inline bool operator!=(const ContextSettings & lhs, const ContextSettings & rhs)
 
 } // namespace sn
 
-#endif // __HEADER_SNR_CONTEXTSETTINGS__
+#endif // __HEADER_SNR_GLCONTEXTSETTINGS__
 
 

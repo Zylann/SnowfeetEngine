@@ -18,14 +18,14 @@ RenderScreen::~RenderScreen()
         delete m_context;
 }
 
-void RenderScreen::createSharedContext(Context & mainContext, ContextSettings settings)
+void RenderScreen::createSharedContext(GLContext & mainContext, GLContextSettings settings)
 {
     if (m_context)
         delete m_context;
-    m_context = new Context(settings, &r_window, &mainContext);
+    m_context = new GLContext(settings, &r_window, &mainContext);
 }
 
-bool RenderScreen::makeCurrent(Context & context)
+bool RenderScreen::makeCurrent(GLContext & context)
 {
     return makeCurrentImpl(context);
 }

@@ -2,7 +2,6 @@
 #define __HEADER_SN_RENDER_RENDERMANAGER__
 
 #include <core/scene/Entity.h>
-#include "../Context.h"
 #include "../RenderScreen.h"
 
 namespace sn

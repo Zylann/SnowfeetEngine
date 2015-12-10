@@ -1,7 +1,7 @@
-#ifndef __HEADER_SN_CONTEXT_WIN32__
-#define __HEADER_SN_CONTEXT_WIN32__
+#ifndef __HEADER_SN_GLCONTEXT_WIN32__
+#define __HEADER_SN_GLCONTEXT_WIN32__
 
-#include "../Context.h"
+#include "../GLContext.h"
 #include <Windows.h>
 
 namespace sn
@@ -9,11 +9,11 @@ namespace sn
 
 /// \cond INTERNAL
 
-class ContextImpl : public NonCopyable
+class GLContextImpl : public NonCopyable
 {
 public:
-    ContextImpl(Context & context, ContextSettings & settings, ContextImpl * sharedContext = nullptr);
-    ~ContextImpl();
+    GLContextImpl(GLContext & context, GLContextSettings & settings, GLContextImpl * sharedContext = nullptr);
+    ~GLContextImpl();
 
     inline bool isInitialized() const { return m_hrc != nullptr; }
     bool makeCurrent(bool isCurrent);
@@ -27,13 +27,13 @@ public:
     /// \param settings: the pixel format will be based on these settings.
     /// They can be downgraded for compatibility.
     /// \return true on success, false on failure
-    static bool setPixelFormat(HWND hwnd, ContextSettings & settings);
+    static bool setPixelFormat(HWND hwnd, GLContextSettings & settings);
 
 private:
-    void createContext(HGLRC sharedContext, ContextSettings & settings, HWND hwnd);
+    void createContext(HGLRC sharedContext, GLContextSettings & settings, HWND hwnd);
 
 private:
-    Context & r_context;
+    GLContext & r_context;
     HGLRC m_hrc;
     HDC m_dc;
 

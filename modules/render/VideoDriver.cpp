@@ -27,10 +27,10 @@ namespace sn
 VideoDriver::VideoDriver() : m_context(nullptr)
 {
     // TODO Make it configurable
-    ContextSettings contextSettings;
+    GLContextSettings contextSettings;
     contextSettings.majorVersion = 3;
     contextSettings.minorVersion = 3;
-    m_context = new Context(contextSettings);
+    m_context = new GLContext(contextSettings);
     m_context->makeCurrent();
 }
 

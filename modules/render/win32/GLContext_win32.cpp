@@ -5,7 +5,7 @@
 #include "../GLExtensions.h"
 
 //#include "../gl_check.h"
-#include "Context_win32.h"
+#include "GLContext_win32.h"
 
 #include <GL/glew.h>
 #include <GL/wglew.h>
@@ -25,7 +25,7 @@ namespace sn
 // https://www.opengl.org/discussion_boards/showthread.php/173031-Easy-OpenGL-context-creation
 
 //------------------------------------------------------------------------------
-ContextImpl::ContextImpl(Context & context, ContextSettings & settings, ContextImpl * sharedContext) :
+GLContextImpl::GLContextImpl(GLContext & context, GLContextSettings & settings, GLContextImpl * sharedContext) :
 	r_context(context),
     m_hrc(nullptr),
     m_dc(nullptr),
@@ -52,7 +52,7 @@ ContextImpl::ContextImpl(Context & context, ContextSettings & settings, ContextI
 
 	if (m_dc)
 	{
-        ContextSettings initialSettings = settings;
+        GLContextSettings initialSettings = settings;
 		createContext(sharedContext ? sharedContext->m_hrc : nullptr, settings, hwnd);
 		if (settings != initialSettings)
 		{
@@ -64,7 +64,7 @@ ContextImpl::ContextImpl(Context & context, ContextSettings & settings, ContextI
 }
 
 //------------------------------------------------------------------------------
-ContextImpl::~ContextImpl()
+GLContextImpl::~GLContextImpl()
 {
     // Destroy the OpenGL context
     if (m_hrc)
@@ -90,7 +90,7 @@ ContextImpl::~ContextImpl()
 }
 
 //------------------------------------------------------------------------------
-bool ContextImpl::makeCurrent(bool isCurrent)
+bool GLContextImpl::makeCurrent(bool isCurrent)
 {
     if (isCurrent)
         return m_hrc && m_dc && wglMakeCurrent(m_dc, m_hrc);
@@ -100,7 +100,7 @@ bool ContextImpl::makeCurrent(bool isCurrent)
 
 //------------------------------------------------------------------------------
 // Static
-bool ContextImpl::setPixelFormat(HWND hwnd, ContextSettings & settings)
+bool GLContextImpl::setPixelFormat(HWND hwnd, GLContextSettings & settings)
 {
     ensureGLExtensions();
 
@@ -222,7 +222,7 @@ bool ContextImpl::setPixelFormat(HWND hwnd, ContextSettings & settings)
 }
 
 //------------------------------------------------------------------------------
-void ContextImpl::createContext(HGLRC sharedContext, ContextSettings & settings, HWND hwnd)
+void GLContextImpl::createContext(HGLRC sharedContext, GLContextSettings & settings, HWND hwnd)
 {
     if (!setPixelFormat(hwnd, settings))
         return;
@@ -303,20 +303,20 @@ void ContextImpl::createContext(HGLRC sharedContext, ContextSettings & settings,
 //==============================================================================
 
 //------------------------------------------------------------------------------
-void Context::initImpl(Context * sharedContext)
+void GLContext::initImpl(GLContext * sharedContext)
 {
-    m_impl = new ContextImpl(*this, m_settings, sharedContext ? sharedContext->m_impl : nullptr);
+    m_impl = new GLContextImpl(*this, m_settings, sharedContext ? sharedContext->m_impl : nullptr);
 }
 
 //------------------------------------------------------------------------------
-void Context::deinitImpl()
+void GLContext::deinitImpl()
 {
     if (m_impl)
         delete m_impl;
 }
 
 //------------------------------------------------------------------------------
-bool Context::makeCurrent(bool isCurrent)
+bool GLContext::makeCurrent(bool isCurrent)
 {
     return m_impl->makeCurrent(isCurrent);
 }

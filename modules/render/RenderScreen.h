@@ -2,7 +2,7 @@
 #define __HEADER_SNR_RENDERSCREEN__
 
 #include <core/system/Window.h>
-#include <modules/render/Context.h>
+#include <modules/render/GLContext.h>
 
 namespace sn
 {
@@ -17,12 +17,12 @@ public:
     RenderScreen(Window & window);
     ~RenderScreen();
 
-    void createSharedContext(Context & mainContext, ContextSettings settings);
+    void createSharedContext(GLContext & mainContext, GLContextSettings settings);
 
     /// \brief Gets the context attached to this window. Can be null.
-    Context * getContext() const { return m_context; }
+    GLContext * getContext() const { return m_context; }
 
-    bool makeCurrent(Context & context);
+    bool makeCurrent(GLContext & context);
 
     Window & getWindow() const { return r_window; }
 
@@ -39,11 +39,11 @@ private:
     // Platform-specific
     void initImpl();
     void deinitImpl();
-    bool makeCurrentImpl(Context & context);
+    bool makeCurrentImpl(GLContext & context);
 
 private:
     /// \brief Context created for the window
-    Context * m_context;
+    GLContext * m_context;
     /// \brief Window displaying the rendered frames
     Window & r_window;
     /// \brief Platform-specific implementation
