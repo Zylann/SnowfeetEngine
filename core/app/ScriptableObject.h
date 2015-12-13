@@ -14,8 +14,6 @@ This file is part of the SnowfeetEngine project.
 #include <core/squirrel/Table.h>
 #include <type_traits>
 
-#define SN_SCRIPT_OBJECT(_className, _baseName) SN_OBJECT(_className, _baseName)
-
 namespace sn
 {
 
@@ -25,7 +23,7 @@ namespace sn
 class SN_API ScriptableObject : public RefCounted, public Object
 {
 public:
-    SN_SCRIPT_OBJECT(sn::ScriptableObject, sn::Object)
+    SN_OBJECT(sn::ScriptableObject, sn::Object)
 
     ScriptableObject();
 

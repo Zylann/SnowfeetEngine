@@ -36,7 +36,7 @@ class Camera : public Entity3D
 {
 public:
 
-    SN_ENTITY(sn::Camera, sn::Entity3D)
+    SN_OBJECT(sn::Camera, sn::Entity3D)
 
     static const std::string TAG;
 

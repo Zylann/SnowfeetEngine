@@ -42,7 +42,7 @@ class Layout;
 class Control : public sn::Entity
 {
 public:
-    SN_ENTITY(tgui::Control, sn::Entity)
+    SN_OBJECT(tgui::Control, sn::Entity)
 
     Control();
 

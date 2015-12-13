@@ -10,7 +10,7 @@ namespace tgui
 class Panel : public Control
 {
 public:
-    SN_ENTITY(tgui::Panel, tgui::Control)
+    SN_OBJECT(tgui::Panel, tgui::Control)
 
     Panel();
 

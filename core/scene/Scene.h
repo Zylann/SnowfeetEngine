@@ -30,7 +30,7 @@ namespace sn
 class SN_API Scene : public Entity
 {
 public:
-    SN_ENTITY(sn::Scene, sn::Entity)
+    SN_OBJECT(sn::Scene, sn::Entity)
 
 	typedef TagManager<Entity*> TagManager;
 

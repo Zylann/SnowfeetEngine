@@ -16,7 +16,7 @@ namespace sn
 class ObjectDB : public Asset
 {
 public:
-    SN_SCRIPT_OBJECT(sn::ObjectDB, sn::Asset)
+    SN_OBJECT(sn::ObjectDB, sn::Asset)
 
     //---------------------------------------------
     // Constants

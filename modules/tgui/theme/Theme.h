@@ -46,7 +46,7 @@ struct ControlTheme
 class Theme : public sn::Asset
 {
 public:
-    SN_SCRIPT_OBJECT(tgui::Theme, sn::Asset)
+    SN_OBJECT(tgui::Theme, sn::Asset)
 
     Theme():
         m_textureSize(256,256) // Arbitrary by default

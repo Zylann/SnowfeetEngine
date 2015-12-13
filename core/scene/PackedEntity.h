@@ -12,7 +12,7 @@ namespace sn
 class PackedEntity : public ObjectDB
 {
 public:
-    SN_SCRIPT_OBJECT(sn::PackedEntity, sn::ObjectDB)
+    SN_OBJECT(sn::PackedEntity, sn::ObjectDB)
 
     static const char * CHILDREN_TAG;
 

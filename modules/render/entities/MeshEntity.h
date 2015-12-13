@@ -13,7 +13,7 @@ namespace sn
 class SN_RENDER_API MeshEntity : public Drawable
 {
 public:
-    SN_ENTITY(sn::MeshEntity, sn::Drawable)
+    SN_OBJECT(sn::MeshEntity, sn::Drawable)
 
     MeshEntity();
 

@@ -17,7 +17,7 @@ namespace sn
 class SN_FREETYPE_API Font : public sn::Asset, public sn::NonCopyable
 {
 public:
-    SN_SCRIPT_OBJECT(sn::Font, sn::Asset)
+    SN_OBJECT(sn::Font, sn::Asset)
 
     static const sn::u32 DEFAULT_PAGE_WIDTH = 512;
     static const sn::u32 DEFAULT_PAGE_HEIGHT = 512;

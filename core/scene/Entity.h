@@ -22,9 +22,6 @@ This file is part of the SnowfeetEngine project.
 #include <unordered_set>
 #include <functional>
 
-#define SN_ENTITY(_className, _baseName)                                   \
-    SN_SCRIPT_OBJECT(_className, _baseName)
-
 namespace sn
 {
 
@@ -44,7 +41,7 @@ class Scene;
 class SN_API Entity : public ScriptableObject
 {
 public:
-	SN_ENTITY(sn::Entity, sn::ScriptableObject)
+	SN_OBJECT(sn::Entity, sn::ScriptableObject)
 
 	static const u32 MAX_TAGS = 32;
 

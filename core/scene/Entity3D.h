@@ -10,7 +10,7 @@ namespace sn
 class SN_API Entity3D : public Entity
 {
 public:
-    SN_ENTITY(sn::Entity3D, sn::Entity)
+    SN_OBJECT(sn::Entity3D, sn::Entity)
 
     Entity3D();
 

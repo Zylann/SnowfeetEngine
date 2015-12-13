@@ -9,7 +9,7 @@ namespace tgui
 class TabControl : public Control
 {
 public:
-	SN_ENTITY(tgui::TabControl, tgui::Control)
+	SN_OBJECT(tgui::TabControl, tgui::Control)
 
 	static const sn::u32 INVALID_PAGE = -1;
 

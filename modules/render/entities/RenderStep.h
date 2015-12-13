@@ -10,7 +10,7 @@ namespace sn
 class SN_RENDER_API RenderStep : public sn::Entity
 {
 public:
-    SN_ENTITY(sn::RenderStep, sn::Entity)
+    SN_OBJECT(sn::RenderStep, sn::Entity)
 
     RenderStep();
 

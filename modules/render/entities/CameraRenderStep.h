@@ -10,7 +10,7 @@ namespace sn
 class CameraRenderStep : public RenderStep
 {
 public:
-    SN_ENTITY(sn::CameraRenderStep, sn::RenderStep)
+    SN_OBJECT(sn::CameraRenderStep, sn::RenderStep)
 
     CameraRenderStep();
 

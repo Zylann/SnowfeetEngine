@@ -13,7 +13,7 @@ namespace tgui
 class TextArea : public Control
 {
 public:
-    SN_ENTITY(tgui::TextArea, tgui::Control)
+    SN_OBJECT(tgui::TextArea, tgui::Control)
 
     static const sn::s32 CARET_BLINK_INTERVAL_MS = 500;
 

@@ -11,7 +11,7 @@ namespace tgui
 class DockSizer : public Control
 {
 public:
-	SN_ENTITY(tgui::DockSizer, tgui::Control)
+	SN_OBJECT(tgui::DockSizer, tgui::Control)
 
 	DockSizer();
 

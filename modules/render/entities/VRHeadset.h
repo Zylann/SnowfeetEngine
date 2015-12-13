@@ -17,7 +17,7 @@ namespace sn
 class SN_RENDER_API VRHeadset : public Entity
 {
 public:
-    SN_ENTITY(sn::VRHeadset, sn::Entity)
+    SN_OBJECT(sn::VRHeadset, sn::Entity)
 
     enum EyeIndex
     {
