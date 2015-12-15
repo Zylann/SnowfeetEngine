@@ -13,6 +13,8 @@ using namespace sn;
 namespace tgui
 {
 
+SN_OBJECT_IMPL(GUI)
+
 //------------------------------------------------------------------------------
 GUI::GUI():
 	m_defaultTheme(nullptr),

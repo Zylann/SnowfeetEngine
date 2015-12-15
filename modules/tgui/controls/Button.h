@@ -9,7 +9,7 @@ namespace tgui
 class Button : public Control
 {
 public:
-    SN_OBJECT(tgui::Button, tgui::Control)
+    SN_OBJECT
 
     //--------------------------------
     // Event implementations

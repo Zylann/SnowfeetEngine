@@ -9,6 +9,8 @@ This file is part of the SnowfeetEngine project.
 namespace sn
 {
 
+SN_OBJECT_IMPL(Scene)
+
 //------------------------------------------------------------------------------
 Scene::Scene() : Entity(), 
     m_updateManager(),

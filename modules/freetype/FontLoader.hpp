@@ -9,7 +9,7 @@ namespace sn
 class FontLoader : public sn::AssetLoader
 {
 public:
-    SN_OBJECT(sn::FontLoader, sn::AssetLoader)
+    SN_OBJECT
 
     FontLoader();
     ~FontLoader();

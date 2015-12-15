@@ -43,6 +43,13 @@ void ControlTheme::unserialize(const sn::Variant & o)
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 
+SN_OBJECT_IMPL(Theme)
+
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+
+SN_OBJECT_IMPL(ThemeLoader)
+
 bool ThemeLoader::canLoad(const sn::AssetMetadata & meta) const
 {
     String ext = getFileExtension(meta.path);

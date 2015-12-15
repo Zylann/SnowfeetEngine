@@ -10,7 +10,7 @@ namespace sn
 class MaterialLoader : public AssetLoader
 {
 public:
-    SN_OBJECT(sn::MaterialLoader, sn::AssetLoader)
+    SN_OBJECT
 
     const ObjectType & getBaseAssetType() const override;
     bool canLoad(const AssetMetadata & meta) const override;

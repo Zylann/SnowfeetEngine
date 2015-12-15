@@ -17,7 +17,7 @@ namespace sn
 class SN_IMAGE_API ImageLoader : public AssetLoader
 {
 public:
-    SN_OBJECT(sn::ImageLoader, sn::AssetLoader)
+    SN_OBJECT
 
     const ObjectType & getBaseAssetType() const override;
     bool canLoad(const AssetMetadata & meta) const override;

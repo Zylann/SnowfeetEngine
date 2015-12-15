@@ -16,6 +16,8 @@
 namespace sn
 {
 
+SN_OBJECT_IMPL(FontLoader)
+
 FontLoader::FontLoader():
     m_library(nullptr)
 {

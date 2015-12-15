@@ -27,6 +27,15 @@ This file is part of the SnowfeetEngine project.
     for(auto iteratorName = containerName.begin(); iteratorName != containerName.end(); ++iteratorName)
 
 
+template <class T>
+inline const char * macroImpl_typeString(const char * str)
+{
+    return str;
+}
+
+// Stringifies a type and produces a compilation error if the type is wrong
+#define SN_TYPESTRING(_class) macroImpl_typeString<_class>(#_class)
+
 #endif // __HEADER_SN_MACROS__
 
 

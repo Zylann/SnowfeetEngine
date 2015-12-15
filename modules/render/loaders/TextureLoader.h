@@ -9,7 +9,7 @@ namespace sn
 class TextureLoader : public AssetLoader
 {
 public:
-    SN_OBJECT(sn::TextureLoader, sn::AssetLoader)
+    SN_OBJECT
 
     const ObjectType & getBaseAssetType() const override;
     const ObjectType & getAssetInstanceType() const override;

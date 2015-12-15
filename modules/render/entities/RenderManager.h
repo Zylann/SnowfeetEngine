@@ -15,8 +15,7 @@ class Camera;
 class SN_RENDER_API RenderManager : public Entity
 {
 public:
-
-    SN_OBJECT(sn::RenderManager, sn::Entity);
+    SN_OBJECT
 
     static const char * TAG;
 

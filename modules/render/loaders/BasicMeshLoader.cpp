@@ -9,6 +9,8 @@
 namespace sn
 {
 
+SN_OBJECT_IMPL(BasicMeshLoader)
+
 //-----------------------------------------------------------------------------
 const ObjectType & BasicMeshLoader::getBaseAssetType() const
 {

@@ -19,31 +19,31 @@
 
 #include "app/Driver.h"
 
+#include "util/macros.h"
+
 namespace sn
 {
 
 void registerObjectTypes(ObjectTypeDatabase & otb)
 {
     // Base
-    otb.registerType<Object>();
-    otb.registerType<ScriptableObject>();
-
-    // Drivers
-    otb.registerType<IDriver>();
+    otb.registerType<Object>                            (SN_TYPESTRING(sn::Object));
+    otb.registerType<ScriptableObject, Object>          (SN_TYPESTRING(sn::ScriptableObject));
+    otb.registerType<IDriver, Object>                   (SN_TYPESTRING(sn::IDriver));
 
     // Entities
-    otb.registerType<Entity>();
-    otb.registerType<Entity3D>();
-    otb.registerType<Scene>();
-    otb.registerType<Rotate>();
-    otb.registerType<KeyboardMove>();
+    otb.registerType<Entity, ScriptableObject>          (SN_TYPESTRING(sn::Entity));
+    otb.registerType<Entity3D, Entity>                  (SN_TYPESTRING(sn::Entity3D));
+    otb.registerType<Scene, Entity>                     (SN_TYPESTRING(sn::Scene));
+    otb.registerType<Rotate, Entity>                    (SN_TYPESTRING(sn::Rotate));
+    otb.registerType<KeyboardMove, Entity>              (SN_TYPESTRING(sn::KeyboardMove));
 
     // Assets base
-    otb.registerType<Asset>();
-    otb.registerType<AssetLoader>();
-    otb.registerType<ObjectDB>();
-    otb.registerType<PackedEntity>();
-    otb.registerType<PackedEntityLoader>();
+    otb.registerType<Asset, ScriptableObject>           (SN_TYPESTRING(sn::Asset));
+    otb.registerType<AssetLoader, Object>               (SN_TYPESTRING(sn::AssetLoader));
+    otb.registerType<ObjectDB, Asset>                   (SN_TYPESTRING(sn::ObjectDB));
+    otb.registerType<PackedEntity, ObjectDB>            (SN_TYPESTRING(sn::PackedEntity));
+    otb.registerType<PackedEntityLoader, AssetLoader>   (SN_TYPESTRING(sn::PackedEntityLoader));
 
 }
 

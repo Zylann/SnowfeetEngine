@@ -17,6 +17,8 @@ This file is part of the SnowfeetEngine project.
 namespace sn
 {
 
+SN_OBJECT_IMPL(Entity)
+
 //------------------------------------------------------------------------------
 Entity::Entity() : ScriptableObject(),
     m_flags(1 << SN_EF_ENABLED),
@@ -498,7 +500,7 @@ Entity * Entity::createChild(const std::string & typeName)
     }
     else
     {
-        Object * obj = instantiateDerivedObject(typeName, Entity::__sGetBaseClassName());
+        Object * obj = instantiateDerivedObject(typeName, sn::getObjectType<Entity>());
         if (obj)
             child = (Entity*)obj;
     }

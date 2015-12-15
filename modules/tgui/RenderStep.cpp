@@ -4,13 +4,15 @@
 #include "RenderStep.h"
 #include "GUI.h"
 
-using namespace sn;
-
 namespace tgui
 {
 
+SN_OBJECT_IMPL(tgui::RenderStep)
+
 void RenderStep::onDraw(sn::VideoDriver & driver)
 {
+    using namespace sn;
+
     Scene * scene = getScene();
     if (scene)
     {

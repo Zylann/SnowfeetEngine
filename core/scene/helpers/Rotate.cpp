@@ -5,6 +5,8 @@
 namespace sn
 {
 
+SN_OBJECT_IMPL(Rotate)
+
 Rotate::Rotate() : Entity(),
 	m_angularSpeed(30, 30, 0)
 {

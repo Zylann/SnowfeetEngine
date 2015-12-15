@@ -25,22 +25,17 @@ namespace sn
     }
 
 //------------------------------------------------------------------------------
-ObjectType::ObjectType(
-    const std::string & p_name,
-    const std::string & p_baseName
-) :
+ObjectType::ObjectType():
     m_isAbstract(false),
     m_ID(0), // null ID, until the type gets registered
-    m_name(p_name),
-    m_baseName(p_baseName)
+    r_base(nullptr)
 {
-    m_scriptName = getClassNameWithoutNamespace(m_name);
 }
 
 //------------------------------------------------------------------------------
 bool ObjectType::is(const std::string & typeName, bool includeInheritance) const
 {
-    ObjectType * t = ObjectTypeDatabase::get().getType(typeName);
+    const ObjectType * t = ObjectTypeDatabase::get().getType(typeName);
     if (t)
         return is(*t, includeInheritance);
     else
@@ -77,9 +72,9 @@ bool ObjectType::derivesFrom(const ObjectType & other) const
     ObjectTypeDatabase & odb = ObjectTypeDatabase::get();
     const ObjectType * baseType = this;
 
-    while(!baseType->m_baseName.empty())
+    while(baseType->r_base != nullptr)
     {
-        baseType = odb.getType(baseType->m_baseName);
+        baseType = baseType->r_base;
         if(baseType == nullptr)
             return false;
         if(baseType->m_ID == other.m_ID)
@@ -106,7 +101,10 @@ Object * ObjectType::instantiate() const
 std::string ObjectType::toString() const
 {
     std::stringstream ss;
-    ss << "{[" << m_ID << "]" << m_name << " : " << m_baseName << "}";
+    ss << "{[" << m_ID << "]" << m_name;
+    if (r_base)
+        ss << " : " << r_base->getName();
+    ss << "}";
     return ss.str();
 }
 
@@ -126,7 +124,22 @@ void ObjectType::getChildrenTypes(std::vector<const ObjectType*> & out_children)
 //------------------------------------------------------------------------------
 const ObjectType * ObjectType::getBase() const
 {
-    return ObjectTypeDatabase::get().getType(m_baseName);
+    return r_base;
+}
+
+//------------------------------------------------------------------------------
+void ObjectType::setName(const char * fullName)
+{
+    SN_ASSERT(m_name.empty(), "Cannot set type name twice!");
+    m_name = fullName;
+    if (m_scriptName.empty())
+        m_scriptName = getClassNameWithoutNamespace(fullName);
+}
+
+//------------------------------------------------------------------------------
+void ObjectType::setScriptName(const std::string & fullClassName)
+{
+    m_scriptName = fullClassName;
 }
 
 //------------------------------------------------------------------------------

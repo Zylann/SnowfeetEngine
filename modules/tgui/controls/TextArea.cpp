@@ -9,6 +9,8 @@ using namespace sn;
 namespace tgui
 {
 
+SN_OBJECT_IMPL(TextArea)
+
 //------------------------------------------------------------------------------
 TextArea::TextArea():
     m_wrapper(m_model),

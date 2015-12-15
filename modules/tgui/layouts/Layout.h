@@ -16,7 +16,7 @@ class Control;
 class Layout : public sn::Object
 {
 public:
-	SN_OBJECT(tgui::Layout, sn::Object)
+	SN_OBJECT
 
 	Layout(Control * container = nullptr) : r_container(container) {}
 

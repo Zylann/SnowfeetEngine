@@ -18,7 +18,7 @@ enum PixelFormat
 class SN_IMAGE_API Image : public Asset
 {
 public:
-    SN_OBJECT(sn::Image, sn::Asset)
+    SN_OBJECT
 
     /// \brief Constructs an empty image.
     Image();

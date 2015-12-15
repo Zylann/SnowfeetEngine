@@ -15,7 +15,7 @@ This file is part of the SnowfeetEngine project.
 namespace sn
 {
 
-typedef std::unordered_map<std::string, ObjectType*> ObjectTypeMap;
+typedef std::unordered_map<std::string, const ObjectType*> ObjectTypeMap;
 
 /// \brief Singleton class that allows the creation of objects from their name or ID.
 /// It can be used for native serialization and basic reflection.
@@ -28,65 +28,66 @@ public:
     /// \brief Returns singleton
     static ObjectTypeDatabase & get();
 
-    /// \brief Registers an object type that uses SN_OBJECT macro in its definition.
-    /// \note it generates integer IDs from a counter, then as long as you call
-    /// this function in the same order, these IDs will be the same even on different
-    /// computers or platforms.
-    /// However, IDs may differ if the version of the engine differ too, as there
-    /// might be new objects.
+    /// \brief Registers a type without base class
     template <class Object_T>
-    ObjectType & registerType(const char * scriptName = nullptr)
+    ObjectType & registerType(const char * fullName, const char * scriptName = nullptr)
     {
-        std::string typeName = Object_T::__sGetClassName();
-        std::string baseName = Object_T::__sGetBaseClassName();
-
         // Check if the object has already been registered
-        SN_ASSERT(!isRegistered(typeName), "ObjectTypeDatabase::registerType: registered the same type twice! (" << typeName << ")");
+        SN_ASSERT(!isRegistered(fullName), "ObjectTypeDatabase::registerType: registered the same type twice! (" << fullName << ")");
 
-        ObjectType * type = new ObjectType(typeName, baseName);
+        ObjectType & type = Object_T::s_objectType;
 
         //type->userData = userData;
-        type->m_moduleName = m_currentModule;
-
-        // Generate type ID
-        type->m_ID = m_nextID++;
-
-        // Register factory function
-        type->m_factory = Object_T::instantiateObject;
-
-		type->m_isAbstract = std::is_abstract<Object_T>();
+        type.m_moduleName = m_currentModule;
+        type.setName(fullName);
 
         if (scriptName)
-            type->setScriptName(scriptName);
-        //else
-            // By default, the undecorated class name is used
+            type.setScriptName(scriptName);
+
+        // Generate type ID
+        type.m_ID = m_nextID++;
+
+        // Register factory function
+        type.m_factory = sn::instantiateOrNull<Object_T>;
+
+		type.m_isAbstract = std::is_abstract<Object_T>();
 
         // Register type
-        m_registeredTypes[type->getName()] = type;
+        m_registeredTypes[type.getName()] = &type;
 
 #ifdef SN_BUILD_DEBUG
-        SN_DLOG("Registered " << type->toString());
+        SN_DLOG("Registered " << type.toString());
 #endif
-        return *type;
+        return type;
+    }
+
+    /// \brief Registers a type with one base class
+    template <class Object_T, class Base_T>
+    ObjectType & registerType(const char * fullName, const char * scriptName = nullptr)
+    {
+        // Check inheritance at compile-time
+        static_assert(std::is_base_of<Base_T, Object_T>::value, "Object doesn't derives from base");
+
+        ObjectType & type = registerType<Object_T>(fullName, scriptName);
+
+        type.r_base = &sn::getObjectType<Base_T>();
+
+        return type;
     }
 
     template <class Object_T>
     void unregisterType()
     {
-        ObjectType & type = Object_T::sObjectType();
+        const ObjectType & type = sn::getObjectType<Object_T>();
         unregisterType(type);
     }
 
-    void unregisterType(ObjectType & t);
+    void unregisterType(const ObjectType & t);
     bool isRegistered(const std::string & typeName);
 
     /// \brief Gets an object metaclass from its name
     /// \return the object type, or null if not found.
-    ObjectType * getType(const std::string & typeName);
-
-    /// \brief Gets an object metaclass from its name, and produces an error if it was not found.
-    /// \return a constant reference to the object type.
-    const ObjectType & getTypeConstRef(const std::string & typeName);
+    const ObjectType * getType(const std::string & typeName);
 
     inline const ObjectTypeMap & getTypes() const { return m_registeredTypes; }
 
@@ -104,14 +105,8 @@ public:
 private:
 
     // Private to prevent construction from the outside
-    ObjectTypeDatabase() :
-        m_nextID(1) // IDs start at 1, 0 means null
-    {}
-
-    ~ObjectTypeDatabase()
-    {
-        clear();
-    }
+    ObjectTypeDatabase();
+    ~ObjectTypeDatabase();
 
     // Prevent copy-construction
     ObjectTypeDatabase(const ObjectTypeDatabase&);

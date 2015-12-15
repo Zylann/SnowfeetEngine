@@ -23,7 +23,7 @@ namespace sn
 class SN_API ScriptableObject : public RefCounted, public Object
 {
 public:
-    SN_OBJECT(sn::ScriptableObject, sn::Object)
+    SN_OBJECT
 
     ScriptableObject();
 

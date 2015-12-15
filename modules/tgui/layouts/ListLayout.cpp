@@ -6,6 +6,8 @@ using namespace sn;
 namespace tgui
 {
 
+SN_OBJECT_IMPL(ListLayout)
+
 //------------------------------------------------------------------------------
 ListLayout::ListLayout(Control * control):
     Layout(control),

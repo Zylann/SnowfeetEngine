@@ -9,6 +9,8 @@
 namespace sn
 {
 
+SN_OBJECT_IMPL(Material)
+
 //------------------------------------------------------------------------------
 const char * Material::MAIN_TEXTURE = "u_MainTexture";
 const char * Material::MODEL_MATRIX = "u_ModelMatrix";

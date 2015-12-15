@@ -2,20 +2,19 @@
 
 #include "HeadTracker.hpp"
 
-namespace sn {
-namespace oculus
+#include <core/util/macros.h>
+
+namespace
 {
     void registerObjectTypes(sn::ObjectTypeDatabase & otb)
     {
-        otb.registerType<HeadTracker>();
+        otb.registerType<sn::oculus::HeadTracker, sn::VRHeadset>(SN_TYPESTRING(sn::oculus::HeadTracker));
     }
-
-} // namespace oculus
-} // namespace sn
+}
 
 int loadSnowfeetModule_ModOculus(ModuleLoadArgs args)
 {
-	sn::oculus::registerObjectTypes(*(args.objectTypeDatabase));
+	registerObjectTypes(*(args.objectTypeDatabase));
     return 0;
 }
 

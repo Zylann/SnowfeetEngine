@@ -9,6 +9,8 @@
 namespace sn
 {
 
+SN_OBJECT_IMPL(RenderTextureLoader)
+
 const ObjectType & RenderTextureLoader::getAssetInstanceType() const
 {
     return sn::getObjectType<RenderTexture>();

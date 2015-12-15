@@ -17,7 +17,7 @@ namespace oculus {
 class HeadTracker : public sn::VRHeadset
 {
 public:
-    SN_OBJECT(sn::oculus::HeadTracker, sn::VRHeadset)
+    SN_OBJECT
 
     HeadTracker();
 

@@ -11,7 +11,7 @@ class RenderTexture;
 class RenderTextureLoader : public AssetLoader
 {
 public:
-    SN_OBJECT(sn::RenderTextureLoader, sn::AssetLoader)
+    SN_OBJECT
 
     const ObjectType & getAssetInstanceType() const override;
     bool canLoad(const AssetMetadata & meta) const override;

@@ -13,6 +13,8 @@ using namespace sn;
 namespace tgui
 {
    
+SN_OBJECT_IMPL(Control)
+
 //------------------------------------------------------------------------------
 Control::Control() : sn::Entity(),
     m_controlFlags((1 << TGUI_CF_ENABLED) | (1 << TGUI_CF_VISIBLE)),

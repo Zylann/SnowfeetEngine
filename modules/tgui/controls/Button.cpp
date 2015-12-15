@@ -9,6 +9,8 @@ using namespace sn;
 namespace tgui
 {
 
+SN_OBJECT_IMPL(Button)
+
 //------------------------------------------------------------------------------
 void Button::onMousePress(Event & e)
 {

@@ -24,10 +24,7 @@ class Object;
 class SN_API ObjectType
 {
 public:
-    ObjectType(
-        const std::string & p_name,
-        const std::string & p_baseName
-    );
+    ObjectType();
 
     //--------------------------------------------
     // Type
@@ -38,7 +35,7 @@ public:
 
 	bool derivesFrom(const ObjectType & other) const;
 
-    /// \brief Creates a new instance of an object from its name.
+    /// \brief Creates a new instance of the type.
     /// It does the same thing as "new MyObject()", where className = "MyObject".
     /// \return pointer to dynamically allocated object instance, or null if the object
     /// couldn't be allocated (as for abstract types).
@@ -47,7 +44,6 @@ public:
 	inline bool isAbstract() const { return m_isAbstract; }
 	inline ObjectTypeID getID() const { return m_ID; }
 	inline const std::string & getName() const { return m_name; }
-	inline const std::string & getBaseName() const { return m_baseName; }
 	inline const std::string & getModuleName() const { return m_moduleName; }
 
     /// \brief Gets the base type of this one.
@@ -58,14 +54,11 @@ public:
 
     std::string toString() const;
 
-    void setScriptName(const std::string & fullClassName) { m_scriptName = fullClassName; }
     const std::string & getScriptName() const { return m_scriptName; }
 
-    //--------------------------------------------
-    // Members
-    //--------------------------------------------
-
-    // TODO
+private:
+    void setName(const char * fullName);
+    void setScriptName(const std::string & fullClassName);
 
 private:
 	friend class ObjectTypeDatabase;
@@ -83,8 +76,8 @@ private:
     /// \brief Full unique name of the type.
     std::string m_name;
 
-    /// \brief Name of the base class.
-    std::string m_baseName;
+    /// \brief Base class.
+    const ObjectType * r_base;
 
     /// \brief Optional name of the module this object type is registered in.
     std::string m_moduleName;

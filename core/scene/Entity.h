@@ -41,7 +41,7 @@ class Scene;
 class SN_API Entity : public ScriptableObject
 {
 public:
-	SN_OBJECT(sn::Entity, sn::ScriptableObject)
+	SN_OBJECT
 
 	static const u32 MAX_TAGS = 32;
 
@@ -142,7 +142,7 @@ public:
     template <class Entity_T>
     Entity_T * createChild()
     {
-        Entity * e = createChild(Entity_T::__sGetClassName());
+        Entity * e = createChild(sn::getObjectType<Entity_T>().getName());
         if (e)
             return static_cast<Entity_T*>(e);
         else
@@ -154,7 +154,7 @@ public:
     template <class Entity_T>
     Entity_T * getChild()
     {
-        Entity * e = getChildByType(Entity_T::__sGetClassName());
+        Entity * e = getChildByType(sn::getObjectType<Entity_T>().getName());
         if (e)
             return static_cast<Entity_T*>(e);
         else

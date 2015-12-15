@@ -12,7 +12,7 @@ namespace tgui
 class Text : public Control
 {
 public:
-    SN_OBJECT(tgui::Text, tgui::Control)
+    SN_OBJECT
 
     Text();
 

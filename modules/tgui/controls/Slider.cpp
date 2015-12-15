@@ -6,6 +6,8 @@ using namespace sn;
 namespace tgui
 {
 
+SN_OBJECT_IMPL(Slider)
+
 //------------------------------------------------------------------------------
 Slider::Slider() : Control(), 
     m_value(0),

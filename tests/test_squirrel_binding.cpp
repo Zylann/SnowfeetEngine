@@ -6,6 +6,7 @@
 #include <core/app/ScriptableObject.h>
 #include <core/util/stringutils.h>
 #include <core/object_types.h>
+#include <core/util/macros.h>
 
 using namespace sn;
 
@@ -88,7 +89,7 @@ private:
 class SharedThing : public ScriptableObject
 {
 public:
-    SN_SCRIPT_OBJECT(SharedThing, sn::ScriptableObject)
+    SN_OBJECT
 
     SharedThing(const char * name = "(unnamed)", bool createChild=true) : ScriptableObject(),
         m_name(name)
@@ -121,11 +122,13 @@ private:
     SharedThing * m_child;
 };
 
+SN_OBJECT_IMPL(SharedThing)
+
 //------------------------------------------------------------------------------
 class DerivedThing : public SharedThing
 {
 public:
-    SN_SCRIPT_OBJECT(DerivedThing, SharedThing)
+    SN_OBJECT
 
     DerivedThing(const char * name = "(unnamed derived)") : SharedThing(name, false)
     {
@@ -143,6 +146,8 @@ protected:
         SN_LOG("Derived thing destroyed");
     }
 };
+
+SN_OBJECT_IMPL(DerivedThing)
 
 //------------------------------------------------------------------------------
 // Forward-declare binding functions
@@ -259,7 +264,7 @@ namespace test_squirrel
 
     void registerSharedThing(HSQUIRRELVM vm)
     {
-        ObjectTypeDatabase::get().registerType<SharedThing>();
+        ObjectTypeDatabase::get().registerType<SharedThing, ScriptableObject>(SN_TYPESTRING(SharedThing));
 
         ScriptableObject::bindBase<SharedThing>(vm)
             .setMethod("sayHello", SharedThing_sayHello)
@@ -268,7 +273,7 @@ namespace test_squirrel
 
     void registerDerivedThing(HSQUIRRELVM vm)
     {
-        ObjectTypeDatabase::get().registerType<DerivedThing>();
+        ObjectTypeDatabase::get().registerType<DerivedThing, SharedThing>(SN_TYPESTRING(DerivedThing));
         
         ScriptableObject::bindBase<DerivedThing>(vm)
             .setMethod("sayHello", DerivedThing_sayHello);

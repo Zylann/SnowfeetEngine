@@ -12,7 +12,7 @@ namespace sn
 class SN_API AssetLoader : public Object
 {
 public:
-    SN_OBJECT(sn::AssetLoader, sn::Object)
+    SN_OBJECT
 
     virtual ~AssetLoader() {}
 

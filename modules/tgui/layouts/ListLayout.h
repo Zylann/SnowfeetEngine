@@ -11,7 +11,7 @@ namespace tgui
 class ListLayout : public Layout
 {
 public:
-	SN_OBJECT(tgui::ListLayout, tgui::Layout)
+	SN_OBJECT
 
     ListLayout(Control * control = nullptr);
 

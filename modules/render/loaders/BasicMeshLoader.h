@@ -9,7 +9,7 @@ namespace sn
 class BasicMeshLoader : public AssetLoader
 {
 public:
-    SN_OBJECT(sn::BasicMeshLoader, sn::AssetLoader)
+    SN_OBJECT
 
     const ObjectType & getBaseAssetType() const override;
     bool canLoad(const AssetMetadata & meta) const override;

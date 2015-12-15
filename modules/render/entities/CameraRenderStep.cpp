@@ -5,6 +5,8 @@
 namespace sn
 {
 
+SN_OBJECT_IMPL(CameraRenderStep)
+
 CameraRenderStep::CameraRenderStep() : RenderStep()
 {
     m_tag = Camera::TAG;

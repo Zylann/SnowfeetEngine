@@ -6,6 +6,8 @@
 namespace sn
 {
 
+SN_OBJECT_IMPL(PackedEntityLoader)
+
 //------------------------------------------------------------------------------
 const ObjectType & PackedEntityLoader::getBaseAssetType() const
 {

@@ -10,7 +10,7 @@ namespace tgui
 class GridLayout : public Layout
 {
 public:
-	SN_OBJECT(tgui::GridLayout, tgui::Layout)
+	SN_OBJECT
 
     struct Column
     {

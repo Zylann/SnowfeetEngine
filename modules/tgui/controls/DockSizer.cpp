@@ -9,6 +9,8 @@ using namespace sn;
 namespace tgui
 {
 
+SN_OBJECT_IMPL(DockSizer)
+
 DockSizer::DockSizer():
 	m_orientation(TGUI_VERTICAL)
 {

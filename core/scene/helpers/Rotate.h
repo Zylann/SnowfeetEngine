@@ -10,7 +10,7 @@ namespace sn
 class Rotate : public Entity
 {
 public:
-	SN_OBJECT(sn::Rotate, sn::Entity)
+	SN_OBJECT
 
 	Rotate();
 

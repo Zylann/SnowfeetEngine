@@ -24,7 +24,7 @@ class DockSizer;
 class SplitLayout : public Layout
 {
 public:
-	SN_OBJECT(tgui::SplitLayout, tgui::Layout)
+	SN_OBJECT
 
 	SplitLayout(Control * container = nullptr, SplitLayout * parent = nullptr, Control * c = nullptr);
 	~SplitLayout();

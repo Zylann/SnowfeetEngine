@@ -1,6 +1,7 @@
 #include "tests.hpp"
 
 #include <core/reflect/Object.h>
+#include <core/util/macros.h>
 
 using namespace sn;
 
@@ -8,7 +9,7 @@ using namespace sn;
 class ReflectedClass : public Object
 {
 public:
-    SN_OBJECT(ReflectedClass, sn::Object)
+    SN_OBJECT
 
     ReflectedClass():
         m_counter(42)
@@ -35,6 +36,8 @@ private:
 
 };
 
+SN_OBJECT_IMPL(ReflectedClass)
+
 void test_reflection()
 {
     //s32(ReflectedClass::*method)();
@@ -46,7 +49,7 @@ void test_reflection()
 
     // Register
 
-    ObjectType & ot = otb.registerType<ReflectedClass>();
+    ObjectType & ot = otb.registerType<ReflectedClass, Object>(SN_TYPESTRING(ReflectedClass));
     //ot.addProperty("name", &ReflectedClass::getName, &ReflectedClass::setName);
     //ot.addProperty("counter", &ReflectedClass::getCounter);
 

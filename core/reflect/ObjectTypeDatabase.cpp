@@ -19,13 +19,25 @@ ObjectTypeDatabase & ObjectTypeDatabase::get()
 }
 
 //------------------------------------------------------------------------------
+// Private to prevent construction from the outside
+ObjectTypeDatabase::ObjectTypeDatabase() :
+    m_nextID(1) // IDs start at 1, 0 means null
+{}
+
+//------------------------------------------------------------------------------
+ObjectTypeDatabase::~ObjectTypeDatabase()
+{
+    clear();
+}
+
+//------------------------------------------------------------------------------
 bool ObjectTypeDatabase::isRegistered(const std::string & typeName)
 {
     return m_registeredTypes.find(typeName) != m_registeredTypes.end();
 }
 
 //------------------------------------------------------------------------------
-ObjectType * ObjectTypeDatabase::getType(const std::string & typeName)
+const ObjectType * ObjectTypeDatabase::getType(const std::string & typeName)
 {
     auto it = m_registeredTypes.find(typeName);
     if (it != m_registeredTypes.end())
@@ -36,14 +48,6 @@ ObjectType * ObjectTypeDatabase::getType(const std::string & typeName)
     {
         return nullptr;
     }
-}
-
-//------------------------------------------------------------------------------
-const ObjectType & ObjectTypeDatabase::getTypeConstRef(const std::string & typeName)
-{
-    ObjectType * ot = getType(typeName);
-    SN_ASSERT(ot != nullptr, "Type '" << typeName << "' is not registered");
-    return *ot;
 }
 
 //------------------------------------------------------------------------------
@@ -59,12 +63,11 @@ void ObjectTypeDatabase::endModule()
 }
 
 //------------------------------------------------------------------------------
-void ObjectTypeDatabase::unregisterType(ObjectType & t)
+void ObjectTypeDatabase::unregisterType(const ObjectType & t)
 {
     auto it = m_registeredTypes.find(t.getName());
     if (it != m_registeredTypes.end())
     {
-        delete it->second;
         m_registeredTypes.erase(it);
     }
     else
@@ -100,7 +103,7 @@ void ObjectTypeDatabase::unregisterModule(const std::string & name)
     auto types = m_registeredTypes;
     for (auto it = types.begin(); it != types.end(); ++it)
     {
-        ObjectType * t = it->second;
+        const ObjectType * t = it->second;
         if (t->getModuleName() == name)
         {
             unregisterType(*t);
@@ -117,10 +120,6 @@ void ObjectTypeDatabase::unregisterModule(const std::string & name)
 //------------------------------------------------------------------------------
 void ObjectTypeDatabase::clear()
 {
-    for (auto it = m_registeredTypes.begin(); it != m_registeredTypes.end(); ++it)
-    {
-        delete it->second;
-    }
     m_registeredTypes.clear();
     m_nextID = 1;
 }
