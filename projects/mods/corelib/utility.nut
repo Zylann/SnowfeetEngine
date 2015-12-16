@@ -22,6 +22,16 @@ function printVar(v, title="var") {
 }
 
 //------------------------------------------------------------------------------
+function lerp(x, y, t) {
+    return x + (y - x) * t
+}
+
+//------------------------------------------------------------------------------
+function capitalize(s) {
+    return s.slice(0, 1).toupper() + s.slice(1)
+}
+
+//------------------------------------------------------------------------------
 /// \brief Tries to get a value from a table, class or instance.
 /// \param obj (class|instance|table)
 /// \param key (var)
