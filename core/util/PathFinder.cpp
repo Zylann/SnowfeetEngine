@@ -5,8 +5,8 @@ Based on the work of Gustavo FRANCO (2006)
 */
 
 
-#include <core/util/PathFinder.hpp>
-#include <core/util/Log.hpp>
+#include <core/util/PathFinder.h>
+#include <core/util/Log.h>
 
 namespace sn
 {

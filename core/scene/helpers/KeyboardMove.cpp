@@ -1,9 +1,11 @@
-#include "KeyboardMove.hpp"
-#include "../Entity3D.hpp"
-#include "../Scene.hpp"
+#include "KeyboardMove.h"
+#include "../Entity3D.h"
+#include "../Scene.h"
 
 namespace sn
 {
+
+SN_OBJECT_IMPL(KeyboardMove)
 
 void KeyboardMove::onReady()
 {
@@ -136,13 +138,13 @@ void KeyboardMove::onUpdate()
     }
 }
 
-void KeyboardMove::serializeState(JsonBox::Value & o, const SerializationContext & context)
+void KeyboardMove::serializeState(Variant & o, const SerializationContext & context)
 {
     Entity::serializeState(o, context);
     sn::serialize(o["speed"], m_speed);
 }
 
-void KeyboardMove::unserializeState(JsonBox::Value & o, const SerializationContext & context)
+void KeyboardMove::unserializeState(const Variant & o, const SerializationContext & context)
 {
     Entity::unserializeState(o, context);
     sn::unserialize(o["speed"], m_speed, 1.f);

@@ -1,0 +1,164 @@
+<!doctype html>
+<html>
+	<style>
+		body {
+			background-color: #333;
+			color: #aaa;
+		}
+		a {
+			color: #fa4;
+		}
+		a:hover {
+			color: #fb6;
+		}
+		.track {
+			height: 24px;
+			background-color: #222;
+			margin: 1px;
+			padding: 1px;
+		}
+		.sample {
+			position: absolute;
+			height: 24px;
+			background-color: #f82;
+			display: inline;
+			color: #444;
+			font-size: 0.8em;
+			overflow: hidden;
+		}
+		.sample:hover {
+			background-color: #fb6;
+		}
+	</style>
+	<body>
+		
+		<div id="navigator">
+
+			<input type="file" id="openButton"></button>
+			<a href="#" onclick="previousFrame();">Previous frame</a> | 
+			<a href="#" onclick="nextFrame();">Next frame</a>
+
+		</div>
+
+		<div id="viewer">
+		</div>
+
+		<script>
+
+var profilingData = null;
+var currentFrame = 1;
+
+window.addEventListener("load", function() { init(); });
+
+
+function init() {
+	var openButton = document.getElementById('openButton');
+	openButton.addEventListener("change", onAskOpenFile, false);
+}
+
+
+function onAskOpenFile(e) {
+	var file = e.target.files[0];
+	if (!file) {
+		return;
+	}
+	var reader = new FileReader();
+	reader.onload = function(e) {
+		var contents = e.target.result;
+		var data = JSON.parse(contents);
+		if(!data) {
+			alert("Invalid data");
+			return;
+		}
+		profilingData = data;
+		viewFrame(currentFrame);
+	};
+	reader.readAsText(file);
+}
+
+
+function nextFrame() {
+	if(currentFrame + 2 < profilingData.frames.length) {
+		++currentFrame;
+		viewFrame(currentFrame);
+	}
+}
+
+
+function previousFrame() {
+	if(currentFrame > 0) {
+		--currentFrame;
+		viewFrame(currentFrame);
+	}
+}
+
+
+function viewFrame(frameNumber) {
+	if(!profilingData)
+		return;
+
+	if(frameNumber + 1 >= profilingData.frames.length)
+		return;
+
+	var view = document.getElementById('viewer');
+	view.innerHTML = "";
+
+	var begin = profilingData.frames[frameNumber];
+	var end = profilingData.frames[frameNumber + 1];
+
+	var micros2s = 1.0 / 1000000.0
+	var refTime = profilingData.samples[begin].beginTime * micros2s;
+	var refDuration = profilingData.samples[end].endTime * micros2s - refTime;
+
+	var tracks = [];
+	console.log("refTime = " + refTime);
+
+	//var samples = []
+	for(var i = begin; i < end; ++i) {
+		var sample = profilingData.samples[i];
+
+		while(sample.depth >= tracks.length) {
+			var track = document.createElement('div');
+			track.classList.add("track");
+			tracks.push(track);
+			view.appendChild(track);
+		}
+
+		var track = tracks[sample.depth];
+		var trackWidth = track.clientWidth;
+
+		var beginTime = sample.beginTime * micros2s - refTime;
+		var endTime = sample.endTime * micros2s - refTime;
+
+		var x = (beginTime / refDuration) * trackWidth;
+		var len = ((endTime - beginTime) / refDuration) * trackWidth;
+
+		var sampleElem = document.createElement("div");
+		sampleElem.classList.add("sample");
+		
+		sampleElem.style.left = (Math.floor(x) + 1) + "px";
+		
+		var sampleElemWidth = Math.floor(len);
+		if(sampleElemWidth == 0)
+			sampleElemWidth = 1;
+		sampleElem.style.width = sampleElemWidth + "px";
+
+		sampleElem.title = sample.customName + " (" + (sample.endTime - sample.beginTime) / 1000 + "ms)";
+		sampleElem.appendChild(document.createTextNode(sampleElem.title));
+		track.appendChild(sampleElem);
+
+		//samples.push(sample);
+	}
+}
+
+
+function clearView() {
+	var view = document.getElementById('viewer');
+	view.innerHTML = "";
+}
+
+
+		</script>
+
+	</body>
+</html>

@@ -4,7 +4,8 @@ Copyright (C) 2014-2015 Marc GILLERON
 This file is part of the SnowfeetEngine project.
 */
 
-#include "AssetMetadata.hpp"
+#include "AssetMetadata.h"
+#include <core/sml/SmlParser.h>
 
 namespace sn
 {
@@ -29,12 +30,13 @@ bool AssetMetadata::saveToFile(String metaPath)
 //------------------------------------------------------------------------------
 bool AssetMetadata::loadFromStream(std::ifstream & ifs)
 {
-    JsonBox::Value o;
-    o.loadFromStream(ifs);
+    SmlParser parser;
+    Variant o;
+    parser.parseValue(ifs, o);
 
-    if (o.isObject())
+    if (o.isDictionary())
     {
-        json = o;
+        variantData = o;
         return true;
     }
     else

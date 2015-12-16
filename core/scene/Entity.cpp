@@ -4,20 +4,23 @@ Copyright (C) 2014-2015 Marc GILLERON
 This file is part of the SnowfeetEngine project.
 */
 
-#include <core/util/Log.hpp>
-#include <core/util/assert.hpp>
+#include <core/util/Log.h>
+#include <core/util/assert.h>
 #include <sstream>
 
-#include "Entity.hpp"
-#include "Scene.hpp"
+#include "Entity.h"
+#include "Scene.h"
+#include "../app/Application.h"
 
 #define SN_JSON_ENTITY_CHILDREN_TAG "_children"
 
 namespace sn
 {
 
+SN_OBJECT_IMPL(Entity)
+
 //------------------------------------------------------------------------------
-Entity::Entity() : ScriptObject(),
+Entity::Entity() : ScriptableObject(),
     m_flags(1 << SN_EF_ENABLED),
     r_parent(nullptr),
     r_scene(nullptr)
@@ -31,13 +34,13 @@ Entity::~Entity()
         r_parent->removeChild(this);
     destroyChildren();
 
-    // We need to iterate this way because removeTag() modifies m_tags
-    while (!m_tags.empty())
-        removeTag(*m_tags.begin());
+    removeAllTags();
 
 	// Unregister update callback
-	setUpdatable(false);
-    listenToSystemEvents(false);
+    if (getFlag(SN_EF_UPDATABLE))
+    	setUpdatable(false);
+    if (getFlag(SN_EF_SYSTEM_EVENT_LISTENER))
+        listenToSystemEvents(false);
 
     //SN_LOG("Entity " << getName() << " destroyed");
 }
@@ -70,7 +73,7 @@ void Entity::setEnabled(bool e)
 }
 
 //------------------------------------------------------------------------------
-void Entity::setUpdatable(bool updatable, s16 order, s16 layer)
+void Entity::setUpdatable(bool updatable, const std::string layerName)
 {
 	// TODO FIXME Set the flag!!
     if (getFlag(SN_EF_UPDATABLE) ^ updatable)
@@ -79,10 +82,15 @@ void Entity::setUpdatable(bool updatable, s16 order, s16 layer)
         if (scene)
         {
 			setFlag(SN_EF_UPDATABLE, updatable);
+            UpdateManager & manager = scene->getUpdateManager();
             if (updatable)
-                scene->registerUpdatableEntity(*this, order, layer);
+            {
+                manager.addEntity(*this, layerName.empty() ? UpdateManager::DEFAULT_LAYER : layerName);
+            }
             else
-                scene->unregisterUpdatableEntity(*this);
+            {
+                manager.removeEntity(*this, layerName);
+            }
         }
         else
         {
@@ -124,35 +132,70 @@ void Entity::listenToSystemEvents(bool enable)
 //------------------------------------------------------------------------------
 void Entity::addTag(const std::string & tag)
 {
-    if (m_tags.insert(tag).second)
-    {
-        Scene * scene = getScene();
-        if (scene)
-            scene->registerTaggedEntity(*this, tag);
-        else
-            SN_ERROR("Entity::addTag: scene not found from entity " << toString());
-    }
-    else
-    {
-        SN_WARNING("Entity::addTag: tag " << tag << " already set on entity " << toString());
-    }
+	Scene * scene = getScene();
+	if (scene)
+	{
+		u32 tagIndex = scene->registerTaggedEntity(*this, tag);
+		if (tagIndex != Scene::TagManager::INVALID_INDEX)
+			m_tags.set(tagIndex, true);
+	}
+	else
+	{
+		SN_ERROR("Entity::addTag: scene not found from entity " << toString());
+	}
 }
 
 //------------------------------------------------------------------------------
 void Entity::removeTag(const std::string tag)
 {
-    if (m_tags.erase(tag))
-    {
-        Scene * scene = getScene();
-        if (scene)
-            scene->unregisterTaggedEntity(*this, tag);
-        else
-            SN_ERROR("Entity::removeTag: scene not found from entity " << toString());
-    }
-    else
-    {
-        SN_WARNING("Entity::addTag: tag " << tag << " already set on entity " << toString());
-    }
+	Scene * scene = getScene();
+	if (scene)
+	{
+        u32 tagIndex = scene->unregisterTaggedEntity(*this, tag);
+		if (tagIndex != Scene::TagManager::INVALID_INDEX)
+			m_tags.set(tagIndex, false);
+	}
+	else
+	{
+		SN_ERROR("Entity::removeTag: scene not found from entity " << toString());
+	}
+}
+
+//------------------------------------------------------------------------------
+void Entity::removeAllTags()
+{
+	Scene * scene = getScene();
+	if (scene)
+	{
+		for (u32 i = 0; i < MAX_TAGS; ++i)
+		{
+			if (m_tags.test(i))
+			{
+				scene->unregisterTaggedEntity(*this, i);
+				m_tags.set(i, false);
+			}
+		}
+	}
+	else
+	{
+		if (m_tags.count() != 0)
+			SN_ERROR("Entity::removeAllTags: scene not found from entity " << toString());
+	}
+}
+
+//------------------------------------------------------------------------------
+inline bool Entity::hasTag(const std::string & tag) const
+{
+	Scene * scene = getScene();
+	if (scene)
+	{
+		u32 tagIndex = scene->getTagManager().getTagIndex(tag);
+		if (tagIndex == Scene::TagManager::INVALID_INDEX)
+			return false;
+		return m_tags.test(tagIndex);
+	}
+	SN_ERROR("Coudln't query entity tag, the scene is not found");
+	return false;
 }
 
 //------------------------------------------------------------------------------
@@ -167,12 +210,30 @@ std::string Entity::toString() const
 }
 
 //------------------------------------------------------------------------------
+void Entity::getTags(std::vector<std::string> & tags)
+{
+	Scene * scene = getScene();
+	if (scene)
+	{
+		const Scene::TagManager & tagManager = scene->getTagManager();
+		for (u32 i = 0; i < m_tags.size(); ++i)
+		{
+			std::string tagName;
+			if (tagManager.getTagName(i, tagName))
+				tags.push_back(tagName);
+		}
+	}
+}
+
+//------------------------------------------------------------------------------
 void Entity::setParent(Entity * newParent)
 {
-    // TODO FIXME Scene registrations such as update or tags must be notified too if the scene changes!
+    Scene * oldScene = getScene();
 
+    // Update parent
     if (r_parent != nullptr && newParent == nullptr)
     {
+        // Unparented
         r_parent->removeChild(this);
         r_parent = newParent;
     }
@@ -180,29 +241,139 @@ void Entity::setParent(Entity * newParent)
     {
         if (r_parent == nullptr)
         {
+            // Parented for the first time
             r_parent = newParent;
             r_parent->addChild(this);
-
-            if (newParent->isInstanceOf<Scene>() && r_scene == nullptr)
-            {
-                r_scene = static_cast<Scene*>(newParent);
-
-                // TODO have a setScene() function performing all registration stuff
-                for (auto it = m_tags.begin(); it != m_tags.end(); ++it)
-                {
-                    r_scene->registerTaggedEntity(*this, *it);
-                }
-
-                propagateOnReady();
-            }
         }
         else
         {
+            // Parent changed
+
             // Just swap ownership
             r_parent->removeChild(this);
             r_parent = newParent;
             r_parent->addChild(this);
         }
+    }
+
+    // Update scene
+    r_scene = getScene();
+    if (oldScene != r_scene)
+    {
+        onSceneChanged(oldScene, r_scene);
+    }
+}
+
+//------------------------------------------------------------------------------
+void Entity::onSceneChanged(Scene * oldScene, Scene * newScene)
+{
+    if (newScene == oldScene)
+        return;
+
+	std::vector<std::string> tagList;
+
+    EntityID oldID = m_id;
+
+    // Register to the new scene
+    if (newScene)
+    {
+        m_id = newScene->registerEntity(*this);
+
+        // Update subscription
+        if (getFlag(SN_EF_UPDATABLE))
+        {
+            std::string updateLayer;
+            if (oldScene)
+                oldScene->getUpdateManager().getEntityLayer(*this, updateLayer);
+            newScene->getUpdateManager().addEntity(*this, updateLayer);
+        }
+
+        // System events subscription
+        if (getFlag(SN_EF_SYSTEM_EVENT_LISTENER))
+            newScene->registerEventListener(*this);
+
+        // Tags registering
+		if (oldScene)
+		{
+			// Get tags by name
+			getTags(tagList);
+
+			// Register them
+			for (auto it = tagList.begin(); it != tagList.end(); ++it)
+			{
+				const std::string & tagName = *it;
+				u32 tagIndex = newScene->registerTaggedEntity(*this, tagName);
+				if (tagIndex != Scene::TagManager::INVALID_INDEX)
+					m_tags.set(tagIndex, true);
+			}
+		}
+    }
+	else
+	{
+		SN_ERROR("No new scene, tag information will be lost!");
+		m_tags.reset();
+	}
+
+    // Unregister from the old scene
+    if (oldScene)
+    {
+        if (getFlag(SN_EF_UPDATABLE))
+            oldScene->getUpdateManager().removeEntity(*this);
+
+        if (getFlag(SN_EF_SYSTEM_EVENT_LISTENER))
+            oldScene->unregisterEventListener(*this);
+
+        for (auto it = tagList.begin(); it != tagList.end(); ++it)
+        {
+            oldScene->unregisterTaggedEntity(*this, *it);
+        }
+
+        oldScene->unregisterEntity(oldID);
+    }
+
+    r_scene = newScene;
+
+    // Notify children
+    for (auto it = m_children.begin(); it != m_children.end(); ++it)
+    {
+        Entity * child = *it;
+        child->onSceneChanged(oldScene, newScene);
+    }
+}
+
+//------------------------------------------------------------------------------
+void Entity::onReady()
+{
+    if (!m_script.isNull())
+    {
+        m_script.callMethod("onReady");
+    }
+}
+
+//------------------------------------------------------------------------------
+void Entity::onFirstUpdate()
+{
+    if (!m_script.isNull())
+    {
+        m_script.callMethod("onFirstUpdate");
+    }
+}
+
+//------------------------------------------------------------------------------
+void Entity::onDestroy()
+{
+    if (!m_script.isNull())
+    {
+        m_script.callMethod("onDestroy");
+    }
+}
+
+//------------------------------------------------------------------------------
+void Entity::onUpdate()
+{
+    if (!m_script.isNull())
+    {
+        m_script.callMethod("onUpdate");
     }
 }
 
@@ -211,7 +382,7 @@ void Entity::propagateOnReady()
 {
     onReady();
     for (auto it = m_children.begin(); it != m_children.end(); ++it)
-        (*it)->onReady();
+        (*it)->propagateOnReady();
 }
 
 //------------------------------------------------------------------------------
@@ -269,6 +440,12 @@ Entity * Entity::getChildByType(const std::string & name) const
 }
 
 //------------------------------------------------------------------------------
+u32 Entity::getIndexInParent() const
+{
+    return r_parent ? r_parent->indexOfChild(this) : 0;
+}
+
+//------------------------------------------------------------------------------
 //Entity::Ref Entity::getChildByPointer(Entity * child)
 //{
 //    for (auto it = m_children.begin(); it != m_children.end(); ++it)
@@ -294,6 +471,14 @@ Entity * Entity::addChild(Entity * child)
     }
 #endif
     m_children.push_back(child);
+    //if (childIndex == -1)
+    //    m_children.push_back(child);
+    //else
+    //{
+    //    if (childIndex >= m_children.size())
+    //        m_children.resize(childIndex + 1, nullptr);
+    //    m_children[childIndex] = child;
+    //}
     return child;
 }
 
@@ -321,7 +506,7 @@ Entity * Entity::createChild(const std::string & typeName)
     }
     else
     {
-        Object * obj = instantiateDerivedObject(typeName, Entity::__sGetBaseClassName());
+        Object * obj = instantiateDerivedObject(typeName, sn::getObjectType<Entity>());
         if (obj)
             child = (Entity*)obj;
     }
@@ -404,6 +589,7 @@ void Entity::destroy()
     {
         onDestroy();
         setFlag(SN_EF_DESTROYED, true);
+        releaseScript();
         // TODO Instant destruction
         release();
     }
@@ -422,91 +608,109 @@ void Entity::destroyLater()
 }
 
 //------------------------------------------------------------------------------
-// Static
-void Entity::serialize(JsonBox::Value & o, Entity & e, const SerializationContext & context)
+void Entity::releaseScript()
 {
-    o[SN_JSON_TYPE_TAG] = Entity::__sGetClassName();
-    e.serializeState(o, context);
-    if (e.getChildCount() != 0)
-    {
-        JsonBox::Value & a = o[SN_JSON_ENTITY_CHILDREN_TAG];
-        for (u32 i = 0; i < e.getChildCount(); ++i)
-        {
-            Entity * child = e.getChildByIndex(i);
-            serialize(a[i], *child, context);
-        }
-    }
+    //m_script.setMemberNull("entity");
+    m_script.releaseObject();
 }
 
 //------------------------------------------------------------------------------
-// Static
-Entity * Entity::unserialize(JsonBox::Value & o, Entity * parent, const SerializationContext & context)
-{
-    std::string typeName = o[SN_JSON_TYPE_TAG].getString();
-    ObjectType * ot = ObjectTypeDatabase::get().getType(typeName);
-    if (ot)
-    {
-        Object * obj = instantiateDerivedObject(typeName, Entity::__sGetClassName());
-        if (obj)
-        {
-            Entity * e((Entity*)obj);
-            e->unserializeState(o, context);
-            if (o[SN_JSON_ENTITY_CHILDREN_TAG].isArray())
-            {
-                JsonBox::Value & a = o[SN_JSON_ENTITY_CHILDREN_TAG];
-                u32 len = a.getArray().size();
-                for (u32 i = 0; i < len; ++i)
-                {
-                    Entity::unserialize(a[i], e, context);
-                }
-            }
-            e->setParent(parent);
-            return e;
-        }
-        // Error message already handled by the instantiate helper
-    }
-    else
-    {
-        SN_ERROR("Unknown object object type from JSON (name=" << typeName << ")");
-    }
-    return nullptr;
-}
-
-//------------------------------------------------------------------------------
-void Entity::serializeState(JsonBox::Value & o, const SerializationContext & context)
+void Entity::serializeState(Variant & o, const SerializationContext & context)
 {
     o["name"] = m_name;
     o["enabled"] = isEnabledSelf();
-    sn::serialize(o["tags"], m_tags);
+
+	std::vector<std::string> tags;
+	getTags(tags);
+    sn::serialize(o["tags"], tags);
 
     // TODO Serialize script
 
 }
 
 //------------------------------------------------------------------------------
-void Entity::unserializeState(JsonBox::Value & o, const SerializationContext & context)
+void Entity::unserializeState(const Variant & o, const SerializationContext & context)
 {
+    // Name
     m_name = o["name"].getString();
     
+    // Enabled flag
     bool bEnabled = false;
     sn::unserialize(o["enabled"], bEnabled, true);
     setFlag(SN_EF_ENABLED, bEnabled);
 
-    sn::unserialize(o["tags"], m_tags);
-
-    auto & scripts = o["scripts"];
-    if (scripts.isArray())
+    // Deserialize tags
+    removeAllTags();
+    std::unordered_set<std::string> tags;
+    sn::unserialize(o["tags"], tags);
+    for (auto it = tags.begin(); it != tags.end(); ++it)
     {
-        std::string classPath = scripts[(size_t)0].getString();
+        const std::string & tagName = *it;
+        addTag(tagName);
+    }
+
+    // Script
+    auto & script = o["script"];
+    if (script.isDictionary())
+    {
+        std::string classPath = script["class"].getString();
         if (!classPath.empty())
         {
-            m_script.create(classPath);
+            // TODO should be context.squirrelVM
+            HSQUIRRELVM vm = Application::get().getScriptManager().getVM();
+
+            if (m_script.create(vm, classPath))
+            {
+                // Set the "entity" member
+                if (pushScriptObject(vm))
+                {
+                    HSQOBJECT entityObj;
+                    sq_getstackobj(vm, -1, &entityObj);
+                    m_script.setMember("entity", entityObj);
+                    sq_pop(vm, 1); // pop entityObj
+                }
+
+				// Call onCreate
+				m_script.callMethod("onCreate");
+            }
         }
     }
 
-    // TODO Unserialize script
+    // TODO Unserialize script members
 
 }
+
+//------------------------------------------------------------------------------
+namespace
+{
+    void privDebugPrintEntityTree(Entity & e, std::vector<std::string> & strs, u32 depth)
+    {
+        std::string s;
+        for (u32 i = 0; i < depth; ++i)
+        {
+            s += "    ";
+        }
+
+        strs.push_back(s + e.toString());
+
+        for (u32 i = 0; i < e.getChildCount(); ++i)
+        {
+            privDebugPrintEntityTree(*e.getChildByIndex(i), strs, depth + 1);
+        }
+    }
+}
+
+void Entity::debugPrintEntityTree(Entity & e)
+{
+    std::vector<std::string> strs;
+    privDebugPrintEntityTree(e, strs, 0);
+    SN_DLOG("");
+    for (auto it = strs.begin(); it != strs.end(); ++it)
+    {
+        SN_MORE(*it);
+    }
+}
+
 
 } // namespace sn
 

@@ -1,6 +1,6 @@
 #include "tests.hpp"
 
-#include <core/util/Variant.hpp>
+#include <core/util/Variant.h>
 
 using namespace sn;
 

@@ -1,0 +1,17 @@
+{
+    "startupScene":"main",
+    "dependencies":[
+		"mods/render"
+	],
+	"services":[
+		"sn::RenderManager",
+		{
+			"screens":[
+				{
+					"size":[800,600],
+					"title":"Test joysticks"
+				}
+			]
+		}
+	]
+}

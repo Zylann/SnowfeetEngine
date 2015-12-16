@@ -1,9 +1,11 @@
-#include <core/scene/Scene.hpp>
-#include "Rotate.hpp"
-#include "../Entity3D.hpp"
+#include <core/scene/Scene.h>
+#include "Rotate.h"
+#include "../Entity3D.h"
 
 namespace sn
 {
+
+SN_OBJECT_IMPL(Rotate)
 
 Rotate::Rotate() : Entity(),
 	m_angularSpeed(30, 30, 0)
@@ -26,14 +28,14 @@ void Rotate::onUpdate()
 	}
 }
 
-void Rotate::serializeState(JsonBox::Value & o, const SerializationContext & context)
+void Rotate::serializeState(Variant & o, const SerializationContext & context)
 {
-	Entity::unserializeState(o, context);
+	Entity::serializeState(o, context);
 	
 	sn::serialize(o["angularSpeed"], m_angularSpeed);
 }
 
-void Rotate::unserializeState(JsonBox::Value & o, const SerializationContext & context)
+void Rotate::unserializeState(const Variant & o, const SerializationContext & context)
 {
 	Entity::unserializeState(o, context);
 

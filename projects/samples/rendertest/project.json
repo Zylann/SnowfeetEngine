@@ -1,0 +1,7 @@
+{
+	"startupScene":"main",
+	"sceneManagers":"managers",
+	"dependencies":[
+		"mods/render"
+	]
+}

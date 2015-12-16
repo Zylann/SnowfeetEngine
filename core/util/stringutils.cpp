@@ -5,9 +5,11 @@ This file is part of the SnowfeetEngine project.
 */
 
 #include <sstream>
+#include <fstream>
 #include <cmath>
 
-#include <core/util/stringutils.hpp>
+#include <core/util/stringutils.h>
+#include <core/util/Log.h>
 
 namespace sn
 {
@@ -232,6 +234,24 @@ std::wstring getFileFolder(const std::wstring & path)
 }
 
 //------------------------------------------------------------------------------
+std::string getFileFolder(const std::string & path)
+{
+    size_t sepIndex = path.find_last_of('/');
+    if (sepIndex == std::string::npos)
+    {
+        sepIndex = path.find_last_of('\\');
+    }
+    if (sepIndex == std::string::npos)
+    {
+        return "";
+    }
+    else
+    {
+        return path.substr(0, sepIndex);
+    }
+}
+
+//------------------------------------------------------------------------------
 std::string trimLeft(std::string str)
 {
     u32 i = 0;
@@ -285,6 +305,27 @@ std::vector<std::string> split(const std::string & str, char sep)
     }
 
     return strings;
+}
+
+//------------------------------------------------------------------------------
+bool readFile(const std::string & filePath, std::string & str)
+{
+    std::ifstream ifs(filePath.c_str(), std::ios::in | std::ios::binary);
+    if (!ifs.good())
+    {
+        SN_ERROR("Couldn't open file \"" + filePath + '"');
+        return false;
+    }
+
+    ifs.seekg(0, std::ios::end);
+    std::streamoff len = ifs.tellg();
+    ifs.seekg(0, std::ios::beg);
+
+    str.resize(len, '\0');
+
+    ifs.read(&str[0], len);
+
+    return true;
 }
 
 } // namespace sn

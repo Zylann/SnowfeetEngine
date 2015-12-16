@@ -1,5 +1,5 @@
-#include "QuadTreeNode.hpp"
-#include "QuadTree.hpp"
+#include "QuadTreeNode.h"
+#include "QuadTree.h"
 
 namespace sn
 {

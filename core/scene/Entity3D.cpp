@@ -1,7 +1,9 @@
-#include "Entity3D.hpp"
+#include "Entity3D.h"
 
 namespace sn
 {
+
+SN_OBJECT_IMPL(Entity3D)
 
 //------------------------------------------------------------------------------
 Entity3D::Entity3D() : Entity(), 
@@ -259,7 +261,7 @@ Vector3f Entity3D::getForwardVector() const
 }
 
 //------------------------------------------------------------------------------
-void Entity3D::serializeState(JsonBox::Value & o, const SerializationContext & context)
+void Entity3D::serializeState(Variant & o, const SerializationContext & context)
 {
     Entity::serializeState(o, context);
     sn::serialize(o["position"], m_position);
@@ -268,7 +270,7 @@ void Entity3D::serializeState(JsonBox::Value & o, const SerializationContext & c
 }
 
 //------------------------------------------------------------------------------
-void Entity3D::unserializeState(JsonBox::Value & o, const SerializationContext & context)
+void Entity3D::unserializeState(const Variant & o, const SerializationContext & context)
 {
     Entity::unserializeState(o, context);
     sn::unserialize(o["position"], m_position, Vector3f());

@@ -4,9 +4,11 @@ Copyright (C) 2014-2015 Marc GILLERON
 This file is part of the SnowfeetEngine project.
 */
 
-#include "appmain.hpp"
-#include "Application.hpp"
-#include "../system/console/console.hpp"
+#include "appmain.h"
+#include "Application.h"
+#if SN_BUILD_DEBUG
+#include <core/system/console.h>
+#endif
 
 namespace sn
 {
@@ -23,7 +25,10 @@ int appMain(int argc, char * argv[])
 
 #ifdef SN_BUILD_DEBUG
 
+    // Report leaks
     //MemoryManager::get().reportLeaks();
+    u32 leakingObjects = Object::getInstanceCount();
+    std::cout << "D: Remaining objects: " << leakingObjects << std::endl;
 
     // Maintains the console window open on exit
     std::cout << "I: Execution finished with code " << exitCode << ". Press a key to dismiss..." << std::endl;

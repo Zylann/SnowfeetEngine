@@ -4,9 +4,9 @@ Copyright (C) 2014-2015 Marc GILLERON
 This file is part of the SnowfeetEngine project.
 */
 
-#include "CommandLine.hpp"
-#include "../util/stringutils.hpp"
-#include "../util/Log.hpp"
+#include "CommandLine.h"
+#include "../util/stringutils.h"
+#include "../util/Log.h"
 #include <sstream>
 #include <fstream>
 

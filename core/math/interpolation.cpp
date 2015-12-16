@@ -4,7 +4,7 @@ Copyright (C) 2010-2015 Marc GILLERON
 This file is part of the SnowfeetEngine project.
 */
 
-#include <core/math/interpolation.hpp>
+#include <core/math/interpolation.h>
 
 namespace sn
 {

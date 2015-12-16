@@ -1,5 +1,5 @@
-#include "OctreeNode.hpp"
-#include "Octree.hpp"
+#include "OctreeNode.h"
+#include "Octree.h"
 
 namespace sn
 {

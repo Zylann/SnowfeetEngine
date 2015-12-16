@@ -4,9 +4,9 @@ Copyright (C) 2014-2015 Marc GILLERON
 This file is part of the SnowfeetEngine project.
 */
 
-#include "Log.hpp"
-#include "stringutils.hpp"
-#include "../system/console/console.hpp"
+#include "Log.h"
+#include "stringutils.h"
+#include <core/system/console.h>
 
 #ifdef _MSC_VER
 #include <Windows.h> // For OutputDebugString on Windows

@@ -1,4 +1,4 @@
-#include "helpers_win32.hpp"
+#include "helpers_win32.h"
 #include <Windows.h>
 #include <tchar.h>
 
