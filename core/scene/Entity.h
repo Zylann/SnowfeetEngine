@@ -134,18 +134,18 @@ public:
     /// \brief Gets a direct child by its name. Returns null if not found.
     Entity * getChildByName(const std::string & name) const;
     /// \brief Gets a direct child by its type name. Returns null if not found.
-    Entity * getChildByType(const std::string & name) const;
+    Entity * getChildByType(const ObjectType & type) const;
 
     u32 getIndexInParent() const;
 
     /// \brief Creates a child entity of the given type.
     /// \param typeName: name of the type this entity must be
     /// \return The new entity
-    Entity * createChild(const std::string & typeName = "");
+    Entity * createChild(const ObjectType & type);
     /// \brief Creates child entity of the given type if it is not present
     /// \param typeName: name of the type this entity must have
     /// \return The first child entity of the given type, or a newly created one
-    Entity * requireChild(const std::string & typeName);
+    Entity * requireChild(const ObjectType & type);
     /// \brief Tests if the entity contains the given entity as a direct child.
     /// \param child: entity to find
     inline bool containsChild(const Entity * child) const { return indexOfChild(child) != m_children.size(); }
@@ -155,7 +155,7 @@ public:
     template <class Entity_T>
     Entity_T * createChild()
     {
-        Entity * e = createChild(sn::getObjectType<Entity_T>().getName());
+        Entity * e = createChild(sn::getObjectType<Entity_T>());
         if (e)
             return static_cast<Entity_T*>(e);
         else
@@ -167,7 +167,7 @@ public:
     template <class Entity_T>
     Entity_T * getChild()
     {
-        Entity * e = getChildByType(sn::getObjectType<Entity_T>().getName());
+        Entity * e = getChildByType(sn::getObjectType<Entity_T>());
         if (e)
             return static_cast<Entity_T*>(e);
         else
