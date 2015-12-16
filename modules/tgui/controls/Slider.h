@@ -12,7 +12,7 @@ namespace tgui
 class Slider : public Control
 {
 public:
-    SN_ENTITY(tgui::Slider, tgui::Control)
+    SN_OBJECT
 
     Slider();
 

@@ -3,6 +3,8 @@
 namespace sn
 {
 
+SN_OBJECT_IMPL(RenderStep)
+
 RenderStep::RenderStep() : sn::Entity(),
     r_manager(nullptr)
 {}

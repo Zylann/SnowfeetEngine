@@ -10,7 +10,7 @@ namespace tgui
 class Tab : public Control
 {
 public:
-	SN_ENTITY(tgui::Tab, tgui::Control)
+	SN_OBJECT
 
 	void serializeState(sn::Variant & o, const sn::SerializationContext & ctx) override;
 	void unserializeState(const sn::Variant & o, const sn::SerializationContext & ctx) override;

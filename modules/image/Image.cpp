@@ -4,6 +4,9 @@ namespace sn
 {
 
 //------------------------------------------------------------------------------
+SN_OBJECT_IMPL(Image)
+
+//------------------------------------------------------------------------------
 Image::Image() : Asset(),
     m_pixelData(nullptr),
     m_pixelFormat(SN_IMAGE_RGBA32) // Not really relevant, but known as default

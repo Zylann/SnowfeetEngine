@@ -17,7 +17,7 @@ namespace sn
 class SN_RENDER_API Material : public sn::Asset
 {
 public:
-    SN_SCRIPT_OBJECT(sn::Material, sn::Asset)
+    SN_OBJECT
 
     // Conventional uniform names
     static const char * MAIN_TEXTURE;

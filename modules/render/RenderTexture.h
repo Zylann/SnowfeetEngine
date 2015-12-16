@@ -12,7 +12,7 @@ namespace sn
 class RenderTexture : public Asset
 {
 public:
-    SN_SCRIPT_OBJECT(sn::RenderTexture, sn::Asset)
+    SN_OBJECT
 
     RenderTexture();
 

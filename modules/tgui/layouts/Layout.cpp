@@ -6,6 +6,8 @@ using namespace sn;
 namespace tgui
 {
 
+SN_OBJECT_IMPL(Layout)
+
 void Layout::getChildrenToLayout(Control & parent, std::vector<Control*> & out_controls, std::vector<u32> * out_indexes)
 {
 	for (u32 i = 0; i < parent.getChildCount(); ++i)

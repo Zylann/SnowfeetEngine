@@ -16,7 +16,7 @@ typedef void* TextureHandle;
 class SN_RENDER_API Texture : public sn::Asset, public NonCopyable
 {
 public:
-    SN_SCRIPT_OBJECT(sn::Texture, sn::Asset)
+    SN_OBJECT
 
     Texture();
 

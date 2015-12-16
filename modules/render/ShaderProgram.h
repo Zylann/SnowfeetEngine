@@ -31,7 +31,7 @@ std::string toString(ShaderType st);
 class SN_RENDER_API ShaderProgram : public Asset
 {
 public:
-    SN_SCRIPT_OBJECT(sn::ShaderProgram, sn::Asset)
+    SN_OBJECT
 
     // Constructs an empty program.
     ShaderProgram():

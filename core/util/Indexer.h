@@ -45,14 +45,33 @@ public:
 			return m_elems[k.i];
 		return nullptr;
 	}
+
+    /// \brief Tests if the given item is stored in the container.
+    /// Warning: it's O(n).
+    /// \param elem
+    bool contains(T elem)
+    {
+        for (auto it = m_elems.begin(); it != m_elems.end(); ++it)
+        {
+            if (*it == elem)
+                return true;
+        }
+        return false;
+    }
 	
-	void remove(Key k)
+	T remove(Key k)
 	{
-		if(get(k))
-			m_elems[k.i] = nullptr;
+        if (get(k))
+        {
+            T elem = m_elems[k.i];
+			m_elems[k.i] = T();
+            return elem;
+        }
+        return T();
 	}
 	
 	const std::vector<T> & getRawElements() const { return m_elems; }
+    const std::vector<u32> & getRawVersions() const { return m_versions; }
 	
 private:
 	std::vector<T> m_elems;

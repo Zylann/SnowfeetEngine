@@ -6,6 +6,8 @@
 namespace sn
 {
 
+SN_OBJECT_IMPL(ShaderLoader)
+
 //------------------------------------------------------------------------------
 const ObjectType & ShaderLoader::getBaseAssetType() const
 {

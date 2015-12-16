@@ -9,7 +9,7 @@ namespace tgui
 class RenderStep : public sn::RenderStep
 {
 public:
-    SN_ENTITY(tgui::RenderStep, sn::RenderStep)
+    SN_OBJECT
 
     void onDraw(sn::VideoDriver & driver) override;
 

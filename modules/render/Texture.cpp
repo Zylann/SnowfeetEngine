@@ -9,6 +9,8 @@
 namespace sn
 {
 
+SN_OBJECT_IMPL(Texture)
+
 //-----------------------------------------------------------------------------
 Texture::Texture() : sn::Asset(),
     m_isSmooth(true),

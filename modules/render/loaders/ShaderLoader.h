@@ -10,7 +10,7 @@ namespace sn
 class ShaderLoader : public AssetLoader
 {
 public:
-    SN_OBJECT(sn::ShaderLoader, sn::AssetLoader)
+    SN_OBJECT
 
     const ObjectType & getBaseAssetType() const override;
     bool canLoad(const AssetMetadata & meta) const override;

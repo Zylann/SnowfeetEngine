@@ -6,13 +6,15 @@
 #include "Image.h"
 #include "ImageLoader.hpp"
 
+#include <core/util/macros.h>
+
 
 int loadSnowfeetModule_ModImage(ModuleLoadArgs args)
 {
     auto & otb = *args.objectTypeDatabase;
 
-    otb.registerType<sn::Image>();
-    otb.registerType<sn::ImageLoader>();
+    otb.registerType<sn::Image, sn::Asset>(SN_TYPESTRING(sn::Image));
+    otb.registerType<sn::ImageLoader, sn::AssetLoader>(SN_TYPESTRING(sn::ImageLoader));
 
     return 0;
 }

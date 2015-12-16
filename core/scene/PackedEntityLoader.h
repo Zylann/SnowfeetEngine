@@ -9,7 +9,7 @@ namespace sn
 class PackedEntityLoader : public AssetLoader
 {
 public:
-    SN_OBJECT(sn::PackedEntityLoader, sn::AssetLoader)
+    SN_OBJECT
 
     const ObjectType & getBaseAssetType() const override;
     bool canLoad(const AssetMetadata & meta) const override;

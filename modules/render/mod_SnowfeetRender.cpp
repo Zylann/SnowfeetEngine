@@ -25,44 +25,44 @@
 
 #include "bind/sq_render.h"
 
+#include <core/util/macros.h>
 
-namespace sn
+namespace
 {
-
-    void registerObjectTypes(ObjectTypeDatabase & otb)
+    void registerObjectTypes(sn::ObjectTypeDatabase & otb)
     {
-        otb.registerType<sn::VRHeadset>();
-        otb.registerType<sn::Mesh>();
+        using namespace sn;
 
         // Entities
-        otb.registerType<RenderManager>();
-        otb.registerType<Camera>();
-        otb.registerType<Drawable>();
-        otb.registerType<MeshEntity>();
-        otb.registerType<RenderStep>();
-        otb.registerType<CameraRenderStep>();
+        otb.registerType<RenderManager, Entity>               (SN_TYPESTRING(sn::RenderManager));
+        otb.registerType<Camera, Entity3D>                    (SN_TYPESTRING(sn::Camera));
+        otb.registerType<Drawable, Entity3D>                  (SN_TYPESTRING(sn::Drawable));
+        otb.registerType<MeshEntity, Drawable>                (SN_TYPESTRING(sn::MeshEntity));
+        otb.registerType<RenderStep, Entity>                  (SN_TYPESTRING(sn::RenderStep));
+        otb.registerType<CameraRenderStep, RenderStep>        (SN_TYPESTRING(sn::CameraRenderStep));
+        otb.registerType<VRHeadset, Entity>                   (SN_TYPESTRING(sn::VRHeadset));
 
         // Assets
-        otb.registerType<Material>();
-        otb.registerType<ShaderProgram>();
-        otb.registerType<Texture>();
-        otb.registerType<RenderTexture>();
+        otb.registerType<Mesh, Asset>                         (SN_TYPESTRING(sn::Mesh));
+        otb.registerType<Material, Asset>                     (SN_TYPESTRING(sn::Material));
+        otb.registerType<ShaderProgram, Asset>                (SN_TYPESTRING(sn::ShaderProgram));
+        otb.registerType<Texture, Asset>                      (SN_TYPESTRING(sn::Texture));
+        otb.registerType<RenderTexture, Asset>                (SN_TYPESTRING(sn::RenderTexture));
 
         // Loaders
-        otb.registerType<BasicMeshLoader>();
-        otb.registerType<MaterialLoader>();
-        otb.registerType<TextureLoader>();
-        otb.registerType<RenderTextureLoader>();
-        otb.registerType<ShaderLoader>();
+        otb.registerType<BasicMeshLoader, AssetLoader>        (SN_TYPESTRING(sn::BasicMeshLoader));
+        otb.registerType<MaterialLoader, AssetLoader>         (SN_TYPESTRING(sn::MaterialLoader));
+        otb.registerType<TextureLoader, AssetLoader>          (SN_TYPESTRING(sn::TextureLoader));
+        otb.registerType<RenderTextureLoader, AssetLoader>    (SN_TYPESTRING(sn::RenderTextureLoader));
+        otb.registerType<ShaderLoader, AssetLoader>           (SN_TYPESTRING(sn::ShaderLoader));
 
-        otb.registerType<VideoDriver>();
+        otb.registerType<VideoDriver, IDriver>                (SN_TYPESTRING(sn::VideoDriver));
     }
-
-} // namespace sn
+}
 
 int loadSnowfeetModule_ModRender(ModuleLoadArgs args)
 {
-    sn::registerObjectTypes(*(args.objectTypeDatabase));
+    registerObjectTypes(*(args.objectTypeDatabase));
     sn::bindRenderModule(args.squirrelVM);
     return 0;
 }

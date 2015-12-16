@@ -8,6 +8,8 @@ using namespace sn;
 namespace tgui
 {
 
+SN_OBJECT_IMPL(Text)
+
 //------------------------------------------------------------------------------
 Text::Text():
     m_align(TGUI_ALIGN_LEFT)

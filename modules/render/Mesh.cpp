@@ -4,6 +4,8 @@
 namespace sn
 {
 
+SN_OBJECT_IMPL(Mesh)
+
 //------------------------------------------------------------------------------
 std::string toString(MeshPrimitiveType pt)
 {

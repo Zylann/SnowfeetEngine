@@ -6,6 +6,8 @@ using namespace sn;
 namespace tgui
 {
 
+SN_OBJECT_IMPL(GridLayout)
+
 //------------------------------------------------------------------------------
 GridLayout::GridLayout(Control * control):
     Layout(control),

@@ -27,6 +27,9 @@ namespace sn {
 namespace oculus {
 
 //------------------------------------------------------------------------------
+SN_OBJECT_IMPL(HeadTracker)
+
+//------------------------------------------------------------------------------
 /// \brief Gets euler angles from an OVR rotation applying the engine's graphic conventions
 void getEulerAnglesFromOVR(OVR::Quat<float> & q, Vector3f & euler)
 {

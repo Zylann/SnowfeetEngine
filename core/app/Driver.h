@@ -11,7 +11,7 @@ namespace sn
 class SN_API IDriver : public Object
 {
 public:
-    SN_OBJECT(sn::IDriver, sn::Object)
+    SN_OBJECT
 };
 
 } // namespace sn

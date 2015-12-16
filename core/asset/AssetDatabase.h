@@ -206,8 +206,8 @@ Asset_T * getAssetBySerializedLocation(
     const std::string & contextProject, 
     bool raiseError = false)
 {
-    // Note: use SN_ASSET in your asset class
-    Asset * a = getAssetBySerializedLocation(Asset_T::__sGetClassName(), locationString, contextProject, raiseError);
+    // Note: use SN_OBJECT in your asset class
+    Asset * a = getAssetBySerializedLocation(sn::getObjectType<Asset_T>().getName(), locationString, contextProject, raiseError);
     if (a)
         return checked_cast<Asset_T*>(a);
     else

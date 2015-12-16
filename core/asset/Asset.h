@@ -24,7 +24,7 @@ class AssetDatabase;
 class SN_API Asset : public ScriptableObject
 {
 public:
-    SN_SCRIPT_OBJECT(sn::Asset, sn::ScriptableObject)
+    SN_OBJECT
 
     /// \brief Default constructor.
     /// All assets have a default constructor making an empty asset.

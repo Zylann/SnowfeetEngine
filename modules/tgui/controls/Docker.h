@@ -10,7 +10,7 @@ namespace tgui
 class Docker : public Control
 {
 public:
-    SN_ENTITY(tgui::Docker, tgui::Control)
+    SN_OBJECT
 
 };
 

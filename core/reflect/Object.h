@@ -11,60 +11,25 @@ This file is part of the SnowfeetEngine project.
 
 // Constraints of the reflection system:
 // - Classes must define a parameter-less constructor
-// - Single inheritance only
-// - Type IDs must be the same on whatever platform or compiler
-// - You have to manually register types somewhere for C++ technical reasons
+// - Be able to map a class to its metaclass without hashing
+// - Future support for multiple inheritance (mostly for interfaces)
+// - Works with template classes (with different code)
+// - Write as few code as possible
+// - Run-time registration (dynamic modules)
 
-// TODO use C++11 constexpr?
-#define _SN_STATIC_STRING(_name, _value)                                       \
-    static const char * _name() {                                              \
-        static const char * str = _value;                                      \
-        return str;                                                            \
+/// \brief Write this in a public block of your class declaration.
+/// \param _class: full-name of the class including the namespace (example: my::foo::Bar)
+#define SN_OBJECT \
+    static sn::ObjectType s_objectType;\
+    virtual const sn::ObjectType & getObjectType() const {\
+        return s_objectType;\
     }
 
-#define _SN_DECLARE_STATIC_GETOBJECTTYPE(_name)                                \
-    static inline const sn::ObjectType & __sGetObjectType() {                  \
-        return sn::ObjectTypeDatabase::get()                                   \
-                    .getTypeConstRef(__sGetClassName());                       \
-    }
-
-#define _SN_DECLARE_GETOBJECTTYPE(_name)                                       \
-    virtual const sn::ObjectType & getObjectType() const {                     \
-        return __sGetObjectType();                                             \
-    }
-
-#define _SN_DECLARE_ISINSTANCEOF()                                             \
-    template <class Object_T>                                                  \
-    bool isInstanceOf() const {                                                \
-        const sn::ObjectType & expectedType = Object_T::__sGetObjectType();    \
-        return getObjectType().is(expectedType);                               \
-    }
-
-#define _SN_OBJECT(_name, _baseName)                                           \
-    _SN_STATIC_STRING(__sGetClassName, #_name)                                 \
-    _SN_STATIC_STRING(__sGetBaseClassName, #_baseName)                         \
-    _SN_DECLARE_STATIC_GETOBJECTTYPE(_name)                                    \
-    _SN_DECLARE_GETOBJECTTYPE(_name)                                           \
-    _SN_DECLARE_ISINSTANCEOF()
-
-// Put this declaration in public in a class inheriting from Object.
-// Note: only single inheritance is supported.
-// _name: class name with full namespace (must be unique !)
-// _baseName: inherited class name with full namespace
-#define SN_OBJECT(_name, _baseName)                                            \
-    _SN_OBJECT(_name, _baseName)                                               \
-    static sn::Object * instantiateObject() {                                  \
-        return sn::instantiateOrNull<_name>();                                 \
-    }
-
-// Same as SN_OBJECT, but forces to abstract class. (The factory will return null).
-// You may use it when your class is not abstract,
-// but musn't be instantiated using reflection (or has a private constructor).
-#define SN_ABSTRACT_OBJECT(_name, _baseName)                                   \
-    _SN_OBJECT(_name, _baseName)                                               \
-    static sn::Object * instantiateObject() {                                  \
-        return nullptr;                                                        \
-    }
+/// \brief Write this in the implementation of your class.
+/// It's important because it instantiates the type's singleton object.
+/// \param _class: name of the class, the same you use to prefix method implementations
+#define SN_OBJECT_IMPL(_class) \
+    sn::ObjectType _class::s_objectType;
 
 namespace sn
 {
@@ -94,12 +59,7 @@ T * instantiateOrNull()
 class SN_API Object
 {
 public:
-
-    _SN_STATIC_STRING(__sGetClassName, "sn::Object")
-    _SN_STATIC_STRING(__sGetBaseClassName, "")
-    _SN_DECLARE_STATIC_GETOBJECTTYPE(sn::Object)
-    _SN_DECLARE_GETOBJECTTYPE(sn::Object)
-    _SN_DECLARE_ISINSTANCEOF()
+    SN_OBJECT
 
 #ifdef SN_BUILD_DEBUG
     Object();
@@ -109,6 +69,13 @@ public:
 #else
     virtual ~Object() {}
 #endif
+
+    template <class Object_T>
+    bool isInstanceOf() const
+    {
+        const sn::ObjectType & expectedType = sn::getObjectType<Object_T>();
+        return getObjectType().is(expectedType);
+    }
 
     static sn::Object * instantiateObject()
     {
@@ -133,8 +100,6 @@ public:
             return nullptr;
     }
 
-    //static void registerReflectedMembers(ObjectType & ot);
-
 };
 
 //------------------------------------------------------------------------------
@@ -145,20 +110,12 @@ public:
 template <class Object_T>
 inline const ObjectType & getObjectType()
 {
-    return Object_T::__sGetObjectType();
+    return Object_T::s_objectType;
 }
 
-/// \brief Gets the name of an object class.
-/// \note The goal of this function is to encapsulate the way the metaclass is stored.
-template <class Object_T>
-inline const char * getClassName()
-{
-    return Object_T::__sGetClassName();
-}
-
-SN_API Object * instantiateDerivedObject(const std::string & typeName, const std::string & derivedTypeName);
-SN_API Object * instantiateDerivedObject(const std::string & typeName, const ObjectType & derivedType);
-SN_API Object * instantiateDerivedObject(const ObjectType & type, const ObjectType & derivedType);
+SN_API Object * instantiateDerivedObject(const std::string & typeName, const std::string & baseTypeName);
+SN_API Object * instantiateDerivedObject(const std::string & typeName, const ObjectType & baseType);
+SN_API Object * instantiateDerivedObject(const ObjectType & type, const ObjectType & baseType);
 
 } // namespace sn
 

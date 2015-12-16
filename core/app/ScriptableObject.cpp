@@ -20,6 +20,9 @@ namespace sn
 // if they are stored in globals for instance.
 
 //------------------------------------------------------------------------------
+SN_OBJECT_IMPL(ScriptableObject)
+
+//------------------------------------------------------------------------------
 SQInteger ScriptableObject::cb_releaseHook(SQUserPointer ptr, SQInteger size)
 {
 	if (ptr)

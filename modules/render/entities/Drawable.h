@@ -13,7 +13,7 @@ namespace sn
 class SN_RENDER_API Drawable : public Entity3D
 {
 public:
-    SN_ENTITY(sn::Drawable, sn::Entity3D)
+    SN_OBJECT
 
     static const std::string TAG;
 

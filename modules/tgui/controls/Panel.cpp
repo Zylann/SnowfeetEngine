@@ -8,6 +8,8 @@ using namespace sn;
 namespace tgui
 {
 
+SN_OBJECT_IMPL(Panel)
+
 //------------------------------------------------------------------------------
 Panel::Panel() : Control(),
     m_isResizeable(false),

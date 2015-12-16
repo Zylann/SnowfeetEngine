@@ -5,6 +5,8 @@
 namespace sn
 {
 
+SN_OBJECT_IMPL(Drawable)
+
 const std::string Drawable::TAG = "Drawable";
 
 //------------------------------------------------------------------------------

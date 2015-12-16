@@ -6,6 +6,8 @@
 namespace sn
 {
 
+SN_OBJECT_IMPL(MeshEntity)
+
 //------------------------------------------------------------------------------
 MeshEntity::~MeshEntity()
 {

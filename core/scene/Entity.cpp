@@ -17,6 +17,8 @@ This file is part of the SnowfeetEngine project.
 namespace sn
 {
 
+SN_OBJECT_IMPL(Entity)
+
 //------------------------------------------------------------------------------
 Entity::Entity() : ScriptableObject(),
     m_flags(1 << SN_EF_ENABLED),
@@ -270,9 +272,13 @@ void Entity::onSceneChanged(Scene * oldScene, Scene * newScene)
 
 	std::vector<std::string> tagList;
 
+    EntityID oldID = m_id;
+
     // Register to the new scene
     if (newScene)
     {
+        m_id = newScene->registerEntity(*this);
+
         // Update subscription
         if (getFlag(SN_EF_UPDATABLE))
         {
@@ -321,6 +327,8 @@ void Entity::onSceneChanged(Scene * oldScene, Scene * newScene)
         {
             oldScene->unregisterTaggedEntity(*this, *it);
         }
+
+        oldScene->unregisterEntity(oldID);
     }
 
     r_scene = newScene;
@@ -498,7 +506,7 @@ Entity * Entity::createChild(const std::string & typeName)
     }
     else
     {
-        Object * obj = instantiateDerivedObject(typeName, Entity::__sGetBaseClassName());
+        Object * obj = instantiateDerivedObject(typeName, sn::getObjectType<Entity>());
         if (obj)
             child = (Entity*)obj;
     }

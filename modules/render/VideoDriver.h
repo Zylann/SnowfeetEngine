@@ -11,7 +11,7 @@ namespace sn
 class SN_RENDER_API VideoDriver : public sn::IDriver
 {
 public:
-    SN_OBJECT(sn::VideoDriver, sn::IDriver)
+    SN_OBJECT
 
     VideoDriver();
     ~VideoDriver();

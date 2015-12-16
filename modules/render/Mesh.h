@@ -33,7 +33,7 @@ enum MeshPrimitiveType
 class SN_RENDER_API Mesh : public Asset
 {
 public:
-    SN_SCRIPT_OBJECT(sn::Mesh, sn::Asset)
+    SN_OBJECT
 
     Mesh();
 

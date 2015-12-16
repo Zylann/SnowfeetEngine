@@ -7,6 +7,8 @@ using namespace sn;
 namespace tgui
 {
 
+SN_OBJECT_IMPL(TabControl)
+
 //------------------------------------------------------------------------------
 TabControl::TabControl() : Control(),
 	m_currentPageIndex(INVALID_PAGE),

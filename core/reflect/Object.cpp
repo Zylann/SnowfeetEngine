@@ -14,6 +14,8 @@ This file is part of the SnowfeetEngine project.
 namespace sn
 {
 
+SN_OBJECT_IMPL(Object)
+
 //-----------------------------------------------------------------------------
 #ifdef SN_BUILD_DEBUG
     
@@ -60,17 +62,17 @@ namespace sn
 #endif
 
 //-----------------------------------------------------------------------------
-Object * instantiateDerivedObject(const std::string & typeName, const std::string & derivedTypeName)
+Object * instantiateDerivedObject(const std::string & typeName, const std::string & baseTypeName)
 {
     ObjectTypeDatabase & otb = ObjectTypeDatabase::get();
-    ObjectType * type = otb.getType(typeName);
+    const ObjectType * type = otb.getType(typeName);
     if (type)
     {
-        ObjectType * derived = otb.getType(derivedTypeName);
+        const ObjectType * derived = otb.getType(baseTypeName);
         if (derived)
             return instantiateDerivedObject(*type, *derived);
         else
-            SN_ERROR("Cannot instantiate object type '" << type->toString() << "', derived type '" << derivedTypeName << "' is not registered");
+            SN_ERROR("Cannot instantiate object type '" << type->toString() << "', derived type '" << baseTypeName << "' is not registered");
     }
     else
         SN_ERROR("Cannot instantiate unregistered type '" << typeName << "'");
@@ -78,21 +80,21 @@ Object * instantiateDerivedObject(const std::string & typeName, const std::strin
 }
 
 //-----------------------------------------------------------------------------
-Object * instantiateDerivedObject(const std::string & typeName, const ObjectType & derivedType)
+Object * instantiateDerivedObject(const std::string & typeName, const ObjectType & baseType)
 {
     ObjectTypeDatabase & otb = ObjectTypeDatabase::get();
-    ObjectType * type = otb.getType(typeName);
+    const ObjectType * type = otb.getType(typeName);
     if (type)
-        return instantiateDerivedObject(*type, derivedType);
+        return instantiateDerivedObject(*type, baseType);
     else
         SN_ERROR("Cannot instantiate unregistered type '" << typeName << "'");
     return nullptr;
 }
 
 //-----------------------------------------------------------------------------
-Object * instantiateDerivedObject(const ObjectType & type, const ObjectType & derivedType)
+Object * instantiateDerivedObject(const ObjectType & type, const ObjectType & baseType)
 {
-    if (type.is(derivedType))
+    if (type.is(baseType))
     {
         Object * obj = type.instantiate();
         if (obj)
@@ -101,7 +103,7 @@ Object * instantiateDerivedObject(const ObjectType & type, const ObjectType & de
             SN_ERROR("Cannot instantiate object type '" << type.toString() << "'");
     }
     else
-        SN_ERROR("Type '" << type.toString() << "' doesn't derives from '" << derivedType.toString() << "'");
+        SN_ERROR("Type '" << type.toString() << "' doesn't derives from '" << baseType.toString() << "'");
     return nullptr;
 }
 

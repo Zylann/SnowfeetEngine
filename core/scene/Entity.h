@@ -15,15 +15,13 @@ This file is part of the SnowfeetEngine project.
 #include <core/asset/SerializationContext.h>
 #include <core/util/typecheck.h>
 #include <core/scene/UpdateManager.h>
+#include <core/util/Indexer.h>
 
 #include <vector>
 #include <string>
 #include <bitset>
 #include <unordered_set>
 #include <functional>
-
-#define SN_ENTITY(_className, _baseName)                                   \
-    SN_SCRIPT_OBJECT(_className, _baseName)
 
 namespace sn
 {
@@ -39,12 +37,16 @@ enum EntityFlags
 };
 
 class Scene;
+class Entity;
+
+typedef Indexer<Entity*> EntityIndexer;
+typedef EntityIndexer::Key EntityID;
 
 /// \brief Base class for all components of the scene.
 class SN_API Entity : public ScriptableObject
 {
 public:
-	SN_ENTITY(sn::Entity, sn::ScriptableObject)
+	SN_OBJECT
 
 	static const u32 MAX_TAGS = 32;
 
@@ -52,6 +54,14 @@ public:
     /// \note As most of serialized classes in the engine, 
     /// subclasses shouldn't declare a constructor with parameters.
     Entity();
+
+    //---------------------------------------------
+    // State
+    //---------------------------------------------
+
+    /// \brief Gets the runtime ID of the entity.
+    /// It is unique within the scope and lifetime of the scene.
+    inline EntityID getId() const { return m_id; }
 
     /// \brief Gets the name of the entity
     inline const std::string & getName() const { return m_name; }
@@ -145,7 +155,7 @@ public:
     template <class Entity_T>
     Entity_T * createChild()
     {
-        Entity * e = createChild(Entity_T::__sGetClassName());
+        Entity * e = createChild(sn::getObjectType<Entity_T>().getName());
         if (e)
             return static_cast<Entity_T*>(e);
         else
@@ -157,7 +167,7 @@ public:
     template <class Entity_T>
     Entity_T * getChild()
     {
-        Entity * e = getChildByType(Entity_T::__sGetClassName());
+        Entity * e = getChildByType(sn::getObjectType<Entity_T>().getName());
         if (e)
             return static_cast<Entity_T*>(e);
         else
@@ -287,6 +297,9 @@ private:
     // TODO Components.
     /// \brief Script behaviour attached to this entity. Can be unset.
     squirrel::Instance m_script;
+
+    /// \brief Runtime ID
+    EntityID m_id;
 
 };
 

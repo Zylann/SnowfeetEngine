@@ -15,7 +15,7 @@ namespace tgui
 class GUI : public Control
 {
 public:
-    SN_ENTITY(tgui::GUI, tgui::Control)
+    SN_OBJECT
 
     GUI();
 

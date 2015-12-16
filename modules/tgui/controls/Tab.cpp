@@ -10,6 +10,8 @@ using namespace sn;
 namespace tgui
 {
 
+SN_OBJECT_IMPL(Tab)
+
 void Tab::serializeState(sn::Variant & o, const sn::SerializationContext & ctx)
 {
 	Control::serializeState(o, ctx);

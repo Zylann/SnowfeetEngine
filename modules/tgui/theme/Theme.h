@@ -46,7 +46,7 @@ struct ControlTheme
 class Theme : public sn::Asset
 {
 public:
-    SN_SCRIPT_OBJECT(tgui::Theme, sn::Asset)
+    SN_OBJECT
 
     Theme():
         m_textureSize(256,256) // Arbitrary by default
@@ -86,7 +86,7 @@ private:
 class ThemeLoader : public sn::AssetLoader
 {
 public:
-    SN_OBJECT(tgui::ThemeLoader, sn::AssetLoader)
+    SN_OBJECT
 
     const sn::ObjectType & getBaseAssetType() const override { return sn::getObjectType<Theme>(); }
     bool canLoad(const sn::AssetMetadata & meta) const override;

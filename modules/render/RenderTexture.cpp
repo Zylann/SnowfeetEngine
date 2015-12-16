@@ -7,6 +7,8 @@
 namespace sn
 {
 
+SN_OBJECT_IMPL(RenderTexture)
+
 RenderTexture::RenderTexture(): Asset(),
     m_frameBufferID(0),
     m_depthBufferID(0),

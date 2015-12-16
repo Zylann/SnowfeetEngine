@@ -13,6 +13,8 @@
 namespace sn
 {
 
+SN_OBJECT_IMPL(ObjectDB)
+
 //------------------------------------------------------------------------------
 const char * ObjectDB::FORMAT_KEY     = "format";
 const char * ObjectDB::FORMAT_VALUE   = "SN2";

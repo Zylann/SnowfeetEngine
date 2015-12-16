@@ -6,6 +6,9 @@ namespace sn
 {
 
 //------------------------------------------------------------------------------
+SN_OBJECT_IMPL(PackedEntity)
+
+//------------------------------------------------------------------------------
 const char * PackedEntity::CHILDREN_TAG = "_children";
 
 //------------------------------------------------------------------------------
@@ -95,7 +98,7 @@ void PackedEntity::instantiateOnly(
         const Variant & o = it->second.data;
 
         std::string typeName = o["@type"].getString();
-        ObjectType * ot = ObjectTypeDatabase::get().getType(typeName);
+        const ObjectType * ot = ObjectTypeDatabase::get().getType(typeName);
         if (ot)
         {
             sn::Object * obj = instantiateDerivedObject(*ot, entityT);

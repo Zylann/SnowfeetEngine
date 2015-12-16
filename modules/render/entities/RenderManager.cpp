@@ -16,6 +16,8 @@
 namespace sn
 {
 
+SN_OBJECT_IMPL(RenderManager)
+
 const char * RenderManager::TAG = "RenderManager";
 
 //------------------------------------------------------------------------------

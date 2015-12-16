@@ -3,6 +3,8 @@
 namespace sn
 {
 
+SN_OBJECT_IMPL(Entity3D)
+
 //------------------------------------------------------------------------------
 Entity3D::Entity3D() : Entity(), 
     m_localMatrixNeedUpdate(true), 

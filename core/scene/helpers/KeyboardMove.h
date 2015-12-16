@@ -10,7 +10,7 @@ namespace sn
 class SN_API KeyboardMove : public Entity
 {
 public:
-    SN_ENTITY(sn::KeyboardMove, sn::Entity)
+    SN_OBJECT
 
     void onReady() override;
     bool onSystemEvent(const Event & event) override;

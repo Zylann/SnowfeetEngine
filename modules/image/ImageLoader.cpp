@@ -12,6 +12,8 @@
 namespace sn
 {
 
+SN_OBJECT_IMPL(ImageLoader)
+
 const ObjectType & ImageLoader::getBaseAssetType() const
 {
     return sn::getObjectType<Image>();

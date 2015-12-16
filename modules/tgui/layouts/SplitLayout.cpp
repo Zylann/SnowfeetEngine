@@ -6,6 +6,8 @@ using namespace sn;
 namespace tgui
 {
 
+SN_OBJECT_IMPL(SplitLayout)
+
 //------------------------------------------------------------------------------
 SplitLayout::SplitLayout(Control * container, SplitLayout * parent, Control * c) :
 	Layout(container),
