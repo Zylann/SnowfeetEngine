@@ -70,6 +70,29 @@ bool Scene::getEntityUpdateOrder(Entity & e, s16 & out_order, s16 & out_layer) c
 */
 
 //------------------------------------------------------------------------------
+EntityID Scene::registerEntity(Entity & e)
+{
+#ifdef SN_BUILD_DEBUG
+    SN_ASSERT(!m_indexer.contains(&e), "Entity registered twice!");
+#endif
+    return m_indexer.add(&e);
+}
+
+//------------------------------------------------------------------------------
+void Scene::unregisterEntity(EntityID id)
+{
+#ifdef SN_BUILD_DEBUG
+    Entity * e = m_indexer.remove(id);
+    if (e)
+    {
+        SN_WARNING("Entity unregistered twice! " << e->toString());
+    }
+#else
+    m_indexer.remove(id);
+#endif
+}
+
+//------------------------------------------------------------------------------
 void Scene::registerEventListener(Entity & e)
 {
 	auto it = m_eventListenerEntities.find(&e);

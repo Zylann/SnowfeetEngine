@@ -272,9 +272,13 @@ void Entity::onSceneChanged(Scene * oldScene, Scene * newScene)
 
 	std::vector<std::string> tagList;
 
+    EntityID oldID = m_id;
+
     // Register to the new scene
     if (newScene)
     {
+        m_id = newScene->registerEntity(*this);
+
         // Update subscription
         if (getFlag(SN_EF_UPDATABLE))
         {
@@ -323,6 +327,8 @@ void Entity::onSceneChanged(Scene * oldScene, Scene * newScene)
         {
             oldScene->unregisterTaggedEntity(*this, *it);
         }
+
+        oldScene->unregisterEntity(oldID);
     }
 
     r_scene = newScene;

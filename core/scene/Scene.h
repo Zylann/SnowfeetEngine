@@ -44,6 +44,9 @@ public:
     //void unregisterUpdatableEntity(Entity & e);
     //bool getEntityUpdateOrder(Entity & e, s16 & out_order, s16 & out_layer) const;
 
+    EntityID registerEntity(Entity & e);
+    void unregisterEntity(EntityID id);
+    
     UpdateManager & getUpdateManager() { return m_updateManager; }
 
 	void registerEventListener(Entity & e);
@@ -105,6 +108,7 @@ private:
     bool m_quitFlag;
 	Time m_deltaTime;
 	Clock m_timeClock;
+    EntityIndexer m_indexer;
 
 };
 

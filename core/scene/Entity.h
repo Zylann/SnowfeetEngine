@@ -15,6 +15,7 @@ This file is part of the SnowfeetEngine project.
 #include <core/asset/SerializationContext.h>
 #include <core/util/typecheck.h>
 #include <core/scene/UpdateManager.h>
+#include <core/util/Indexer.h>
 
 #include <vector>
 #include <string>
@@ -36,6 +37,10 @@ enum EntityFlags
 };
 
 class Scene;
+class Entity;
+
+typedef Indexer<Entity*> EntityIndexer;
+typedef EntityIndexer::Key EntityID;
 
 /// \brief Base class for all components of the scene.
 class SN_API Entity : public ScriptableObject
@@ -49,6 +54,14 @@ public:
     /// \note As most of serialized classes in the engine, 
     /// subclasses shouldn't declare a constructor with parameters.
     Entity();
+
+    //---------------------------------------------
+    // State
+    //---------------------------------------------
+
+    /// \brief Gets the runtime ID of the entity.
+    /// It is unique within the scope and lifetime of the scene.
+    inline EntityID getId() const { return m_id; }
 
     /// \brief Gets the name of the entity
     inline const std::string & getName() const { return m_name; }
@@ -284,6 +297,9 @@ private:
     // TODO Components.
     /// \brief Script behaviour attached to this entity. Can be unset.
     squirrel::Instance m_script;
+
+    /// \brief Runtime ID
+    EntityID m_id;
 
 };
 
