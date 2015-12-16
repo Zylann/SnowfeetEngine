@@ -429,11 +429,11 @@ Entity * Entity::getChildByName(const std::string & name) const
 }
 
 //------------------------------------------------------------------------------
-Entity * Entity::getChildByType(const std::string & name) const
+Entity * Entity::getChildByType(const ObjectType & type) const
 {
     for (auto it = m_children.begin(); it != m_children.end(); ++it)
     {
-        if ((*it)->getObjectType().is(name))
+        if ((*it)->getObjectType().is(type))
             return *it;
     }
     return nullptr;
@@ -496,20 +496,13 @@ u32 Entity::indexOfChild(const Entity * child) const
 }
 
 //------------------------------------------------------------------------------
-Entity * Entity::createChild(const std::string & typeName)
+Entity * Entity::createChild(const ObjectType & type)
 {
     Entity * child = nullptr;
 
-    if (typeName.empty())
-    {
-        child = new Entity();
-    }
-    else
-    {
-        Object * obj = instantiateDerivedObject(typeName, sn::getObjectType<Entity>());
-        if (obj)
-            child = (Entity*)obj;
-    }
+    Object * obj = instantiateDerivedObject(type, sn::getObjectType<Entity>());
+    if (obj)
+        child = (Entity*)obj;
 
     if (child)
     {
@@ -520,11 +513,11 @@ Entity * Entity::createChild(const std::string & typeName)
 }
 
 //------------------------------------------------------------------------------
-Entity * Entity::requireChild(const std::string & typeName)
+Entity * Entity::requireChild(const ObjectType & type)
 {
-    Entity * e = getChildByType(typeName);
+    Entity * e = getChildByType(type);
     if (e == nullptr)
-        e = createChild(typeName);
+        e = createChild(type);
     return e;
 }
 

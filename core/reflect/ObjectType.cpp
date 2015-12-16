@@ -115,7 +115,7 @@ void ObjectType::getChildrenTypes(std::vector<const ObjectType*> & out_children)
 	auto allTypes = odb.getTypes();
 	for (auto it = allTypes.begin(); it != allTypes.end(); ++it)
 	{
-		const ObjectType & ot = *it->second;
+		const ObjectType & ot = **it;
 		if (ot.derivesFrom(*this))
 			out_children.push_back(this);
 	}
