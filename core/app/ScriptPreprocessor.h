@@ -16,11 +16,15 @@ public:
 	{
 		std::string fileName;
 		u32 line;
+
+		RequireItem():
+			line(0)
+		{}
 	};
 
 	ScriptPreprocessor();
 
-	void process(std::string & out_input);
+	void run(std::string & out_input);
 
 	const std::vector<RequireItem> & getRequireItems() const { return m_requireItems; }
 

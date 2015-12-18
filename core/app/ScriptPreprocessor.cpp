@@ -8,7 +8,7 @@ ScriptPreprocessor::ScriptPreprocessor() : m_lineNumber(0)
 {}
 
 //------------------------------------------------------------------------------
-void ScriptPreprocessor::process(std::string & out_input)
+void ScriptPreprocessor::run(std::string & out_input)
 {
 	m_lineNumber = 0;
 	m_requireItems.clear();

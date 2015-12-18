@@ -5,6 +5,8 @@ This file is part of the SnowfeetEngine project.
 */
 
 #include "ScriptManager.h"
+#include "ScriptPreprocessor.h"
+#include "../system/FilePath.h"
 #include "../util/assert.h"
 #include "../util/stringutils.h"
 #include "../util/Exception.h"
@@ -171,11 +173,74 @@ void ScriptManager::close()
 }
 
 //------------------------------------------------------------------------------
+namespace
+{
+    typedef std::vector<ScriptPreprocessor::RequireItem> ScriptRequireList;
+    
+    struct ScriptUnit
+    {
+    	squirrel::Script script;
+    	std::string filePath;
+    	ScriptRequireList requireItems;
+    	std::vector<u32> requireIndexes;
+    
+    	ScriptUnit(HSQUIRRELVM vm): script(vm) {}
+    };
+    
+	void priv_calculateScriptDependencies(
+		u32 i,
+		const std::vector<ScriptUnit> units,
+		std::vector<u32> & out_order,
+		std::vector<bool> & openSet)
+	{
+		const ScriptUnit & unit = units[i];
+
+		// For each required scripts
+		const std::vector<u32> & requireIndexes = unit.requireIndexes;
+		for (u32 i = 0; i < requireIndexes.size(); ++i)
+		{
+			u32 j = requireIndexes[i];
+			if (!openSet[j])
+			{
+				// Include the dependency
+				priv_calculateScriptDependencies(j, units, out_order, openSet);
+			}
+		}
+
+		openSet[i] = true;
+
+		// Include the script
+		out_order.push_back(i);
+	}
+
+	void calculateScriptDependencies(
+		const std::vector<ScriptUnit> & units, 
+		std::vector<u32> & out_order)
+	{
+		std::vector<bool> openSet(units.size(), false);
+
+		// For each script
+		for (u32 i = 0; i < units.size(); ++i)
+		{
+			// If not included yet
+			if (!openSet[i])
+			{
+				// Include it
+				priv_calculateScriptDependencies(0, units, out_order, openSet);
+			}
+		}
+	}
+}
+
+//------------------------------------------------------------------------------
 bool ScriptManager::compileSquirrelModule(const std::string & modName, const std::string & modNamespace, const std::vector<String> & files)
 {
+    ScriptPreprocessor preprocessor;
+    
     // Compile scripts
 
-    std::vector<squirrel::Script> scripts;
+    std::vector<ScriptUnit> units;
+	std::unordered_map<std::string, u32> unitsByFile;
     std::string sourceCode;
 
     for (auto it = files.begin(); it != files.end(); ++it)
@@ -183,14 +248,19 @@ bool ScriptManager::compileSquirrelModule(const std::string & modName, const std
         const std::string & filePath = sn::toString(*it);
         if (readFile(filePath, sourceCode))
         {
-            squirrel::Script script(m_squirrelVM);
-            if (script.compileString(sourceCode, filePath))
+            preprocessor.run(sourceCode);
+            
+            ScriptUnit unit(m_squirrelVM);
+            if (unit.script.compileString(sourceCode, filePath))
             {
-                scripts.push_back(script);
+				unitsByFile[unit.filePath] = units.size();
+				unit.filePath = filePath;
+				unit.requireItems = preprocessor.getRequireItems();
+				units.push_back(unit);
             }
             else
             {
-                SN_ERROR(squirrel::getLastError(script.getVM()));
+                SN_ERROR(squirrel::getLastError(unit.script.getVM()));
                 return false;
             }
         }
@@ -200,11 +270,43 @@ bool ScriptManager::compileSquirrelModule(const std::string & modName, const std
         }
     }
 
+	// Identify require items
+
+	for (u32 i = 0; i < units.size(); ++i)
+	{
+		ScriptUnit & unit = units[i];
+		for (u32 j = 0; j < unit.requireItems.size(); ++j)
+		{
+			ScriptPreprocessor::RequireItem & requireItem = unit.requireItems[j];
+			std::string unitDirectory = sn::getFileFolder(unit.filePath);
+			std::string path = FilePath::join(unitDirectory, requireItem.fileName);
+
+			auto it = unitsByFile.find(path);
+			if (it != unitsByFile.end())
+			{
+				unit.requireIndexes.push_back(it->second);
+			}
+			else
+			{
+				SN_ERROR(unit.filePath << ": " << requireItem.line << ": cannot find file " << path);
+				return false;
+			}
+		}
+	}
+
+	// Calculate dependencies
+
+	std::vector<u32> runOrder;
+	calculateScriptDependencies(units, runOrder);
+
     // Run scripts
 
-    for (size_t i = 0; i < scripts.size(); ++i)
+    for (size_t i = 0; i < units.size(); ++i)
     {
-        auto & script = scripts[i];
+#ifdef SN_BUILD_DEBUG
+		SN_LOG("Running " << units[i].filePath);
+#endif
+        auto & script = units[i].script;
         script.execute();
     }
 
