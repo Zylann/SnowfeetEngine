@@ -40,7 +40,7 @@ inline B checked_cast(A * a)
             "from {" << (a==nullptr ? "nullptr" : typeid(a).name()) << "} "
             "to {" << typeid(B).name() << "}");
     }
-    //assert(castedPointer);
+    assert(castedPointer);
     return castedPointer;
 #else
     // Fast
@@ -60,7 +60,7 @@ inline std::shared_ptr<B> checked_cast(const std::shared_ptr<A> & a)
             "from {" << (a.get() == nullptr ? "nullptr" : typeid(a.get()).name()) << "} "
             "to {" << typeid(B).name() << "}");
     }
-    //assert(castedPointer);
+    assert(castedPointer);
     return castedPointer;
 #else
     return std::static_pointerd_cast<B>(a);
