@@ -15,6 +15,8 @@ public:
     SN_OBJECT
 
     static const char * CHILDREN_TAG;
+    static const char * COMPONENTS_TAG;
+    static const char * TYPE_TAG;
 
     bool loadFromVariant(Variant & doc) override;
     bool loadFromLegacyDump(Variant & doc);
@@ -51,6 +53,18 @@ private:
         std::vector<Entity*> * out_rootEntities
     ) const;
 
+    void instantiateComponents(
+        Entity & entity,
+        const Variant & entityData,
+        std::unordered_map<u32, sn::Object*> & out_objects,
+        std::vector< std::pair<Component*, const Variant*> > & out_components
+    ) const;
+
+    void rebuildHierarchy(
+        Entity & parent,
+        const Variant & entityData,
+        std::unordered_map<u32,sn::Object*> objects
+    ) const;
 };
 
 } // namespace sn

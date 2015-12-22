@@ -9,6 +9,7 @@ This file is part of the SnowfeetEngine project.
 #include <sstream>
 
 #include "Entity.h"
+#include "SquirrelComponent.h"
 #include "Scene.h"
 #include "../app/Application.h"
 
@@ -210,6 +211,36 @@ std::string Entity::toString() const
 }
 
 //------------------------------------------------------------------------------
+Component * Entity::addComponent(const ObjectType & cmpType)
+{
+    if (r_scene)
+    {
+        Component * cmp = r_scene->getComponentSystem().addComponent(cmpType, m_id);
+        if (cmp)
+            cmp->setEntity(*this);
+        return cmp;
+    }
+    SN_ERROR("Cannot add component on entity without scene");
+    return nullptr;
+}
+
+//------------------------------------------------------------------------------
+Component * Entity::getComponent(const ObjectType & cmpType)
+{
+    if (r_scene)
+        return r_scene->getComponentSystem().getComponent(cmpType, m_id);
+    return nullptr;
+}
+
+//------------------------------------------------------------------------------
+bool Entity::removeComponent(const ObjectType & cmpType)
+{
+    if (r_scene)
+        return r_scene->getComponentSystem().removeComponent(cmpType, m_id);
+    return false;
+}
+
+//------------------------------------------------------------------------------
 void Entity::getTags(std::vector<std::string> & tags)
 {
 	Scene * scene = getScene();
@@ -228,6 +259,8 @@ void Entity::getTags(std::vector<std::string> & tags)
 //------------------------------------------------------------------------------
 void Entity::setParent(Entity * newParent)
 {
+    SN_ASSERT(!getFlag(SN_EF_DESTROYED), "Cannot set the parent of a destroyed entity");
+
     Scene * oldScene = getScene();
 
     // Update parent
@@ -342,39 +375,46 @@ void Entity::onSceneChanged(Scene * oldScene, Scene * newScene)
 }
 
 //------------------------------------------------------------------------------
+squirrel::Instance * Entity::getScript()
+{
+    auto * script = getComponent<SquirrelComponent>();
+    if (script && !script->getInstance().isNull())
+    {
+        return &script->getInstance();
+    }
+    return nullptr;
+}
+
+//------------------------------------------------------------------------------
 void Entity::onReady()
 {
-    if (!m_script.isNull())
-    {
-        m_script.callMethod("onReady");
-    }
+    auto * script = getComponent<SquirrelComponent>();
+    if (script)
+        script->getInstance().callMethod("onReady");
 }
 
 //------------------------------------------------------------------------------
 void Entity::onFirstUpdate()
 {
-    if (!m_script.isNull())
-    {
-        m_script.callMethod("onFirstUpdate");
-    }
+    auto * script = getComponent<SquirrelComponent>();
+    if (script)
+        script->getInstance().callMethod("onFirstUpdate");
 }
 
 //------------------------------------------------------------------------------
 void Entity::onDestroy()
 {
-    if (!m_script.isNull())
-    {
-        m_script.callMethod("onDestroy");
-    }
+    auto * script = getComponent<SquirrelComponent>();
+    if (script)
+        script->getInstance().callMethod("onDestroy");
 }
 
 //------------------------------------------------------------------------------
 void Entity::onUpdate()
 {
-    if (!m_script.isNull())
-    {
-        m_script.callMethod("onUpdate");
-    }
+    auto * script = getComponent<SquirrelComponent>();
+    if (script)
+        script->getInstance().callMethod("onUpdate");
 }
 
 //------------------------------------------------------------------------------
@@ -581,8 +621,16 @@ void Entity::destroy()
     if (!getFlag(SN_EF_DESTROYED))
     {
         onDestroy();
+
+        if (!getFlag(SN_EF_DESTROY_LATE))
+        {
+            Scene * scene = getScene();
+            if (scene)
+                scene->getComponentSystem().removeAllComponentsOnEntity(m_id);
+        }
+
         setFlag(SN_EF_DESTROYED, true);
-        releaseScript();
+        //releaseScript();
         // TODO Instant destruction
         release();
     }
@@ -595,16 +643,11 @@ void Entity::destroy()
 //------------------------------------------------------------------------------
 void Entity::destroyLater()
 {
-    SN_WARNING("Entity::destroyLater(): not implemented yet");
-    // TODO Different flag?
-    //setFlag(SN_EF_DESTROYED, true);
-}
-
-//------------------------------------------------------------------------------
-void Entity::releaseScript()
-{
-    //m_script.setMemberNull("entity");
-    m_script.releaseObject();
+    Scene * scene = getScene();
+    SN_ASSERT(scene, "Cannot destroyLater(), the entity has no scene");
+    setFlag(SN_EF_DESTROY_LATE, true);
+    scene->registerDestroyedEntity(this);
+    scene->getComponentSystem().removeAllComponentsOnEntity(m_id);
 }
 
 //------------------------------------------------------------------------------
@@ -641,36 +684,6 @@ void Entity::unserializeState(const Variant & o, const SerializationContext & co
         const std::string & tagName = *it;
         addTag(tagName);
     }
-
-    // Script
-    auto & script = o["script"];
-    if (script.isDictionary())
-    {
-        std::string classPath = script["class"].getString();
-        if (!classPath.empty())
-        {
-            // TODO should be context.squirrelVM
-            HSQUIRRELVM vm = Application::get().getScriptManager().getVM();
-
-            if (m_script.create(vm, classPath))
-            {
-                // Set the "entity" member
-                if (pushScriptObject(vm))
-                {
-                    HSQOBJECT entityObj;
-                    sq_getstackobj(vm, -1, &entityObj);
-                    m_script.setMember("entity", entityObj);
-                    sq_pop(vm, 1); // pop entityObj
-                }
-
-				// Call onCreate
-				m_script.callMethod("onCreate");
-            }
-        }
-    }
-
-    // TODO Unserialize script members
-
 }
 
 //------------------------------------------------------------------------------

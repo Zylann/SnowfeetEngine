@@ -13,6 +13,9 @@
 #include "scene/helpers/KeyboardMove.h"
 #include "scene/PackedEntity.h"
 #include "scene/PackedEntityLoader.h"
+#include "scene/ComponentSystem.h"
+#include "scene/GenericComponentManager.h"
+#include "scene/SquirrelComponent.h"
 
 #include "asset/Asset.h"
 #include "asset/AssetLoader.h"
@@ -27,23 +30,29 @@ namespace sn
 void registerObjectTypes(ObjectTypeDatabase & otb)
 {
     // Base
-    otb.registerType<Object>                            (SN_TYPESTRING(sn::Object));
-    otb.registerType<ScriptableObject, Object>          (SN_TYPESTRING(sn::ScriptableObject));
-    otb.registerType<IDriver, Object>                   (SN_TYPESTRING(sn::IDriver));
+    otb.registerType<Object>                                       (SN_TYPESTRING(sn::Object));
+    otb.registerType<ScriptableObject, Object>                     (SN_TYPESTRING(sn::ScriptableObject));
+    otb.registerType<IDriver, Object>                              (SN_TYPESTRING(sn::IDriver));
 
     // Entities
-    otb.registerType<Entity, ScriptableObject>          (SN_TYPESTRING(sn::Entity));
-    otb.registerType<Entity3D, Entity>                  (SN_TYPESTRING(sn::Entity3D));
-    otb.registerType<Scene, Entity>                     (SN_TYPESTRING(sn::Scene));
-    otb.registerType<Rotate, Entity>                    (SN_TYPESTRING(sn::Rotate));
-    otb.registerType<KeyboardMove, Entity>              (SN_TYPESTRING(sn::KeyboardMove));
+    otb.registerType<Entity, ScriptableObject>                     (SN_TYPESTRING(sn::Entity));
+    otb.registerType<Entity3D, Entity>                             (SN_TYPESTRING(sn::Entity3D));
+    otb.registerType<Scene, Entity>                                (SN_TYPESTRING(sn::Scene));
+    otb.registerType<Rotate, Entity>                               (SN_TYPESTRING(sn::Rotate));
+    otb.registerType<KeyboardMove, Entity>                         (SN_TYPESTRING(sn::KeyboardMove));
+
+    // Components
+    otb.registerType<Component, ScriptableObject>                  (SN_TYPESTRING(sn::Component));
+    otb.registerType<IComponentManager, Object>                    (SN_TYPESTRING(sn::IComponentManager));
+    otb.registerType<GenericComponentManager, IComponentManager>   (SN_TYPESTRING(sn::GenericComponentManager));
+    otb.registerType<SquirrelComponent, Component>                 (SN_TYPESTRING(sn::SquirrelComponent));
 
     // Assets base
-    otb.registerType<Asset, ScriptableObject>           (SN_TYPESTRING(sn::Asset));
-    otb.registerType<AssetLoader, Object>               (SN_TYPESTRING(sn::AssetLoader));
-    otb.registerType<ObjectDB, Asset>                   (SN_TYPESTRING(sn::ObjectDB));
-    otb.registerType<PackedEntity, ObjectDB>            (SN_TYPESTRING(sn::PackedEntity));
-    otb.registerType<PackedEntityLoader, AssetLoader>   (SN_TYPESTRING(sn::PackedEntityLoader));
+    otb.registerType<Asset, ScriptableObject>                      (SN_TYPESTRING(sn::Asset));
+    otb.registerType<AssetLoader, Object>                          (SN_TYPESTRING(sn::AssetLoader));
+    otb.registerType<ObjectDB, Asset>                              (SN_TYPESTRING(sn::ObjectDB));
+    otb.registerType<PackedEntity, ObjectDB>                       (SN_TYPESTRING(sn::PackedEntity));
+    otb.registerType<PackedEntityLoader, AssetLoader>              (SN_TYPESTRING(sn::PackedEntityLoader));
 
 }
 

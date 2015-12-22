@@ -165,11 +165,11 @@ namespace sn
         SQRESULT getScript(HSQUIRRELVM vm)
         {
             GET_SELF();
-            squirrel::Instance & obj = self->getScript();
-            if (obj.isNull() || obj.getVM() != vm)
+            squirrel::Instance * obj = self->getScript();
+            if (obj == nullptr || obj->getVM() != vm)
                 sq_pushnull(vm);
             else
-                sq_pushobject(vm, obj.getObject());
+                sq_pushobject(vm, obj->getObject());
             return 1;
         }
 

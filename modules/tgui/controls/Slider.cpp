@@ -197,20 +197,20 @@ void Slider::setValueFromPos(sn::Vector2i cursorPos)
 //------------------------------------------------------------------------------
 void Slider::notifyValueChanged()
 {
-    auto & s = getScript();
-    if (!s.isNull())
+    auto s = getScript();
+    if (s)
     {
-        s.callMethod("onValueChanged", m_value);
+        s->callMethod("onValueChanged", m_value);
     }
 }
 
 //------------------------------------------------------------------------------
 void Slider::notifyReleased()
 {
-    auto & s = getScript();
-    if (!s.isNull())
+    auto s = getScript();
+    if (s)
     {
-        s.callMethod("onRelease");
+        s->callMethod("onRelease");
     }
 }
 

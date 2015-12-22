@@ -13,6 +13,7 @@ This file is part of the SnowfeetEngine project.
 #include <core/system/Clock.h>
 #include <core/scene/TagManager.h>
 #include <core/scene/UpdateManager.h>
+#include <core/scene/ComponentSystem.h>
 #include <map>
 
 namespace sn
@@ -46,8 +47,12 @@ public:
 
     EntityID registerEntity(Entity & e);
     void unregisterEntity(EntityID id);
+
+    void registerDestroyedEntity(Entity * e);
+        
+    inline ComponentSystem & getComponentSystem() { return m_componentSystem; }
     
-    UpdateManager & getUpdateManager() { return m_updateManager; }
+    inline UpdateManager & getUpdateManager() { return m_updateManager; }
 
 	void registerEventListener(Entity & e);
 	void unregisterEventListener(Entity & e);
@@ -101,10 +106,14 @@ public:
 	Time getDeltaTime() const { return m_deltaTime; }
 	Time getTimeSinceStartup() const;
 
+    Entity * getEntityById(EntityID id) const { return m_indexer.get(id); }
+
 private:
 	TagManager m_tagManager;
     UpdateManager m_updateManager;
+    ComponentSystem m_componentSystem;
 	std::unordered_set<Entity*> m_eventListenerEntities;
+    std::vector<Entity*> m_destroyedEntities;
     bool m_quitFlag;
 	Time m_deltaTime;
 	Clock m_timeClock;

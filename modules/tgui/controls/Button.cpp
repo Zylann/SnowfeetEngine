@@ -14,9 +14,10 @@ SN_OBJECT_IMPL(Button)
 //------------------------------------------------------------------------------
 void Button::onMousePress(Event & e)
 {
-	if (!getScript().isNull())
+    auto script = getScript();
+	if (script)
 	{
-		getScript().callMethod("onButtonPress");
+		script->callMethod("onButtonPress");
 	}
 }
 

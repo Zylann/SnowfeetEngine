@@ -165,6 +165,29 @@ Entity * Scene::getTaggedEntity(const std::string & tag)
 }
 
 //------------------------------------------------------------------------------
+void Scene::registerDestroyedEntity(Entity * e)
+{
+    SN_ASSERT(e->getFlag(SN_EF_DESTROYED), "Entity not marked as destroyed");
+#ifdef SN_BUILD_DEBUG
+    auto it = std::find(m_destroyedEntities.begin(), m_destroyedEntities.end(), e);
+    SN_ASSERT(it == m_destroyedEntities.end(), "Entity registered twice for destruction");
+#endif
+    Entity * parent = e->getParent();
+    while (parent && parent != this)
+    {
+        if (parent->getFlag(SN_EF_DESTROYED))
+        {
+            // If a parent is already marked as destroyed, don't do anything.
+            // Note: it doesn't prevents cases where a child is marked before its parent.
+            // However, that's the order they are supposed to follow, so it shouldn't be harmful.
+            return;
+        }
+        parent = parent->getParent();
+    }
+    m_destroyedEntities.push_back(e);
+}
+
+//------------------------------------------------------------------------------
 std::vector<Entity*> Scene::getTaggedEntities(const std::string & tag)
 {
 	std::vector<Entity*> entities;
@@ -212,9 +235,19 @@ void Scene::update(Time deltaTime)
 //------------------------------------------------------------------------------
 void Scene::onUpdate()
 {
+    // Call custom update callbacks
     m_updateManager.update();
 
-	// TODO Destroy entities with flag DESTROY_LATE set
+    // Update component system itself (Destroy pending components)
+    m_componentSystem.update();
+
+    // Destroy pending entities
+    for (auto it = m_destroyedEntities.begin(); it != m_destroyedEntities.end(); ++it)
+    {
+        Entity * e = *it;
+        e->destroy();
+    }
+    m_destroyedEntities.clear();
 }
 
 //------------------------------------------------------------------------------

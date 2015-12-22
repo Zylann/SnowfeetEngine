@@ -485,6 +485,11 @@ Project * Application::loadProject(const String & path)
         }
     }
 
+    SN_ASSERT(m_scene != nullptr, "Scene is required");
+
+    // Once modules are loaded, create component managers
+    m_scene->getComponentSystem().createManagers();
+
 	// Rebuild class mapping once all script classes have been defined
 	m_scriptEngine.rebuildClassMapping();
 
@@ -499,28 +504,25 @@ Project * Application::loadProject(const String & path)
         assetDatabase.loadAssets(info);
     }
 
-	if (m_scene)
+    // Create scene managers
+	size_t i = 0;
+	for (auto it = projectsToLoad.begin(); it != projectsToLoad.end(); ++it)
 	{
-    	// Create scene managers
-		size_t i = 0;
-		for (auto it = projectsToLoad.begin(); it != projectsToLoad.end(); ++it)
-		{
-			const ProjectInfo & info = *it;
-            sn::PackedEntity * pack = assetDatabase.getAsset<PackedEntity>(info.name, info.sceneManagers);
-            if (pack)
-            {
-                // Instantiate managers
-                std::vector<Entity*> rootEntities;
-                pack->instantiate(*m_scene, info.name, &rootEntities);
+		const ProjectInfo & info = *it;
+        sn::PackedEntity * pack = assetDatabase.getAsset<PackedEntity>(info.name, info.sceneManagers);
+        if (pack)
+        {
+            // Instantiate managers
+            std::vector<Entity*> rootEntities;
+            pack->instantiate(*m_scene, info.name, &rootEntities);
 
-                // Make them sticky (they won't go away when a new scene is loaded)
-                for (u32 i = 0; i < rootEntities.size(); ++i)
-                {
-                    Entity * e = rootEntities[i];
-                    e->setFlag(SN_EF_STICKY, true);
-                }
+            // Make them sticky (they won't go away when a new scene is loaded)
+            for (u32 i = 0; i < rootEntities.size(); ++i)
+            {
+                Entity * e = rootEntities[i];
+                e->setFlag(SN_EF_STICKY, true);
             }
-		}
+        }
 	}
 
     // Note: the last loaded module will be the one we requested when calling this function

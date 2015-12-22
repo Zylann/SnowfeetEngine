@@ -11,11 +11,11 @@ This file is part of the SnowfeetEngine project.
 #include <core/sml/variant_serialize.h>
 #include <core/app/ScriptableObject.h>
 #include <core/system/Event.h>
-#include <core/squirrel/Instance.h>
 #include <core/asset/SerializationContext.h>
 #include <core/util/typecheck.h>
 #include <core/scene/UpdateManager.h>
 #include <core/util/Indexer.h>
+#include <core/scene/Component.h>
 
 #include <vector>
 #include <string>
@@ -33,7 +33,8 @@ enum EntityFlags
     SN_EF_FIRST_UPDATE = 2,
     SN_EF_UPDATABLE = 3,
     SN_EF_STICKY = 4,
-	SN_EF_SYSTEM_EVENT_LISTENER = 5
+	SN_EF_SYSTEM_EVENT_LISTENER = 5,
+    SN_EF_DESTROY_LATE = 6
 };
 
 class Scene;
@@ -105,6 +106,44 @@ public:
 
     /// \brief Gets a short, human-readable string representation of the entity
     std::string toString() const;
+
+    //---------------------------------------------
+    // Components
+    //---------------------------------------------
+
+    Component * addComponent(const ObjectType & cmpType);
+    Component * getComponent(const ObjectType & cmpType);
+    bool removeComponent(const ObjectType & cmpType);
+
+    template <class T>
+    T * addComponent()
+    {
+        const ObjectType & cmpType = sn::getObjectType<T>();
+        Component * cmp = addComponent(cmpType);
+        if (cmp)
+            return checked_cast<T*>(cmp);
+        return nullptr;
+    }
+
+    template <class T>
+    T * getComponent()
+    {
+        const ObjectType & cmpType = sn::getObjectType<T>();
+        Component * cmp = getComponent(cmpType);
+        if (cmp)
+            return checked_cast<T*>(cmp);
+        return nullptr;
+    }
+
+    template <class T>
+    bool removeComponent()
+    {
+        const ObjectType & cmpType = sn::getObjectType<T>();
+        return removeComponent(cmpType);
+    }
+
+    /// \DEPRECATED
+    squirrel::Instance * getScript();
 
     //---------------------------------------------
     // Hierarchy
@@ -234,12 +273,6 @@ public:
 	/// \return true if the event has been consumed, false otherwise
 	virtual bool onSystemEvent(const sn::Event & event) { return false; }
 
-	//---------------------------------------------
-    // Scripting
-    //---------------------------------------------
-
-	squirrel::Instance & getScript() { return m_script; }
-
     //---------------------------------------------
     // Internal use
     //---------------------------------------------
@@ -293,10 +326,6 @@ private:
     /// \brief User-defined tags currently set on this entity.
 	/// Each bit corresponds to a tag in the scene this entity is registered.
 	std::bitset<MAX_TAGS> m_tags;
-
-    // TODO Components.
-    /// \brief Script behaviour attached to this entity. Can be unset.
-    squirrel::Instance m_script;
 
     /// \brief Runtime ID
     EntityID m_id;
