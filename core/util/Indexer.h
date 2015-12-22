@@ -39,7 +39,7 @@ public:
 		return {i, m_versions.back()};
 	}
 	
-	T get(Key k)
+	T get(Key k) const
 	{
 		if(k.i < m_elems.size() && k.v == m_versions[k.i])
 			return m_elems[k.i];
