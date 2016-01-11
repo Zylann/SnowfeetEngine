@@ -1,0 +1,6 @@
+{
+	"startupScene":"main",
+	"dependencies":[
+		"mods/oculus"
+	]
+}

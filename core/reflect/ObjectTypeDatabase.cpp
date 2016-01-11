@@ -5,7 +5,7 @@ This file is part of the SnowfeetEngine project.
 */
 
 #include <cassert>
-#include "ObjectTypeDatabase.hpp"
+#include "ObjectTypeDatabase.h"
 
 namespace sn
 {
@@ -19,16 +19,27 @@ ObjectTypeDatabase & ObjectTypeDatabase::get()
 }
 
 //------------------------------------------------------------------------------
-bool ObjectTypeDatabase::isRegistered(const std::string & typeName)
+// Private to prevent construction from the outside
+ObjectTypeDatabase::ObjectTypeDatabase()
+{}
+
+//------------------------------------------------------------------------------
+ObjectTypeDatabase::~ObjectTypeDatabase()
 {
-    return m_registeredTypes.find(typeName) != m_registeredTypes.end();
+    clear();
 }
 
 //------------------------------------------------------------------------------
-ObjectType * ObjectTypeDatabase::getType(const std::string & typeName)
+bool ObjectTypeDatabase::isRegistered(const std::string & typeName)
 {
-    auto it = m_registeredTypes.find(typeName);
-    if (it != m_registeredTypes.end())
+    return m_typesByName.find(typeName) != m_typesByName.end();
+}
+
+//------------------------------------------------------------------------------
+const ObjectType * ObjectTypeDatabase::getType(const std::string & typeName)
+{
+    auto it = m_typesByName.find(typeName);
+    if (it != m_typesByName.end())
     {
         return it->second;
     }
@@ -36,6 +47,14 @@ ObjectType * ObjectTypeDatabase::getType(const std::string & typeName)
     {
         return nullptr;
     }
+}
+
+//------------------------------------------------------------------------------
+const ObjectType * ObjectTypeDatabase::getType(u32 id)
+{
+    if (id < m_types.size())
+        return m_types[id];
+    return nullptr;
 }
 
 //------------------------------------------------------------------------------
@@ -51,13 +70,11 @@ void ObjectTypeDatabase::endModule()
 }
 
 //------------------------------------------------------------------------------
-void ObjectTypeDatabase::unregisterType(ObjectType & t)
+void ObjectTypeDatabase::unregisterType(const ObjectType & t)
 {
-    auto it = m_registeredTypes.find(t.getName());
-    if (it != m_registeredTypes.end())
+    if (t.getID() < m_types.size())
     {
-        delete it->second;
-        m_registeredTypes.erase(it);
+        m_types[t.getID()] = nullptr;
     }
     else
     {
@@ -68,10 +85,10 @@ void ObjectTypeDatabase::unregisterType(ObjectType & t)
 //------------------------------------------------------------------------------
 void ObjectTypeDatabase::getTypesByModuleName(const std::string & modName, std::vector<const ObjectType*> & out_types) const
 {
-    for (auto it = m_registeredTypes.begin(); it != m_registeredTypes.end(); ++it)
+    for (auto it = m_types.begin(); it != m_types.end(); ++it)
     {
-        const ObjectType * ot = it->second;
-        if (ot->getModuleName() == modName)
+        const ObjectType * ot = *it;
+        if (ot && ot->getModuleName() == modName)
         {
             out_types.push_back(ot);
         }
@@ -89,13 +106,12 @@ void ObjectTypeDatabase::unregisterModule(const std::string & name)
 
     unsigned int count = 0;
 
-    auto types = m_registeredTypes;
-    for (auto it = types.begin(); it != types.end(); ++it)
+    for (auto it = m_types.begin(); it != m_types.end(); ++it)
     {
-        ObjectType * t = it->second;
-        if (t->getModuleName() == name)
+        const ObjectType * t = *it;
+        if (t && t->getModuleName() == name)
         {
-            unregisterType(*t);
+            *it = nullptr;
             ++count;
         }
     }
@@ -109,12 +125,8 @@ void ObjectTypeDatabase::unregisterModule(const std::string & name)
 //------------------------------------------------------------------------------
 void ObjectTypeDatabase::clear()
 {
-    for (auto it = m_registeredTypes.begin(); it != m_registeredTypes.end(); ++it)
-    {
-        delete it->second;
-    }
-    m_registeredTypes.clear();
-    m_nextID = 1;
+    m_types.clear();
+    m_typesByName.clear();
 }
 
 } // namespace sn

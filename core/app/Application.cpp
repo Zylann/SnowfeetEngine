@@ -4,14 +4,20 @@ Copyright (C) 2014-2015 Marc GILLERON
 This file is part of the SnowfeetEngine project.
 */
 
-#include "Application.hpp"
-#include "Module.hpp"
-#include "../util/Log.hpp"
-#include "../system/thread/Thread.hpp"
-#include "../system/console/console.hpp"
-#include "../object_types.hpp"
-#include "../system/gui/SystemGUI.hpp"
-#include "../asset/AssetDatabase.hpp"
+#include <core/util/Log.h>
+#include <core/system/filesystem.h>
+#include <core/system/Thread.h>
+#include <core/system/console.h>
+#include <core/system/SystemGUI.h>
+#include <core/system/Joystick.h>
+#include <core/object_types.h>
+#include <core/asset/AssetDatabase.h>
+#include <core/util/Profiler.h>
+#include <core/scene/PackedEntity.h>
+#include <core/scene/PackedEntityLoader.h>
+
+#include "Application.h"
+#include "Module.h"
 
 namespace sn
 {
@@ -29,7 +35,8 @@ Application & Application::get()
 Application::Application() :
     m_scriptEngine(*this),
     m_scene(nullptr),
-    m_runFlag(false)
+    m_runFlag(false),
+    m_dumpProfilingOnClose(false)
 {
     SN_ASSERT(g_applicationInstance == nullptr, "Application: multiple instances are not allowed.");
     g_applicationInstance = this;
@@ -38,12 +45,7 @@ Application::Application() :
 //------------------------------------------------------------------------------
 Application::~Application()
 {
-    // TODO Unload modules in right order!
-	// Unload modules
-    for (auto it = m_modules.begin(); it != m_modules.end(); ++it)
-    {
-        delete it->second;
-    }
+    unloadAllModules();
 }
 
 //------------------------------------------------------------------------------
@@ -76,9 +78,11 @@ int Application::execute(CommandLine commandLine)
 //------------------------------------------------------------------------------
 int Application::executeEx()
 {
-    if (m_pathToMainMod.empty())
+	SN_BEGIN_PROFILE_SAMPLE_NAMED("Startup");
+
+    if (m_pathToMainProject.empty())
     {
-        SN_WARNING("No main mod specified.");
+        SN_WARNING("No startup project specified.");
         return 0;
     }
 
@@ -93,23 +97,34 @@ int Application::executeEx()
 
 	// Initialize AssetDatabase
 	AssetDatabase::get().setRoot(m_pathToProjects);
+    AssetDatabase::get().addLoader<PackedEntityLoader>();
 
     // Consider the app to be running from now
     m_runFlag = true;
 
-    // Corelib is the only module to always be loaded
-    loadModule(L"mods/corelib/corelib.mod.json");
+    // Corelib is the only dependency project to always be loaded
+    loadProject(L"mods/corelib");
 
-    // Load the main module
-    Module * mainModule = loadModule(m_pathToMainMod);
+    // Load the main project (including dependencies)
+    Project * mainProject = loadProject(m_pathToMainProject);
 
     // If a startup scene has been specified
-    const ModuleInfo & mainModuleInfo = mainModule->getInfo();
-    if (!mainModuleInfo.startupScene.empty())
+    const ProjectInfo & mainProjectInfo = mainProject->getInfo();
+    if (!mainProjectInfo.startupScene.empty())
     {
+        // Initialize update layers
+        // TODO UpdateManager config should be an asset
+        m_scene->getUpdateManager().unserialize(mainProjectInfo.updateLayers);
+
         // Load the scene
-        String filePath = m_pathToProjects + L"/" + mainModuleInfo.directory + L"/" + mainModuleInfo.startupScene;
-        m_scene->loadFromFile(toString(filePath), SerializationContext(mainModuleInfo.name));
+        PackedEntity * packedScene = AssetDatabase::get().getAsset<PackedEntity>(mainProjectInfo.name, mainProjectInfo.startupScene);
+        if (packedScene)
+        {
+            packedScene->instantiate(*m_scene, mainProjectInfo.name);
+//#ifdef SN_BUILD_DEBUG
+//            Entity::debugPrintEntityTree(*m_scene);
+//#endif
+        }
     }
 
     // Configure time stepper (at last, to minimize the "startup lag")
@@ -123,6 +138,7 @@ int Application::executeEx()
         m_runFlag = false;
     }
 
+	SN_END_PROFILE_SAMPLE();
     SN_LOG("Entering main loop");
 
 #ifdef SN_BUILD_DEBUG
@@ -133,11 +149,15 @@ int Application::executeEx()
     // Enter the main loop
     while (m_runFlag)
     {
+        Profiler::get().markFrame();
+		SN_BEGIN_PROFILE_SAMPLE_NAMED("Poll system events");
+
         Clock frameClock;
         m_timeStepper.onBeginFrame();
 
         // Process system GUI messages
         SystemGUI::processEvents();
+        Joystick::updateJoysticks();
 
         Event ev;
         while (SystemGUI::get().popEvent(ev))
@@ -159,6 +179,9 @@ int Application::executeEx()
 
         AssetDatabase::get().updateFileChanges();
 
+		SN_END_PROFILE_SAMPLE();
+		SN_BEGIN_PROFILE_SAMPLE_NAMED("Global update");
+
         std::vector<Time> deltas = m_timeStepper.getCallDeltas();
         //for (u32 i = 0; i < deltas.size() && m_runFlag; ++i)
         //{
@@ -168,6 +191,10 @@ int Application::executeEx()
         //    update(deltas[i]);
         //}
         update(Time::milliseconds(16));
+
+		SN_END_PROFILE_SAMPLE();
+		SN_BEGIN_PROFILE_SAMPLE_NAMED("Global sleep");
+
         // TODO The update timing system should be improved
         // TODO Sleeping here doesn't makes sense without a render context, so put this in RenderManager?
         // Sleep until the next frame
@@ -176,6 +203,8 @@ int Application::executeEx()
         {
             Thread::sleep(sleepTime);
         }
+
+		SN_END_PROFILE_SAMPLE();
 
         m_timeStepper.onEndFrame();
 
@@ -201,6 +230,7 @@ int Application::executeEx()
     }
 
     SN_LOG("Exiting main loop");
+	SN_BEGIN_PROFILE_SAMPLE_NAMED("Shutdown");
 
     // Destroy all entities but services (which may be needed for releasing assets)
     SN_LOG("Destroying entities...");
@@ -228,20 +258,29 @@ int Application::executeEx()
     // Close all windows
     SystemGUI::get().destroyAllWindows();
 
-    // TODO uninitialize all scripts before modules get destroyed
+    // Uninitialize all scripts before modules get destroyed
+    SN_LOG("Closing main Squirrel VM...");
+    m_scriptEngine.close();
+
+	SN_END_PROFILE_SAMPLE();
+
+	if (Profiler::get().isEnabled() && m_dumpProfilingOnClose)
+		Profiler::get().dump("profile_data.json", Profiler::DUMP_JSON);
+
+#ifdef SN_BUILD_DEBUG
+    u32 leakingObjects = Object::getInstanceCount();
+    if (leakingObjects > 0)
+    {
+        SN_WARNING("Objects are leaking!");
+        Object::printInstances();
+    }
+#endif
+
+    unloadAllProjects();
+    unloadAllModules();
 
     return 0;
 }
-
-//------------------------------------------------------------------------------
-//void Application::callVoidCallback(const std::string & cbName)
-//{
-//    for (auto it = m_modules.begin(); it != m_modules.end(); ++it)
-//    {
-//        Module & m = *(it->second);
-//        m.callVoidCallback(cbName);
-//    }
-//}
 
 //------------------------------------------------------------------------------
 void Application::update(Time delta)
@@ -252,11 +291,6 @@ void Application::update(Time delta)
         if (m_scene->getQuitFlag())
             m_runFlag = false;
     }
-    //for (auto it = m_modules.begin(); it != m_modules.end(); ++it)
-    //{
-    //    Module & m = *(it->second);
-    //    m.onUpdate(delta);
-    //}
 }
 
 //------------------------------------------------------------------------------
@@ -272,6 +306,7 @@ bool Application::parseCommandLine(CommandLine commandLine)
         argc = commandLine.getArgCount();
     }
 
+    SN_DLOG("Working dir: " << getWorkingDirectory());
     SN_WLOG("Command line: " << commandLine.toWideString());
 
     // path + -p + value + -x + value = 5 args minimum
@@ -288,12 +323,21 @@ bool Application::parseCommandLine(CommandLine commandLine)
             }
             else if (arg == L"-x")
             {
-                m_pathToMainMod = commandLine.getArg(++i);
+                m_pathToMainProject = commandLine.getArg(++i);
             }
-            else if (argc == 6 && arg == L"--trackfiles")
+            else if (arg == L"--trackfiles")
             {
                 AssetDatabase::get().setTrackFileChanges(true);
             }
+			else if (arg == L"--profile")
+			{
+				Profiler::get().setEnabled(true);
+                if (i + 1 < argc && commandLine.getArg(i + 1) == L"dump")
+                {
+                    m_dumpProfilingOnClose = true;
+                    ++i;
+                }
+			}
             else
             {
                 SN_WERROR("Unrecognized command line argument: \"" << arg << '"' << endl);
@@ -315,43 +359,107 @@ bool Application::parseCommandLine(CommandLine commandLine)
 //------------------------------------------------------------------------------
 void Application::printCommandLineUsage()
 {
-    std::cout << "Usage: SnowfeetApp.exe [-p <pathToProjects>] -x <pathToExecutableMod>" << std::endl;
-    std::cout << "You can also use a commandline.txt file as input." << std::endl;
+    std::cout << "Usage: SnowfeetApp.exe [-p <pathToProjectsDir>] -x <pathToStartupProjectDir>" << std::endl;
+    std::cout << "Example: SnowfeetApp.exe -p ../../projects -x samples/rendertest" << std::endl;
+    std::cout << "You can also use a commandline.txt file as input in your working directory." << std::endl;
 }
 
 //------------------------------------------------------------------------------
-Module * Application::loadModule(const String & path)
+bool Application::loadModule(const std::string & fileName)
+{
+    SN_LOG("Loading shared lib \"" << fileName << "\"...");
+
+    std::string name = getFileNameWithoutExtension(fileName);
+
+    auto it = m_modules.find(name);
+    if (it == m_modules.end())
+    {
+        // Load the code
+        Module * mod = Module::loadFromFile(fileName);
+        if (mod == nullptr)
+            return false;
+
+        auto & otb = ObjectTypeDatabase::get();
+
+        // Call entry point
+        otb.beginModule(mod->getName());
+        mod->entryPoint({
+            m_scriptEngine.getVM(),
+            &otb
+        });
+        otb.endModule();
+
+        // Register drivers
+        m_drivers.loadDriversFromModule(name);
+
+        // Register asset loaders
+        AssetDatabase::get().addLoadersFromModule(name);
+
+        m_modules[name] = mod;
+        return true;
+    }
+    else
+    {
+        return true;
+    }
+}
+
+//------------------------------------------------------------------------------
+void Application::unloadAllModules()
+{
+    for (auto it = m_modules.begin(); it != m_modules.end(); ++it)
+    {
+        Module * mod = it->second;
+
+        // Unload drivers
+        m_drivers.unloadDriversFromModule(mod->getName());
+
+        // Unload asset loaders
+        AssetDatabase::get().releaseLoadersFromModule(mod->getName());
+
+        ObjectTypeDatabase::get().unregisterModule(mod->getName());
+
+        mod->release();
+    }
+    m_modules.clear();
+}
+
+//------------------------------------------------------------------------------
+Project * Application::loadProject(const String & path)
 {
     // TODO If the path is a directory, append mod file with directory's name
 
-    Module * lastModule = nullptr;
+    Project * lastProject = nullptr;
 
-    SN_WDLOG("Calculating dependencies to load module \"" << path << '"');
+    SN_WDLOG("Calculating dependencies to load project \"" << path << '"');
 
-    std::list<ModuleInfo> modulesToLoad;
-    Module::calculateDependencies(m_pathToProjects, path, modulesToLoad);
-    
+    std::list<ProjectInfo> projectsToLoad;
+    Project::calculateProjectDependencies(m_pathToProjects, path, projectsToLoad);
+
 #ifdef SN_BUILD_DEBUG
-    for (auto it = modulesToLoad.begin(); it != modulesToLoad.end(); ++it)
+    for (auto it = projectsToLoad.begin(); it != projectsToLoad.end(); ++it)
     {
-        SN_WDLOG(L"> " + it->modFilePath);
+        SN_WDLOG(L"> " + it->filePath);
     }
 #endif
 
+	std::vector<Project*> projects;
+	projects.reserve(projectsToLoad.size());
+
     // Load main module and all its dependencies
-    for (auto it = modulesToLoad.begin(); it != modulesToLoad.end(); ++it)
+    for (auto it = projectsToLoad.begin(); it != projectsToLoad.end(); ++it)
     {
-        const ModuleInfo & info = *it;
-        if (m_modules.find(info.directory) != m_modules.end())
+        const ProjectInfo & info = *it;
+        if (m_projects.find(info.directory) != m_projects.end())
         {
-            SN_WLOG("Module " << path << " is already loaded, skipping");
+            SN_WLOG("Project " << path << " is already loaded, skipping");
             continue;
         }
 
         SN_LOG("-------------");
-        SN_WLOG("Loading module " << info.directory);
+        SN_WLOG("Loading project " << info.directory);
 
-        Module * mod = nullptr;
+        Project * project = nullptr;
 
         try
         {
@@ -359,42 +467,74 @@ Module * Application::loadModule(const String & path)
             //m_scriptEngine.getEngine()->SetDefaultNamespace("");
 
             // Create Module object
-            mod = new Module(*this, info);
-            
-            mod->loadNativeBindings(m_scriptEngine);
-            mod->compileScripts();
+            project = new Project(*this, info);
 
-            m_drivers.loadDriversFromModule(info.name);
+            project->loadModules();
+            project->compileScripts();
 
-            if (m_scene)
-            {
-                mod->createServices(*m_scene);
-            }
-
-            m_modules.insert(std::make_pair(info.directory, mod));
-            lastModule = mod;
+            m_projects.insert(std::make_pair(info.directory, project));
+			projects.push_back(project);
+            lastProject = project;
         }
         catch (std::exception & ex)
         {
-            SN_ERROR("Failed to load module: " << ex.what());
-            delete mod;
+            SN_ERROR("Failed to load project: " << ex.what());
+            delete project;
             throw ex;
             return false;
         }
     }
 
-    SN_LOG("-------------");
+	// Rebuild class mapping once all script classes have been defined
+	m_scriptEngine.rebuildClassMapping();
 
-    // Load Assets afterwards (so now all services assets would require should be available)
-    for (auto it = modulesToLoad.begin(); it != modulesToLoad.end(); ++it)
+    AssetDatabase & assetDatabase = AssetDatabase::get();
+
+    // Load Assets afterwards (so now all modules assets would require should be available)
+    for (auto it = projectsToLoad.begin(); it != projectsToLoad.end(); ++it)
     {
+        SN_LOG("-------------");
         // Load static assets
-        const ModuleInfo & info = *it;
-        AssetDatabase::get().loadAssets(info);
+        const ProjectInfo & info = *it;
+        assetDatabase.loadAssets(info);
     }
 
+	if (m_scene)
+	{
+    	// Create scene managers
+		size_t i = 0;
+		for (auto it = projectsToLoad.begin(); it != projectsToLoad.end(); ++it)
+		{
+			const ProjectInfo & info = *it;
+            sn::PackedEntity * pack = assetDatabase.getAsset<PackedEntity>(info.name, info.sceneManagers);
+            if (pack)
+            {
+                // Instantiate managers
+                std::vector<Entity*> rootEntities;
+                pack->instantiate(*m_scene, info.name, &rootEntities);
+
+                // Make them sticky (they won't go away when a new scene is loaded)
+                for (u32 i = 0; i < rootEntities.size(); ++i)
+                {
+                    Entity * e = rootEntities[i];
+                    e->setFlag(SN_EF_STICKY, true);
+                }
+            }
+		}
+	}
+
     // Note: the last loaded module will be the one we requested when calling this function
-    return lastModule; 
+    return lastProject;
+}
+
+//------------------------------------------------------------------------------
+void Application::unloadAllProjects()
+{
+    for (auto it = m_projects.begin(); it != m_projects.end(); ++it)
+    {
+        delete it->second;
+    }
+    m_projects.clear();
 }
 
 //------------------------------------------------------------------------------
@@ -404,14 +544,4 @@ void Application::quit()
     m_runFlag = false;
 }
 
-//------------------------------------------------------------------------------
-//void Application::compileScripts()
-//{
-//
-//}
-
-
 } // namespace sn
-
-
-

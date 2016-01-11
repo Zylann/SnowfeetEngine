@@ -1,0 +1,11 @@
+{
+	"sceneManagers":"managers",
+	"startupScene":"main",
+	"dependencies":[
+		"mods/render"
+	],
+	"modules":[
+		"ModTGUI",
+		"ModFreetype"
+	]
+}

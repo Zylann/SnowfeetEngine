@@ -4,7 +4,7 @@ Copyright (C) 2015-2015 Marc GILLERON
 This file is part of the SnowfeetEngine project.
 */
 
-#include "Variant.hpp"
+#include "Variant.h"
 
 namespace sn
 {
@@ -25,7 +25,7 @@ Variant::~Variant()
 //-----------------------------------------------------------------------------
 void Variant::reset()
 {
-    switch (m_type)
+    switch (m_type.id)
     {
     case SN_VT_STRING:      delete m_data.pString; break;
     case SN_VT_ARRAY:       delete m_data.pArray; break;
@@ -41,7 +41,7 @@ void Variant::reset(VariantType t)
 {
     reset();
     m_type = t;
-    switch (m_type)
+    switch (m_type.id)
     {
     case SN_VT_BOOL:
     case SN_VT_INT:
@@ -55,51 +55,63 @@ void Variant::reset(VariantType t)
 }
 
 //-----------------------------------------------------------------------------
-void Variant::assertType(VariantType t) const
-{
-    SN_ASSERT(m_type == t, "Variant " << toString(t) << " expected, got " << toString(*this));
-}
-
-//-----------------------------------------------------------------------------
 bool Variant::getBool() const
 {
-    assertType(SN_VT_BOOL);
-    return m_data.vBool;
+    if (m_type.id == SN_VT_BOOL)
+        return m_data.vBool;
+    return false;
 }
 
 //-----------------------------------------------------------------------------
 s32 Variant::getInt() const
 {
-    assertType(SN_VT_INT);
-    return m_data.vInt;
+    if (m_type.id == SN_VT_INT)
+        return m_data.vInt;
+    return 0;
 }
 
 //-----------------------------------------------------------------------------
 f32 Variant::getFloat() const
 {
-    assertType(SN_VT_FLOAT);
-    return m_data.vFloat;
+    if (m_type.id == SN_VT_FLOAT)
+        return m_data.vFloat;
+    return 0;
 }
 
 //-----------------------------------------------------------------------------
 const Variant::String & Variant::getString() const
 {
-    assertType(SN_VT_STRING);
-    return *m_data.pString;
+    if (m_type.id == SN_VT_STRING)
+        return *m_data.pString;
+    else
+    {
+        static String s_defaultString;
+        return s_defaultString;
+    }
 }
 
 //-----------------------------------------------------------------------------
 const Variant::Array & Variant::getArray() const
 {
-    assertType(SN_VT_ARRAY);
-    return *m_data.pArray;
+    if (m_type.id == SN_VT_ARRAY)
+        return *m_data.pArray;
+    else
+    {
+        static Array s_defaultArray;
+        return s_defaultArray;
+    }
 }
 
 //-----------------------------------------------------------------------------
 const Variant::Dictionary & Variant::getDictionary() const
 {
-    assertType(SN_VT_DICTIONARY);
-    return *m_data.pDictionary;
+    if (m_type.id == SN_VT_DICTIONARY)
+        return *m_data.pDictionary;
+    else
+    {
+        static Dictionary s_defaultDictionary;
+        return s_defaultDictionary;
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -216,7 +228,7 @@ void Variant::grab(Variant & other)
 Variant & Variant::operator=(const Variant & other)
 {
     reset();
-    switch (other.m_type)
+    switch (other.m_type.id)
     {
     // Objects need proper handling
     case SN_VT_STRING:      setString(*other.m_data.pString); break;
@@ -234,12 +246,12 @@ Variant & Variant::operator=(const Variant & other)
 //-----------------------------------------------------------------------------
 bool Variant::operator==(const Variant & other) const
 {
-    if (m_type != other.m_type)
+    if (m_type.id != other.m_type.id)
         return false;
-    if (m_type == SN_VT_NIL)
+    if (m_type.id == SN_VT_NIL)
         return true;
 
-    switch (m_type)
+    switch (m_type.id)
     {
     case SN_VT_BOOL:        return m_data.vBool == other.m_data.vBool; break;
     case SN_VT_INT:         return m_data.vInt == other.m_data.vInt; break;
@@ -263,8 +275,13 @@ Variant & Variant::operator[](size_t index)
 //-----------------------------------------------------------------------------
 const Variant & Variant::operator[](size_t index) const
 {
-    assertType(SN_VT_ARRAY);
-    return (*m_data.pArray)[index];
+    if (m_type.id == SN_VT_ARRAY)
+        return (*m_data.pArray)[index];
+    else
+    {
+        static Variant s_defaultVariant;
+        return s_defaultVariant;
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -277,16 +294,15 @@ Variant & Variant::operator[](const String & fieldName)
 //-----------------------------------------------------------------------------
 const Variant & Variant::operator[](const String & fieldName) const
 {
-    assertType(SN_VT_DICTIONARY);
-    const Dictionary & dict = *m_data.pDictionary;
-    auto it = dict.find(fieldName);
-    if (it != dict.end())
-        return it->second;
-    else
+    if (m_type.id == SN_VT_DICTIONARY)
     {
-        static const Variant s_defaultVariant;
-        return s_defaultVariant;
+        const Dictionary & dict = *m_data.pDictionary;
+        auto it = dict.find(fieldName);
+        if (it != dict.end())
+            return it->second;
     }
+    static Variant s_defaultVariant;
+    return s_defaultVariant;
 }
 
 //-----------------------------------------------------------------------------
@@ -298,7 +314,7 @@ union MarshallFloat
 
 size_t Variant::getHash() const
 {
-    switch (m_type)
+    switch (m_type.id)
     {
     case SN_VT_NIL:
         return 0;
@@ -337,7 +353,7 @@ size_t Variant::getHash() const
 //-----------------------------------------------------------------------------
 std::string toString(VariantType vt)
 {
-    switch (vt)
+    switch (vt.id)
     {
     case SN_VT_NIL:         return "nil"; break;
     case SN_VT_BOOL:        return "bool"; break;
@@ -357,7 +373,7 @@ std::string toString(const Variant & v)
         return "Variant(nil)";
     std::stringstream ss;
     ss << toString(v.getType()) << "(";
-    switch (v.getType())
+    switch (v.getType().id)
     {
     case SN_VT_BOOL:        ss << v.getBool(); break;
     case SN_VT_INT:         ss << v.getInt(); break;

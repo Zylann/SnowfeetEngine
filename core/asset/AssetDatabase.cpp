@@ -4,14 +4,14 @@ Copyright (C) 2014-2015 Marc GILLERON
 This file is part of the SnowfeetEngine project.
 */
 
-#include "AssetDatabase.hpp"
-#include <core/system/file/filesystem.hpp>
-#include <core/reflect/ObjectTypeDatabase.hpp>
-#include <core/util/Log.hpp>
-#include <core/util/stringutils.hpp>
+#include "AssetDatabase.h"
+#include <core/system/filesystem.h>
+#include <core/reflect/ObjectTypeDatabase.h>
+#include <core/util/Log.h>
+#include <core/util/stringutils.h>
 
 #ifdef SN_BUILD_DEBUG
-#include <core/system/time/Clock.hpp>
+#include <core/system/Clock.h>
 #endif
 
 namespace sn
@@ -49,12 +49,12 @@ void AssetDatabase::setRoot(const String & root)
 void AssetDatabase::addLoadersFromModule(const std::string & moduleName)
 {
     const ObjectTypeDatabase & otb = ObjectTypeDatabase::get();
-    const ObjectTypeMap & types = otb.getTypes();
+    const ObjectTypeList & types = otb.getTypes();
     const ObjectType & loaderType = getObjectType<AssetLoader>();
 
     for (auto it = types.begin(); it != types.end(); ++it)
     {
-        const ObjectType & ot = *(it->second);
+        const ObjectType & ot = **it;
         if (ot.getModuleName() == moduleName && ot.derivesFrom(loaderType) && !ot.isAbstract())
         {
             AssetLoader * loader = checked_cast<AssetLoader*>(ot.instantiate());
@@ -157,47 +157,47 @@ void AssetDatabase::orderAssetLoaders(AssetLoaderList & chain) const
 }
 
 //------------------------------------------------------------------------------
-void AssetDatabase::loadAssets(const ModuleInfo & modInfo)
+void AssetDatabase::loadAssets(const ProjectInfo & projectInfo)
 {
 #ifdef SN_BUILD_DEBUG
     Clock clock;
 #endif
     std::vector<FileNode> files;
-    getFilesRecursively(FilePath::join(m_root, modInfo.directory), files);
+    getFilesRecursively(FilePath::join(m_root, projectInfo.directory), files);
 
     u32 indexedCount = 0;
     u32 loadedCount = 0;
 
-	std::vector<Asset*> moduleAssets;
+	std::vector<Asset*> projectAssets;
     
     // First, index all the files we can load
     for (auto it = files.begin(); it != files.end(); ++it)
     {
         // TODO Ignore special folders such as cpp/
         const FileNode & file = *it;
-		std::vector<Asset*> assets = preloadAssetFile(file.path, modInfo.name);
+		std::vector<Asset*> assets = preloadAssetFile(file.path, projectInfo.name);
         for (u32 i = 0; i < assets.size(); ++i)
-			moduleAssets.push_back(assets[i]);
+			projectAssets.push_back(assets[i]);
         indexedCount += assets.size();;
     }
 #ifdef SN_BUILD_DEBUG
-    SN_LOG("Indexed " << indexedCount << " assets from " << modInfo.name << " in " << clock.restart().asSeconds() << " seconds");
+    SN_LOG("Indexed " << indexedCount << " assets from " << projectInfo.name << " in " << clock.restart().asSeconds() << " seconds");
 #endif
 
     // Then, load them
-    for (auto it = moduleAssets.begin(); it != moduleAssets.end(); ++it)
+    for (auto it = projectAssets.begin(); it != projectAssets.end(); ++it)
     {
         Asset * asset = *it;
         if (loadAsset(asset) == SN_ALS_LOADED)
             ++loadedCount;
     }
 #ifdef SN_BUILD_DEBUG
-    SN_LOG("Loaded " << loadedCount << " assets from " << modInfo.name << " in " << clock.getElapsedTime().asSeconds() << " seconds");
+    SN_LOG("Loaded " << loadedCount << " assets from " << projectInfo.name << " in " << clock.getElapsedTime().asSeconds() << " seconds");
 #endif
 }
 
 //------------------------------------------------------------------------------
-std::vector<Asset*> AssetDatabase::preloadAssetFile(const String & path, const std::string & moduleName)
+std::vector<Asset*> AssetDatabase::preloadAssetFile(const String & path, const std::string & projectName)
 {
     // Check if not already indexed
     auto assetIt = m_fileCache.find(path);
@@ -213,7 +213,7 @@ std::vector<Asset*> AssetDatabase::preloadAssetFile(const String & path, const s
     // Retrieve metadata
     AssetMetadata metadata;
     metadata.path = path;
-    metadata.module = moduleName;
+    metadata.project = projectName;
     metadata.loadFromFile(path); // Not fatal if the .meta file isn't found
 
     // Find loaders
@@ -231,37 +231,45 @@ std::vector<Asset*> AssetDatabase::preloadAssetFile(const String & path, const s
             assets.push_back(a);
         }
     }
-    else
-    {
-        // TODO Ban this!
-        // No loader found, use old method
-        Asset * a = legacy_createMatchingAssetType(metadata);
-        if (a)
-            assets.push_back(a);
-    }
 
     if (!assets.empty())
     {
-        metadata.name = getFileNameWithoutExtension(toString(path));
+		metadata.name = getFileNameWithoutExtension(toString(path));
 
-        unsigned int i = 0;
-        for (auto it = assets.begin(); it != assets.end(); ++it)
+		auto assetsCopy = assets;
+		for (u32 i = 0; i < assetsCopy.size(); ++i)
         {
-            Asset & asset = **it;
-
-            // Assign metadata
-            asset.m_metadata = metadata;
-
-            // Store in file mapping
-            addToFileCache(asset);
+            Asset * asset = assetsCopy[i];
 
             const AssetLoader * loader = loaderChain.empty() ? nullptr : loaderChain[i];
 
             // Store in asset mapping using the ObjectType specified by the loader
-            const ObjectType & baseObjectType = loader ? loader->getBaseAssetType() : asset.getObjectType();
-            m_assets[metadata.module][baseObjectType.getName()][metadata.name] = &asset;
+            const ObjectType & baseObjectType = loader ? loader->getBaseAssetType() : asset->getObjectType();
 
-            ++i;
+			// Check ID collision
+			// TODO Assets should have a GUID
+			Asset *& previousAsset = m_assets[metadata.project][baseObjectType.getName()][metadata.name];
+			if (previousAsset)
+			{
+				SN_ERROR("Asset already registered under the same identifiers (Name collision between objects of the same type).");
+				SN_MORE("module: " << metadata.project << ", type : " << baseObjectType.getName() << ", name : " << metadata.name);
+				SN_MORE("[0]: " << sn::toString(previousAsset->getAssetMetadata().path));
+				SN_MORE("[1]: " << sn::toString(metadata.path) << " (will be ignored)");
+				assets.erase(assets.begin() + i);
+				asset->release();
+			}
+			else
+			{
+				// Assign metadata
+				asset->m_metadata = metadata;
+
+				// Store in file mapping
+				addToFileCache(*asset);
+
+				// Store in ID map
+				previousAsset = asset;
+				//m_assets[metadata.module][baseObjectType.getName()][metadata.name] = &asset;
+			}
         }
 
         SN_DLOG("Indexed asset " << toString(path) << " as " << assets.size() << " objects");
@@ -269,57 +277,6 @@ std::vector<Asset*> AssetDatabase::preloadAssetFile(const String & path, const s
 
     // If nullptr, the asset cannot be loaded
     return assets;
-}
-
-//------------------------------------------------------------------------------
-Asset * AssetDatabase::legacy_createMatchingAssetType(const AssetMetadata & meta) const
-{
-    // The following is hammerish and sometimes conflictish.
-    // That's why it is currently deprecated, loaders should be used instead.
-
-    Asset * asset = nullptr;
-
-    const ObjectTypeDatabase & otb = ObjectTypeDatabase::get();
-    const ObjectTypeMap & types = otb.getTypes();
-    const ObjectType & assetType = getObjectType<Asset>();
-
-    // Iterate over all classes inheriting sn::Asset and call their canLoad() method
-    for (auto it = types.begin(); it != types.end(); ++it)
-    {
-        const ObjectType & t = *(it->second);
-        if (t.derivesFrom(assetType))
-        {
-            if (!t.isAbstract())
-            {
-                Asset * candidateAsset = (Asset*)(t.instantiate());
-                if (candidateAsset->canLoad(meta))
-                {
-                    if (asset == nullptr)
-                    {
-                        asset = candidateAsset;
-                    }
-                    else
-                    {
-                        SN_WERROR(L"Cannot determine which asset loader to use for file '" << meta.path << L"'.");
-                        SN_ERROR("Candidates are: " << asset->getObjectType().getName() << ", " << candidateAsset->getObjectType().getName());
-                        asset->release();
-                        candidateAsset->release();
-                        return nullptr;
-                    }
-                }
-                else
-                {
-                    candidateAsset->release();
-                }
-            }
-            //else
-            //{
-            //	SN_DLOG("Ignored asset type " << t.toString() << " because it is abstract");
-            //}
-        }
-    }
-
-    return asset;
 }
 
 //------------------------------------------------------------------------------
@@ -353,11 +310,6 @@ AssetLoadStatus AssetDatabase::loadAsset(Asset * asset, const AssetMetadata * a_
     if (loader)
     {
         loader->load(ifs, *asset);
-        ifs.close();
-        return SN_ALS_LOADED;
-    }
-    else if (asset->loadFromStream(ifs))
-    {
         ifs.close();
         return SN_ALS_LOADED;
     }
@@ -496,7 +448,7 @@ Asset * AssetDatabase::getAsset(const AssetLocation & loc, const std::string & t
 {
     const ObjectType * ot = ObjectTypeDatabase::get().getType(typeName);
     if (ot)
-        return getAsset(loc.module, *ot, loc.name);
+        return getAsset(loc.project, *ot, loc.name);
     else
         return nullptr;
 }
@@ -505,36 +457,30 @@ Asset * AssetDatabase::getAsset(const AssetLocation & loc, const std::string & t
 Asset * getAssetBySerializedLocation(
     const std::string & type, 
     const std::string & locationString, 
-    const std::string & contextModule, 
-    const Object * self)
+    const std::string & contextProject, 
+    bool raiseError)
 {
     AssetLocation location(locationString);
     if (!location.isEmpty())
     {
         AssetDatabase & adb = AssetDatabase::get();
 
-        if (!location.module.empty())
+        if (!location.project.empty())
         {
-            // The module is specified, no need for lookup
+            // The project is specified, no need for contextual lookup
             return adb.getAsset(location, type);
         }
 
-        // No module specified, begin lookup series
-
-        // Try to get the asset from the module the serialization is occurring into
-        location.module = contextModule;
+        // Try to get the asset from the project the serialization is occurring into
+        location.project = contextProject;
         Asset * asset = adb.getAsset(location, type);
         if (asset)
             return asset;
+    }
 
-        if (self)
-        {
-            // Try from the module where the class of 'self' is defined
-            location.module = self->getObjectType().getModuleName();
-            asset = adb.getAsset(location, type);
-            if (asset)
-                return asset;
-        }
+    if (raiseError)
+    {
+        SN_ERROR("Asset not found: " << location.getFullName() << " (" << type << ")");
     }
 
     // Asset not found

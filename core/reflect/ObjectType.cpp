@@ -1,21 +1,41 @@
 ﻿/*
-ObjectType.hpp
+ObjectType.h
 Copyright (C) 2014-2015 Marc GILLERON
 This file is part of the SnowfeetEngine project.
 */
 
-#include "ObjectType.hpp"
-#include "ObjectTypeDatabase.hpp"
+#include "ObjectType.h"
+#include "ObjectTypeDatabase.h"
 
 #include <sstream>
 
 namespace sn
 {
 
+    namespace
+    {
+        std::string getClassNameWithoutNamespace(const std::string & str)
+        {
+            size_t i = str.find_last_of(':');
+            if (i == std::string::npos)
+                return str;
+            else
+                return str.substr(i+1);
+        }
+    }
+
+//------------------------------------------------------------------------------
+ObjectType::ObjectType():
+    m_isAbstract(false),
+    m_ID(0), // null ID, until the type gets registered
+    r_base(nullptr)
+{
+}
+
 //------------------------------------------------------------------------------
 bool ObjectType::is(const std::string & typeName, bool includeInheritance) const
 {
-    ObjectType * t = ObjectTypeDatabase::get().getType(typeName);
+    const ObjectType * t = ObjectTypeDatabase::get().getType(typeName);
     if (t)
         return is(*t, includeInheritance);
     else
@@ -52,9 +72,9 @@ bool ObjectType::derivesFrom(const ObjectType & other) const
     ObjectTypeDatabase & odb = ObjectTypeDatabase::get();
     const ObjectType * baseType = this;
 
-    while(!baseType->m_baseName.empty())
+    while(baseType->r_base != nullptr)
     {
-        baseType = odb.getType(baseType->m_baseName);
+        baseType = baseType->r_base;
         if(baseType == nullptr)
             return false;
         if(baseType->m_ID == other.m_ID)
@@ -62,22 +82,6 @@ bool ObjectType::derivesFrom(const ObjectType & other) const
     }
 
 	return false;
-}
-
-//------------------------------------------------------------------------------
-bool ObjectType::hasProperty(const std::string & name) const
-{
-    return m_properties.find(name) != m_properties.end();
-}
-
-//------------------------------------------------------------------------------
-const ObjectProperty * ObjectType::getProperty(const std::string & name) const
-{
-    auto it = m_properties.find(name);
-    if (it != m_properties.end())
-        return it->second;
-    else
-        return nullptr;
 }
 
 //------------------------------------------------------------------------------
@@ -97,7 +101,10 @@ Object * ObjectType::instantiate() const
 std::string ObjectType::toString() const
 {
     std::stringstream ss;
-    ss << "{[" << m_ID << "]" << m_name << " : " << m_baseName << "}";
+    ss << "{[" << m_ID << "]" << m_name;
+    if (r_base)
+        ss << " : " << r_base->getName();
+    ss << "}";
     return ss.str();
 }
 
@@ -108,7 +115,7 @@ void ObjectType::getChildrenTypes(std::vector<const ObjectType*> & out_children)
 	auto allTypes = odb.getTypes();
 	for (auto it = allTypes.begin(); it != allTypes.end(); ++it)
 	{
-		const ObjectType & ot = *it->second;
+		const ObjectType & ot = **it;
 		if (ot.derivesFrom(*this))
 			out_children.push_back(this);
 	}
@@ -117,7 +124,22 @@ void ObjectType::getChildrenTypes(std::vector<const ObjectType*> & out_children)
 //------------------------------------------------------------------------------
 const ObjectType * ObjectType::getBase() const
 {
-    return ObjectTypeDatabase::get().getType(m_baseName);
+    return r_base;
+}
+
+//------------------------------------------------------------------------------
+void ObjectType::setName(const char * fullName)
+{
+    SN_ASSERT(m_name.empty(), "Cannot set type name twice!");
+    m_name = fullName;
+    if (m_scriptName.empty())
+        m_scriptName = getClassNameWithoutNamespace(fullName);
+}
+
+//------------------------------------------------------------------------------
+void ObjectType::setScriptName(const std::string & fullClassName)
+{
+    m_scriptName = fullClassName;
 }
 
 //------------------------------------------------------------------------------

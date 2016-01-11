@@ -30,6 +30,8 @@ AS_DEBUG/
 *.ipch
 *.vsp
 *.psess
+*.lastcodeanalysissucceeded
+*.vcxprojResolveAssemblyReference.cache
 
 # Code::Blocks
 *.depend
@@ -42,4 +44,5 @@ AS_DEBUG/
 
 # Other
 _old/
+_draft/
 doc/doxygen/

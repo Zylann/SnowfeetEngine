@@ -4,26 +4,22 @@
 // This file is part of the SnowfeetEngine project.
 //
 
-#include "object_types.hpp"
+#include "object_types.h"
 
-#include "scene/Entity.hpp"
-#include "scene/Entity3D.hpp"
-#include "scene/Scene.hpp"
-#include "scene/VRHeadset.hpp"
-#include "scene/helpers/Rotate.hpp"
-#include "scene/helpers/KeyboardMove.hpp"
-#include "scene/Drawable.hpp"
+#include "scene/Entity.h"
+#include "scene/Entity3D.h"
+#include "scene/Scene.h"
+#include "scene/helpers/Rotate.h"
+#include "scene/helpers/KeyboardMove.h"
+#include "scene/PackedEntity.h"
+#include "scene/PackedEntityLoader.h"
 
-#include "asset/Asset.hpp"
-#include "asset/AssetLoader.hpp"
-#include "asset/base/Mesh.hpp"
-#include "asset/base/Material.hpp"
-#include "asset/base/Image.hpp"
-#include "asset/base/TextureBase.hpp"
-#include "asset/base/Font.hpp"
+#include "asset/Asset.h"
+#include "asset/AssetLoader.h"
 
-#include "drivers/Driver.hpp"
-#include "drivers/VideoDriver.hpp"
+#include "app/Driver.h"
+
+#include "util/macros.h"
 
 namespace sn
 {
@@ -31,30 +27,23 @@ namespace sn
 void registerObjectTypes(ObjectTypeDatabase & otb)
 {
     // Base
-    otb.registerType<Object>();
-    otb.registerType<ScriptObject>();
-
-    // Drivers
-    otb.registerType<IDriver>();
-    otb.registerType<IVideoDriver>();
+    otb.registerType<Object>                            (SN_TYPESTRING(sn::Object));
+    otb.registerType<ScriptableObject, Object>          (SN_TYPESTRING(sn::ScriptableObject));
+    otb.registerType<IDriver, Object>                   (SN_TYPESTRING(sn::IDriver));
 
     // Entities
-    otb.registerType<Entity>();
-    otb.registerType<Entity3D>();
-    otb.registerType<Scene>();
-    otb.registerType<VRHeadset>();
-    otb.registerType<Rotate>();
-    otb.registerType<KeyboardMove>();
-    otb.registerType<Drawable>();
+    otb.registerType<Entity, ScriptableObject>          (SN_TYPESTRING(sn::Entity));
+    otb.registerType<Entity3D, Entity>                  (SN_TYPESTRING(sn::Entity3D));
+    otb.registerType<Scene, Entity>                     (SN_TYPESTRING(sn::Scene));
+    otb.registerType<Rotate, Entity>                    (SN_TYPESTRING(sn::Rotate));
+    otb.registerType<KeyboardMove, Entity>              (SN_TYPESTRING(sn::KeyboardMove));
 
     // Assets base
-    otb.registerType<Asset>();
-    otb.registerType<AssetLoader>();
-    otb.registerType<Mesh>();
-    otb.registerType<Material>();
-    otb.registerType<Image>();
-    otb.registerType<TextureBase>();
-    otb.registerType<Font>();
+    otb.registerType<Asset, ScriptableObject>           (SN_TYPESTRING(sn::Asset));
+    otb.registerType<AssetLoader, Object>               (SN_TYPESTRING(sn::AssetLoader));
+    otb.registerType<ObjectDB, Asset>                   (SN_TYPESTRING(sn::ObjectDB));
+    otb.registerType<PackedEntity, ObjectDB>            (SN_TYPESTRING(sn::PackedEntity));
+    otb.registerType<PackedEntityLoader, AssetLoader>   (SN_TYPESTRING(sn::PackedEntityLoader));
 
 }
 

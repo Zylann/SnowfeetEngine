@@ -1,0 +1,10 @@
+{
+	"entities":[
+		{
+			"@type":"sn::Entity",
+			"scripts":[
+				"HelloTest"
+			]
+		}
+	]
+}

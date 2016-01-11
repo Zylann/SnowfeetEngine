@@ -1,0 +1,48 @@
+{
+    "format":"SN2",
+    "root":0,
+    "objects":[
+        0,
+        {
+            "@type":"tgui::Tab",
+            "bounds":{"w":120},
+            "padding":{
+                "left":2,
+                "right":2,
+                "top":2,
+                "bottom":2
+            },
+            "layout":{
+                "@type":"tgui::ListLayout",
+                "orientation":"horizontal",
+                "fillers":[
+                    0
+                ]
+            },
+            "_children":[
+                {"@ref":1},
+                {"@ref":2}
+            ]
+        },
+        1,
+        {
+            "@type":"tgui::Text"
+        },
+        2,
+        {
+            "@type":"tgui::Button",
+            "bounds":{"w":16, "h":16},
+            "anchors":["bottom", "top"],
+            "_children":[
+                {"@ref":3}
+            ]
+        },
+        3,
+        {
+            "@type":"tgui::Text",
+            "text":"X",
+            "anchors":"fill",
+            "align":"center"
+        }
+    ]
+}

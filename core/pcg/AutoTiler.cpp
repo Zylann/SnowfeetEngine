@@ -1,11 +1,12 @@
 ﻿/*
-AutoTiler.hpp
+AutoTiler.h
 Copyright (C) 2014-2015 Marc GILLERON
 This file is part of the SnowfeetEngine project.
 */
 
-#include <core/pcg/AutoTiler.hpp>
-#include <core/util/Log.hpp>
+#include <core/pcg/AutoTiler.h>
+#include <core/util/Log.h>
+#include <core/sml/variant_serialize.h>
 
 namespace sn
 {
@@ -216,20 +217,20 @@ void AutoTiler::stringToCaseKey(const std::string & s, ConnectionMask & conMask,
 }
 
 //------------------------------------------------------------------------------
-void AutoTiler::unserialize(JsonBox::Value & o)
+void AutoTiler::unserialize(const Variant & o)
 {
     defaultInput = o["defaultInput"].getInt();
     defaultOutput = o["defaultOutput"].getInt();
 
-    JsonBox::Value & jRuleSets = o["ruleSets"];
+    const Variant & jRuleSets = o["ruleSets"];
     ruleSets.resize(jRuleSets.getArray().size());
 
     for(u32 i = 0; i < ruleSets.size(); ++i)
     {
-        JsonBox::Value & jrs = jRuleSets[i];
+        const Variant & jrs = jRuleSets[i];
 
         In_T input = i;
-        if(!jrs["input"].isNull())
+        if(!jrs["input"].isNil())
         {
             input = jrs["input"].getInt();
         }
@@ -242,11 +243,11 @@ void AutoTiler::unserialize(JsonBox::Value & o)
         sn::unserialize(jrs["connections"], rs.connections);
 
         // Cases
-        JsonBox::Value & jcases = jrs["cases"];
+        const Variant & jcases = jrs["cases"];
         u32 jcasesSize = jcases.getArray().size();
         for(u32 j = 0; j < jcasesSize; ++j)
         {
-            JsonBox::Value & jcase = jcases[j];
+            const Variant & jcase = jcases[j];
 
             u8 dontCareMask = 0;
             ConnectionMask conMask = 0;
