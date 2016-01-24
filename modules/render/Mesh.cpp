@@ -7,43 +7,35 @@ namespace sn
 SN_OBJECT_IMPL(Mesh)
 
 //------------------------------------------------------------------------------
-std::string toString(MeshPrimitiveType pt)
-{
-    switch (pt)
-    {
-    case SN_MESH_POINTS: return "Points"; break;
-    case SN_MESH_LINES: return "Lines"; break;
-    case SN_MESH_TRIANGLES: return "Lines"; break;
-    case SN_MESH_QUADS: return "Quads"; break;
-    default: return "MeshPrimitiveType[" + std::to_string((s32)pt) + "]"; break;
-    }
-}
-
-//------------------------------------------------------------------------------
-Mesh::Mesh() : Asset(),
+Mesh::Mesh() : Asset(), 
     m_primitiveType(SN_MESH_TRIANGLES)
 {
-}
-
-//------------------------------------------------------------------------------
-Mesh::~Mesh()
-{
+    // Default format
+    VertexDescription desc;
+    desc.addAttribute("Position", VertexAttribute::USE_POSITION, VertexAttribute::TYPE_FLOAT32, 3);
+    desc.addAttribute("Color", VertexAttribute::USE_COLOR, VertexAttribute::TYPE_FLOAT32, 4);
+    create(desc);
 }
 
 //------------------------------------------------------------------------------
 void Mesh::clear()
 {
-    m_vertices.clear();
-    m_uv.clear();
-    m_normals.clear();
-    m_colors.clear();
+    for (auto it = m_vertexArrays.begin(); it != m_vertexArrays.end(); ++it)
+    {
+        (*it).data.clear();
+    }
     m_indices.clear();
 }
 
 //------------------------------------------------------------------------------
 bool Mesh::isEmpty() const
 {
-    return m_vertices.empty();
+    for (u32 i = 0; i < m_vertexArrays.size(); ++i)
+    {
+        if (!m_vertexArrays[i].data.empty())
+            return false;
+    }
+    return true;
 }
 
 //------------------------------------------------------------------------------
@@ -86,61 +78,121 @@ u32 Mesh::getInternalIndexedPrimitiveCount() const
 }
 
 //------------------------------------------------------------------------------
-void Mesh::addPosition(f32 x, f32 y, f32 z)
+void Mesh::create(const VertexDescription & description)
 {
-    m_vertices.push_back(Vector3f(x, y, z));
+    m_vertexArrays.clear();
+    m_vertexDescription = description;
+    const VertexAttributeList & attributes = m_vertexDescription.getAttributes();
+    for (u32 i = 0; i < attributes.size(); ++i)
+    {
+        const VertexAttribute & attrib = attributes[i];
+        u32 use = attrib.use;
+        if (use >= m_vertexArrays.size())
+            m_vertexArrays.resize(use + 1);
+        m_vertexArrays[use].attribute = &attrib;
+    }
 }
 
 //------------------------------------------------------------------------------
-void Mesh::addTexCoord(f32 x, f32 y)
+void Mesh::updateIndices(const u32 * indices, u32 count, u32 offset)
 {
-    m_uv.push_back(Vector2f(x, y));
+    if (offset == -1)
+        offset = m_indices.size();
+    if (m_indices.size() < offset+count)
+        m_indices.resize(offset+count);
+    memcpy(m_indices.data() + offset * sizeof(u32), indices, count * sizeof(u32));
 }
 
 //------------------------------------------------------------------------------
-void Mesh::addNormal(f32 x, f32 y, f32 z)
+void Mesh::updateIndices(const std::vector<u32> & indices, u32 offset)
 {
-    m_normals.push_back(Vector3f(x, y, z));
+    updateIndices(&indices[0], indices.size(), offset);
 }
 
 //------------------------------------------------------------------------------
-void Mesh::addColor(const Color & c)
+u32 Mesh::getVertexCount() const
 {
-    m_colors.push_back(c);
+    if (VertexAttribute::USE_POSITION < m_vertexArrays.size())
+    {
+        const VertexArray & va = m_vertexArrays[VertexAttribute::USE_POSITION];
+#ifdef SN_BUILD_DEBUG
+        SN_ASSERT(va.attribute != nullptr, "Invalid state");
+#endif
+        return va.data.size() / va.attribute->sizeBytes();
+    }
+    return 0;
 }
 
 //------------------------------------------------------------------------------
-//void Mesh::addIndex(u32 i)
-//{
-//    m_indices.push_back(i);
-//}
+void Mesh::setBounds(const FloatAABB & aabb)
+{
+    m_bounds = aabb;
+}
 
 //------------------------------------------------------------------------------
-// Static
-//u32 Mesh::calculateIndicesCount(MeshPrimitiveType primitive, u32 primitiveCount)
-//{
-//    switch (primitive)
-//    {
-//    case SNR_PT_LINES:
-//        return primitiveCount * 2;
-//    //case SNR_PT_LINESTRIP:
-//    //    return primitiveCount + 1;
-//    case SNR_PT_TRIANGLES:
-//        return primitiveCount * 3;
-//    case SNR_PT_QUADS:
-//        return primitiveCount * 4;
-//    }
-//}
+void Mesh::recalculateBounds()
+{
+    FloatAABB aabb;
+
+    bool updated = false;
+
+    if (VertexAttribute::USE_POSITION < m_vertexArrays.size())
+    {
+        const VertexArray & vertexArray = m_vertexArrays[VertexAttribute::USE_POSITION];
+#ifdef SN_BUILD_DEBUG
+        SN_ASSERT(vertexArray.attribute != nullptr, "Invalid state");
+#endif
+        const VertexAttribute & a = *vertexArray.attribute;
+        auto & data = vertexArray.data;
+
+        if (a.type == VertexAttribute::TYPE_FLOAT32)
+        {
+            // TODO Clear code repetition
+            if (a.count == 2)
+            {
+                u32 count = data.size() / sizeof(Vector3f);
+                const Vector2f * positions = reinterpret_cast<const Vector2f*>(data.data());
+
+                for (u32 i = 0; i < count; ++i)
+                {
+                    Vector2f p = positions[i];
+                    aabb.addPoint(p.x(), p.y());
+                }
+
+                updated = true;
+            }
+            else if (a.count == 3)
+            {
+                u32 count = data.size() / sizeof(Vector3f);
+                const Vector3f * positions = reinterpret_cast<const Vector3f*>(data.data());
+
+                for (u32 i = 0; i < count; ++i)
+                {
+                    aabb.addPoint(positions[i]);
+                }
+
+                updated = true;
+            }
+        }
+    }
+    
+#ifdef SN_BUILD_DEBUG
+    if (!updated)
+        SN_WARNING("Couldn't update mesh bounds: position array not found");
+#endif
+
+    m_bounds = aabb;
+}
 
 //------------------------------------------------------------------------------
-void Mesh::recalculateIndexes()
+void Mesh::recalculateIndices()
 {
     switch (m_primitiveType)
     {
     case SN_MESH_POINTS:
     case SN_MESH_LINES:
     case SN_MESH_TRIANGLES:
-        m_indices.resize(m_vertices.size());
+        m_indices.resize(getVertexCount());
         for (u32 i = 0; i < m_indices.size(); ++i)
         {
             m_indices[i] = i;
@@ -150,7 +202,7 @@ void Mesh::recalculateIndexes()
     case SN_MESH_QUADS:
     {
         // Make triangles out of quad data
-        u32 quadCount = m_vertices.size() / 4;
+        u32 quadCount = getVertexCount() / 4;
         u32 indiceCount = quadCount * 6;
         m_indices.resize(indiceCount);
         for (u32 j = 0; j < quadCount; ++j)
@@ -171,133 +223,6 @@ void Mesh::recalculateIndexes()
         SN_ERROR("Primitive type " << m_primitiveType << " not supported yet");
         break;
     }
-}
-
-//------------------------------------------------------------------------------
-void Mesh::setPositions(const Vector3f * positions, u32 count)
-{
-    SN_ASSERT(positions != nullptr, "Invalid positions pointer");
-    m_vertices.resize(count);
-    if (count)
-        memcpy(&m_vertices[0], positions, sizeof(Vector3f)*count);
-}
-
-//------------------------------------------------------------------------------
-void Mesh::setNormals(const Vector3f * normals, u32 count)
-{
-    SN_ASSERT(normals != nullptr, "Invalid normals pointer");
-    m_normals.resize(count);
-    if (count)
-        memcpy(&m_normals[0], normals, sizeof(Vector3f)*count);
-}
-
-//------------------------------------------------------------------------------
-void Mesh::setColors(const Color * colors, u32 count)
-{
-    SN_ASSERT(colors != nullptr, "Invalid colors pointer");
-    m_colors.resize(count);
-    if (count)
-        memcpy(&m_colors[0], colors, sizeof(Color)*count);
-}
-
-//------------------------------------------------------------------------------
-void Mesh::setUV(const Vector2f * uv, u32 count)
-{
-    SN_ASSERT(uv != nullptr, "Invalid colors pointer");
-    m_uv.resize(count);
-    if (count)
-        memcpy(&m_uv[0], uv, sizeof(Vector2f)*count);
-}
-
-//------------------------------------------------------------------------------
-void Mesh::setCustomFloats(u32 i, const f32 * fdata, u32 count)
-{
-    SN_ASSERT(fdata != nullptr, "Invalid custom floats pointer");
-    if (i >= m_customFloats.size())
-        m_customFloats.resize(i + 1);
-    auto & buffer = m_customFloats[i];
-    buffer.resize(count);
-    if (count)
-        memcpy(&buffer[0], fdata, sizeof(f32)*count);
-}
-
-//------------------------------------------------------------------------------
-void Mesh::setCustomVec2Buffer(u32 i, const Vector2f * values, u32 count)
-{
-    SN_ASSERT(values != nullptr, "Invalid custom vec2 buffer pointer");
-    if (i >= m_customVec2Buffers.size())
-        m_customVec2Buffers.resize(i + 1);
-    auto & buffer = m_customVec2Buffers[i];
-    buffer.resize(count);
-    if (count)
-        memcpy(&buffer[0], values, sizeof(Vector2f)*count);
-}
-
-//------------------------------------------------------------------------------
-void Mesh::setQuadIndices(const u32 * indices, u32 count)
-{
-    SN_ASSERT(indices != nullptr, "Invalid indices pointer");
-    SN_ASSERT(count % 4 == 0, "Number of quad indices array is not a multiple of 4");
-    if (count)
-    {
-        m_indices.resize(6 * (count / 4));
-        u32 j = 0;
-        for (u32 i = 0; i < count; i += 4)
-        {
-            m_indices[j] = indices[i + 2];
-            m_indices[j + 1] = indices[i + 3];
-            m_indices[j + 2] = indices[i + 1];
-            m_indices[j + 3] = indices[i + 3];
-            m_indices[j + 4] = indices[i];
-            m_indices[j + 5] = indices[i + 1];
-            j += 6;
-        }
-    }
-}
-
-//------------------------------------------------------------------------------
-void Mesh::setTriangleIndices(const u32 * indices, u32 count)
-{
-    SN_ASSERT(indices != nullptr, "Invalid indices pointer");
-    SN_ASSERT(count % 3 == 0, "Number of triangle indices array is not a multiple of 3");
-    m_indices.resize(count);
-    if (count)
-        memcpy(&m_indices[0], indices, count * sizeof(u32));
-}
-
-//------------------------------------------------------------------------------
-void Mesh::recalculateBounds()
-{
-    if (!m_vertices.empty())
-    {
-        Vector3f min = m_vertices[0];
-        Vector3f max = min;
-
-        for (u32 i = 0; i < m_vertices.size(); ++i)
-        {
-            Vector3f v = m_vertices[i];
-            for (u32 i = 0; i < 3; ++i)
-            {
-                if (v[i] < min[i])
-                    min[i] = v[i];
-                if (v[i] > max[i])
-                    max[i] = v[i];
-            }
-        }
-
-        m_bounds = FloatAABB::fromMinMax(min.x(), min.y(), min.z(), max.x(), max.y(), max.z());
-    }
-    else
-    {
-        m_bounds.origin() = Vector3f(0, 0, 0);
-        m_bounds.size() = Vector3f(0, 0, 0);
-    }
-}
-
-//------------------------------------------------------------------------------
-FloatAABB Mesh::getBounds()
-{
-    return m_bounds;
 }
 
 } // namespace sn

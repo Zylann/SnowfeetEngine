@@ -21,6 +21,25 @@ namespace sn
                 return GL_LINES;
             }
         }
+
+        GLenum genericTypeToGL(VertexAttribute::Type t)
+        {
+            switch (t)
+            {
+            case VertexAttribute::TYPE_INT8: return GL_BYTE;
+            case VertexAttribute::TYPE_INT16: return GL_SHORT;
+            case VertexAttribute::TYPE_INT32: return GL_INT;
+
+            case VertexAttribute::TYPE_UINT8: return GL_UNSIGNED_BYTE;
+            case VertexAttribute::TYPE_UINT16: return GL_UNSIGNED_SHORT;
+            case VertexAttribute::TYPE_UINT32: return GL_UNSIGNED_INT;
+
+            case VertexAttribute::TYPE_FLOAT32: return GL_FLOAT;
+            case VertexAttribute::TYPE_FLOAT64: return GL_DOUBLE;
+
+            default: SN_ASSERT(false, "Invalid state"); return 0;
+            }
+        }
     }
 
 
@@ -126,105 +145,56 @@ void VideoDriver::drawMesh(const Mesh & mesh)
     // We should support VBO too.
 
     // TODO Refactor Mesh data description so we can avoid lots of copy/paste and hardcodings
+    // Get attributes
+    const VertexDescription & vertexFormat = mesh.getVertexDescription();
+    const VertexAttributeList & attributeList = vertexFormat.getAttributes();
 
-    // Positions
-    glCheck(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, &mesh.getVertices()[0]));
-    glCheck(glEnableVertexAttribArray(0));
-
-    // Colors
-    if (!mesh.getColors().empty())
+    // Bind vertex arrays
+    for (auto it = attributeList.begin(); it != attributeList.end(); ++it)
     {
-        glCheck(glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, &mesh.getColors()[0]));
-        glCheck(glEnableVertexAttribArray(1));
+        const VertexAttribute & attrib = *it;
+        const Mesh::VertexArray & va = mesh.getVertexArray(attrib.use);
+
+        if (!va.data.empty())
+        {
+            glCheck(glVertexAttribPointer(attrib.use, attrib.count, genericTypeToGL(attrib.type), GL_FALSE, 0, va.data.data()));
+            glCheck(glEnableVertexAttribArray(attrib.use));
+        }
     }
 
     GLenum primitiveType = genericPrimitiveTypeToGL(mesh.getInternalPrimitiveType());
 
-    // UV
-    if (!mesh.getUV().empty())
-    {
-        glCheck(glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, &mesh.getUV()[0]));
-        glCheck(glEnableVertexAttribArray(2));
-    }
-
-    // Normals
-    if (!mesh.getNormals().empty())
-    {
-        glCheck(glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 0, &mesh.getNormals()[0]));
-        glCheck(glEnableVertexAttribArray(3));
-    }
-
-    std::vector<u32> floatBufferIDs;
-    auto & floatBuffers = mesh.getCustomFloats();
-    if (!floatBuffers.empty())
-    {
-        u32 floatBufferIDStart = 5;
-        for (u32 i = 0; i < floatBuffers.size(); ++i)
-        {
-            auto & floatBuffer = floatBuffers[i];
-            if (!floatBuffer.empty())
-            {
-                u32 id = floatBufferIDStart + i;
-                glCheck(glVertexAttribPointer(id, 1, GL_FLOAT, GL_FALSE, 0, &floatBuffer[0]));
-                glCheck(glEnableVertexAttribArray(id));
-                floatBufferIDs.push_back(id);
-            }
-        }
-    }
-
-    std::vector<u32> vec2BufferIDs;
-    auto & vec2Buffers = mesh.getCustomVec2Buffers();
-    if (!vec2Buffers.empty())
-    {
-        u32 vec2BufferIDStart = 10;
-        for (u32 i = 0; i < vec2Buffers.size(); ++i)
-        {
-            auto & vec2Buffer = vec2Buffers[i];
-            if (!vec2Buffer.empty())
-            {
-                u32 id = vec2BufferIDStart + i;
-                glCheck(glVertexAttribPointer(id, 2, GL_FLOAT, GL_FALSE, 0, &vec2Buffer[0]));
-                glCheck(glEnableVertexAttribArray(id));
-                vec2BufferIDs.push_back(id);
-            }
-        }
-    }
-
+    // TODO Draw-calls statistic?
+    // Draw vertices
     if (mesh.getIndices().empty())
     {
         // Draw without indices
-        glCheck(glDrawArrays(
-            primitiveType,
-            0, mesh.getVertices().size()
-        ));
+        u32 vcount = mesh.getVertexCount();
+        glCheck(glDrawArrays(primitiveType, 0, vcount));
     }
     else
     {
         // Draw with indices
+        const std::vector<u32> & indices = mesh.getIndices();
         glCheck(glDrawElements(
             primitiveType,
-            mesh.getIndices().size(),
+            indices.size(),
             GL_UNSIGNED_INT,
-            &mesh.getIndices()[0]
+            indices.data()
         ));
     }
 
-    for (auto it = vec2BufferIDs.begin(); it != vec2BufferIDs.end(); ++it)
-        glCheck(glDisableVertexAttribArray(*it));
+    // Unbind vertex arrays
+    for (auto it = attributeList.begin(); it != attributeList.end(); ++it)
+    {
+        const VertexAttribute & attrib = *it;
+        const Mesh::VertexArray & data = mesh.getVertexArray(attrib.use);
 
-    for (auto it = floatBufferIDs.begin(); it != floatBufferIDs.end(); ++it)
-        glCheck(glDisableVertexAttribArray(*it));
-
-    if (!mesh.getNormals().empty())
-        glCheck(glDisableVertexAttribArray(3));
-
-    if (!mesh.getUV().empty())
-        glCheck(glDisableVertexAttribArray(2));
-
-    if (!mesh.getColors().empty())
-        glCheck(glDisableVertexAttribArray(1));
-
-    glCheck(glDisableVertexAttribArray(0));
+        if (!data.data.empty())
+        {
+            glCheck(glDisableVertexAttribArray(attrib.use));
+        }
+    }
 }
 
 /// \brief Clamps next draw calls to a sub-rectangle on the current render target.

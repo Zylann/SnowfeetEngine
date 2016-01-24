@@ -1,13 +1,12 @@
 #msh_vertex
 #version 330
 
-layout (location = 0) in vec3 in_Position;
-//layout (location = 1) in vec4 in_Color;
-layout (location = 5) in float in_Vignette;
-layout (location = 6) in float in_TimewarpLerpFactor;
-layout (location = 10) in vec2 in_TexCoord0; // R
-layout (location = 11) in vec2 in_TexCoord1; // G
-layout (location = 12) in vec2 in_TexCoord2; // B
+in vec3 in_Position;
+layout (location = 12) in float in_Vignette;
+layout (location = 11) in float in_TimewarpLerpFactor;
+layout (location = 13) in vec2 in_TexCoord0; // R
+layout (location = 14) in vec2 in_TexCoord1; // G
+layout (location = 15) in vec2 in_TexCoord2; // B
 
 uniform vec2 u_EyeToSourceUVScale;
 uniform vec2 u_EyeToSourceUVOffset;

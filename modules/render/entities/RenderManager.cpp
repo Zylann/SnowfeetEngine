@@ -425,19 +425,29 @@ void RenderManager::renderCamera(VideoDriver & driver, Camera & camera)
         {
             m_effectQuad = new Mesh();
 
+            VertexDescription desc;
+            desc.addAttribute("Position", VertexAttribute::USE_POSITION, VertexAttribute::TYPE_FLOAT32, 3);
+            desc.addAttribute("Texcoord", VertexAttribute::USE_TEXCOORD, VertexAttribute::TYPE_FLOAT32, 2);
+            m_effectQuad->create(desc);
             m_effectQuad->setPrimitiveType(SN_MESH_QUADS);
 
-            m_effectQuad->addPosition(-1, -1, 0);
-            m_effectQuad->addPosition( 1, -1, 0);
-            m_effectQuad->addPosition( 1,  1, 0);
-            m_effectQuad->addPosition(-1,  1, 0);
+            const std::array<f32, 4*3> positions = {
+                -1, -1, 0,
+                 1, -1, 0,
+                 1,  1, 0,
+                -1,  1, 0
+            };
+            const std::array<f32, 4*2> uvs = {
+                0, 0,
+                1, 0,
+                1, 1,
+                0, 1
+            };
 
-            m_effectQuad->addTexCoord(0, 0);
-            m_effectQuad->addTexCoord(1, 0);
-            m_effectQuad->addTexCoord(1, 1);
-            m_effectQuad->addTexCoord(0, 1);
+            m_effectQuad->updateArray<f32>(VertexAttribute::USE_POSITION, positions);
+            m_effectQuad->updateArray<f32>(VertexAttribute::USE_TEXCOORD, uvs);
 
-            m_effectQuad->recalculateIndexes();
+            m_effectQuad->recalculateIndices();
         }
 
         // Disable depth-test, we'll draw an overlay

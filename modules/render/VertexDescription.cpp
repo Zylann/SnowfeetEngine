@@ -38,18 +38,17 @@ namespace sn
 		}
 	}
 
-void VertexDescription::addAttribute(const char * name, VertexAttribute::Use use, VertexAttribute::Type type, u32 elemCount)
+void VertexDescription::addAttribute(const std::string name, u32 use, VertexAttribute::Type type, u32 elemCount)
 {
 	SN_ASSERT(elemCount > 0, "An attribute must have at least 1 element");
 	
-	VertexAttribute a = {
-		type,
-		elemCount,
-		use,
-		m_attributes.empty() ? 0 : m_attributes.back().offset + elemCount * getType(type).size,
-		m_attributes.size(),
-		name
-	};
+    VertexAttribute a;
+    a.type = type;
+    a.count = elemCount;
+    a.use = use;
+    //a.offset = m_attributes.empty() ? 0 : m_attributes.back().offset + elemCount * getType(type).size;
+    a.index = m_attributes.size();
+    a.name = name;
 
 	m_attributes.push_back(a);
 }
