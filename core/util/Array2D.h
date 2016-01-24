@@ -196,8 +196,8 @@ public :
     // get an element
     T get(s32 x, s32 y) const
     {
-        if(x < 0 || y < 0 || x >= m_sizeX || y >= m_sizeY)
-            throw Exception("Array2D::get " + Vector2i(x,y));
+        if(x < 0 || y < 0 || x >= static_cast<s32>(m_sizeX) || y >= static_cast<s32>(m_sizeY))
+            throw Exception(std::string("Array2D::get ") + toString(Vector2i(x,y)));
         else
             return getNoEx(x, y);
     }
