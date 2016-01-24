@@ -212,7 +212,7 @@ public:
         for (u32 d = 0; d < N; ++d)
         {
             if (p[d] < m_origin[d])
-                m_origin[d] = px;
+                m_origin[d] = p[d];
             
             if (p[d] - m_origin[d] >= m_size[d])
                 m_size[d] = p[d] - m_origin[d];
