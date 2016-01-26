@@ -25,8 +25,12 @@ public:
 
     const Theme & getTheme() const;
 
-	void setCapture(Control * captureControl);
+	void beginCapture(Control & captureControl, const Event & event);
+    void endCapture();
 	const Control * getCaptureControl() const { return r_captureControl; }
+    bool isDragThresholdReached() const { return m_dragThresholdReached; }
+    const sn::Vector2i getCaptureOrigin() const { return m_beginCaptureMousePos; }
+    const sn::Vector2i getCaptureControlOrigin() const { return m_beginCaptureControlPos; }
 
     void setFocusedControl(Control * focusControl);
     Control * getFocusedControl() const { return r_focusControl; }
@@ -47,6 +51,9 @@ private:
     Theme * m_defaultTheme;
 	Control * r_captureControl;
     Control * r_focusControl;
+    bool m_dragThresholdReached;
+    sn::Vector2i m_beginCaptureMousePos;
+    sn::Vector2i m_beginCaptureControlPos;
     sn::SharedRef<Theme> m_theme;
     std::bitset<sn::SN_EVENT_COUNT> m_eventFilter;
     sn::ClearMask m_clearMask;

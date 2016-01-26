@@ -34,6 +34,7 @@ private:
 private:
     // TODO Move resizing to a Frame container widget?
     bool m_isResizeable;
+    bool m_isDraggable;
     sn::s32 m_sideResizerSize;
     sn::s32 m_cornerResizerSize;
     std::bitset<TGUI_DIRECTION_COUNT> m_resizeDirections;

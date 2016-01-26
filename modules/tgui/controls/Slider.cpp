@@ -137,7 +137,7 @@ void Slider::onMousePress(Event & ev)
 {
     Vector2i mousePos(ev.value.mouse.x, ev.value.mouse.y);
     setValueFromPos(mousePos - getPosition());
-	beginCapture();
+	beginCapture(ev);
     ev.consume();
 }
 

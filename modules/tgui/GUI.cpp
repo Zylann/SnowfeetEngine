@@ -2,6 +2,7 @@
 #include <core/asset/AssetDatabase.h>
 #include <core/util/Profiler.h>
 #include <core/scene/Scene.h>
+#include <core/math/math.h>
 
 #include <modules/render/entities/RenderManager.h>
 
@@ -130,9 +131,21 @@ void GUI::draw(sn::VideoDriver & driver)
 }
 
 //------------------------------------------------------------------------------
-void GUI::setCapture(Control * captureControl)
+void GUI::beginCapture(Control & captureControl, const Event & event)
 {
-	r_captureControl = captureControl;
+	r_captureControl = &captureControl;
+    m_beginCaptureControlPos = captureControl.getLocalClientBounds().origin();
+    if (event.value.type == SN_EVENT_MOUSE_DOWN)
+    {
+        m_beginCaptureMousePos = Vector2i(event.value.mouse.x, event.value.mouse.y);
+    }
+}
+
+//------------------------------------------------------------------------------
+void GUI::endCapture()
+{
+    r_captureControl = nullptr;
+    m_dragThresholdReached = false;
 }
 
 //------------------------------------------------------------------------------
@@ -157,6 +170,15 @@ bool GUI::onSystemEvent(const sn::Event & systemEvent)
         }
         else if (r_captureControl)
         {
+            if (ev.value.type == SN_EVENT_MOUSE_MOVED)
+            {
+                sn::Vector2i mousePos = { ev.value.mouse.x, ev.value.mouse.y };
+                if (getManhattanDistance(m_beginCaptureMousePos, mousePos) > DRAG_THRESHOLD_PX)
+                {
+                    m_dragThresholdReached = true;
+                }
+            }
+
 			r_captureControl->onEvent(ev);
         }
         else

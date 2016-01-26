@@ -2,6 +2,7 @@
 #include <core/system/SystemGUI.h>
 
 #include "Panel.h"
+#include "../GUI.h"
 
 using namespace sn;
 
@@ -42,14 +43,13 @@ void Panel::onDrawSelf(DrawBatch & batch)
 //------------------------------------------------------------------------------
 void Panel::onMousePress(Event & e)
 {
-    if (m_isResizeable)
+    Vector2i cursorPos(e.value.mouse.x, e.value.mouse.y);
+
+    if ((m_isResizeable && checkResizing(cursorPos, m_resizeDirections)) || m_isDraggable)
     {
-        Vector2i cursorPos(e.value.mouse.x, e.value.mouse.y);
-        if (checkResizing(cursorPos, m_resizeDirections))
-        {
-            beginCapture();
-        }
+        beginCapture(e);
     }
+
     e.consume();
 }
 
@@ -95,9 +95,33 @@ void Panel::onMouseMove(Event & e)
             setLocalClientBounds(b);
             layoutChildren();
 
-            //e.consume();
+            e.consume();
         }
-        e.consume();
+
+        //e.consume();
+    }
+
+    if (!e.consumed && m_isDraggable && isPressed())
+    {
+        GUI * gui = getGUI();
+        if (gui && gui->isDragThresholdReached())
+        {
+            Vector2i captureOrigin = gui->getCaptureOrigin();
+            Vector2i initialOrigin = gui->getCaptureControlOrigin();
+            Vector2i mousePos = Vector2i(e.value.mouse.x, e.value.mouse.y);
+
+            Vector2i relativeCaptureOrigin = captureOrigin;
+            Control * parent = getParentControl();
+            if (parent)
+                relativeCaptureOrigin -= parent->getPosition();
+
+            //SN_LOG("Delta " << e.value.mouse.x << "," << e.value.mouse.y << " - " << e.value.mouse.lastX << "," << e.value.mouse.lastY);
+            auto rect = getLocalClientBounds();
+            rect.origin() = initialOrigin + mousePos - relativeCaptureOrigin;
+            setLocalClientBounds(rect);
+
+            e.consume();
+        }
     }
 }
 
@@ -111,10 +135,10 @@ void Panel::onSetCursor(Event & e)
         sn::Window * win = SystemGUI::get().getWindowByID(getWindowID());
         if (win)
         {
+            CursorType cursor = SN_CURSOR_DEFAULT;
+
             if (checkResizing(pos, dirs))
             {
-                CursorType cursor = SN_CURSOR_DEFAULT;
-
                 if ((dirs[TGUI_LEFT] && dirs[TGUI_TOP]) || (dirs[TGUI_RIGHT] && dirs[TGUI_BOTTOM]))
                 {
                     // Diagonal resize
@@ -136,12 +160,10 @@ void Panel::onSetCursor(Event & e)
                     cursor = SN_CURSOR_RESIZE_VERTICAL;
                 }
 
-                win->setMouseCursor(cursor);
+                e.consume();
             }
-            else
-            {
-                win->setMouseCursor(SN_CURSOR_DEFAULT);
-            }
+
+            win->setMouseCursor(cursor);
         }
     }
 }
@@ -174,6 +196,7 @@ void Panel::serializeState(sn::Variant & o, const sn::SerializationContext & ctx
 {
     Control::serializeState(o, ctx);
     sn::serialize(o["isResizeable"], m_isResizeable);
+    sn::serialize(o["isDraggable"], m_isDraggable);
 }
 
 //------------------------------------------------------------------------------
@@ -181,6 +204,7 @@ void Panel::unserializeState(const sn::Variant & o, const sn::SerializationConte
 {
     Control::unserializeState(o, ctx);
     sn::unserialize(o["isResizeable"], m_isResizeable);
+    sn::unserialize(o["isDraggable"], m_isDraggable);
 }
 
 } // namespace tgui

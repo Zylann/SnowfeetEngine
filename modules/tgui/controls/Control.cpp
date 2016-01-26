@@ -257,12 +257,12 @@ void Control::onDraw(DrawBatch & batch)
 }
 
 //------------------------------------------------------------------------------
-void Control::beginCapture()
+void Control::beginCapture(const Event & event)
 {
 	GUI * gui = getGUI();
 	if (gui)
 	{
-		gui->setCapture(this);
+		gui->beginCapture(*this, event);
 		setControlFlag(TGUI_CF_CAPTURED, true);
 	}
 }
@@ -274,7 +274,7 @@ void Control::endCapture()
 	if (gui)
 	{
 		SN_ASSERT(gui->getCaptureControl() == this, "Cannot end capture from another control");
-		gui->setCapture(nullptr);
+		gui->endCapture();
 		setControlFlag(TGUI_CF_CAPTURED, false);
 	}
 }

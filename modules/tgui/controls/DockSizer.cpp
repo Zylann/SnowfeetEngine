@@ -76,7 +76,7 @@ void DockSizer::onMouseMove(Event & e)
 
 void DockSizer::onMousePress(Event & e)
 {
-	beginCapture();
+	beginCapture(e);
 }
 
 void DockSizer::onMouseRelease(Event & e)

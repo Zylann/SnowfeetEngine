@@ -26,6 +26,8 @@ enum ControlFlags
     TGUI_CF_COUNT = 8
 };
 
+static const sn::s32 DRAG_THRESHOLD_PX = 4;
+
 struct Event
 {
     sn::Event value;
@@ -151,7 +153,7 @@ protected:
     // Helpers
     //--------------------------------
 
-	void beginCapture();
+	void beginCapture(const Event & event);
 	void endCapture();
 
 private:
