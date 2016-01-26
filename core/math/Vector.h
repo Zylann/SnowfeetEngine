@@ -298,6 +298,21 @@ std::string toString(const Vector<T, N> & v)
     return ss.str();
 }
 
+/// \brief Gets the distance between two points if we were to only take orthogonal paths.
+template <typename T, u32 N>
+T getManhattanDistance(Vector<T, N> left, Vector<T, N> right)
+{
+    T d = 0;
+    for (u32 i = 0; i < N; ++i)
+    {
+        if (left[i] > right[i])
+            d += left[i] - right[i];
+        else
+            d += right[i] - left[i];
+    }
+    return d;
+}
+
 } // namespace sn
 
 #endif // __HEADER_SN_VECTOR__
