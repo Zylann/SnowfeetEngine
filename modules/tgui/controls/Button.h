@@ -1,12 +1,12 @@
 #ifndef __HEADER_TGUI_BUTTON__
 #define __HEADER_TGUI_BUTTON__
 
-#include "Control.h"
+#include <modules/tgui/controls/Control.h>
 
 namespace tgui
 {
 
-class Button : public Control
+class SN_TGUI_API Button : public Control
 {
 public:
     SN_OBJECT

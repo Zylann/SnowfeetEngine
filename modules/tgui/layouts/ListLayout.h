@@ -1,14 +1,14 @@
 #ifndef __HEADER_TGUI_LIST_LAYOUT__
 #define __HEADER_TGUI_LIST_LAYOUT__
 
-#include "Layout.h"
-#include "../Orientation.h"
+#include <modules/tgui/layouts/Layout.h>
+#include <modules/tgui/Orientation.h>
 
 namespace tgui
 {
 
 /// \brief Positions Control children as a list.
-class ListLayout : public Layout
+class SN_TGUI_API ListLayout : public Layout
 {
 public:
 	SN_OBJECT

@@ -2,11 +2,12 @@
 #define __HEADER_TGUI_RENDERSTEP__
 
 #include <modules/render/entities/RenderStep.h>
+#include <modules/tgui/common.h>
 
 namespace tgui
 {
 
-class RenderStep : public sn::RenderStep
+class SN_TGUI_API RenderStep : public sn::RenderStep
 {
 public:
     SN_OBJECT

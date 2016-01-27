@@ -8,8 +8,9 @@
 
 #include <modules/render/Material.h>
 #include <modules/freetype/Font.hpp>
+#include <modules/tgui/common.h>
 
-#include "../Border.h"
+#include <modules/tgui/Border.h>
 
 namespace tgui
 {
@@ -18,7 +19,7 @@ namespace tgui
 
 //-----------------------------------------------------------------------------
 /// \brief Generic properties of a Control's theme
-struct ControlTheme
+struct SN_TGUI_API ControlTheme
 {
     enum State
     {
@@ -43,7 +44,7 @@ struct ControlTheme
 //-----------------------------------------------------------------------------
 /// \brief Theme description.
 /// This kind of GUI uses only one atlassed texture for control backgrounds.
-class Theme : public sn::Asset
+class SN_TGUI_API Theme : public sn::Asset
 {
 public:
     SN_OBJECT

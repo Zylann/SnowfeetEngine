@@ -1,13 +1,13 @@
 #ifndef __HEADER_TGUI_PANEL__
 #define __HEADER_TGUI_PANEL__
 
-#include "Control.h"
-#include "../Direction.h"
+#include <modules/tgui/controls/Control.h>
+#include <modules/tgui/Direction.h>
 
 namespace tgui
 {
 
-class Panel : public Control
+class SN_TGUI_API Panel : public Control
 {
 public:
     SN_OBJECT

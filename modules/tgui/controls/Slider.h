@@ -1,15 +1,15 @@
 #ifndef __HEADER_TGUI_SLIDER__
 #define __HEADER_TGUI_SLIDER__
 
-#include "Control.h"
-#include "../DrawBatch.h"
-#include "../Orientation.h"
+#include <modules/tgui/controls/Control.h>
+#include <modules/tgui/DrawBatch.h>
+#include <modules/tgui/Orientation.h>
 
 namespace tgui
 {
 
 /// \brief Linear widget with a thumb that can be dragged between two ends.
-class Slider : public Control
+class SN_TGUI_API Slider : public Control
 {
 public:
     SN_OBJECT

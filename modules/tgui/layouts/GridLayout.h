@@ -1,13 +1,13 @@
 #ifndef __HEADER_TGUI_GRIDLAYOUT__
 #define __HEADER_TGUI_GRIDLAYOUT__
 
-#include "Layout.h"
+#include <modules/tgui/layouts/Layout.h>
 #include <vector>
 
 namespace tgui
 {
 
-class GridLayout : public Layout
+class SN_TGUI_API GridLayout : public Layout
 {
 public:
 	SN_OBJECT

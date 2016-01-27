@@ -1,15 +1,15 @@
 #ifndef __HEADER_TGUI_TEXT__
 #define __HEADER_TGUI_TEXT__
 
-#include "Control.h"
-#include "../TextModel.h"
-#include "../TextAlignment.h"
+#include <modules/tgui/controls/Control.h>
+#include <modules/tgui/TextModel.h>
+#include <modules/tgui/TextAlignment.h>
 
 namespace tgui
 {
 
 /// \brief Lightweight text displayer.
-class Text : public Control
+class SN_TGUI_API Text : public Control
 {
 public:
     SN_OBJECT

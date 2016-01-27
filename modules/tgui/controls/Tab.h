@@ -1,13 +1,13 @@
 #ifndef __HEADER_TGUI_TAB__
 #define __HEADER_TGUI_TAB__
 
-#include "Control.h"
+#include <modules/tgui/controls/Control.h>
 
 namespace tgui
 {
 
 /// \brief Specialized control for tab buttons in a TabControl
-class Tab : public Control
+class SN_TGUI_API Tab : public Control
 {
 public:
 	SN_OBJECT

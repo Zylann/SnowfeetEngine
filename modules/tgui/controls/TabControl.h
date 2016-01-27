@@ -1,12 +1,12 @@
 #ifndef __HEADER_TGUI_TABCONTROL__
 #define __HEADER_TGUI_TABCONTROL__
 
-#include "Control.h"
+#include <modules/tgui/controls/Control.h>
 
 namespace tgui
 {
 
-class TabControl : public Control
+class SN_TGUI_API TabControl : public Control
 {
 public:
 	SN_OBJECT

@@ -5,9 +5,10 @@
 #include <core/types.h>
 #include <core/math/Rect.h>
 #include <core/asset/SerializationContext.h>
-#include "../Orientation.h"
-#include "../Direction.h"
-#include "Layout.h"
+
+#include <modules/tgui/Orientation.h>
+#include <modules/tgui/Direction.h>
+#include <modules/tgui/layouts/Layout.h>
 
 namespace tgui
 {

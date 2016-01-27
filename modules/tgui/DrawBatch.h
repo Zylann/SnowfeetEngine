@@ -8,14 +8,14 @@
 #include <modules/render/VideoDriver.h>
 #include <modules/freetype/Font.hpp>
 
-#include "Border.h"
-#include "TextAlignment.h"
-#include "TextWrapper.h"
+#include <modules/tgui/Border.h>
+#include <modules/tgui/TextAlignment.h>
+#include <modules/tgui/TextWrapper.h>
 
 namespace tgui
 {
 
-class DrawBatch
+class SN_TGUI_API DrawBatch
 {
 public:
     DrawBatch(sn::VideoDriver & driver);

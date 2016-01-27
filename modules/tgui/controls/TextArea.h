@@ -3,14 +3,14 @@
 
 #include <core/system/Time.h>
 
-#include "Control.h"
-#include "../TextModel.h"
-#include "../TextWrapper.h"
+#include <modules/tgui/controls/Control.h>
+#include <modules/tgui/TextModel.h>
+#include <modules/tgui/TextWrapper.h>
 
 namespace tgui
 {
 
-class TextArea : public Control
+class SN_TGUI_API TextArea : public Control
 {
 public:
     SN_OBJECT

@@ -5,14 +5,12 @@
 #include <core/system/Event.h>
 
 #include <modules/render/VideoDriver.h>
-
-#include "controls/Control.h"
-#include "theme/Theme.h"
+#include <modules/tgui/theme/Theme.h>
 
 namespace tgui
 {
 
-class GUI : public Control
+class SN_TGUI_API GUI : public Control
 {
 public:
     SN_OBJECT

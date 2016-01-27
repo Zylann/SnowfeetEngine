@@ -4,13 +4,14 @@
 #include <vector>
 #include <core/types.h>
 #include <modules/freetype/Font.hpp>
+#include <modules/tgui/common.h>
 
 namespace tgui
 {
 
 /// \brief Stores actual editable data of a text.
 /// The text is stored as lines for better performance at editing.
-class TextModel
+class SN_TGUI_API TextModel
 {
 public:
     void setSource(const std::string & sourceText);

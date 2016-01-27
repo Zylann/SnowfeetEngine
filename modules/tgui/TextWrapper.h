@@ -2,7 +2,7 @@
 #define __HEADER_TGUI_TEXTWRAPPER__
 
 #include <core/util/Variant.h>
-#include "TextModel.h"
+#include <modules/tgui/TextModel.h>
 
 namespace tgui
 {
@@ -14,14 +14,14 @@ enum TextWrapMode
     TGUI_WRAP_CHARACTERS
 };
 
-void serialize(sn::Variant & o, TextWrapMode m);
-void unserialize(const sn::Variant & o, TextWrapMode & m);
+void SN_TGUI_API serialize(sn::Variant & o, TextWrapMode m);
+void SN_TGUI_API unserialize(const sn::Variant & o, TextWrapMode & m);
 
 /// \brief Stores a view of a TextModel with a line wrapping algorithm.
 /// Text edition and display should use this view rather than TextModel directly.
 /// This class refers to a TextModel but will not modify it.
 /// One wrap = a line or a part of it
-class TextWrapper
+class SN_TGUI_API TextWrapper
 {
 public:
     //---------------------------------

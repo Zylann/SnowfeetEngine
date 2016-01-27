@@ -5,11 +5,12 @@
 #include <core/scene/Entity.h>
 #include <core/math/Vector2.h>
 
-#include "../Direction.h"
-#include "../theme/Theme.h"
-#include "../DrawBatch.h"
-#include "../Anchors.h"
-#include "../Position.h"
+#include <modules/tgui/common.h>
+#include <modules/tgui/Direction.h>
+#include <modules/tgui/theme/Theme.h>
+#include <modules/tgui/DrawBatch.h>
+#include <modules/tgui/Anchors.h>
+#include <modules/tgui/Position.h>
 
 namespace tgui
 {
@@ -41,7 +42,7 @@ struct Event
 class GUI;
 class Layout;
 
-class Control : public sn::Entity
+class SN_TGUI_API Control : public sn::Entity
 {
 public:
     SN_OBJECT

@@ -6,6 +6,8 @@
 #include <core/asset/SerializationContext.h>
 #include <core/reflect/Object.h>
 
+#include <modules/tgui/common.h>
+
 namespace tgui
 {
 
@@ -13,7 +15,7 @@ class Control;
 
 /// \brief Controls how children items are positionned inside their parent.
 /// A layout can only be installed in one Control (the container) and cannot be moved to another control.
-class Layout : public sn::Object
+class SN_TGUI_API Layout : public sn::Object
 {
 public:
 	SN_OBJECT

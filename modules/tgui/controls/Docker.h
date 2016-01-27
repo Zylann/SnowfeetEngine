@@ -1,13 +1,12 @@
 #ifndef __HEADER_TGUI_DOCKER__
 #define __HEADER_TGUI_DOCKER__
 
-#include "../layouts/SplitLayout.h"
-#include "Control.h"
+#include <modules/tgui/controls/Control.h>
 
 namespace tgui
 {
 
-class Docker : public Control
+class SN_TGUI_API Docker : public Control
 {
 public:
     SN_OBJECT

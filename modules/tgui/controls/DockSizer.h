@@ -1,14 +1,14 @@
 #ifndef __HEADER_TGUI_DOCKSIZER__
 #define __HEADER_TGUI_DOCKSIZER__
 
-#include "Control.h"
-#include "../Orientation.h"
-#include "../layouts/SplitLayout.h"
+#include <modules/tgui/controls/Control.h>
+#include <modules/tgui/Orientation.h>
+#include <modules/tgui/layouts/SplitLayout.h>
 
 namespace tgui
 {
 
-class DockSizer : public Control
+class SN_TGUI_API DockSizer : public Control
 {
 public:
 	SN_OBJECT
