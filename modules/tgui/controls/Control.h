@@ -52,15 +52,22 @@ public:
     // Geometry
     //--------------------------------
 
+    //    +--------------------------------+
+    //    |       Margin                   |
+    //    |  +------------------bounds--+  |
+    //    |  |    Padding               |  |
+    //    |  +--------------------------+  |
+    //    +--------------------------------+
+
     sn::Vector2i getPosition() const;
     sn::Vector2i getLocalPosition() const { return m_localBounds.origin(); }
 
     sn::Vector2i getSize() const { return m_localBounds.size(); }
 
-    sn::IntRect getClientBounds() const;
+    sn::IntRect getBounds() const;
 
-    const sn::IntRect & getLocalClientBounds() const { return m_localBounds; }
-    void setLocalClientBounds(sn::IntRect bounds);
+    const sn::IntRect & getLocalBounds() const { return m_localBounds; }
+    void setLocalBounds(sn::IntRect bounds);
 
     //--------------------------------
     // Layout
@@ -83,7 +90,7 @@ public:
 
     bool getControlFlag(sn::u32 i) const;
 
-	Control * getChildControlAt(sn::Vector2i position) const;
+	Control * getChildControlAt(sn::Vector2i globalPosition) const;
 	Control * getChildControlByIndex(sn::u32 i) const;
 
     Control * getParentControl() const;

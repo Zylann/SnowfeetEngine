@@ -57,7 +57,7 @@ void GUI::onReady()
     if (window)
     {
         sn::Vector2u size = window->getClientSize();
-        setLocalClientBounds(sn::IntRect::fromPositionSize(0, 0, size.x(), size.y()));
+        setLocalBounds(sn::IntRect::fromPositionSize(0, 0, size.x(), size.y()));
         layoutChildren();
     }
 
@@ -134,7 +134,7 @@ void GUI::draw(sn::VideoDriver & driver)
 void GUI::beginCapture(Control & captureControl, const Event & event)
 {
 	r_captureControl = &captureControl;
-    m_beginCaptureControlPos = captureControl.getLocalClientBounds().origin();
+    m_beginCaptureControlPos = captureControl.getLocalBounds().origin();
     if (event.value.type == SN_EVENT_MOUSE_DOWN)
     {
         m_beginCaptureMousePos = Vector2i(event.value.mouse.x, event.value.mouse.y);
@@ -165,7 +165,7 @@ bool GUI::onSystemEvent(const sn::Event & systemEvent)
         if (ev.value.type == SN_EVENT_WINDOW_RESIZED)
         {
             // Fill the window
-            setLocalClientBounds(sn::IntRect::fromPositionSize(0, 0, ev.value.window.width, ev.value.window.height));
+            setLocalBounds(sn::IntRect::fromPositionSize(0, 0, ev.value.window.width, ev.value.window.height));
             layoutChildren();
         }
         else if (r_captureControl)

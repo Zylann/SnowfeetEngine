@@ -36,7 +36,7 @@ void Button::onDrawSelf(DrawBatch & batch)
 
     SN_BEGIN_PROFILE_SAMPLE_NAMED("TGUI draw Button");
 
-    IntRect bounds = getClientBounds();
+    IntRect bounds = getBounds();
 
     u32 state = ControlTheme::STATE_NORMAL;
     if (isPressed())
@@ -67,7 +67,7 @@ void Button::layoutChildren()
         if (!children.empty())
         {
             Control & child = *children[0];
-            IntRect childBounds = child.getLocalClientBounds();
+            IntRect childBounds = child.getLocalBounds();
             const Anchors & anchors = child.getAnchors();
             const Border & margin = child.getMargin();
 
@@ -82,12 +82,12 @@ void Button::layoutChildren()
                 childBounds.y() = margin.top + getPadding().top;
 
             if (anchors[TGUI_RIGHT])
-                childBounds.width() = getLocalClientBounds().width() - margin.left - margin.right - childBounds.x() - getPadding().right;
+                childBounds.width() = getLocalBounds().width() - margin.left - margin.right - childBounds.x() - getPadding().right;
 
             if (anchors[TGUI_BOTTOM])
-                childBounds.height() = getLocalClientBounds().height() - margin.top - margin.bottom - childBounds.y() - getPadding().bottom;
+                childBounds.height() = getLocalBounds().height() - margin.top - margin.bottom - childBounds.y() - getPadding().bottom;
 
-            child.setLocalClientBounds(childBounds);
+            child.setLocalBounds(childBounds);
             child.layoutChildren();
         }
     }

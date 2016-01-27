@@ -237,7 +237,7 @@ void SplitLayout::update()
 {
 	Control * container = getContainer();
 	SN_ASSERT(container != nullptr, "SplitLayout container is null!");
-	IntRect bounds = container->getLocalClientBounds();
+	IntRect bounds = container->getLocalBounds();
 	bounds.x() = 0;
 	bounds.y() = 0;
 	container->getPadding().crop(bounds);
@@ -276,7 +276,7 @@ void SplitLayout::layout(const IntRect & bounds)
     {
         if (r_control)
         {
-            r_control->setLocalClientBounds(bounds);
+            r_control->setLocalBounds(bounds);
 			r_control->layoutChildren();
         }
     }
@@ -288,6 +288,7 @@ void SplitLayout::layout(const IntRect & bounds)
         SplitLayout & b = *m_children[1];
 
         // TODO Apply margins
+        // TODO Clear duplication with array component access
 
 		s32 sizerSize = 4;
 
@@ -295,7 +296,7 @@ void SplitLayout::layout(const IntRect & bounds)
         {
 			s32 localSplitPos = static_cast<s32>(m_position * static_cast<f32>(bounds.width()));
 			if (r_sizer)
-				r_sizer->setLocalClientBounds(IntRect::fromPositionSize(
+				r_sizer->setLocalBounds(IntRect::fromPositionSize(
 					bounds.minX() + localSplitPos - sizerSize / 2,
 					bounds.minY(), 
 					sizerSize, 
@@ -320,7 +321,7 @@ void SplitLayout::layout(const IntRect & bounds)
         {
 			s32 localSplitPos = static_cast<s32>(m_position * static_cast<f32>(bounds.height()));
 			if (r_sizer)
-				r_sizer->setLocalClientBounds(IntRect::fromPositionSize(
+				r_sizer->setLocalBounds(IntRect::fromPositionSize(
 					bounds.minX(), 
 					bounds.minY() + localSplitPos - sizerSize / 2,
 					bounds.width(), 

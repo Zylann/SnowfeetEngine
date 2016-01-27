@@ -31,7 +31,7 @@ void TextArea::onDrawSelf(DrawBatch & batch)
     SN_BEGIN_PROFILE_SAMPLE_NAMED("TGUI draw TextArea");
 
     const ControlTheme & bg = theme->textAreaBackground;
-    IntRect bounds = getClientBounds();
+    IntRect bounds = getBounds();
 
     // Draw background
     const IntRect & uvRect = bg.statesUV[0];
@@ -443,7 +443,7 @@ void TextArea::updateWrap()
     if (font == nullptr)
         return;
 
-    m_wrapper.update(getLocalClientBounds().width(), *font, theme->textFormat);
+    m_wrapper.update(getLocalBounds().width(), *font, theme->textFormat);
     updateCurrentWrapIndex();
     updateCaretPosition();
 }

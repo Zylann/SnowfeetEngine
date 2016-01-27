@@ -79,7 +79,7 @@ void GridLayout::update()
                     break;
 
                 Control & child = *children[i];
-                IntRect childBounds = child.getLocalClientBounds();
+                IntRect childBounds = child.getLocalBounds();
                 Border childMargin = child.getMargin();
 
                 s32 h = childBounds.height() + childMargin.top + childMargin.bottom;
@@ -98,7 +98,7 @@ void GridLayout::update()
                 break;
 
             Control & child = *children[i];
-            IntRect childBounds = child.getLocalClientBounds();
+            IntRect childBounds = child.getLocalBounds();
             Border childMargin = child.getMargin();
 
             const Column & col = m_columns[columnIndex];
@@ -108,7 +108,7 @@ void GridLayout::update()
             childBounds.width() = col.size - childMargin.left - childMargin.right;
             childBounds.height() = rowHeight - childMargin.top - childMargin.bottom;
 
-            child.setLocalClientBounds(childBounds);
+            child.setLocalBounds(childBounds);
             child.layoutChildren();
         }
 
@@ -123,7 +123,7 @@ void GridLayout::recalculateColumnSizes(const Control & container)
     if (m_columns.empty())
         return;
 
-	IntRect clientBounds = container.getLocalClientBounds();
+	IntRect clientBounds = container.getLocalBounds();
 	Border padding = container.getPadding();
 
     f32 ratio = static_cast<f32>(clientBounds.width() - padding.left - padding.right - m_columnSpacing * m_columns.size());

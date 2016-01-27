@@ -61,7 +61,7 @@ void Tab::onDrawSelf(DrawBatch & batch)
 
     SN_BEGIN_PROFILE_SAMPLE_NAMED("TGUI draw Button");
 
-    IntRect bounds = getClientBounds();
+    IntRect bounds = getBounds();
 
     u32 state = ControlTheme::STATE_NORMAL;
     if (isPressed())

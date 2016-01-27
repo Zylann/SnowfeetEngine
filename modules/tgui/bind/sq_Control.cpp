@@ -26,7 +26,7 @@ namespace tgui
                 squirrel::getInt(vm, 4),
                 squirrel::getInt(vm, 5)
             );
-            self->setLocalClientBounds(bounds);
+            self->setLocalBounds(bounds);
             return 0;
         }
 

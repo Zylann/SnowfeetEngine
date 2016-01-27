@@ -41,7 +41,7 @@ void Text::onDrawSelf(DrawBatch & batch)
     SN_BEGIN_PROFILE_SAMPLE_NAMED("TGUI Draw Text");
 
     const FontFormat & format = theme->textFormat;
-    IntRect controlBounds = getClientBounds();
+    IntRect controlBounds = getBounds();
 
     batch.setScissor(controlBounds, getWindowID());
 

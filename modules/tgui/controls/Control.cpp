@@ -43,14 +43,14 @@ sn::Vector2i Control::getPosition() const
 }
 
 //------------------------------------------------------------------------------
-sn::IntRect Control::getClientBounds() const
+sn::IntRect Control::getBounds() const
 {
     Vector2i pos = getPosition();
     return IntRect::fromPositionSize(pos.x(), pos.y(), m_localBounds.width(), m_localBounds.height());
 }
 
 //------------------------------------------------------------------------------
-void Control::setLocalClientBounds(sn::IntRect bounds)
+void Control::setLocalBounds(sn::IntRect bounds)
 {
     bool sizeChanged = m_localBounds.size() != bounds.size();
     m_localBounds = bounds;
@@ -181,16 +181,16 @@ const Theme * Control::getTheme() const
 }
 
 //------------------------------------------------------------------------------
-Control * Control::getChildControlAt(sn::Vector2i position) const
+Control * Control::getChildControlAt(sn::Vector2i globalPosition) const
 {
     std::vector<Control*> children;
     getChildrenOfType<Control>(children);
     for (u32 i = 0; i < children.size(); ++i)
     {
         Control & child = *children[i];
-        if (child.getClientBounds().contains(position))
+        if (child.getBounds().contains(globalPosition))
         {
-            Control * c = child.getChildControlAt(position);
+            Control * c = child.getChildControlAt(globalPosition);
             if (c)
                 return c;
             else
@@ -222,7 +222,7 @@ void Control::layoutChildren()
 		std::vector<Control*> children;
 		getChildrenOfType<Control>(children);
 
-		IntRect cellBounds = getLocalClientBounds();
+		IntRect cellBounds = getLocalBounds();
 		cellBounds.x() = 0;
 		cellBounds.y() = 0;
 		getPadding().crop(cellBounds);
@@ -230,9 +230,9 @@ void Control::layoutChildren()
 		for (auto it = children.begin(); it != children.end(); ++it)
 		{
 			Control & child = **it;
-			IntRect childBounds = child.getLocalClientBounds();
+			IntRect childBounds = child.getLocalBounds();
 			applyAnchors(childBounds, cellBounds, child.getAnchors());
-			child.setLocalClientBounds(childBounds);
+			child.setLocalBounds(childBounds);
 			child.layoutChildren();
 		}
 	}
@@ -356,7 +356,7 @@ void Control::dispatchEventToChildren(Event & ev)
 //------------------------------------------------------------------------------
 void Control::processMouseMove(Event & e)
 {
-    IntRect bounds = getClientBounds();
+    IntRect bounds = getBounds();
 	bool hover = bounds.contains(e.value.mouse.x, e.value.mouse.y);
     if (hover)
     {

@@ -43,7 +43,7 @@ void ListLayout::update()
 	Layout::getChildrenToLayout(*container, children, &childrenIndex);
 
 	// Get container bounds with padding
-	sn::IntRect localBounds = container->getLocalClientBounds();
+	sn::IntRect localBounds = container->getLocalBounds();
 	localBounds.x() = 0;
 	localBounds.y() = 0;
 	container->getPadding().crop(localBounds);
@@ -70,7 +70,7 @@ void ListLayout::update()
 		Control & child = *children[i];
 
 		const Border & margin = child.getMargin();
-		IntRect childBounds = child.getLocalClientBounds();
+		IntRect childBounds = child.getLocalBounds();
 
 		childBounds.origin() = cellBounds.origin();
 
@@ -119,7 +119,7 @@ void ListLayout::update()
 	{
 		const auto & p = calculatedBounds[i];
 		Control & child = *children[i];
-		child.setLocalClientBounds(p);
+		child.setLocalBounds(p);
 		child.layoutChildren();
 	}
 }

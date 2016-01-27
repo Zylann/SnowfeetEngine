@@ -29,7 +29,7 @@ void TabControl::layoutTabBar()
 	if (!m_tabs.empty())
 	{
 		// Layout tab bar
-		IntRect barBounds = getLocalClientBounds();
+		IntRect barBounds = getLocalBounds();
 		barBounds.x() = 0;
 		barBounds.y() = 0;
 		barBounds.height() = m_tabBarSize;
@@ -37,12 +37,12 @@ void TabControl::layoutTabBar()
 		for (u32 i = 0; i < m_tabs.size(); ++i)
 		{
 			Control & tab = *m_tabs[i];
-			IntRect tabBounds = tab.getLocalClientBounds();
+			IntRect tabBounds = tab.getLocalBounds();
 			tabBounds.y() = 0;
 			tabBounds.x() = pos.x();
 			tabBounds.height() = barBounds.height();
 			pos.x() += tabBounds.width();
-			tab.setLocalClientBounds(tabBounds);
+			tab.setLocalBounds(tabBounds);
             tab.layoutChildren();
 		}
 	}
@@ -62,12 +62,12 @@ void TabControl::layoutPage()
             if (m_pages[pageIndex])
             {
 			    Control & c = *m_pages[pageIndex];
-			    IntRect bounds = getLocalClientBounds();
+			    IntRect bounds = getLocalBounds();
 			    bounds.x() = 0;
 			    bounds.y() = barSize;
 			    bounds.height() -= barSize;
 			    c.getMargin().crop(bounds);
-			    c.setLocalClientBounds(bounds);
+			    c.setLocalBounds(bounds);
 			    c.layoutChildren();
             }
 		}
@@ -85,7 +85,7 @@ void TabControl::onDrawSelf(DrawBatch & batch)
 
     const ControlTheme & ct = theme->panelTheme;
 
-    IntRect bounds = getClientBounds();
+    IntRect bounds = getBounds();
     bounds.y() += m_tabBarSize;
     bounds.height() -= m_tabBarSize;
 

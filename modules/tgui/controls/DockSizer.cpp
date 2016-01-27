@@ -52,7 +52,7 @@ void DockSizer::onMouseMove(Event & e)
 		IntRect parentBounds;
 		if (parent)
 		{
-			parentBounds = parent->getClientBounds();
+			parentBounds = parent->getBounds();
 			parent->getPadding().crop(parentBounds);
 		}
 

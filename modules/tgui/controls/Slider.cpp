@@ -72,7 +72,7 @@ void Slider::onDrawSelf(DrawBatch & batch)
 
     SN_BEGIN_PROFILE_SAMPLE_NAMED("TGUI draw Slider");
 
-    IntRect b = getClientBounds();
+    IntRect b = getBounds();
     Vector2u ts = theme->getTextureAtlasSize();
 
     // TODO There is the same code in Button, factorise in ControlTheme?

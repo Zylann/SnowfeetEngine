@@ -30,7 +30,7 @@ void Panel::onDrawSelf(DrawBatch & batch)
 
     const ControlTheme & ct = theme->panelTheme;
 
-    IntRect bounds = getClientBounds();
+    IntRect bounds = getBounds();
 
     const IntRect & uvRect = ct.statesUV[0];
     Vector2u ts = theme->getTextureAtlasSize();
@@ -71,7 +71,7 @@ void Panel::onMouseMove(Event & e)
     {
         if (isResizing())
         {
-            IntRect b = getLocalClientBounds();
+            IntRect b = getLocalBounds();
             Vector2i pos = Vector2i(e.value.mouse.x, e.value.mouse.y);// - getPosition();
 
             if (m_resizeDirections[TGUI_RIGHT])
@@ -92,7 +92,7 @@ void Panel::onMouseMove(Event & e)
                 b.y() = pos.y();
             }
 
-            setLocalClientBounds(b);
+            setLocalBounds(b);
             layoutChildren();
 
             e.consume();
@@ -116,9 +116,9 @@ void Panel::onMouseMove(Event & e)
                 relativeCaptureOrigin -= parent->getPosition();
 
             //SN_LOG("Delta " << e.value.mouse.x << "," << e.value.mouse.y << " - " << e.value.mouse.lastX << "," << e.value.mouse.lastY);
-            auto rect = getLocalClientBounds();
+            auto rect = getLocalBounds();
             rect.origin() = initialOrigin + mousePos - relativeCaptureOrigin;
-            setLocalClientBounds(rect);
+            setLocalBounds(rect);
 
             e.consume();
         }
@@ -171,7 +171,7 @@ void Panel::onSetCursor(Event & e)
 //------------------------------------------------------------------------------
 bool Panel::checkResizing(Vector2i cursorPos, std::bitset<TGUI_DIRECTION_COUNT> & out_dirs)
 {
-    IntRect clientBounds = getClientBounds();
+    IntRect clientBounds = getBounds();
     if (clientBounds.contains(cursorPos))
     {
         if (cursorPos.x() >= clientBounds.maxX() - m_sideResizerSize)
