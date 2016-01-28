@@ -1,5 +1,6 @@
 ﻿#include <core/util/Log.h>
 
+#include "VertexAttribute.h"
 #include "gl_check.h"
 #include "ShaderProgram.h"
 #include <GL/glew.h>
@@ -128,10 +129,10 @@ bool ShaderProgram::loadFromSourceCode(const std::unordered_map<ShaderType, std:
     }
 
     // Generic input shader variables
-    glCheck(glBindAttribLocation(m_programID, ATTRIB_POSITION, "in_Position"));
-    glCheck(glBindAttribLocation(m_programID, ATTRIB_COLOR, "in_Color"));
-    glCheck(glBindAttribLocation(m_programID, ATTRIB_TEXCOORD, "in_TexCoord"));
-    glCheck(glBindAttribLocation(m_programID, ATTRIB_NORMAL, "in_Normal"));
+    glCheck(glBindAttribLocation(m_programID, VertexAttribute::USE_POSITION, "in_Position"));
+    glCheck(glBindAttribLocation(m_programID, VertexAttribute::USE_COLOR, "in_Color"));
+    glCheck(glBindAttribLocation(m_programID, VertexAttribute::USE_TEXCOORD, "in_TexCoord"));
+    glCheck(glBindAttribLocation(m_programID, VertexAttribute::USE_NORMAL, "in_Normal"));
 
     // Link
     glCheck(glLinkProgram(m_programID));

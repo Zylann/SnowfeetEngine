@@ -35,7 +35,7 @@ protected:
 
 	static inline bool skipUntil(const std::string & input, size_t & out_pos, CharTestFunction f)
 	{
-		assert(f != nullptr, "Function pointer cannot be null");
+        assert(f != nullptr);//, "Function pointer cannot be null");
 		while (out_pos < input.size())
 		{
 			if (f(input[out_pos++]))
@@ -46,7 +46,7 @@ protected:
 
 	static inline bool skipUntilNot(const std::string & input, size_t & out_pos, CharTestFunction f)
 	{
-		assert(f != nullptr, "Function pointer cannot be null");
+        assert(f != nullptr);// , "Function pointer cannot be null");
 		while (out_pos < input.size())
 		{
 			if (!f(input[out_pos++]))

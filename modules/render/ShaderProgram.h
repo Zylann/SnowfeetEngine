@@ -11,7 +11,6 @@ This file is part of the SnowfeetEngine project.
 #include <core/math/Matrix4.h>
 #include <unordered_map>
 
-#include "Vertex.h"
 #include "Texture.h"
 
 namespace sn

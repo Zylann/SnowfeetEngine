@@ -36,13 +36,13 @@ public:
         /// \brief Distortion mesh if any
         SharedRef<Mesh> distortionMesh;
         /// \brief Post-processing effect material if any
-        SharedRef<sn::Material> effectMaterial;
+        SharedRef<Material> effectMaterial;
         /// \brief Part of the HMD screen used to render the eye, in pixels.
         IntRect viewport;
     };
 
     /// \brief Called just before an eye camera renders an effect. This lets the material to be modified if needed.
-    virtual void onRenderEye(Entity * sender, EyeIndex abstractEyeIndex, sn::Material * effectMaterial, Vector2u sourceSize, IntRect targetViewport) = 0;
+    virtual void onRenderEye(Entity * sender, EyeIndex abstractEyeIndex, Material * effectMaterial, Vector2u sourceSize, IntRect targetViewport) = 0;
 
     /// \brief Gets which is the preferred resolution to render the undistorted image for a given eye.
     /// \param eye: which eye is concerned

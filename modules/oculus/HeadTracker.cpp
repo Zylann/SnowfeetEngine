@@ -125,15 +125,29 @@ void HeadTracker::onReady()
         auto & database = AssetDatabase::get();
         std::string projectName = "oculus";
 
-        m_abstractEyes[0].distortionMesh.set(database.getAsset<Mesh>(projectName, "left_eye"));
-        m_abstractEyes[1].distortionMesh.set(database.getAsset<Mesh>(projectName, "right_eye"));
+        VertexDescription vertexFormat;
+        vertexFormat.addAttribute("Position", DistortionMesh::POSITION, VertexAttribute::TYPE_FLOAT32, 3);
+        vertexFormat.addAttribute("TimewarpFactor", DistortionMesh::TIMEWARP_FACTOR, VertexAttribute::TYPE_FLOAT32, 1);
+        vertexFormat.addAttribute("VignetteFactor", DistortionMesh::VIGNETTE_FACTOR, VertexAttribute::TYPE_FLOAT32, 1);
+        vertexFormat.addAttribute("TanEyeAnglesR", DistortionMesh::TAN_EYE_ANGLES_R, VertexAttribute::TYPE_FLOAT32, 2);
+        vertexFormat.addAttribute("TanEyeAnglesG", DistortionMesh::TAN_EYE_ANGLES_G, VertexAttribute::TYPE_FLOAT32, 2);
+        vertexFormat.addAttribute("TanEyeAnglesB", DistortionMesh::TAN_EYE_ANGLES_B, VertexAttribute::TYPE_FLOAT32, 2);
+
+        Mesh * meshes[] = {
+            database.getAsset<Mesh>(projectName, "left_eye"),
+            database.getAsset<Mesh>(projectName, "right_eye")
+        };
 
         for (u32 i = 0; i < 2; ++i)
         {
-            Mesh * mesh = m_abstractEyes[i].distortionMesh.get();
+            Mesh * mesh = meshes[i];
+
             if (mesh)
             {
+                mesh->create(vertexFormat);
+                mesh->setPrimitiveType(SN_MESH_TRIANGLES);
                 makeDistortionMesh(*mesh, i);
+                m_abstractEyes[0].distortionMesh.set(mesh);
             }
         }
 
@@ -313,14 +327,14 @@ void HeadTracker::makeDistortionMesh(Mesh & out_mesh, u32 agnosticEyeType)
     ovrHmd_DestroyDistortionMesh(&meshData);
 
     out_mesh.clear();
-    out_mesh.setPositions(&positions[0], positions.size());
-    out_mesh.setCustomFloats(0, &vignetteFactor[0], vignetteFactor.size());
-    out_mesh.setCustomFloats(1, &timeWarpFactor[0], timeWarpFactor.size());
-    //out_mesh.setUV(&tanEyeAnglesR[0], tanEyeAnglesR.size()); // ?
-    out_mesh.setCustomVec2Buffer(0, &tanEyeAnglesR[0], tanEyeAnglesR.size());
-    out_mesh.setCustomVec2Buffer(1, &tanEyeAnglesG[0], tanEyeAnglesG.size());
-    out_mesh.setCustomVec2Buffer(2, &tanEyeAnglesB[0], tanEyeAnglesB.size());
-    out_mesh.setTriangleIndices(&indices[0], indices.size());
+    out_mesh.updateArray(DistortionMesh::POSITION, positions);
+    out_mesh.updateArray(DistortionMesh::VIGNETTE_FACTOR, vignetteFactor);
+    out_mesh.updateArray(DistortionMesh::TIMEWARP_FACTOR, timeWarpFactor);
+    out_mesh.updateArray(DistortionMesh::TAN_EYE_ANGLES_R, tanEyeAnglesR);
+    out_mesh.updateArray(DistortionMesh::TAN_EYE_ANGLES_G, tanEyeAnglesG);
+    out_mesh.updateArray(DistortionMesh::TAN_EYE_ANGLES_B, tanEyeAnglesB);
+
+    out_mesh.updateIndices(&indices[0], indices.size());
 
     out_mesh.recalculateBounds();
 

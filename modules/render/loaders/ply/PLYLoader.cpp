@@ -321,19 +321,27 @@ bool PLYLoader::parseVertices(const PLYElement & element)
     //    *it = c;
     //}
 
-    Mesh & out_mesh = *r_mesh;
-
-    if (!positions.empty()) 
-        out_mesh.setPositions(&positions[0], positions.size());
-
+    VertexDescription vertexFormat;
+    if (!positions.empty())
+        vertexFormat.addAttribute("Position", VertexAttribute::USE_POSITION, VertexAttribute::TYPE_FLOAT32, 3);
     if (!normals.empty()) 
-        out_mesh.setNormals(&normals[0], normals.size());
-
+        vertexFormat.addAttribute("Normal", VertexAttribute::USE_NORMAL, VertexAttribute::TYPE_FLOAT32, 3);
     if (!colors.empty()) 
-        out_mesh.setColors(&colors[0], colors.size());
-
+        vertexFormat.addAttribute("Color", VertexAttribute::USE_COLOR, VertexAttribute::TYPE_FLOAT32, 4);
     if (!texCoords.empty()) 
-        out_mesh.setUV(&texCoords[0], texCoords.size());
+        vertexFormat.addAttribute("Texcoord", VertexAttribute::USE_TEXCOORD, VertexAttribute::TYPE_FLOAT32, 2);
+
+    Mesh & out_mesh = *r_mesh;
+    out_mesh.create(vertexFormat);
+
+    if (!positions.empty())
+        out_mesh.updateArray<Vector3f>(VertexAttribute::USE_POSITION, positions);
+    if (!normals.empty())
+        out_mesh.updateArray<Vector3f>(VertexAttribute::USE_NORMAL, normals);
+    if (!colors.empty()) 
+        out_mesh.updateArray<Color>(VertexAttribute::USE_COLOR, colors);
+    if (!texCoords.empty()) 
+        out_mesh.updateArray<Vector2f>(VertexAttribute::USE_TEXCOORD, texCoords);
 
     return true;
 }
@@ -392,7 +400,7 @@ bool PLYLoader::parseFaces(const PLYElement & element)
         }
     }
 
-    r_mesh->setTriangleIndices(&indices[0], indices.size());
+    r_mesh->updateIndices(indices);
 
     return true;
 }

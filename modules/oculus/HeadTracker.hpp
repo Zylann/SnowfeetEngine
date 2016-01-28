@@ -13,6 +13,19 @@
 namespace sn {
 namespace oculus {
 
+namespace DistortionMesh
+{
+    enum Attribute
+    {
+        POSITION = VertexAttribute::USE_POSITION,
+        TIMEWARP_FACTOR = VertexAttribute::USE_CUSTOM + 1,
+        VIGNETTE_FACTOR = VertexAttribute::USE_CUSTOM + 2,
+        TAN_EYE_ANGLES_R = VertexAttribute::USE_CUSTOM + 3,
+        TAN_EYE_ANGLES_G = VertexAttribute::USE_CUSTOM + 4,
+        TAN_EYE_ANGLES_B = VertexAttribute::USE_CUSTOM + 5
+    };
+}
+
 // TODO Rename RiftController
 class HeadTracker : public sn::VRHeadset
 {

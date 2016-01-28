@@ -12,10 +12,14 @@ DrawBatch::DrawBatch(sn::VideoDriver & driver):
     r_driver(driver),
     r_material(nullptr)
 {
+    VertexDescription desc;
+    desc.addAttribute("Position", VertexAttribute::USE_POSITION, VertexAttribute::TYPE_FLOAT32, 3);
+    desc.addAttribute("Texcoord", VertexAttribute::USE_TEXCOORD, VertexAttribute::TYPE_FLOAT32, 2);
+    desc.addAttribute("Color", VertexAttribute::USE_COLOR, VertexAttribute::TYPE_FLOAT32, 4);
+
     m_mesh = new sn::Mesh();
+    m_mesh->create(desc);
     m_mesh->setPrimitiveType(SN_MESH_QUADS);
-
-
 }
 
 //------------------------------------------------------------------------------
@@ -61,14 +65,12 @@ void DrawBatch::setMaterial(sn::Material & m)
 //------------------------------------------------------------------------------
 void DrawBatch::fillRect(const IntRect & r, const IntRect & texRect, Vector2u ts, Color color)
 {
-    // TODO Optimize: we can pre-allocate data instead of appending one by one
-
-    Mesh & m = *m_mesh;
-
-    m.addPosition(static_cast<f32>(r.minX()), static_cast<f32>(r.minY()), 0.f);
-    m.addPosition(static_cast<f32>(r.maxX()), static_cast<f32>(r.minY()), 0.f);
-    m.addPosition(static_cast<f32>(r.maxX()), static_cast<f32>(r.maxY()), 0.f);
-    m.addPosition(static_cast<f32>(r.minX()), static_cast<f32>(r.maxY()), 0.f);
+    std::array<f32, 4 * 3> positions = {
+        static_cast<f32>(r.minX()), static_cast<f32>(r.minY()), 0.f,
+        static_cast<f32>(r.maxX()), static_cast<f32>(r.minY()), 0.f,
+        static_cast<f32>(r.maxX()), static_cast<f32>(r.maxY()), 0.f,
+        static_cast<f32>(r.minX()), static_cast<f32>(r.maxY()), 0.f
+    };
 
     FloatRect uvRectf = FloatRect::fromMinMax(
         static_cast<f32>(texRect.minX()) / static_cast<f32>(ts.x()),
@@ -77,15 +79,20 @@ void DrawBatch::fillRect(const IntRect & r, const IntRect & texRect, Vector2u ts
         static_cast<f32>(texRect.maxY()) / static_cast<f32>(ts.y())
     );
 
-    m.addTexCoord(uvRectf.minX(), uvRectf.minY());
-    m.addTexCoord(uvRectf.maxX(), uvRectf.minY());
-    m.addTexCoord(uvRectf.maxX(), uvRectf.maxY());
-    m.addTexCoord(uvRectf.minX(), uvRectf.maxY());
+    std::array<f32, 4*2> uvs = {
+        uvRectf.minX(), uvRectf.minY(),
+        uvRectf.maxX(), uvRectf.minY(),
+        uvRectf.maxX(), uvRectf.maxY(),
+        uvRectf.minX(), uvRectf.maxY()
+    };
 
-    m.addColor(color);
-    m.addColor(color);
-    m.addColor(color);
-    m.addColor(color);
+    std::array<Color, 4> colors = { color, color, color, color };
+
+    Mesh & m = *m_mesh;
+    m.updateArray(VertexAttribute::USE_POSITION, positions, -1);
+    m.updateArray(VertexAttribute::USE_TEXCOORD, uvs, -1);
+    m.updateArray(VertexAttribute::USE_COLOR, colors, -1);
+
 }
 
 //------------------------------------------------------------------------------
@@ -387,7 +394,7 @@ void DrawBatch::disableScissor()
 void DrawBatch::flush()
 {
     sn::Mesh & m = *m_mesh;
-    m.recalculateIndexes();
+    m.recalculateIndices();
     r_driver.drawMesh(m);
     m.clear();
 }

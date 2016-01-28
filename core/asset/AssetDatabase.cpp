@@ -49,12 +49,12 @@ void AssetDatabase::setRoot(const String & root)
 void AssetDatabase::addLoadersFromModule(const std::string & moduleName)
 {
     const ObjectTypeDatabase & otb = ObjectTypeDatabase::get();
-    const ObjectTypeMap & types = otb.getTypes();
+    const ObjectTypeList & types = otb.getTypes();
     const ObjectType & loaderType = getObjectType<AssetLoader>();
 
     for (auto it = types.begin(); it != types.end(); ++it)
     {
-        const ObjectType & ot = *(it->second);
+        const ObjectType & ot = **it;
         if (ot.getModuleName() == moduleName && ot.derivesFrom(loaderType) && !ot.isAbstract())
         {
             AssetLoader * loader = checked_cast<AssetLoader*>(ot.instantiate());

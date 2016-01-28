@@ -181,12 +181,16 @@ namespace sn
 			if (argType == OT_STRING)
 			{
 				const SQChar * typeName = nullptr;
-				if(SQ_SUCCEEDED(sq_getstring(vm, 2, &typeName)))
-					child = self->createChild(typeName);
+                sq_getstring(vm, 2, &typeName);
+                const ObjectType * ot = ObjectTypeDatabase::get().getType(typeName);
+                if (ot)
+                    child = self->createChild(*ot);
+                else
+                    return sq_throwerror(vm, "Invalid entity type");
 			}
             else
 			{
-				child = self->createChild();
+				child = self->createChild<Entity>();
 			}
 			if (child)
 				child->pushScriptObject(vm);
