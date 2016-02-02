@@ -34,18 +34,18 @@ void ScriptPreprocessor::run(std::string & out_input)
 }
 
 //------------------------------------------------------------------------------
-void ScriptPreprocessor::processDirective(std::string & out_input, size_t pos)
+void ScriptPreprocessor::processDirective(std::string & out_input, size_t & out_pos)
 {
-	++pos;
-	if (pos >= out_input.size())
+	++out_pos;
+	if (out_pos >= out_input.size())
 		return;
 
-	if (strEqualsAdv(out_input, pos, "require"))
+	if (strEqualsAdv(out_input, out_pos, "require"))
 	{
 		std::string fileName;
-		if (parseQuotedString(out_input, pos, fileName))
+		if (parseQuotedString(out_input, out_pos, fileName))
 		{
-			m_requireItems.push_back({ fileName, m_lineNumber });
+			m_requireItems.push_back( RequireItem(fileName, m_lineNumber) );
 		}
 	}
 	//else if (strEqualsAdv(out_input, pos, "ifdef"))

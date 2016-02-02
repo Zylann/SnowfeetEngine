@@ -17,9 +17,8 @@ public:
 		std::string fileName;
 		u32 line;
 
-		RequireItem():
-			line(0)
-		{}
+		RequireItem(): line(0) {}
+		RequireItem(const std::string a_fileName, u32 a_line) : fileName(a_fileName), line(a_line) {}
 	};
 
 	ScriptPreprocessor();
@@ -29,7 +28,7 @@ public:
 	const std::vector<RequireItem> & getRequireItems() const { return m_requireItems; }
 
 private:
-	void processDirective(std::string & out_input, size_t pos);
+	void processDirective(std::string & out_input, size_t & out_pos);
 	//void processIfdefBlock(std::string & out_input, size_t pos);
 
 private:

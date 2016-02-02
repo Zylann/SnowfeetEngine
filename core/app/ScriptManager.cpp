@@ -188,12 +188,15 @@ namespace
     };
     
 	void priv_calculateScriptDependencies(
-		u32 i,
-		const std::vector<ScriptUnit> units,
+		u32 unitIndex,
+		const std::vector<ScriptUnit> & units,
 		std::vector<u32> & out_order,
 		std::vector<bool> & openSet)
 	{
-		const ScriptUnit & unit = units[i];
+		const ScriptUnit & unit = units[unitIndex];
+
+		// Mark the file as open so we can break reference cycles
+		openSet[unitIndex] = true;
 
 		// For each required scripts
 		const std::vector<u32> & requireIndexes = unit.requireIndexes;
@@ -207,10 +210,8 @@ namespace
 			}
 		}
 
-		openSet[i] = true;
-
 		// Include the script
-		out_order.push_back(i);
+		out_order.push_back(unitIndex);
 	}
 
 	void calculateScriptDependencies(
@@ -226,7 +227,7 @@ namespace
 			if (!openSet[i])
 			{
 				// Include it
-				priv_calculateScriptDependencies(0, units, out_order, openSet);
+				priv_calculateScriptDependencies(i, units, out_order, openSet);
 			}
 		}
 	}
@@ -253,7 +254,7 @@ bool ScriptManager::compileSquirrelModule(const std::string & modName, const std
             ScriptUnit unit(m_squirrelVM);
             if (unit.script.compileString(sourceCode, filePath))
             {
-				unitsByFile[unit.filePath] = units.size();
+				unitsByFile[filePath] = units.size();
 				unit.filePath = filePath;
 				unit.requireItems = preprocessor.getRequireItems();
 				units.push_back(unit);
@@ -301,12 +302,13 @@ bool ScriptManager::compileSquirrelModule(const std::string & modName, const std
 
     // Run scripts
 
-    for (size_t i = 0; i < units.size(); ++i)
+    for (size_t i = 0; i < runOrder.size(); ++i)
     {
+		ScriptUnit & unit = units[runOrder[i]];
 #ifdef SN_BUILD_DEBUG
-		SN_LOG("Running " << units[i].filePath);
+		SN_LOG("Running " << unit.filePath);
 #endif
-        auto & script = units[i].script;
+        auto & script = unit.script;
         script.execute();
     }
 
