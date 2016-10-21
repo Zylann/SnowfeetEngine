@@ -2,7 +2,7 @@
 	"material":"example_theme",
 	"textureSize":[256,256],
 
-	"font":"LibertySans",
+	"font":"source_code_pro",
 	"textFormat":{"size":14},
 	"textColor":[0,0,0,1],
 

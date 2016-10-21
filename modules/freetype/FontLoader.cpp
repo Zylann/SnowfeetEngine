@@ -53,7 +53,7 @@ const sn::ObjectType & FontLoader::getAssetInstanceType() const
 bool FontLoader::canLoad(const sn::AssetMetadata & meta) const
 {
     String ext = getFileExtension(meta.path);
-    return ext == L".ttf";
+    return ext == L".ttf" || ext == L".otf";
 }
 
 bool FontLoader::load(std::ifstream & ifs, sn::Asset & asset) const
