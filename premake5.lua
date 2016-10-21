@@ -12,6 +12,7 @@ solution "SnowfeetEngine"
 --workspace "SnowfeetEngine"
 	-- Global default configurations
 	configurations { "Debug", "Release" }
+	characterset "MBCS" -- TODO Move the engine to Unicode!
 	includedirs {
 		"." -- repo source root
 	}
