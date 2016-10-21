@@ -224,6 +224,18 @@ inline u32 upperPowerOfTwo(u32 x)
     return 1 << (u32log2(x) + 1);
 }
 
+template <typename T>
+inline s32 floorToInt(T x)
+{
+	return static_cast<s32>(floor(x));
+}
+
+template <typename T>
+inline s32 ceilToInt(T x)
+{
+	return static_cast<s32>(ceil(x));
+}
+
 // TODO math: fast rsqrt for vector normalization
 
 } // namespace math

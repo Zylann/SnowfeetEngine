@@ -3,6 +3,8 @@
 namespace sn
 {
 
+using namespace math;
+
 //------------------------------------------------------------------------------
 Octree::Octree()
 {
@@ -112,12 +114,12 @@ void Octree::debugPrint(std::ostream & os)
 Octree::Boundaries Octree::getConvertedBoundaries(const FloatAABB & bounds)
 {
     return{
-        floor(bounds.minX() / static_cast<f32>(m_settings.getRootSize() * m_settings.getWorldScale())),
-        floor(bounds.minY() / static_cast<f32>(m_settings.getRootSize() * m_settings.getWorldScale())),
-        floor(bounds.minZ() / static_cast<f32>(m_settings.getRootSize() * m_settings.getWorldScale())),
-        ceil(bounds.maxX() / static_cast<f32>(m_settings.getRootSize() * m_settings.getWorldScale())),
-        ceil(bounds.maxY() / static_cast<f32>(m_settings.getRootSize() * m_settings.getWorldScale())),
-        ceil(bounds.maxZ() / static_cast<f32>(m_settings.getRootSize() * m_settings.getWorldScale()))
+        floorToInt(bounds.minX() / static_cast<f32>(m_settings.getRootSize() * m_settings.getWorldScale())),
+        floorToInt(bounds.minY() / static_cast<f32>(m_settings.getRootSize() * m_settings.getWorldScale())),
+        floorToInt(bounds.minZ() / static_cast<f32>(m_settings.getRootSize() * m_settings.getWorldScale())),
+        ceilToInt(bounds.maxX() / static_cast<f32>(m_settings.getRootSize() * m_settings.getWorldScale())),
+        ceilToInt(bounds.maxY() / static_cast<f32>(m_settings.getRootSize() * m_settings.getWorldScale())),
+        ceilToInt(bounds.maxZ() / static_cast<f32>(m_settings.getRootSize() * m_settings.getWorldScale()))
     };
 }
 
