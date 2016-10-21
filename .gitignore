@@ -32,6 +32,8 @@ AS_DEBUG/
 *.psess
 *.lastcodeanalysissucceeded
 *.vcxprojResolveAssemblyReference.cache
+*.VC.db
+*.VC.opendb
 
 # Code::Blocks
 *.depend
