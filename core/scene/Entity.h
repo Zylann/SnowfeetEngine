@@ -69,7 +69,7 @@ public:
     void setName(const std::string & name);
 
     /// \brief Gets a flag of the entity
-    inline bool getFlag(u32 position) const { return m_flags.at(position); }
+    inline bool getFlag(u32 position) const { return m_flags.test(position); }
     /// \brief Sets a flag on the entity.
     /// \warning This doesn't triggers any notification system.
     /// Some flags (such as UPDATABLE) must be set using specialized methods.
@@ -78,7 +78,7 @@ public:
     /// \brief Tells if the entity is enabled
     bool isEnabled() const;
     /// \brief Tells if the entity is enabled without looking at its parent enabled state
-    inline bool isEnabledSelf() const { return m_flags.at(SN_EF_ENABLED); }
+    inline bool isEnabledSelf() const { return m_flags.test(SN_EF_ENABLED); }
     /// \brief Enables the entity (the parent overrides this if it is disabled).
     void setEnabled(bool e);
 

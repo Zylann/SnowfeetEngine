@@ -60,7 +60,7 @@ void Entity::setFlag(u32 position, bool v)
 //------------------------------------------------------------------------------
 bool Entity::isEnabled() const
 {
-    if (m_flags.at(SN_EF_ENABLED))
+    if (m_flags.test(SN_EF_ENABLED))
         return r_parent ? r_parent->isEnabled() : true;
     else
         return false;
